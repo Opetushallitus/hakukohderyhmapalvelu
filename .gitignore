@@ -1,0 +1,11 @@
+/*-init.clj
+/*.log
+/.idea/
+/.lein-*
+/.nrepl-port
+/.shadow-cljs/
+/node_modules/
+/out/
+/resources/public/css/
+/resources/public/js/compiled/
+/target/

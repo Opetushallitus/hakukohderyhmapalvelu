@@ -1,0 +1,58 @@
+# Hakukohderyhmäpalvelu
+
+## Palvelun ajaminen paikallisesti
+
+Kloonaa ja valmistele omien ohjeiden mukaan käyttökuntoon [local-environment](https://github.com/Opetushallitus/local-environment) -ympäristö.
+
+Käynnistä Hakukohderyhmäpalvelu sanomalla `local-environment` -repositoryn juuressa:
+ 
+```sh
+make start-hakukohderyhmapalvelu
+```
+
+Muita tuettuja komentoja: 
+
+```sh
+make {restart,kill}-hakukohderyhmapalvelu
+```
+
+Mikäli haluat ajaa palvelua ilman local-environment -ympäristöä, tapahtuu se seuraavilla komennoilla:
+
+```sh
+HAKUKOHDERYHMAPALVELU_ENV=development HAKUKOHDERYHMAPALVELU_SERVICE_PORT=9030 lein server:dev
+lein frontend:dev
+lein less auto
+```
+
+## REPL-yhteys palvelimeen ja selaimeen
+
+REPL-yhteys palvelimelle avautuu sanomalla komentorivillä
+
+```sh
+lein repl :connect localhost:9031
+```
+
+REPL-yhteys selaimeen avautuu sanomalla em. REPL-yhteyden sisällä. Muistathan ensin avata selaimellasi palvelun (ks. osoite alta).
+
+```clj
+(shadow.cljs.devtools.api/nrepl-select :hakukohderyhmapalvelu)
+```
+
+## Palvelun paikalliset osoitteet
+
+* Palvelun osoite: (http://localhost:9030/hakukohderyhmapalvelu)
+* Palvelun Shadow CLJS -palvelimen osoite (http://localhost:9630)
+
+## Palvelun uberjar -tiedoston luonti tuotantokäyttöä varten
+
+Seuraava komento luo tämän repositoryn `target` -hakemistoon tiedoston `hakukohderyhmapalvelu.jar`.
+
+```sh
+lein with-profile prod uberjar
+```
+
+## Palvelun ajaminen uberjar -tiedostosta
+
+```sh
+hakukohderyhmapalvelu-service-port=${PALVELUN_PORTTI} java -jar hakukohderyhmapalvelu.jar
+```
