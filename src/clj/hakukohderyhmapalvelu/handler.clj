@@ -3,7 +3,7 @@
             [clojure.string :as string]
             [compojure.core :as api]
             [compojure.route :as route]
-            [config.core :as config]
+            [hakukohderyhmapalvelu.config :as c]
             [ring.util.response :as response]
             [ring.middleware.defaults :as defaults]
             [ring.middleware.json :as json]
@@ -18,10 +18,6 @@
 
 (defonce environment (hakukohderyhmapalvelu-env))
 
-(defn- production-resources []
-  (if (= environment :production)
-    (route/resources "/hakukohderyhmapalvelu")))
-
 (api/defroutes routes
   (api/GET "/" []
     (response/redirect "/hakukohderyhmapalvelu"))
@@ -29,7 +25,7 @@
     (api/GET "/" []
       (-> (response/resource-response "index.html" {:root "public"})
           (response/content-type "text/html"))))
-  (production-resources)
+  (route/resources "/hakukohderyhmapalvelu")
   (route/not-found "<h1>Not found</h1>"))
 
 (defn- wrap-css-proxy [handler]
