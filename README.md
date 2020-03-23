@@ -1,5 +1,11 @@
 # Hakukohderyhmäpalvelu
 
+* [Palvelun ajaminen paikallisesti](#palvelun-ajaminen-paikallisesti)
+* [REPL-yhteys palvelimeen ja selaimeen](#repl-yhteys-palvelimeen-ja-selaimeen)
+* [Palvelun paikalliset osoitteet](#palvelun-paikalliset-osoitteet)
+* [Palvelun uberjar -tiedoston luonti tuotantokäyttöä varten](#palvelun-uberjar--tiedoston-luonti-tuotantok%C3%A4ytt%C3%B6%C3%A4-varten)
+* [Palvelun ajaminen uberjar -tiedostosta](#palvelun-ajaminen-uberjar--tiedostosta)
+
 ## Palvelun ajaminen paikallisesti
 
 Kloonaa ja valmistele omien ohjeiden mukaan käyttökuntoon [local-environment](https://github.com/Opetushallitus/local-environment) -ympäristö.
@@ -54,5 +60,5 @@ lein with-profile prod uberjar
 ## Palvelun ajaminen uberjar -tiedostosta
 
 ```sh
-hakukohderyhmapalvelu-service-port=${PALVELUN_PORTTI} java -jar hakukohderyhmapalvelu.jar
+java -jar hakukohderyhmapalvelu.jar
 ```
