@@ -1,6 +1,6 @@
 (ns hakukohderyhmapalvelu.server
-  (:require [hakukohderyhmapalvelu.handler :refer [handler]]
-            [config.core :as config]
+  (:require [hakukohderyhmapalvelu.config :as c]
+            [hakukohderyhmapalvelu.handler :refer [handler]]
             [ring.adapter.jetty :refer [run-jetty]]
             [taoensso.timbre.appenders.core :as appenders]
             [taoensso.timbre :as timbre])
@@ -13,6 +13,6 @@
                             {:stream :std-out})}}))
 
 (defn -main [& _args]
-  (let [port (or (config/env :hakukohderyhmapalvelu-service-port) 8080)]
+  (let [port (c/config :server :http :port)]
     (configure-logging)
     (run-jetty handler {:port port :join? false})))

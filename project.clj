@@ -13,6 +13,7 @@
                  [ring/ring-defaults "0.3.2"]
                  [ring/ring-json "0.5.0"]
                  [secretary "1.2.3"]
+                 [prismatic/schema "1.1.12"]
                  [thheller/shadow-cljs "2.8.83"]
                  [yogthos/config "1.1.7"]]
 

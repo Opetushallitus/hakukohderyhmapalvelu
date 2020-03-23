@@ -25,7 +25,7 @@ make {restart,kill}-hakukohderyhmapalvelu
 Mikäli haluat ajaa palvelua ilman local-environment -ympäristöä, tapahtuu se seuraavilla komennoilla:
 
 ```sh
-HAKUKOHDERYHMAPALVELU_ENV=development HAKUKOHDERYHMAPALVELU_SERVICE_PORT=9030 lein server:dev
+CONFIG=config/config.localhost.edn lein server:dev
 lein frontend:dev
 lein less auto
 ```

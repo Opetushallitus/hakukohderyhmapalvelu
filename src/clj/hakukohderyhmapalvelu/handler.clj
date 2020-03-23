@@ -9,15 +9,6 @@
             [ring.middleware.json :as json]
             [ring.middleware.reload :as reload]))
 
-(defn- hakukohderyhmapalvelu-env []
-  (let [env (config/env :hakukohderyhmapalvelu-env)]
-    (if (or (not env)
-            (= env "production"))
-      :production
-      :development)))
-
-(defonce environment (hakukohderyhmapalvelu-env))
-
 (api/defroutes routes
   (api/GET "/" []
     (response/redirect "/hakukohderyhmapalvelu"))
@@ -29,24 +20,26 @@
   (route/not-found "<h1>Not found</h1>"))
 
 (defn- wrap-css-proxy [handler]
-  (if (= environment :development)
+  (if (= (c/config :environment) :development)
     (letfn [(is-css-uri? [uri]
               (= uri "/hakukohderyhmapalvelu/css/hakukohderyhmapalvelu.css"))]
       (fn proxy-css [request]
         (if (-> request :uri is-css-uri?)
-          (-> (http/get "http://localhost:9032/css/hakukohderyhmapalvelu.css")
+          (-> (http/get (str (c/config :server :shadow-cljs-server-url)
+                             "/css/hakukohderyhmapalvelu.css"))
               :body
               response/response)
           (handler request))))
     handler))
 
 (defn- wrap-js-proxy [handler prefix]
-  (if (= environment :development)
+  (if (= (c/config :environment) :development)
     (let [path-start-idx (count prefix)
           is-js-uri?     (fn [uri]
                            (string/starts-with? uri prefix))
           js-uri-path    (fn [uri]
-                           (str "http://localhost:9032/js"
+                           (str (c/config :server :shadow-cljs-server-url)
+                                "/js"
                                 (subs uri path-start-idx)))]
       (fn proxy-js [request]
         (if (-> request :uri is-js-uri?)
@@ -58,6 +51,6 @@
                  (json/wrap-json-response)
                  (defaults/wrap-defaults (dissoc defaults/site-defaults :static))
                  (reload/wrap-reload {:dirs ["src/clj"]})
-                 (wrap-css-proxy)
                  (wrap-js-proxy "/hakukohderyhmapalvelu/js")
-                 (wrap-js-proxy "/js")))
+                 (wrap-js-proxy "/js")
+                 (wrap-css-proxy)))
