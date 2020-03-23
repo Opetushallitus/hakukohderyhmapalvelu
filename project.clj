@@ -26,11 +26,14 @@
 
   :source-paths ["src/clj" "src/cljs" "src/cljc"]
 
-  :clean-targets ^{:protect false} ["resources/public/js/compiled" "target" ".shadow-cljs"]
+  :clean-targets ^{:protect false} ["resources/public/hakukohderyhmapalvelu/js/compiled"
+                                    "resources/public/hakukohderyhmapalvelu/css"
+                                    "target"
+                                    ".shadow-cljs"]
 
 
   :less {:source-paths ["src/less"]
-         :target-path  "resources/public/css"}
+         :target-path  "resources/public/hakukohderyhmapalvelu/css"}
 
   :shell {:commands {"open" {:windows ["cmd" "/c" "start"]
                              :macosx  "open"

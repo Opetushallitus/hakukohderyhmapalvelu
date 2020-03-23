@@ -6,7 +6,7 @@
 /.shadow-cljs/
 /node_modules/
 /out/
-/resources/public/css/
-/resources/public/js/compiled/
+/resources/public/hakukohderyhmapalvelu/css/
+/resources/public/hakukohderyhmapalvelu/js/compiled/
 /target/
 /hakukohderyhmapalvelu.iml

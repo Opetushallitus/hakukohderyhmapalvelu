@@ -1,3 +1,2 @@
 {:environment {{ hakukohderyhmapalvelu_environment | default(':development') }}
- :server      {:http                   {:port {{ hakukohderyhmapalvelu_server_http_port | default('8080') }}}
-               :shadow-cljs-server-url "{{ hakukohderyhmapalvelu_shadow_cljs_server_url | default('') }}"}}
+ :server      {:http                   {:port {{ hakukohderyhmapalvelu_server_http_port | default('8080') }}}}}

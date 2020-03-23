@@ -3,8 +3,8 @@
  :nrepl  {:port 9031}
 
  :builds {:hakukohderyhmapalvelu {:target     :browser
-                                  :output-dir "resources/public/js/compiled"
-                                  :asset-path "/js/compiled"
+                                  :output-dir "resources/public/hakukohderyhmapalvelu/js/compiled"
+                                  :asset-path "/hakukohderyhmapalvelu/js/compiled"
                                   :modules    {:hakukohderyhmapalvelu
                                                {:init-fn  hakukohderyhmapalvelu.core/init
                                                 :preloads [devtools.preload

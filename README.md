@@ -46,7 +46,7 @@ REPL-yhteys selaimeen avautuu sanomalla em. REPL-yhteyden sisällä. Muistathan 
 
 ## Palvelun paikalliset osoitteet
 
-* Palvelun osoite: (http://localhost:9030/hakukohderyhmapalvelu)
+* Palvelun osoite: (http://localhost:9032/hakukohderyhmapalvelu)
 * Palvelun Shadow CLJS -palvelimen osoite (http://localhost:9630)
 
 ## Palvelun uberjar -tiedoston luonti tuotantokäyttöä varten

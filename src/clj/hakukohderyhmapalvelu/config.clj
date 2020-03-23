@@ -5,8 +5,7 @@
 
 (s/defschema HakukohderyhmaConfig
   {:environment (s/enum :production :development)
-   :server      {:http                                    {:port s/Int}
-                 (s/optional-key :shadow-cljs-server-url) s/Str}})
+   :server      {:http {:port s/Int}}})
 
 (s/defn ^:always-validate make-config :- HakukohderyhmaConfig []
   (-> (:config c/env)
