@@ -1,0 +1,30 @@
+dist: xenial
+language: java
+jdk:
+  - openjdk11
+env:
+  global:
+    # AWS_ACCESS_KEY_ID
+    - secure: "durGCq/OSpJc7PFzoU/bzkPzXOAwPpW43l3sKtVbOPO1MfHKktxdZj67stp1/q2BtiHVceIvvvdzpJRSD/K1jmf+tDz99EBqBxm6ZsFg3XIIvbnTW6p2xzSjoqz1yAqY4496vU+yQbD4PrMOc3ApTelAkjfVtDQMPIWLOXxGU8NXGz6JHl3d/yMPL1nu//uNr69jwOZ1JpJhL68QWjSO5d1oXQLDk2hCptDufHWwZDIh1k/uJdfBm44pryPbjpk93+LD2oLhOemyAKh9SUlYcR4dI3BudgoimPrP/vQB8MouKBsUMsphMl4pQVtn05kO/Q3K3GuLJIvU7NKm9ThPoFrjzTvg3szEvfKVHSuO5DaqcLpbh8ty4kprry+/ZKjt9EuyjcYksujAQhSOnVmX6lj+ST3Zfx0A5yrDl/+P8EBaDnaeuvIWI9zI19xm7d+pURvzsSTjJRtpCDdUZZQef0CESTD7cdkREKPRkYBW9U2XR0900rumMni/8K1YXHhQpedfNmLRXdj+QgihtYWRcR9XzjxOzP3nyd3keesiVQoeYQQW54RfSX8LnQAhGkV6tB7DqWRQBN2Zexk+i7tEg1XcOSlsCbubEV9kz7jNKVcQENwAx06AMDrwXqKvqulOgpJSivT6HVnv7mhJn8xvVjmjS+A3ALihovCN+bP4grs="
+    # AWS_SECRET_ACCESS_KEY
+    - secure: "MlEIfRlTX/ikHnorIWcbjyAGFtECu2kzbAi9yD3sdWQHVIEKEX0LGVEeFuL7cYXYkwpDo06iIHsSzPl+xPFix+bISUmXdUf11ZrHPJSFnjVjVcchKMOonPx9IlSyRwpJIlpv+CehKXlG52J+p/MSBtKCRcHs+VCvMqon8kvq3YGZgNzoTfEWFtM+1BbT3cl85Vqio/3rZVHZ0IvjY/aKj82Ziy+W/m0tonObbIOw6SZ7YGs4MgNhF3CgxnPAc0VgNmwR4iqPdOeVS3oAPsmBGJlxjBg/ECE4NnIsrvDaoTQKgxH5EyE3YMKv9J54GSRPwpFfVyTAu88qpTbswLDBuVwqRCuYNpCRqTVH/c8l7M80KIZTV1yViCBNQ4R2ULgbS1hZDykMcb7VCwov+0VGtSNsmMYZNop15Lp6VLb7jWfqn1V2iWrYJ6ZjMVKc6/0iQ3CsP1oXnRbWdJYLmeRh9G9qjn0SStJA/r1q8JTtjXQgdV/Wdv1Lk6I/uWfwmGWEDAUnXNR5cp+qZCh09UEb/5mMv9xsbQf5p7XMEQv568ONCFwgC8Y86DiRLQElBpKhSmNKSmmlEC+nvKOb40J+DEGheM9BmJjdtXDcB4NnYc/NQvqqLUXhjfhPArtokskYC6M6J/ufhVNTSR3T76+UayAnMnBlgcWtf8LxRJf9/Pc="
+cache:
+  directories:
+    - $HOME/.m2
+install:
+  - git clone https://github.com/Opetushallitus/ci-tools.git
+  - source ci-tools/common/setup-tools.sh
+script: >-
+  npm install &&
+  bin/lein with-profile prod uberjar &&
+  export BASE_IMAGE="baseimage-fatjar:jdk11" &&
+  ./ci-tools/common/pull-image.sh &&
+  cp -v ./target/hakukohderyhmapalvelu.jar $DOCKER_BUILD_DIR/artifact/hakukohderyhmapalvelu.jar &&
+  cp -vr ./oph-configuration $DOCKER_BUILD_DIR/config/ &&
+  ./ci-tools/build/build-fatjar.sh hakukohderyhmapalvelu
+deploy:
+  provider: script
+  script: >-
+    ./ci-tools/build/upload-image.sh hakukohderyhmapalvelu
+  on:
+    all_branches: true
