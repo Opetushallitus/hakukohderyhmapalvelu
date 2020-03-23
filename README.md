@@ -25,7 +25,7 @@ make {restart,kill}-hakukohderyhmapalvelu
 Mikäli haluat ajaa palvelua ilman local-environment -ympäristöä, tapahtuu se seuraavilla komennoilla:
 
 ```sh
-CONFIG=config/config.localhost.edn lein server:dev
+CONFIG=oph-configuration/config.localhost.edn lein server:dev
 lein frontend:dev
 lein less auto
 ```
