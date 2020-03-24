@@ -2,7 +2,7 @@
  :server      {:http                   {:port {{ hakukohderyhmapalvelu_server_http_port | default('8080') }}}}
  :log         {:base-path     "{{ hakukohderyhmapalvelu_log_path | default('/root/logs') }}"}
  :db          {:username      "{{ hakukohderyhmapalvelu_db_username }}"
-               :password      "{{ hakukohderyhmapalvelu_db_password }}"
+               :password      "{{ hakukohderyhmapalvelu_db_app_password }}"
                :database-name "{{ hakukohderyhmapalvelu_db_name }}"
                :host          "{{ hakukohderyhmapalvelu_db_host }}"
                :port          {{ hakukohderyhmapalvelu_db_port }}}}
