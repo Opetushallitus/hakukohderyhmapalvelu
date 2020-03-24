@@ -1,6 +1,6 @@
 {:lein   true
 
- :nrepl  {:port 9031}
+ :nrepl  {:port 9031 :host "0.0.0.0"}
 
  :builds {:hakukohderyhmapalvelu {:target     :browser
                                   :output-dir "resources/public/hakukohderyhmapalvelu/js/compiled"
