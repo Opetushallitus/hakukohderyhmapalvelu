@@ -1,20 +1,45 @@
 (ns hakukohderyhmapalvelu.handler
-  (:require [compojure.core :as api]
+  (:require [compojure.api.sweet :as api]
             [compojure.route :as route]
             [ring.util.response :as response]
             [ring.middleware.defaults :as defaults]
             [ring.middleware.json :as json]
             [ring.middleware.reload :as reload]))
 
-(api/defroutes routes
-  (api/GET "/" []
-    (response/redirect "/hakukohderyhmapalvelu"))
-  (api/context "/hakukohderyhmapalvelu" []
+(defn- redirect-routes []
+  (api/undocumented
+    (api/GET "/" []
+      (response/redirect "/hakukohderyhmapalvelu"))))
+
+(defn- index-route []
+  (api/undocumented
     (api/GET "/" []
       (-> (response/resource-response "index.html" {:root "public"})
-          (response/content-type "text/html"))))
-  (route/resources "/")
-  (route/not-found "<h1>Not found</h1>"))
+          (response/content-type "text/html")
+          (response/charset "utf-8")))))
+
+(defn- resource-route []
+  (api/undocumented
+    (route/resources "/")))
+
+(defn- not-found-route []
+  (api/undocumented
+    (route/not-found "<h1>Not found</h1>")))
+
+(def routes
+  (api/api
+    {:swagger
+     {:ui   "/hakukohderyhmapalvelu/api-docs"
+      :spec "/hakukohderyhmapalvelu/swagger.json"
+      :data {:info        "Hakukohderyhmäpalvelu"
+             :description "Hakukohderyhmäpalvelu"
+             :consumes    ["application/json"]
+             :produces    ["application/json"]}}}
+    (redirect-routes)
+    (api/context "/hakukohderyhmapalvelu" []
+      (index-route))
+    (resource-route)
+    (not-found-route)))
 
 (def handler (-> #'routes
                  (json/wrap-json-response)

@@ -7,7 +7,7 @@
                  [clj-http "3.10.0"]
                  [com.stuartsierra/component "1.0.0"]
                  [com.taoensso/timbre "4.10.0"]
-                 [compojure "1.6.1"]
+                 [metosin/compojure-api "2.0.0-alpha13"]
                  [re-frame "0.12.0"]
                  [reagent "0.10.0"]
                  [ring "1.8.0"]
