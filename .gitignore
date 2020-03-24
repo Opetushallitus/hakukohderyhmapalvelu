@@ -8,5 +8,8 @@
 /out/
 /resources/public/hakukohderyhmapalvelu/css/
 /resources/public/hakukohderyhmapalvelu/js/compiled/
+/resources/public/js/compiled/manifest.edn
+/resources/public/css/hakukohderyhmapalvelu.css
+/resources/public/js/compiled/hakukohderyhmapalvelu.js
 /target/
 /hakukohderyhmapalvelu.iml
