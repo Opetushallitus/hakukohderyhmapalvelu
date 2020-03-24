@@ -8,17 +8,18 @@
                  [com.stuartsierra/component "1.0.0"]
                  [com.taoensso/timbre "4.10.0"]
                  [compojure "1.6.1"]
-                 [re-frame "0.11.0"]
-                 [reagent "0.9.1"]
-                 [ring "1.7.1"]
+                 [re-frame "0.12.0"]
+                 [reagent "0.10.0"]
+                 [ring "1.8.0"]
                  [ring/ring-defaults "0.3.2"]
                  [ring/ring-json "0.5.0"]
                  [secretary "1.2.3"]
                  [prismatic/schema "1.1.12"]
-                 [thheller/shadow-cljs "2.8.83"]
+                 [thheller/shadow-cljs "2.8.93"]
                  [yogthos/config "1.1.7"]]
 
-  :plugins [[lein-less "1.7.5"]
+  :plugins [[lein-ancient "0.6.15"]
+            [lein-less "1.7.5"]
             [lein-shell "0.5.0"]]
 
   :min-lein-version "2.5.3"
@@ -55,7 +56,7 @@
   {:dev
             {:dependencies [[binaryage/devtools "1.0.0"]
                             [clj-kondo "2019.11.23"]
-                            [day8.re-frame/re-frame-10x "0.5.1"]
+                            [day8.re-frame/re-frame-10x "0.6.0"]
                             [day8.re-frame/tracing "0.5.3"]]
              :source-paths ["dev"]}
 

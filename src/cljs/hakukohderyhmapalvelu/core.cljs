@@ -1,6 +1,6 @@
 (ns hakukohderyhmapalvelu.core
   (:require
-    [reagent.core :as reagent]
+    [reagent.dom :as reagent]
     [re-frame.core :as re-frame]
     [hakukohderyhmapalvelu.events.core-events]
     [hakukohderyhmapalvelu.routes :as routes]
