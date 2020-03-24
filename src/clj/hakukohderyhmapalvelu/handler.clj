@@ -20,9 +20,9 @@
           (response/charset "utf-8")))))
 
 (defn- health-check-route []
-  (api/undocumented)
-    (api/GET "/api/health" []
-      (health-check/check-health)))
+  (api/undocumented
+    (api/GET "/health" []
+      (health-check/check-health))))
 
 (defn- resource-route []
   (api/undocumented
@@ -44,7 +44,8 @@
     (redirect-routes)
     (api/context "/hakukohderyhmapalvelu" []
       (index-route)
-      (health-check-route))
+      (api/context "/api" []
+        (health-check-route)))
     (resource-route)
     (not-found-route)))
 
