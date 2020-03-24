@@ -1,18 +1,21 @@
 (ns hakukohderyhmapalvelu.server
-  (:require [hakukohderyhmapalvelu.config :as c]
-            [hakukohderyhmapalvelu.handler :refer [handler]]
-            [ring.adapter.jetty :refer [run-jetty]]
-            [taoensso.timbre.appenders.core :as appenders]
-            [taoensso.timbre :as timbre])
-  (:gen-class))
+  (:require [com.stuartsierra.component :as component]
+            [hakukohderyhmapalvelu.config :as c]
+            [hakukohderyhmapalvelu.handler :as h]
+            [ring.adapter.jetty :as jetty]))
 
-(defn- configure-logging []
-  (timbre/merge-config!
-    {:level     :info
-     :appenders {:println (appenders/println-appender
-                            {:stream :std-out})}}))
+(defrecord HttpServer []
+  component/Lifecycle
 
-(defn -main [& _args]
-  (let [port (c/config :server :http :port)]
-    (configure-logging)
-    (run-jetty handler {:port port :join? false})))
+  (start [this]
+    (let [port   (c/config :server :http :port)
+          server (jetty/run-jetty h/handler {:port port :join? false})]
+      (assoc this :server server)))
+
+  (stop [this]
+    (when-let [server (:server this)]
+      (.stop server))
+    (assoc this :server nil)))
+
+(defn new-http-server []
+  (map->HttpServer {}))

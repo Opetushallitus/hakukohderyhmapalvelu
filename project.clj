@@ -5,6 +5,7 @@
                                org.clojure/google-closure-library
                                org.clojure/google-closure-library-third-party]]
                  [clj-http "3.10.0"]
+                 [com.stuartsierra/component "1.0.0"]
                  [com.taoensso/timbre "4.10.0"]
                  [compojure "1.6.1"]
                  [re-frame "0.11.0"]
@@ -22,7 +23,7 @@
 
   :min-lein-version "2.5.3"
 
-  :main hakukohderyhmapalvelu.server
+  :main hakukohderyhmapalvelu.core
 
   :source-paths ["src/clj" "src/cljs" "src/cljc"]
 
