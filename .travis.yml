@@ -16,6 +16,7 @@ install:
   - source ci-tools/common/setup-tools.sh
 script: >-
   npm install &&
+  ./bin/cibuild.sh run-all-tests &&
   bin/lein with-profile prod uberjar &&
   export BASE_IMAGE="baseimage-fatjar:jdk11" &&
   ./ci-tools/common/pull-image.sh &&
