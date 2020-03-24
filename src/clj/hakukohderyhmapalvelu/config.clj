@@ -7,7 +7,12 @@
 (s/defschema HakukohderyhmaConfig
   {:environment (s/enum :production :development)
    :server      {:http {:port s/Int}}
-   :log         {:base-path s/Str}})
+   :log         {:base-path s/Str}
+   :db          {:username      s/Str
+                 :password      s/Str
+                 :database-name s/Str
+                 :host          s/Str
+                 :port          s/Int}})
 
 (s/defn ^:always-validate make-config :- HakukohderyhmaConfig []
   (-> (:config c/env)

@@ -5,9 +5,12 @@
                                org.clojure/google-closure-library
                                org.clojure/google-closure-library-third-party]]
                  [clj-http "3.10.0"]
+                 [com.fzakaria/slf4j-timbre "0.3.19"]
                  [com.stuartsierra/component "1.0.0"]
                  [com.taoensso/timbre "4.10.0"]
+                 [hikari-cp "2.11.0"]
                  [metosin/compojure-api "2.0.0-alpha13"]
+                 [org.postgresql/postgresql "42.2.11"]
                  [re-frame "0.12.0"]
                  [reagent "0.10.0"]
                  [ring "1.8.0"]

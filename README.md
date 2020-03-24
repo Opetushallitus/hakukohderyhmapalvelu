@@ -26,10 +26,10 @@ Muita tuettuja komentoja:
 make {restart,kill}-hakukohderyhmapalvelu
 ```
 
-Mikäli haluat ajaa palvelua ilman local-environment -ympäristöä, tapahtuu se seuraavilla komennoilla:
+Mikäli haluat ajaa palvelua ilman local-environment -ympäristöä, tapahtuu se seuraavilla komennoilla. Huomaathan, että joudut määrittämään palvelulle konfiguraatiotiedoston `oph-configuration/config.edn.template` -tiedoston pohjalta. Tämän tiedoston voit generoida `local-environment` -ympäristön avulla.
 
 ```sh
-CONFIG=oph-configuration/config.localhost.edn lein server:dev
+CONFIG=${polku-konfiguraatiotiedostoon} lein server:dev
 lein frontend:dev
 lein less auto
 ```
