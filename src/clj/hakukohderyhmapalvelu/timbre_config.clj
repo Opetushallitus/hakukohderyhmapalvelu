@@ -7,9 +7,6 @@
             [hakukohderyhmapalvelu.config :as hkr-config])
   (:import [java.util TimeZone]))
 
-(defn- create-config []
-  (hkr-config/map->Config {}))
-
 (defn configure-logging! []
   (timbre/merge-config!
     {:appenders
@@ -17,7 +14,7 @@
                       (println-appender {:stream :std-out})
                       :file-appender
                       (rolling-appender
-                        {:path    (str (-> (create-config) :log :base-path)
+                        {:path    (str (-> (hkr-config/make-config) :log :base-path)
                                        "/app_hakukohderyhmapalvelu"
                                        (when (:hostname env) (str "_" (:hostname env))))
                          :pattern :daily})}
