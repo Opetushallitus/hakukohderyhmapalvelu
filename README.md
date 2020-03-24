@@ -1,5 +1,7 @@
 # Hakukohderyhmäpalvelu
 
+[![Build Status](https://travis-ci.org/Opetushallitus/hakukohderyhmapalvelu.svg?branch=master)](https://travis-ci.org/Opetushallitus/hakukohderyhmapalvelu)
+
 * [Palvelun ajaminen paikallisesti](#palvelun-ajaminen-paikallisesti)
 * [REPL-yhteys palvelimeen ja selaimeen](#repl-yhteys-palvelimeen-ja-selaimeen)
 * [Palvelun paikalliset osoitteet](#palvelun-paikalliset-osoitteet)
