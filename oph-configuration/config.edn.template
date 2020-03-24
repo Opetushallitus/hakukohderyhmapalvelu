@@ -1,2 +1,3 @@
 {:environment {{ hakukohderyhmapalvelu_environment | default(':development') }}
- :server      {:http                   {:port {{ hakukohderyhmapalvelu_server_http_port | default('8080') }}}}}
+ :server      {:http                   {:port {{ hakukohderyhmapalvelu_server_http_port | default('8080') }}}}
+ :log         {:base-path "{{ hakukohderyhmapalvelu_log_path | default('/root/logs') }}"}}

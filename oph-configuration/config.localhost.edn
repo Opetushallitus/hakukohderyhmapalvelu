@@ -1,2 +1,3 @@
 {:environment :development
- :server      {:http                   {:port 9030}}}
+ :server      {:http                   {:port 9030}}
+ :log         {:base-path "/tmp"}}

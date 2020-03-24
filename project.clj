@@ -16,7 +16,8 @@
                  [secretary "1.2.3"]
                  [prismatic/schema "1.1.12"]
                  [thheller/shadow-cljs "2.8.93"]
-                 [yogthos/config "1.1.7"]]
+                 [yogthos/config "1.1.7"]
+                 [environ "1.1.0"]]
 
   :plugins [[lein-ancient "0.6.15"]
             [lein-less "1.7.5"]
