@@ -6,6 +6,7 @@
                                org.clojure/google-closure-library-third-party]]
                  [clj-http "3.10.0"]
                  [com.fzakaria/slf4j-timbre "0.3.19"]
+                 [timbre-ns-pattern-level "0.1.2"]
                  [com.stuartsierra/component "1.0.0"]
                  [com.taoensso/timbre "4.10.0"]
                  [org.flywaydb/flyway-core "6.3.2"]
