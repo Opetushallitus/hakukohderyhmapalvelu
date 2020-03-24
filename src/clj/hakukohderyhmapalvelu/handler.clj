@@ -4,7 +4,8 @@
             [ring.util.response :as response]
             [ring.middleware.defaults :as defaults]
             [ring.middleware.json :as json]
-            [ring.middleware.reload :as reload]))
+            [ring.middleware.reload :as reload]
+            [hakukohderyhmapalvelu.health-check :as health-check]))
 
 (defn- redirect-routes []
   (api/undocumented
@@ -17,6 +18,11 @@
       (-> (response/resource-response "index.html" {:root "public"})
           (response/content-type "text/html")
           (response/charset "utf-8")))))
+
+(defn- health-check-route []
+  (api/undocumented)
+    (api/GET "/api/health" []
+      (health-check/check-health)))
 
 (defn- resource-route []
   (api/undocumented
@@ -37,7 +43,8 @@
              :produces    ["application/json"]}}}
     (redirect-routes)
     (api/context "/hakukohderyhmapalvelu" []
-      (index-route))
+      (index-route)
+      (health-check-route))
     (resource-route)
     (not-found-route)))
 
