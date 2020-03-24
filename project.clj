@@ -48,9 +48,6 @@
             "build-report"  ["with-profile" "prod" "do"
                              ["run" "-m" "shadow.cljs.devtools.cli" "run" "shadow.cljs.build-report" "hakukohderyhmapalvelu" "target/build-report.html"]
                              ["shell" "open" "target/build-report.html"]]
-            "karma"         ["with-profile" "prod" "do"
-                             ["run" "-m" "shadow.cljs.devtools.cli" "compile" "karma-test"]
-                             ["shell" "karma" "start" "--single-run" "--reporters" "junit,dots"]]
             "lint"          ["with-profile" "dev" "do"
                              ["run" "-m" "clj-kondo.main" "--config" "oph-configuration/clj-kondo.config.edn" "--lint" "src"]]}
 
