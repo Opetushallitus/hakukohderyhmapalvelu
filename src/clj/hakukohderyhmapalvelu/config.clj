@@ -1,7 +1,8 @@
 (ns hakukohderyhmapalvelu.config
   (:require [clojure.edn :as edn]
             [config.core :as c]
-            [schema.core :as s]))
+            [schema.core :as s]
+            [com.stuartsierra.component :as component]))
 
 (s/defschema HakukohderyhmaConfig
   {:environment (s/enum :production :development)
@@ -12,9 +13,11 @@
       (slurp)
       (edn/read-string)))
 
-(defn- make-config-memoized []
-  (make-config))
+(defrecord Config []
+  component/Lifecycle
 
-(defn config [& path]
-  (let [config (make-config-memoized)]
-    (get-in config path)))
+  (start [this]
+    (assoc this :config (make-config)))
+
+  (stop [this]
+    (assoc this :config nil)))

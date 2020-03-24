@@ -64,6 +64,6 @@
    :uberjar {:source-paths ["env/prod/clj"]
              :dependencies [[day8.re-frame/tracing-stubs "0.5.3"]]
              :omit-source  true
-             :aot          [hakukohderyhmapalvelu.server]
+             :aot          [hakukohderyhmapalvelu.core]
              :uberjar-name "hakukohderyhmapalvelu.jar"
              :prep-tasks   ["compile" ["frontend:prod"] ["less" "once"]]}})
