@@ -8,6 +8,7 @@
                  [com.fzakaria/slf4j-timbre "0.3.19"]
                  [com.stuartsierra/component "1.0.0"]
                  [com.taoensso/timbre "4.10.0"]
+                 [org.flywaydb/flyway-core "6.3.2"]
                  [hikari-cp "2.11.0"]
                  [metosin/compojure-api "2.0.0-alpha13"]
                  [org.postgresql/postgresql "42.2.11"]

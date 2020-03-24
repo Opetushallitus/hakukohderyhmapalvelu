@@ -2,6 +2,7 @@
   (:require [com.stuartsierra.component :as component]
             [hakukohderyhmapalvelu.config :as config]
             [hakukohderyhmapalvelu.db :as db]
+            [hakukohderyhmapalvelu.migrations :as migrations]
             [hakukohderyhmapalvelu.server :as http]))
 
 (def hakukohderyhmapalvelu-system
@@ -12,6 +13,10 @@
           (db/map->DbPool {})
           [:config])
 
+    :migrations (component/using
+                  (migrations/map->Migrations {})
+                  [:db])
+
     :http-server (component/using
                    (http/map->HttpServer {})
-                   [:config :db])))
+                   [:config :db :migrations])))
