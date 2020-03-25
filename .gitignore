@@ -5,6 +5,9 @@
 /.lein-*
 /.nrepl-port
 /.shadow-cljs/
+/cypress/videos
+/cypress/screenshots
+/cypress/fixtures/example.json
 /node_modules/
 /out/
 /resources/public/hakukohderyhmapalvelu/css/

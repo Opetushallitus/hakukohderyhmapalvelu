@@ -9,14 +9,19 @@ env:
     # AWS_SECRET_ACCESS_KEY
     - secure: "aheWzodCfWKw3viI2s/BoI4xGOPwvHQgTjtHwvZUO7N0RO+2Kxd92BMXAwlqSEbAA+DENtuVtT5Fxk2tFIUyxcgKvbTBJHtbCTTm4z2JUQiaWSpbo2lcTHvDz6XXjfI6kTHXV0rBKVOfGPl1ZCXGAgzWE22YyuhxsM4h7OLYH8jN2aLYHq132QcKBi+azseZw/3rM33r7HmPMzfq0qbbwKOG8I9LkKgKkw+Gn+sjTKWRo6CogP7+6uV8GcC6qmRSBJtAFZSgxgOl+ea4w8x2bm53EgYQZQpq5jmw1B4usyiypfRTt5DiPOlfHm0CmgXFHyWATYEqCkpq+Sq6oqumKfqO+y111iXKNeLxkuVZNR4DfLeSI2D87npWx84g1fnqqNvHM+VqbJYSceMB7ZT2pOaxS7cOBkuMXwDBdEjMTQLkYHvCiR5V3TsZ3Xf17MeP6EztHkckEF/um2tsM5xatmlhxPdBRYP4etmoMT11+OMioalyNnUw8lD4LkVJSG/bDR3aglDrxeVoWkX/QjdbFKmpehknjCK4vVpADxHhhq4LCKRU6D9g5INQwU254kINDEUq6Ctkd+s+2HFpF19/WA9UFvxfwvNylOCUGTJpYb1vti/P4MCzRZFzxhgC8en8fQ0Zg/9mHbJ2WMwFBTV2ZqKwG8M0hFiOCj2U0BDQjVU="
 cache:
+  npm: true
   directories:
     - $HOME/.m2
+    - $HOME/.cache # cypress binary
+    - node_modules
 install:
   - git clone https://github.com/Opetushallitus/ci-tools.git
   - source ci-tools/common/setup-tools.sh
 script: >-
+  nvm install v12 &&
+  nvm use v12 &&
   npm install &&
-  ./bin/cibuild.sh run-all-tests &&
+  ./bin/cibuild.sh run-all-tests-and-create-uberjar &&
   bin/lein with-profile prod uberjar &&
   export BASE_IMAGE="baseimage-fatjar:jdk11" &&
   ./ci-tools/common/pull-image.sh &&
