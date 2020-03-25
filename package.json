@@ -3,7 +3,9 @@
     "cypress:open": "cypress open -C oph-configuration/cypress.local-environment.json",
     "cypress:run:local-environment": "cypress run -C oph-configuration/cypress.local-environment.json --headless",
     "cypress:run:travis": "cypress run -C oph-configuration/cypress.travis.json --headless",
-    "lint": "eslint --ignore-path \".gitignore\" --ext .js \"cypress\""
+    "lint:clj": "clj-kondo --config oph-configuration/clj-kondo.config.edn --lint src",
+    "lint:clj:lint-staged": "clj-kondo --config oph-configuration/clj-kondo.config.edn --lint",
+    "lint:js": "eslint --ignore-path \".gitignore\" --ext .js \"cypress\""
   },
   "husky": {
     "hooks": {
@@ -12,13 +14,14 @@
   },
   "lint-staged": {
     "cypress/**/*.js": [
-      "npm run lint"
+      "npm run lint:js"
     ],
     "src/**/*.{clj,cljs,cljc}": [
-      "lein lint"
+      "npm run lint:clj:lint-staged"
     ]
   },
   "devDependencies": {
+    "clj-kondo": "2020.1.13",
     "cypress": "4.2.0",
     "eslint": "6.8.0",
     "eslint-config-airbnb-base": "14.1.0",

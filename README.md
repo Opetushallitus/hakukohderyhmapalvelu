@@ -6,6 +6,9 @@
 
 * [Palvelun ajaminen paikallisesti](#palvelun-ajaminen-paikallisesti)
 * [Testien ajaminen](#testien-ajaminen)
+  * [Lint](#lint)
+    * [Clojure(Script) -tiedostojen lint](#clojurescript--tiedostojen-lint)
+    * [JavaScript -tiedostojen lint](#javascript--tiedostojen-lint)
   * [E2E-testit](#e2e-testit)
     * [Testien ajaminen Cypress-käyttöliittymän kautta](#testien-ajaminen-cypress-käyttöliittymän-kautta)
     * [Testien ajaminen headless -moodissa](#testien-ajaminen-headless--moodissa)
@@ -32,6 +35,20 @@ make {restart,kill}-hakukohderyhmapalvelu
 ```
 
 ## Testien ajaminen
+
+### Lint
+
+#### Clojure(Script) -tiedostojen lint
+
+```sh
+npm run lint:clj
+```
+
+#### JavaScript -tiedostojen lint
+
+```
+npm run lint:js
+```
 
 ### E2E-testit
 
