@@ -9,7 +9,8 @@
 
 (defn configure-logging! []
   (timbre/merge-config!
-    {:appenders
+    {:level          :info
+     :appenders
                      {:println
                       (println-appender {:stream :std-out})
                       :file-appender
