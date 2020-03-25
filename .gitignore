@@ -1,6 +1,7 @@
 /*-init.clj
 /*.log
 /.idea/
+/.java-version
 /.lein-*
 /.nrepl-port
 /.shadow-cljs/
