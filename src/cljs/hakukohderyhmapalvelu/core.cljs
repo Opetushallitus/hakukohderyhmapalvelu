@@ -5,7 +5,8 @@
     [hakukohderyhmapalvelu.events.core-events]
     [hakukohderyhmapalvelu.routes :as routes]
     [hakukohderyhmapalvelu.views :as views]
-    [hakukohderyhmapalvelu.config :as config]))
+    [hakukohderyhmapalvelu.config :as config]
+    [hakukohderyhmapalvelu.styles :as styles]))
 
 
 (defn dev-setup []
@@ -18,6 +19,7 @@
                   (.getElementById js/document "app")))
 
 (defn init []
+  (styles/init-styles)
   (routes/app-routes)
   (re-frame/dispatch-sync [:core/initialize-db])
   (dev-setup)

@@ -26,7 +26,7 @@
 
 (defn- resource-route []
   (api/undocumented
-    (route/resources "/")))
+    (route/resources "/hakukohderyhmapalvelu")))
 
 (defn- not-found-route []
   (api/undocumented
