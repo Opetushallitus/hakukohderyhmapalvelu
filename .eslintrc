@@ -1,14 +1,26 @@
 {
-  "extends": ["airbnb-base", "prettier"],
+  "parser": "@typescript-eslint/parser",
+  "extends": [
+    "airbnb-base",
+    "plugin:prettier/recommended",
+    "plugin:cypress/recommended"
+  ],
   "plugins": ["prettier"],
   "env": {
     "mocha": true
   },
   "rules": {
-    "prettier/prettier": ["error"]
+    "prettier/prettier": ["error"],
+    "spaced-comment": "off"
   },
-  "globals": {
-    "cy": "readonly",
-    "expect": "readonly"
-  }
+  "overrides": [
+    {
+      "files": ["**/*.ts"],
+      "extends": [
+        "plugin:@typescript-eslint/recommended",
+        "plugin:import/typescript",
+        "prettier/@typescript-eslint"
+      ]
+    }
+  ]
 }

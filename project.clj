@@ -40,7 +40,8 @@
   :clean-targets ^{:protect false} ["resources/public/hakukohderyhmapalvelu/js/compiled"
                                     "resources/public/hakukohderyhmapalvelu/css"
                                     "target"
-                                    ".shadow-cljs"]
+                                    ".shadow-cljs"
+                                    ".ts-out"]
 
 
   :shell {:commands {"open" {:windows ["cmd" "/c" "start"]

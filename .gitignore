@@ -6,6 +6,7 @@
 /.lein-*
 /.nrepl-port
 /.shadow-cljs/
+/.ts-out/
 /cypress/videos
 /cypress/screenshots
 /cypress/fixtures/example.json
