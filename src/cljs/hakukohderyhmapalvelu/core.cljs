@@ -6,7 +6,7 @@
     [hakukohderyhmapalvelu.routes :as routes]
     [hakukohderyhmapalvelu.views :as views]
     [hakukohderyhmapalvelu.config :as config]
-    [hakukohderyhmapalvelu.styles :as styles]))
+    [hakukohderyhmapalvelu.styles.styles-init :as styles]))
 
 
 (defn dev-setup []
