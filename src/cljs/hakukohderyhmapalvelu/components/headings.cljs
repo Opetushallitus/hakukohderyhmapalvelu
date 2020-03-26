@@ -9,6 +9,9 @@
    :font-weight vars/font-weight-medium
    :line-height "24px"})
 
-(defn h2 [heading]
-  [:h2 (stylefy/use-style h2-styles)
-   heading])
+(defn h2
+  ([heading]
+   [h2 {} heading])
+  ([{:keys [id]} heading]
+   [:h2 (stylefy/use-style h2-styles {:id id})
+    heading]))

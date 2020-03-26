@@ -3,5 +3,6 @@
 
 (defn hakukohderyhmapalvelu-panel []
   [p/panel
-    "Hakukohderyhmien hallinta"
-    [:div]])
+   {:id "hakukohderyhmapalvelu-panel"}
+   "Hakukohderyhmien hallinta"
+   [:div]])

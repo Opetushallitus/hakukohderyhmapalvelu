@@ -13,8 +13,11 @@
 (def ^:private panel-content-style
   {:background-color colors/white})
 
-(defn panel [heading contents]
-  [:div (stylefy/use-style main-panel-style)
-   [h/h2 heading]
-   [:div (stylefy/use-style panel-content-style)
-    contents]])
+(defn panel
+  ([heading contents]
+   [panel {} heading contents])
+  ([{:keys [id]} heading contents]
+   [:div (stylefy/use-style main-panel-style {:id id})
+    [h/h2 {:id (str id "-heading")} heading]
+    [:div (stylefy/use-style panel-content-style)
+     contents]]))
