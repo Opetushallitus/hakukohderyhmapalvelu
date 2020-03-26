@@ -20,7 +20,7 @@
                  [ring/ring-defaults "0.3.2"]
                  [ring/ring-json "0.5.0"]
                  [secretary "1.2.3"]
-                 [stylefy "1.14.0"
+                 [stylefy "1.14.1"
                   :exclusions [[org.clojure/core.async]]]
                  [prismatic/schema "1.1.12"]
                  [thheller/shadow-cljs "2.8.93"]
