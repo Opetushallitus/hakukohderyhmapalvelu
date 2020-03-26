@@ -1,4 +1,4 @@
-(ns hakukohderyhmapalvelu.components.headings
+(ns hakukohderyhmapalvelu.components.common.headings
   (:require [hakukohderyhmapalvelu.styles.styles-colors :as colors]
             [hakukohderyhmapalvelu.styles.styles-fonts :as vars]
             [stylefy.core :as stylefy]))
@@ -9,9 +9,10 @@
    :font-weight vars/font-weight-medium
    :line-height "24px"})
 
-(defn h2
-  ([heading]
-   [h2 {} heading])
-  ([{:keys [id]} heading]
-   [:h2 (stylefy/use-style h2-styles {:id id})
-    heading]))
+(defn heading [{:keys [cypressid level]} heading-text]
+  (let [[element styles] (case level
+                           :h2 [:h2 h2-styles])]
+    [element (stylefy/use-style
+               styles
+               {:cypressid cypressid})
+     heading-text]))

@@ -22,6 +22,6 @@
                           :font-style  "normal"}))))
 
 (defn init-styles []
-  (stylefy/init)
+  (stylefy/init {:use-caching? false})
   (stylefy/tag "body" body-styles)
   (add-font-styles))

@@ -1,5 +1,5 @@
-(ns hakukohderyhmapalvelu.components.panel
-  (:require [hakukohderyhmapalvelu.components.headings :as h]
+(ns hakukohderyhmapalvelu.components.common.panel
+  (:require [hakukohderyhmapalvelu.components.common.headings :as h]
             [hakukohderyhmapalvelu.styles.styles-colors :as colors]
             [hakukohderyhmapalvelu.styles.styles-effects :as effects]
             [stylefy.core :as stylefy]))
@@ -11,13 +11,14 @@
    :width        "1150px"})
 
 (def ^:private panel-content-style
-  {:background-color colors/white})
+  {:background-color colors/white
+   :padding          "15px 25px"})
 
-(defn panel
-  ([heading contents]
-   [panel {} heading contents])
-  ([{:keys [id]} heading contents]
-   [:div (stylefy/use-style main-panel-style {:id id})
-    [h/h2 {:id (str id "-heading")} heading]
-    [:div (stylefy/use-style panel-content-style)
-     contents]]))
+(defn panel [{:keys [cypressid]} heading contents]
+  [:div (stylefy/use-style main-panel-style {:cypressid cypressid})
+   [h/heading {:cypressid (str cypressid "-heading")
+               :level     :h2}
+    heading]
+   [:div (stylefy/use-style panel-content-style)
+    contents]])
+
