@@ -15,7 +15,7 @@
 (defn- index-route []
   (api/undocumented
     (api/GET "/" []
-      (-> (response/resource-response "index.html" {:root "public"})
+      (-> (response/resource-response "index.html" {:root "public/hakukohderyhmapalvelu"})
           (response/content-type "text/html")
           (response/charset "utf-8")))))
 
@@ -26,7 +26,7 @@
 
 (defn- resource-route []
   (api/undocumented
-    (route/resources "/hakukohderyhmapalvelu")))
+    (route/resources "/" {:root "public/hakukohderyhmapalvelu"})))
 
 (defn- not-found-route []
   (api/undocumented
@@ -45,8 +45,8 @@
     (api/context "/hakukohderyhmapalvelu" []
       (index-route)
       (api/context "/api" []
-        (health-check-route)))
-    (resource-route)
+        (health-check-route))
+      (resource-route))
     (not-found-route)))
 
 (def handler (-> #'routes

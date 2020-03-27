@@ -38,7 +38,6 @@
   :source-paths ["src/clj" "src/cljs" "src/cljc"]
 
   :clean-targets ^{:protect false} ["resources/public/hakukohderyhmapalvelu/js/compiled"
-                                    "resources/public/hakukohderyhmapalvelu/css"
                                     "target"
                                     ".shadow-cljs"
                                     ".ts-out"]
