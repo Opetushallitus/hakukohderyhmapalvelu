@@ -9,10 +9,11 @@
             [stylefy.core :as stylefy]))
 
 (def ^:private hakukohderyhmapalvelu-grid-styles
-  {:display "grid"
-   :grid    (str "[haku-row-start] \"haku-search hakukohderyhma-create\" 1fr [haku-row-end]"
-                 "[hakukohderyhma-row-start] \". hakukohderyhma-select\" 1fr [hakukohderyhma-row-end]"
-                 "/ 50% 50%")})
+  {:display  "grid"
+   :grid     (str "[haku-row-start] \"haku-search hakukohderyhma-create\" 1fr [haku-row-end]"
+                  "[hakukohderyhma-row-start] \". hakukohderyhma-select\" 1fr [hakukohderyhma-row-end]"
+                  "/ 1fr 1fr")
+   :grid-gap "15px"})
 
 (def ^:private add-new-hakukohderyhma-link-styles
   (merge layout/vertical-align-center-styles

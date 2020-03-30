@@ -10,14 +10,17 @@
        flatten
        (apply gstring/format row)))
 
+(def ^:private grid-gap "10px")
+
 (s/defn make-input-with-label-and-control-styles :- s/Any
   [style-prefix :- s/Str]
   (let [grid (str (format-grid-row "[%s-heading-row-start] \"%s-heading %s-control\" %s [%s-heading-row-end]" 3 style-prefix)
                   (format-grid-row "[%s-input-row-start] \"%s-input %s-input\" %s [%s-input-row-end]" 3 style-prefix)
-                  "/ 50% 50%")]
+                  "/ 1fr 1fr")]
     {:display             "grid"
      :grid-area           style-prefix
      :grid                grid
+     :grid-gap            grid-gap
      ::stylefy/sub-styles {:heading
                            (merge layout/vertical-align-center-styles
                                   {:color     colors/black
@@ -52,9 +55,10 @@
 (defn- make-input-without-top-row-styles [style-prefix]
   (let [grid (str (format-grid-row "[%s-top-row-start] \". .\" %s [%s-top-row-end]" 1 style-prefix)
                   (format-grid-row "[%s-input-row-start] \"%s-input %s-button\" %s [%s-input-row-end]" 3 style-prefix)
-                  "/ 50% 50%")]
-    {:display "grid"
-     :grid    grid}))
+                  "/ 1fr 1fr")]
+    {:display  "grid"
+     :grid     grid
+     :grid-gap grid-gap}))
 
 (s/defschema InputAndButtonWithoutTopRowProps
   {:button-component [s/Any]
