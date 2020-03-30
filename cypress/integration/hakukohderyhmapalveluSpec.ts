@@ -71,5 +71,13 @@ describe('Hakukohderyhmäpalvelu', () => {
         'a[cypressid=hakukohderyhma-select-add-new-hakukohderyhma]:visible',
       ).should('have.text', 'Luo uusi ryhmä')
     })
+    it('Ei näytä hakukohderyhmän luonnin tekstikenttää', () => {
+      cy.get('input[cypressid=hakukohderyhma-create-input]').should('not.exist')
+    })
+    it('Ei näytä hakukohderyhmän luonnin tallennuspainiketta', () => {
+      cy.get('button[cypressid=hakukohderyhma-create-button]').should(
+        'not.exist',
+      )
+    })
   })
 })

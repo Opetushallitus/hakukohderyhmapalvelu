@@ -5,8 +5,9 @@
             [stylefy.core :as stylefy]))
 
 (s/defschema ButtonProps
-  {:label                   s/Str
-   :style-prefix            s/Str})
+  {:cypressid    s/Str
+   :label        s/Str
+   :style-prefix s/Str})
 
 (defn- make-button-styles [style-prefix]
   (let [hover-styles {:background-color colors/blue-lighten-2
@@ -31,8 +32,11 @@
                                          {:filter effects/drop-shadow-effect-blue})]]}))
 
 (s/defn button :- s/Any
-  [{:keys [label
+  [{:keys [cypressid
+           label
            style-prefix]} :- ButtonProps]
   (let [button-styles (make-button-styles style-prefix)]
-    [:button (stylefy/use-style button-styles)
+    [:button (stylefy/use-style
+               button-styles
+               {:cypressid cypressid})
      label]))

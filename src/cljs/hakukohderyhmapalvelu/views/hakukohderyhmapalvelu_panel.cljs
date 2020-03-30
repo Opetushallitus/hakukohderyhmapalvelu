@@ -6,6 +6,7 @@
             [hakukohderyhmapalvelu.components.common.link :as l]
             [hakukohderyhmapalvelu.components.common.panel :as p]
             [hakukohderyhmapalvelu.styles.layout-styles :as layout]
+            [re-frame.core :as re-frame]
             [stylefy.core :as stylefy]))
 
 (def ^:private hakukohderyhmapalvelu-grid-styles
@@ -35,17 +36,20 @@
 (defn- hakukohderyhma-create []
   (let [cypressid    "hakukohderyhma-create"
         input-id     "hakukohderyhma-create-input"
-        style-prefix "hakukohderyhma-create"]
-    [grid/input-and-button-without-top-row
-     {:button-component [b/button
-                         {:label        "Tallenna"
-                          :style-prefix (str style-prefix "-button")}]
-      :input-component  [input/input-text
-                         {:cypressid    (str cypressid "-input")
-                          :input-id     input-id
-                          :placeholder  "Ryhmän nimi"
-                          :style-prefix (str style-prefix "-input")}]
-      :style-prefix     style-prefix}]))
+        style-prefix "hakukohderyhma-create"
+        visible?     @(re-frame/subscribe [:hakukohderyhma-create/create-grid-visible?])]
+    (when visible?
+      [grid/input-and-button-without-top-row
+       {:button-component [b/button
+                           {:cypressid    (str cypressid "-button")
+                            :label        "Tallenna"
+                            :style-prefix (str style-prefix "-button")}]
+        :input-component  [input/input-text
+                           {:cypressid    (str cypressid "-input")
+                            :input-id     input-id
+                            :placeholder  "Ryhmän nimi"
+                            :style-prefix (str style-prefix "-input")}]
+        :style-prefix     style-prefix}])))
 
 (def ^:private add-new-hakukohderyhma-link-styles
   (merge layout/vertical-align-center-styles

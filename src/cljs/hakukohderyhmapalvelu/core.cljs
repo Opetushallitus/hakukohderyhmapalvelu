@@ -8,7 +8,8 @@
     [hakukohderyhmapalvelu.views :as views]
     [hakukohderyhmapalvelu.config :as config]
     [hakukohderyhmapalvelu.styles.styles-init :as styles]
-    [hakukohderyhmapalvelu.subs.core-subs]))
+    [hakukohderyhmapalvelu.subs.core-subs]
+    [hakukohderyhmapalvelu.subs.hakukohderyhma-create-subs]))
 
 
 (defn dev-setup []
