@@ -1,5 +1,6 @@
 (ns hakukohderyhmapalvelu.styles.styles-init
-  (:require [stylefy.core :as stylefy]
+  (:require [goog.string :as gstring]
+            [stylefy.core :as stylefy]
             [hakukohderyhmapalvelu.styles.styles-colors :as colors]
             [hakukohderyhmapalvelu.styles.styles-fonts :as vars]))
 
@@ -17,7 +18,7 @@
                     vars/font-weight-medium
                     vars/font-weight-bold]]
       (stylefy/font-face {:font-family "Roboto"
-                          :src         (str "url('/hakukohderyhmapalvelu/fonts/roboto-" weight "." format "') format('" format "')")
+                          :src         (gstring/format "url('/hakukohderyhmapalvelu/fonts/roboto-%d-.%s') format('%s')" weight format format)
                           :font-weight weight
                           :font-style  "normal"}))))
 
