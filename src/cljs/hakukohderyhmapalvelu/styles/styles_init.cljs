@@ -18,7 +18,11 @@
                     vars/font-weight-medium
                     vars/font-weight-bold]]
       (stylefy/font-face {:font-family "Roboto"
-                          :src         (gstring/format "url('/hakukohderyhmapalvelu/fonts/roboto-%d-.%s') format('%s')" weight format format)
+                          :src         (gstring/format "url('/hakukohderyhmapalvelu/fonts/roboto-%d.%s') format('%s')" weight format format)
+                          :font-weight weight
+                          :font-style  "normal"})
+      (stylefy/font-face {:font-family "Material Icons"
+                          :src         (gstring/format "url('/hakukohderyhmapalvelu/fonts/MaterialIcons-Regular.%s') format('%s')" format format)
                           :font-weight weight
                           :font-style  "normal"}))))
 

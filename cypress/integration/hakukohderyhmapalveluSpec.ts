@@ -54,4 +54,22 @@ describe('Hakukohderyhmäpalvelu', () => {
       })
     })
   })
+  describe('Hakukohderyhmän lisäys', () => {
+    it('Näyttää hakukohderyhmän lisäyksen otsikon', () => {
+      cy.get('label[cypressid=hakukohderyhma-select-label]:visible').should(
+        'have.text',
+        'Hakukohderyhmät',
+      )
+    })
+    it('Näyttää pudotusvalikon, jossa ei valittuna hakukohderyhmää', () => {
+      cy.get(
+        'span[cypressid=hakukohderyhma-select-dropdown-unselected-label]:visible',
+      ).should('have.text', 'Hakukohderyhmä')
+    })
+    it('Näyttää "lisää uusi ryhmä" -linkin', () => {
+      cy.get(
+        'a[cypressid=hakukohderyhma-select-add-new-hakukohderyhma]:visible',
+      ).should('have.text', 'Luo uusi ryhmä')
+    })
+  })
 })

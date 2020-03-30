@@ -5,7 +5,7 @@
             [stylefy.core :as stylefy]))
 
 (def ^:private main-panel-style
-  {:filter       effects/drop-shadow-effect
+  {:filter       effects/drop-shadow-effect-black
    :margin-left  "auto"
    :margin-right "auto"
    :width        "1150px"})

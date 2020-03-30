@@ -4,3 +4,6 @@
   {:display     "flex"
    :align-items "center"})
 
+(def horizontal-space-between-styles
+  {:display         "flex"
+   :justify-content "space-between"})

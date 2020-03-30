@@ -12,6 +12,7 @@
                  [org.flywaydb/flyway-core "6.3.2"]
                  [hikari-cp "2.11.0"]
                  [metosin/compojure-api "2.0.0-alpha13"]
+                 [metosin/schema-tools "0.12.2"]
                  [org.clojure/core.async "1.0.567"]
                  [org.postgresql/postgresql "42.2.11"]
                  [re-frame "0.12.0"]
