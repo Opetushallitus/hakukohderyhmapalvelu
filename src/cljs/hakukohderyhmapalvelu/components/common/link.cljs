@@ -1,5 +1,6 @@
 (ns hakukohderyhmapalvelu.components.common.link
   (:require [hakukohderyhmapalvelu.browser-events :as events]
+            [hakukohderyhmapalvelu.schemas.props-schemas :as ps]
             [hakukohderyhmapalvelu.styles.styles-colors :as colors]
             [schema.core :as s]
             [schema-tools.core :as st]
@@ -26,8 +27,7 @@
 
 (s/defschema LinkWithExtraStylesProps
   (st/merge LinkProps
-            {(s/optional-key :styles) s/Any}))
-
+            {(s/optional-key :styles) ps/StylesSchema}))
 
 (s/defn link :- s/Any
   [{:keys [cypressid
@@ -35,9 +35,7 @@
            href
            styles]} :- LinkWithExtraStylesProps]
   [:a (stylefy/use-style
-        (cond-> link-styles
-                (not-empty styles)
-                (merge styles))
+        (merge link-styles styles)
         {:cypressid cypressid
          :href      href
          :on-click  events/preventDefault})
