@@ -1,6 +1,5 @@
 (ns hakukohderyhmapalvelu.views
-  (:require [hakukohderyhmapalvelu.subs.core-subs]
-            [hakukohderyhmapalvelu.views.hakukohderyhmapalvelu-panel :as h]
+  (:require [hakukohderyhmapalvelu.views.hakukohderyhmapalvelu-panel :as h]
             [re-frame.core :as re-frame]))
 
 (defn- panels [panel-name]
