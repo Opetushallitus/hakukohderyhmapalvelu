@@ -1,14 +1,12 @@
 (ns hakukohderyhmapalvelu.components.common.button
-  (:require [hakukohderyhmapalvelu.schemas.props-schemas :as ps]
-            [hakukohderyhmapalvelu.styles.styles-colors :as colors]
+  (:require [hakukohderyhmapalvelu.styles.styles-colors :as colors]
             [hakukohderyhmapalvelu.styles.styles-effects :as effects]
             [schema.core :as s]
             [stylefy.core :as stylefy]))
 
 (s/defschema ButtonProps
   {:label                   s/Str
-   :style-prefix            s/Str
-   (s/optional-key :styles) ps/StylesSchema})
+   :style-prefix            s/Str})
 
 (defn- make-button-styles [style-prefix]
   (let [hover-styles {:background-color colors/blue-lighten-2
@@ -34,8 +32,7 @@
 
 (s/defn button :- s/Any
   [{:keys [label
-           style-prefix
-           styles]} :- ButtonProps]
+           style-prefix]} :- ButtonProps]
   (let [button-styles (make-button-styles style-prefix)]
-    [:button (stylefy/use-style (merge button-styles styles))
+    [:button (stylefy/use-style button-styles)
      label]))

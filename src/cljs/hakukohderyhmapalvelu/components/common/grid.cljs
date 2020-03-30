@@ -55,7 +55,7 @@
 (defn- make-input-without-top-row-styles [style-prefix]
   (let [grid (str (format-grid-row "[%s-top-row-start] \". .\" %s [%s-top-row-end]" 1 style-prefix)
                   (format-grid-row "[%s-input-row-start] \"%s-input %s-button\" %s [%s-input-row-end]" 3 style-prefix)
-                  "/ 1fr 1fr")]
+                  "/ minmax(auto, 100%) minmax(auto, 1fr)")]
     {:display  "grid"
      :grid     grid
      :grid-gap grid-gap}))

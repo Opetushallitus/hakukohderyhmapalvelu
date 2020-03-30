@@ -33,15 +33,13 @@
       :label             "Haku"}]))
 
 (defn- hakukohderyhma-create []
-  (let [button-width "100px"
-        cypressid    "hakukohderyhma-create"
+  (let [cypressid    "hakukohderyhma-create"
         input-id     "hakukohderyhma-create-input"
         style-prefix "hakukohderyhma-create"]
     [grid/input-and-button-without-top-row
      {:button-component [b/button
                          {:label        "Tallenna"
-                          :style-prefix (str style-prefix "-button")
-                          :styles       {:width button-width}}]
+                          :style-prefix (str style-prefix "-button")}]
       :input-component  [input/input-text
                          {:cypressid    (str cypressid "-input")
                           :input-id     input-id

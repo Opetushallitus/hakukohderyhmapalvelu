@@ -26,7 +26,6 @@
   (merge layout/vertical-align-center-styles
          {:grid-area           style-prefix
           :position            "relative"
-          :width               "100%"
           ::stylefy/sub-styles {:input
                                 (merge input-container-styles
                                        {:outline       "none"
