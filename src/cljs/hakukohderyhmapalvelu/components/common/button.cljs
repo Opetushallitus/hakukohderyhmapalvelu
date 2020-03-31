@@ -5,9 +5,10 @@
             [stylefy.core :as stylefy]))
 
 (s/defschema ButtonProps
-  {:cypressid    s/Str
-   :label        s/Str
-   :style-prefix s/Str})
+  {:cypressid                  s/Str
+   (s/optional-key :disabled?) s/Bool
+   :label                      s/Str
+   :style-prefix               s/Str})
 
 (defn- make-button-styles [style-prefix]
   (let [hover-styles {:background-color colors/blue-lighten-2
@@ -27,16 +28,21 @@
      :text-transform     "none"
      :-webkit-appearance "button"
      :grid-area          style-prefix
-     ::stylefy/mode      [[:hover hover-styles]
+     ::stylefy/mode      [[:disabled {:background-color colors/blue-lighten-3
+                                      :border-color     colors/blue-lighten-3
+                                      :cursor           "default"}]
+                          [":hover:not(:disabled)" hover-styles]
                           [:focus (merge hover-styles
                                          {:filter effects/drop-shadow-effect-blue})]]}))
 
 (s/defn button :- s/Any
   [{:keys [cypressid
+           disabled?
            label
            style-prefix]} :- ButtonProps]
   (let [button-styles (make-button-styles style-prefix)]
     [:button (stylefy/use-style
                button-styles
-               {:cypressid cypressid})
+               {:cypressid cypressid
+                :disabled  disabled?})
      label]))

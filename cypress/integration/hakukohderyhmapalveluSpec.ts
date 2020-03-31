@@ -76,7 +76,19 @@ describe('Hakukohderyhmäpalvelu', () => {
         ).should('have.attr', 'placeholder', 'Ryhmän nimi')
         cy.get(
           hl.hakukohderyhmanLisaysSaveNewHakukohderyhmaButtonSelector,
-        ).should('exist')
+        ).should('be.disabled')
+      })
+      describe('Uuden hakukohderyhmän nimen kirjoittaminen', () => {
+        before(() => {
+          cy.get(
+            hl.hakukohderyhmanLisaysNewHakukohderyhmaNameTextInputSelector,
+          ).type('Yhteishaun hakukohderyhmä', { force: true })
+        })
+        it('Hakukohderyhmän tallennuspainiketta voi klikata', () => {
+          cy.get(
+            hl.hakukohderyhmanLisaysSaveNewHakukohderyhmaButtonSelector,
+          ).should('be.not.disabled')
+        })
       })
     })
   })

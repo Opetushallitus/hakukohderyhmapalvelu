@@ -6,6 +6,7 @@
             [hakukohderyhmapalvelu.components.common.link :as l]
             [hakukohderyhmapalvelu.components.common.panel :as p]
             [hakukohderyhmapalvelu.styles.layout-styles :as layout]
+            [reagent.ratom :as ratom]
             [re-frame.core :as re-frame]
             [stylefy.core :as stylefy]))
 
@@ -27,29 +28,39 @@
       :cypressid         "haku-search"
       :input-component   [input/input-text {:cypressid    "haku-search-input"
                                             :input-id     input-id
+                                            :on-change    (fn [])
                                             :placeholder  "Haun nimi"
-                                            :style-prefix (str style-prefix "-input")}]
+                                            :style-prefix (str style-prefix "-input")
+                                            :value        ""}]
       :input-id          input-id
       :style-prefix      style-prefix
       :label             "Haku"}]))
 
 (defn- hakukohderyhma-create []
-  (let [cypressid    "hakukohderyhma-create"
-        input-id     "hakukohderyhma-create-input"
-        style-prefix "hakukohderyhma-create"
-        visible?     @(re-frame/subscribe [:hakukohderyhma-create/create-grid-visible?])]
-    (when visible?
-      [grid/input-and-button-without-top-row
-       {:button-component [b/button
-                           {:cypressid    (str cypressid "-button")
-                            :label        "Tallenna"
-                            :style-prefix (str style-prefix "-button")}]
-        :input-component  [input/input-text
-                           {:cypressid    (str cypressid "-input")
-                            :input-id     input-id
-                            :placeholder  "Ryhmän nimi"
-                            :style-prefix (str style-prefix "-input")}]
-        :style-prefix     style-prefix}])))
+  (let [input-text (ratom/atom "")]
+    (fn []
+      (let [cypressid                      "hakukohderyhma-create"
+            input-id                       "hakukohderyhma-create-input"
+            style-prefix                   "hakukohderyhma-create"
+            on-hakukohderyhma-nimi-changed (fn on-hakukohderyhma-nimi-changed [hakukohderyhma-nimi]
+                                             (reset! input-text hakukohderyhma-nimi))
+            visible?                       @(re-frame/subscribe [:hakukohderyhma-create/create-grid-visible?])
+            button-disabled?               (-> @input-text seq not)]
+        (when visible?
+          [grid/input-and-button-without-top-row
+           {:button-component [b/button
+                               {:cypressid    (str cypressid "-button")
+                                :disabled?    button-disabled?
+                                :label        "Tallenna"
+                                :style-prefix (str style-prefix "-button")}]
+            :input-component  [input/input-text
+                               {:cypressid    (str cypressid "-input")
+                                :input-id     input-id
+                                :on-change    on-hakukohderyhma-nimi-changed
+                                :placeholder  "Ryhmän nimi"
+                                :style-prefix (str style-prefix "-input")
+                                :value        @input-text}]
+            :style-prefix     style-prefix}])))))
 
 (def ^:private add-new-hakukohderyhma-link-styles
   (merge layout/vertical-align-center-styles
@@ -61,8 +72,8 @@
    [l/link-with-left-separator {:cypressid cypressid
                                 :href      ""
                                 :label     "Luo uusi ryhmä"
-                                :on-click (fn [_]
-                                            (re-frame/dispatch [:hakukohderyhma-create/toggle-grid-visibility]))}]])
+                                :on-click  (fn [_]
+                                             (re-frame/dispatch [:hakukohderyhma-create/toggle-grid-visibility]))}]])
 
 (defn- hakukohderyhma-select []
   (let [cypressid    "hakukohderyhma-select"
