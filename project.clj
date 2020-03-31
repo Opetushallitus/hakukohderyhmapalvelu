@@ -26,7 +26,9 @@
                  [prismatic/schema "1.1.12"]
                  [thheller/shadow-cljs "2.8.93"]
                  [yogthos/config "1.1.7"]
-                 [environ "1.1.0"]]
+                 [environ "1.1.0"]
+                 [oph/clj-timbre-auditlog "0.1.0-SNAPSHOT"]
+                 [fi.vm.sade/auditlogger "9.0.0-SNAPSHOT"]]
 
   :plugins [[lein-ancient "0.6.15"]
             [lein-less "1.7.5"]
