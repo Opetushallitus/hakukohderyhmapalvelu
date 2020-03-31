@@ -5,6 +5,6 @@
 (re-frame/reg-sub
   :hakukohderyhma-create/create-grid-visible?
   (fn []
-    [(re-frame/subscribe [:state-query [:ui :create-grid :visible?] false])])
+    [(re-frame/subscribe [:state-query [:ui :create-hakukohderyhma-grid :visible?] false])])
   (fn [[visible?]]
     visible?))

@@ -1,9 +1,7 @@
 (ns hakukohderyhmapalvelu.events.hakukohderyhma-create-events
-  (:require [re-frame.core :as re-frame]))
+  (:require [hakukohderyhmapalvelu.macros.event-macros :as events]))
 
-(re-frame/reg-event-db
+(events/reg-event-db-validating
   :hakukohderyhma-create/toggle-grid-visibility
-  [re-frame/trim-v]
   (fn [db]
-    (update-in db [:ui :create-grid :visible?] not)))
-
+    (update-in db [:ui :create-hakukohderyhma-grid :visible?] not)))
