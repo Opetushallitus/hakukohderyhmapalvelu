@@ -80,9 +80,13 @@ describe('Hakukohderyhmäpalvelu', () => {
       })
       describe('Uuden hakukohderyhmän nimen kirjoittaminen', () => {
         before(() => {
-          cy.get(
-            hl.hakukohderyhmanLisaysNewHakukohderyhmaNameTextInputSelector,
-          ).type('Yhteishaun hakukohderyhmä', { force: true })
+          cy.fixture('new-hakukohderyhma.json').then(newHakukohderyhma =>
+            cy
+              .get(
+                hl.hakukohderyhmanLisaysNewHakukohderyhmaNameTextInputSelector,
+              )
+              .type(newHakukohderyhma.hakukohderyhmanNimi, { force: true }),
+          )
         })
         it('Hakukohderyhmän tallennuspainiketta voi klikata', () => {
           cy.get(
