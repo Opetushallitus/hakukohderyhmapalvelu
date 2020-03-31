@@ -1,5 +1,9 @@
 /// <reference types="cypress"/>
 
+import * as hs from '../selectors/hakukohderyhmaPanelSelectors'
+import * as hh from '../selectors/hakukohderyhmanHakutoimintoSelectors'
+import * as hl from '../selectors/hakukohderyhmanLisaysSelectors'
+
 describe('Hakukohderyhmäpalvelu', () => {
   before(() => {
     cy.visit('/')
@@ -10,28 +14,25 @@ describe('Hakukohderyhmäpalvelu', () => {
     })
   })
   it('Näyttää päätason otsikon', () => {
-    cy.get('[cypressid=hakukohderyhmapalvelu-panel-heading]:visible').should(
+    cy.get(hs.hakukohderyhmaPanelHeadingSelector).should(
       'have.text',
       'Hakukohderyhmien hallinta',
     )
   })
   describe('Haun hakutoiminto', () => {
     it('Näyttää haun hakutoiminnon otsikon', () => {
-      cy.get('[cypressid=haku-search-label]:visible').should(
-        'have.text',
-        'Haku',
-      )
+      cy.get(hh.haunHakutoimintoHeadingSelector).should('have.text', 'Haku')
     })
     describe('Haun hakutoiminnon "näytä myös päättyneet" -checkbox', () => {
       it('Näyttää haun hakutoiminnon "näytä myös päättyneet" -checkboxin', () => {
-        cy.get('input[cypressid=haku-search-checkbox-input]:visible').should(
+        cy.get(hh.haunHakutoimintoNaytaMyosPaattyneetCheckboxSelector).should(
           'have.attr',
           'type',
           'checkbox',
         )
       })
       it('Näyttää haun hakutoiminnon "näytä myös päättyneet" -tekstin', () => {
-        cy.get('label[cypressid=haku-search-checkbox-label]:visible').should(
+        cy.get(hh.haunHakutoimintoNaytaMyosPaattyneetTextSelector).should(
           'have.text',
           'Näytä myös päättyneet',
         )
@@ -39,14 +40,14 @@ describe('Hakukohderyhmäpalvelu', () => {
     })
     describe('Haun hakutoiminnon hakukenttä', () => {
       it('Näyttää haun hakutoiminnon hakukentän', () => {
-        cy.get('input[cypressid=haku-search-input]:visible').should(
+        cy.get(hh.haunHakutoimintoTextInputSelector).should(
           'have.attr',
           'type',
           'text',
         )
       })
       it('Näyttää haun hakutoiminnon hakukentän ohjetekstin', () => {
-        cy.get('input[cypressid=haku-search-input]:visible').should(
+        cy.get(hh.haunHakutoimintoTextInputPlaceholderSelector).should(
           'have.attr',
           'placeholder',
           'Haun nimi',
@@ -54,30 +55,34 @@ describe('Hakukohderyhmäpalvelu', () => {
       })
     })
   })
-  describe('Hakukohderyhmän lisäys', () => {
+  describe('Hakukohderyhmän lisäystoiminto', () => {
     it('Näyttää hakukohderyhmän lisäyksen otsikon', () => {
-      cy.get('label[cypressid=hakukohderyhma-select-label]:visible').should(
+      cy.get(hl.hakukohderyhmanLisaysHeadingSelector).should(
         'have.text',
         'Hakukohderyhmät',
       )
     })
     it('Näyttää pudotusvalikon, jossa ei valittuna hakukohderyhmää', () => {
-      cy.get(
-        'span[cypressid=hakukohderyhma-select-dropdown-unselected-label]:visible',
-      ).should('have.text', 'Hakukohderyhmä')
+      cy.get(hl.hakukohderyhmanLisaysClosedDropdownSelector).should(
+        'have.text',
+        'Hakukohderyhmä',
+      )
     })
     it('Näyttää "lisää uusi ryhmä" -linkin', () => {
-      cy.get(
-        'a[cypressid=hakukohderyhma-select-add-new-hakukohderyhma]:visible',
-      ).should('have.text', 'Luo uusi ryhmä')
+      cy.get(hl.hakukohderyhmanLisaysLisaaUusiRyhmaLinkSelector).should(
+        'have.text',
+        'Luo uusi ryhmä',
+      )
     })
     it('Ei näytä hakukohderyhmän luonnin tekstikenttää', () => {
-      cy.get('input[cypressid=hakukohderyhma-create-input]').should('not.exist')
+      cy.get(
+        hl.hakukohderyhmanLisaysNewHakukohderyhmaNameTextInputSelector,
+      ).should('not.exist')
     })
     it('Ei näytä hakukohderyhmän luonnin tallennuspainiketta', () => {
-      cy.get('button[cypressid=hakukohderyhma-create-button]').should(
-        'not.exist',
-      )
+      cy.get(
+        hl.hakukohderyhmanLisaysSaveNewHakukohderyhmaButtonSelector,
+      ).should('not.exist')
     })
   })
 })

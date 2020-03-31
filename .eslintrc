@@ -10,6 +10,8 @@
     "mocha": true
   },
   "rules": {
+    "import/extensions": "off",
+    "import/prefer-default-export": "off",
     "prettier/prettier": ["error"],
     "spaced-comment": "off"
   },
