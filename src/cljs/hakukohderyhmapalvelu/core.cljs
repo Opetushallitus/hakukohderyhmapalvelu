@@ -4,6 +4,7 @@
     [re-frame.core :as re-frame]
     [schema.core :as s]
     [hakukohderyhmapalvelu.events.core-events]
+    [hakukohderyhmapalvelu.events.hakukohderyhma-create-events]
     [hakukohderyhmapalvelu.routes :as routes]
     [hakukohderyhmapalvelu.views :as views]
     [hakukohderyhmapalvelu.config :as config]

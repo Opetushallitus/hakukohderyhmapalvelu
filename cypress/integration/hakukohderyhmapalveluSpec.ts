@@ -84,5 +84,22 @@ describe('Hakukohderyhmäpalvelu', () => {
         hl.hakukohderyhmanLisaysSaveNewHakukohderyhmaButtonSelector,
       ).should('not.exist')
     })
+    describe('Uuden hakukohderyhmän lisäys', () => {
+      before('"Lisää hakukohderyhmä" -linkin klikkaus', () => {
+        cy.get(hl.hakukohderyhmanLisaysLisaaUusiRyhmaLinkSelector).click({
+          force: true,
+        })
+      })
+      it('Näyttää hakukohderyhmän luonnin tekstikentän ja sen ohjetekstin', () => {
+        cy.get(
+          hl.hakukohderyhmanLisaysNewHakukohderyhmaNameTextInputSelector,
+        ).should('have.attr', 'placeholder', 'Ryhmän nimi')
+      })
+      it('Näyttää hakukohderyhmän luonnin tallennuspainikkeen', () => {
+        cy.get(
+          hl.hakukohderyhmanLisaysSaveNewHakukohderyhmaButtonSelector,
+        ).should('exist')
+      })
+    })
   })
 })

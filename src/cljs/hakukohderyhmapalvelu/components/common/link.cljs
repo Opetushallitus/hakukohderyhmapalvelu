@@ -23,7 +23,8 @@
 (s/defschema LinkProps
   {(s/optional-key :cypressid) s/Str
    :href                       s/Str
-   :label                      s/Str})
+   :label                      s/Str
+   :on-click                   s/Any})
 
 (s/defschema LinkWithExtraStylesProps
   (st/merge LinkProps
@@ -33,20 +34,25 @@
   [{:keys [cypressid
            label
            href
+           on-click
            styles]} :- LinkWithExtraStylesProps]
   [:a (stylefy/use-style
         (merge link-styles styles)
         {:cypressid cypressid
          :href      href
-         :on-click  events/preventDefault})
+         :on-click  (fn prevent-default-and-click [event]
+                      (events/preventDefault event)
+                      (on-click event))})
    label])
 
 (s/defn link-with-left-separator :- s/Any
   [{:keys [cypressid
            href
-           label]} :- LinkProps]
+           label
+           on-click]} :- LinkProps]
   [link {:cypressid cypressid
          :href      href
          :label     label
+         :on-click  on-click
          :styles    link-left-margin-styles}])
 

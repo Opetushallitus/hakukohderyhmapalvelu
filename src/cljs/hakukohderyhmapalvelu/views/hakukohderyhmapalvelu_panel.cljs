@@ -60,7 +60,9 @@
   [:div (stylefy/use-style add-new-hakukohderyhma-link-styles)
    [l/link-with-left-separator {:cypressid cypressid
                                 :href      ""
-                                :label     "Luo uusi ryhmä"}]])
+                                :label     "Luo uusi ryhmä"
+                                :on-click (fn [_]
+                                            (re-frame/dispatch [:hakukohderyhma-create/toggle-grid-visibility]))}]])
 
 (defn- hakukohderyhma-select []
   (let [cypressid    "hakukohderyhma-select"
