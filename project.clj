@@ -5,6 +5,7 @@
                                org.clojure/google-closure-library
                                org.clojure/google-closure-library-third-party]]
                  [clj-http "3.10.0"]
+                 [cljs-http "0.1.46"]
                  [com.fzakaria/slf4j-timbre "0.3.19"]
                  [timbre-ns-pattern-level "0.1.2"]
                  [com.stuartsierra/component "1.0.0"]
@@ -15,6 +16,7 @@
                  [metosin/schema-tools "0.12.2"]
                  [org.clojure/core.async "1.0.567"]
                  [org.postgresql/postgresql "42.2.11"]
+                 [radicalzephyr/ring.middleware.logger "0.6.0"]
                  [re-frame "0.12.0"]
                  [reagent "0.10.0"]
                  [ring "1.8.0"]

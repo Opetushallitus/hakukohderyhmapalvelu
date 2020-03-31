@@ -4,8 +4,10 @@
             [ring.util.http-response :as response]
             [ring.middleware.defaults :as defaults]
             [ring.middleware.json :as json]
+            [ring.middleware.logger :as logger]
             [ring.middleware.reload :as reload]
-            [hakukohderyhmapalvelu.health-check :as health-check]))
+            [hakukohderyhmapalvelu.health-check :as health-check]
+            [hakukohderyhmapalvelu.api-schemas :as schema]))
 
 (defn- redirect-routes []
   (api/undocumented
@@ -39,17 +41,28 @@
       :spec "/hakukohderyhmapalvelu/swagger.json"
       :data {:info        "Hakukohderyhmäpalvelu"
              :description "Hakukohderyhmäpalvelu"
+             :tags        [{:name "api" :description "Hakukohderyhmäpalvelu API"}]
              :consumes    ["application/json"]
              :produces    ["application/json"]}}}
     (redirect-routes)
     (api/context "/hakukohderyhmapalvelu" []
       (index-route)
       (api/context "/api" []
+        :tags ["api"]
+        (api/POST "/hakukohderyhma" []
+          :summary "Tallentaa uuden hakukohderyhmän"
+          :body [hakukohderyhma schema/Hakukohderyhma]
+          :return schema/Hakukohderyhma
+          (Thread/sleep 2000)
+          (response/ok hakukohderyhma))
         (health-check-route))
       (resource-route))
     (not-found-route)))
 
 (def handler (-> #'routes
+                 (logger/wrap-with-logger)
                  (json/wrap-json-response)
-                 (defaults/wrap-defaults (dissoc defaults/site-defaults :static))
-                 (reload/wrap-reload {:dirs ["src/clj"]})))
+                 (defaults/wrap-defaults (-> defaults/site-defaults
+                                             (dissoc :static)
+                                             (update :security dissoc :anti-forgery)))
+                 (reload/wrap-reload {:dirs ["src/clj" "src/cljc"]})))

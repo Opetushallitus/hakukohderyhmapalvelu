@@ -5,6 +5,8 @@
     [schema.core :as s]
     [hakukohderyhmapalvelu.events.core-events]
     [hakukohderyhmapalvelu.events.hakukohderyhma-create-events]
+    [hakukohderyhmapalvelu.events.http-events]
+    [hakukohderyhmapalvelu.fx.http-fx]
     [hakukohderyhmapalvelu.routes :as routes]
     [hakukohderyhmapalvelu.views :as views]
     [hakukohderyhmapalvelu.config :as config]

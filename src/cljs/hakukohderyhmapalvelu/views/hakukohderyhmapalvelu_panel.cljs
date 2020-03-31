@@ -6,7 +6,6 @@
             [hakukohderyhmapalvelu.components.common.link :as l]
             [hakukohderyhmapalvelu.components.common.panel :as p]
             [hakukohderyhmapalvelu.styles.layout-styles :as layout]
-            [reagent.ratom :as ratom]
             [re-frame.core :as re-frame]
             [stylefy.core :as stylefy]))
 
@@ -37,30 +36,33 @@
       :label             "Haku"}]))
 
 (defn- hakukohderyhma-create []
-  (let [input-text (ratom/atom "")]
-    (fn []
-      (let [cypressid                      "hakukohderyhma-create"
-            input-id                       "hakukohderyhma-create-input"
-            style-prefix                   "hakukohderyhma-create"
-            on-hakukohderyhma-nimi-changed (fn on-hakukohderyhma-nimi-changed [hakukohderyhma-nimi]
-                                             (reset! input-text hakukohderyhma-nimi))
-            visible?                       @(re-frame/subscribe [:hakukohderyhma-create/create-grid-visible?])
-            button-disabled?               (-> @input-text seq not)]
-        (when visible?
-          [grid/input-and-button-without-top-row
-           {:button-component [b/button
-                               {:cypressid    (str cypressid "-button")
-                                :disabled?    button-disabled?
-                                :label        "Tallenna"
-                                :style-prefix (str style-prefix "-button")}]
-            :input-component  [input/input-text
-                               {:cypressid    (str cypressid "-input")
-                                :input-id     input-id
-                                :on-change    on-hakukohderyhma-nimi-changed
-                                :placeholder  "Ryhmän nimi"
-                                :style-prefix (str style-prefix "-input")
-                                :value        @input-text}]
-            :style-prefix     style-prefix}])))))
+  (let [cypressid                      "hakukohderyhma-create"
+        input-id                       "hakukohderyhma-create-input"
+        style-prefix                   "hakukohderyhma-create"
+        on-hakukohderyhma-name-changed (fn on-hakukohderyhma-name-changed [hakukohderyhma-name]
+                                         (re-frame/dispatch [:hakukohderyhma-create/set-hakukohderyhma-name hakukohderyhma-name]))
+        on-save-button-click           (fn on-save-button-click []
+                                         (re-frame/dispatch [:hakukohderyhma-create/save-hakukohderyhma]))
+        visible?                       @(re-frame/subscribe [:hakukohderyhma-create/create-grid-visible?])
+        button-disabled?               (not @(re-frame/subscribe [:hakukohderyhma-create/save-button-enabled?]))
+        hakukohderyhma-name            @(re-frame/subscribe [:hakukohderyhma-create/hakukohderyhma-name])]
+    (when visible?
+      [grid/input-and-button-without-top-row
+       {:button-component [b/button
+                           {:cypressid    (str cypressid "-button")
+                            :disabled?    button-disabled?
+                            :label        "Tallenna"
+                            :on-click     on-save-button-click
+                            :style-prefix (str style-prefix "-button")}]
+        :input-component  [input/input-text
+                           {:cypressid    (str cypressid "-input")
+                            :input-id     input-id
+                            :on-change    on-hakukohderyhma-name-changed
+                            :placeholder  "Ryhmän nimi"
+                            :style-prefix (str style-prefix "-input")
+                            :value        hakukohderyhma-name}]
+        :style-prefix     style-prefix}])))
+
 
 (def ^:private add-new-hakukohderyhma-link-styles
   (merge layout/vertical-align-center-styles
