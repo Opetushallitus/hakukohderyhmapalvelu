@@ -3,6 +3,7 @@
 import * as hs from '../selectors/hakukohderyhmaPanelSelectors'
 import * as hh from '../selectors/hakukohderyhmanHakutoimintoSelectors'
 import * as hl from '../selectors/hakukohderyhmanLisaysSelectors'
+import { HakukohderyhmaFixture } from '../fixtures/HakukohderyhmaFixture'
 
 describe('Hakukohderyhmäpalvelu', () => {
   before(() => {
@@ -80,13 +81,15 @@ describe('Hakukohderyhmäpalvelu', () => {
       })
       describe('Uuden hakukohderyhmän nimen kirjoittaminen', () => {
         before(() => {
-          cy.fixture('new-hakukohderyhma.json').then(newHakukohderyhma =>
-            cy
-              .get(
-                hl.hakukohderyhmanLisaysNewHakukohderyhmaNameTextInputSelector,
-              )
-              .type(newHakukohderyhma.hakukohderyhmanNimi, { force: true }),
-          )
+          cy.fixture('new-hakukohderyhma.json')
+            .as('newHakukohderyhma')
+            .then(newHakukohderyhma =>
+              cy
+                .get(
+                  hl.hakukohderyhmanLisaysNewHakukohderyhmaNameTextInputSelector,
+                )
+                .type(newHakukohderyhma.hakukohderyhmanNimi, { force: true }),
+            )
         })
         it('Hakukohderyhmän tallennuspainiketta voi klikata', () => {
           cy.get(
@@ -95,6 +98,7 @@ describe('Hakukohderyhmäpalvelu', () => {
         })
         describe('Hakukohderyhmän tallentaminen', () => {
           before(() => {
+            cy.fixture('new-hakukohderyhma.json').as('hakukohderyhma')
             cy.server()
             cy.route('POST', '/hakukohderyhmapalvelu/api/hakukohderyhma').as(
               'postNewHakukohderyhma',
@@ -111,6 +115,15 @@ describe('Hakukohderyhmäpalvelu', () => {
             cy.get(
               hl.hakukohderyhmanLisaysSaveNewHakukohderyhmaButtonSelector,
             ).should('be.enabled')
+            cy.get<HakukohderyhmaFixture>(
+              '@hakukohderyhma',
+            ).then(hakukohderyhma =>
+              cy
+                .get(
+                  hl.hakukohderyhmanLisaysNewHakukohderyhmaNameTextInputSelector,
+                )
+                .should('have.value', hakukohderyhma.hakukohderyhmanNimi),
+            )
           })
         })
       })
