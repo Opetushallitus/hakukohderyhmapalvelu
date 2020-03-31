@@ -8,6 +8,7 @@
   {:cypressid                  s/Str
    (s/optional-key :disabled?) s/Bool
    :label                      s/Str
+   :on-click                   s/Any
    :style-prefix               s/Str})
 
 (defn- make-button-styles [style-prefix]
@@ -39,10 +40,14 @@
   [{:keys [cypressid
            disabled?
            label
+           on-click
            style-prefix]} :- ButtonProps]
   (let [button-styles (make-button-styles style-prefix)]
     [:button (stylefy/use-style
                button-styles
                {:cypressid cypressid
-                :disabled  disabled?})
+                :disabled  disabled?
+                :on-click  (fn []
+                             (on-click))})
+
      label]))

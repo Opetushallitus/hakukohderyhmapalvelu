@@ -93,6 +93,26 @@ describe('Hakukohderyhmäpalvelu', () => {
             hl.hakukohderyhmanLisaysSaveNewHakukohderyhmaButtonSelector,
           ).should('be.not.disabled')
         })
+        describe('Hakukohderyhmän tallentaminen', () => {
+          before(() => {
+            cy.server()
+            cy.route('POST', '/hakukohderyhmapalvelu/api/hakukohderyhma').as(
+              'postNewHakukohderyhma',
+            )
+          })
+          it('Tallentaa hakukohderyhmän', () => {
+            cy.get(
+              hl.hakukohderyhmanLisaysSaveNewHakukohderyhmaButtonSelector,
+            ).click({ force: true })
+            cy.get(
+              hl.hakukohderyhmanLisaysSaveNewHakukohderyhmaButtonSelector,
+            ).should('be.disabled')
+            cy.wait('@postNewHakukohderyhma')
+            cy.get(
+              hl.hakukohderyhmanLisaysSaveNewHakukohderyhmaButtonSelector,
+            ).should('be.enabled')
+          })
+        })
       })
     })
   })

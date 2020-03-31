@@ -7,12 +7,17 @@
 
 (s/defschema CreateHakukohderyhmapalveluGridSchema
   {:create-hakukohderyhma-grid
-   {:visible? s/Bool}})
+   {(s/optional-key :hakukohderyhma-name) s/Str
+    :visible?                             s/Bool}})
 
 (s/defschema UISchema
   {:ui CreateHakukohderyhmapalveluGridSchema})
 
+(s/defschema RequestSchema
+  {:requests #{s/Keyword}})
+
 (s/defschema AppDbSchema
   (st/merge ActivePanelSchema
+            RequestSchema
             UISchema))
 
