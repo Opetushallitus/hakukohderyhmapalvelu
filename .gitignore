@@ -1,9 +1,15 @@
+.DS_Store
 /*-init.clj
 /*.log
 /.idea/
+/.java-version
 /.lein-*
 /.nrepl-port
 /.shadow-cljs/
+/.ts-out/
+/cypress/videos
+/cypress/screenshots
+/cypress/fixtures/example.json
 /node_modules/
 /out/
 /resources/public/hakukohderyhmapalvelu/css/

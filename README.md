@@ -5,10 +5,18 @@
 
 
 * [Palvelun ajaminen paikallisesti](#palvelun-ajaminen-paikallisesti)
+* [Testien ajaminen](#testien-ajaminen)
+  * [Lint](#lint)
+    * [Clojure(Script) -tiedostojen lint](#clojurescript--tiedostojen-lint)
+    * [JavaScript -tiedostojen lint](#javascript--tiedostojen-lint)
+  * [E2E-testit](#e2e-testit)
+    * [Testien ajaminen Cypress-käyttöliittymän kautta](#testien-ajaminen-cypress-käyttöliittymän-kautta)
+    * [Testien ajaminen headless -moodissa](#testien-ajaminen-headless--moodissa)
 * [REPL-yhteys palvelimeen ja selaimeen](#repl-yhteys-palvelimeen-ja-selaimeen)
 * [Palvelun paikalliset osoitteet](#palvelun-paikalliset-osoitteet)
-* [Palvelun uberjar -tiedoston luonti tuotantokäyttöä varten](#palvelun-uberjar--tiedoston-luonti-tuotantok%C3%A4ytt%C3%B6%C3%A4-varten)
-* [Palvelun ajaminen uberjar -tiedostosta](#palvelun-ajaminen-uberjar--tiedostosta)
+* [Tuotantokäyttö](#tuotantokäyttö)
+  * [Palvelun uberjar -tiedoston luonti tuotantokäyttöä varten](#palvelun-uberjar--tiedoston-luonti-tuotantok%C3%A4ytt%C3%B6%C3%A4-varten)
+  * [Palvelun ajaminen uberjar -tiedostosta](#palvelun-ajaminen-uberjar--tiedostosta)
 
 ## Palvelun ajaminen paikallisesti
 
@@ -26,12 +34,48 @@ Muita tuettuja komentoja:
 make {restart,kill}-hakukohderyhmapalvelu
 ```
 
-Mikäli haluat ajaa palvelua ilman local-environment -ympäristöä, tapahtuu se seuraavilla komennoilla. Huomaathan, että joudut määrittämään palvelulle konfiguraatiotiedoston `oph-configuration/config.edn.template` -tiedoston pohjalta. Tämän tiedoston voit generoida `local-environment` -ympäristön avulla.
+## Testien ajaminen
+
+### Lint
+
+#### Clojure(Script) -tiedostojen lint
 
 ```sh
-CONFIG=${polku-konfiguraatiotiedostoon} lein server:dev
-lein frontend:dev
-lein less auto
+npm run lint:clj
+```
+
+#### JavaScript -tiedostojen lint
+
+```
+npm run lint:js
+```
+
+### E2E-testit
+
+Käynnistä `local-environment` -repositoryssä E2E:tä varten dedikoidut instanssit palvelusta:
+
+```sh
+make start-hakukohderyhmapalvelu-e2e
+```
+
+Jos haluat samalla komennolla käynnistää rinnakain toimivat instanssit palvelusta normaalia käyttöä ja E2E-testejä varten, tee se seuraavalla komennolla:
+
+```sh
+make start-hakukohderyhmapalvelu-all
+``` 
+
+#### Testien ajaminen Cypress-käyttöliittymän kautta
+
+Avaa Cypress-käyttöliittymän josta voi käynnistää testit ja jättää taustalle. Testit ajetaan automaattisesti uudestaan koodimuutosten yhteydessä.
+
+```sh
+npm run cypress:open
+```
+
+#### Testien ajaminen headless -moodissa
+
+```sh
+npm run cypress:run:local-environment
 ```
 
 ## REPL-yhteys palvelimeen ja selaimeen
@@ -53,7 +97,9 @@ REPL-yhteys selaimeen avautuu sanomalla em. REPL-yhteyden sisällä. Muistathan 
 * Palvelun osoite: (http://localhost:9032/hakukohderyhmapalvelu)
 * Palvelun Shadow CLJS -palvelimen osoite (http://localhost:9630)
 
-## Palvelun uberjar -tiedoston luonti tuotantokäyttöä varten
+## Tuotantokäyttö
+
+### Palvelun uberjar -tiedoston luonti tuotantokäyttöä varten
 
 Seuraava komento luo tämän repositoryn `target` -hakemistoon tiedoston `hakukohderyhmapalvelu.jar`.
 
@@ -61,8 +107,8 @@ Seuraava komento luo tämän repositoryn `target` -hakemistoon tiedoston `hakuko
 lein with-profile prod uberjar
 ```
 
-## Palvelun ajaminen uberjar -tiedostosta
+### Palvelun ajaminen uberjar -tiedostosta
 
 ```sh
-java -jar hakukohderyhmapalvelu.jar
+CONFIG=/polku/palvelun/config-tiedostoon java -jar hakukohderyhmapalvelu.jar
 ```

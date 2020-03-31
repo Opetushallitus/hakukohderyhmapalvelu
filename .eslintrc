@@ -1,0 +1,28 @@
+{
+  "parser": "@typescript-eslint/parser",
+  "extends": [
+    "airbnb-base",
+    "plugin:prettier/recommended",
+    "plugin:cypress/recommended"
+  ],
+  "plugins": ["prettier"],
+  "env": {
+    "mocha": true
+  },
+  "rules": {
+    "import/extensions": "off",
+    "import/prefer-default-export": "off",
+    "prettier/prettier": ["error"],
+    "spaced-comment": "off"
+  },
+  "overrides": [
+    {
+      "files": ["**/*.ts"],
+      "extends": [
+        "plugin:@typescript-eslint/recommended",
+        "plugin:import/typescript",
+        "prettier/@typescript-eslint"
+      ]
+    }
+  ]
+}

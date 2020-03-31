@@ -12,6 +12,8 @@
                  [org.flywaydb/flyway-core "6.3.2"]
                  [hikari-cp "2.11.0"]
                  [metosin/compojure-api "2.0.0-alpha13"]
+                 [metosin/schema-tools "0.12.2"]
+                 [org.clojure/core.async "1.0.567"]
                  [org.postgresql/postgresql "42.2.11"]
                  [re-frame "0.12.0"]
                  [reagent "0.10.0"]
@@ -19,6 +21,8 @@
                  [ring/ring-defaults "0.3.2"]
                  [ring/ring-json "0.5.0"]
                  [secretary "1.2.3"]
+                 [stylefy "1.14.1"
+                  :exclusions [[org.clojure/core.async]]]
                  [prismatic/schema "1.1.12"]
                  [thheller/shadow-cljs "2.8.93"]
                  [yogthos/config "1.1.7"]
@@ -35,13 +39,10 @@
   :source-paths ["src/clj" "src/cljs" "src/cljc"]
 
   :clean-targets ^{:protect false} ["resources/public/hakukohderyhmapalvelu/js/compiled"
-                                    "resources/public/hakukohderyhmapalvelu/css"
                                     "target"
-                                    ".shadow-cljs"]
+                                    ".shadow-cljs"
+                                    ".ts-out"]
 
-
-  :less {:source-paths ["src/less"]
-         :target-path  "resources/public/hakukohderyhmapalvelu/css"}
 
   :shell {:commands {"open" {:windows ["cmd" "/c" "start"]
                              :macosx  "open"
@@ -73,4 +74,4 @@
              :omit-source  true
              :aot          [hakukohderyhmapalvelu.core]
              :uberjar-name "hakukohderyhmapalvelu.jar"
-             :prep-tasks   ["compile" ["frontend:prod"] ["less" "once"]]}})
+             :prep-tasks   ["compile" ["frontend:prod"]]}})
