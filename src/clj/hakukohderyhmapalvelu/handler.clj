@@ -1,7 +1,7 @@
 (ns hakukohderyhmapalvelu.handler
   (:require [compojure.api.sweet :as api]
             [compojure.route :as route]
-            [ring.util.response :as response]
+            [ring.util.http-response :as response]
             [ring.middleware.defaults :as defaults]
             [ring.middleware.json :as json]
             [ring.middleware.reload :as reload]
@@ -10,7 +10,7 @@
 (defn- redirect-routes []
   (api/undocumented
     (api/GET "/" []
-      (response/redirect "/hakukohderyhmapalvelu"))))
+      (response/permanent-redirect "/hakukohderyhmapalvelu"))))
 
 (defn- index-route []
   (api/undocumented
