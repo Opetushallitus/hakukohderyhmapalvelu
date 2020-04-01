@@ -1,5 +1,5 @@
 (ns hakukohderyhmapalvelu.schemas.props-schemas
   (:require [schema.core :as s]))
 
-(s/defschema StylesSchema
+(s/defschema Styles
   {s/Any s/Any})

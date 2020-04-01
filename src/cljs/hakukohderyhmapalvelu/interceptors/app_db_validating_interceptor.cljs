@@ -4,7 +4,7 @@
             [schema.core :as s]))
 
 (defn- validate-app-db [db]
-  (s/validate schema/AppDbSchema db)
+  (s/validate schema/AppDb db)
   db)
 
 (def validate-interceptor (interceptors/after validate-app-db))

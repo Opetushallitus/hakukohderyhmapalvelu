@@ -28,7 +28,7 @@
 
 (s/defschema LinkWithExtraStylesProps
   (st/merge LinkProps
-            {(s/optional-key :styles) ps/StylesSchema}))
+            {(s/optional-key :styles) ps/Styles}))
 
 (s/defn link :- s/Any
   [{:keys [cypressid

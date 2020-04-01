@@ -2,22 +2,21 @@
   (:require [schema.core :as s]
             [schema-tools.core :as st]))
 
-(s/defschema ActivePanelSchema
+(s/defschema ActivePanel
   {:active-panel (s/enum :hakukohderyhmapalvelu-panel)})
 
-(s/defschema CreateHakukohderyhmapalveluGridSchema
+(s/defschema CreateHakukohderyhmapalveluGrid
   {:create-hakukohderyhma-grid
    {(s/optional-key :hakukohderyhma-name) s/Str
     :visible?                             s/Bool}})
 
-(s/defschema UISchema
-  {:ui CreateHakukohderyhmapalveluGridSchema})
+(s/defschema UI
+  {:ui CreateHakukohderyhmapalveluGrid})
 
-(s/defschema RequestSchema
+(s/defschema Requests
   {:requests #{s/Keyword}})
 
-(s/defschema AppDbSchema
-  (st/merge ActivePanelSchema
-            RequestSchema
-            UISchema))
-
+(s/defschema AppDb
+  (st/merge ActivePanel
+            Requests
+            UI))
