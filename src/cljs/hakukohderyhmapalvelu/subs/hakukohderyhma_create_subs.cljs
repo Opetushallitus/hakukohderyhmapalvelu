@@ -5,14 +5,14 @@
 (re-frame/reg-sub
   :hakukohderyhma-create/create-grid-visible?
   (fn []
-    [(re-frame/subscribe [:state-query [:ui :create-hakukohderyhma-grid :visible?] false])])
+    [(re-frame/subscribe [:state-query [:create-hakukohderyhma :visible?] false])])
   (fn [[visible?]]
     visible?))
 
 (re-frame/reg-sub
   :hakukohderyhma-create/hakukohderyhma-name
   (fn []
-    [(re-frame/subscribe [:state-query [:ui :create-hakukohderyhma-grid :hakukohderyhma-name]])])
+    [(re-frame/subscribe [:state-query [:create-hakukohderyhma :hakukohderyhma-name]])])
   (fn [[hakukohderyhma-name]]
     hakukohderyhma-name))
 

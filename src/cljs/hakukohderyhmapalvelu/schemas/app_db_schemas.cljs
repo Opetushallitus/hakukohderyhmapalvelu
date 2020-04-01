@@ -5,13 +5,10 @@
 (s/defschema ActivePanel
   {:active-panel (s/enum :hakukohderyhmapalvelu-panel)})
 
-(s/defschema CreateHakukohderyhmapalveluGrid
-  {:create-hakukohderyhma-grid
+(s/defschema CreateHakukohderyhmapalvelu
+  {:create-hakukohderyhma
    {(s/optional-key :hakukohderyhma-name) s/Str
     :visible?                             s/Bool}})
-
-(s/defschema UI
-  {:ui CreateHakukohderyhmapalveluGrid})
 
 (s/defschema Requests
   {:requests #{s/Keyword}})
@@ -19,4 +16,4 @@
 (s/defschema AppDb
   (st/merge ActivePanel
             Requests
-            UI))
+            CreateHakukohderyhmapalvelu))

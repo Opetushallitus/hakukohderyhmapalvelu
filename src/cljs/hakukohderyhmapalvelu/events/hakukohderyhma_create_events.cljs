@@ -5,7 +5,7 @@
 (events/reg-event-db-validating
   :hakukohderyhma-create/toggle-grid-visibility
   (fn [db]
-    (update-in db [:ui :create-hakukohderyhma-grid :visible?] not)))
+    (update-in db [:create-hakukohderyhma :visible?] not)))
 
 (events/reg-event-db-validating
   :hakukohderyhma-create/handle-save-hakukohderyhma
@@ -17,7 +17,7 @@
   :hakukohderyhma-create/save-hakukohderyhma
   (fn [{db :db}]
     (let [http-request-id     :hakukohderyhma-create/save-hakukohderyhma
-          hakukohderyhma-name (-> db :ui :create-hakukohderyhma-grid :hakukohderyhma-name)]
+          hakukohderyhma-name (-> db :create-hakukohderyhma :hakukohderyhma-name)]
 
       {:db   (update db :requests (fnil conj #{}) http-request-id)
        :http {:method           :post
@@ -31,4 +31,4 @@
 (events/reg-event-db-validating
   :hakukohderyhma-create/set-hakukohderyhma-name
   (fn [db [hakukohderyhma-name]]
-    (assoc-in db [:ui :create-hakukohderyhma-grid :hakukohderyhma-name] hakukohderyhma-name)))
+    (assoc-in db [:create-hakukohderyhma :hakukohderyhma-name] hakukohderyhma-name)))
