@@ -11,11 +11,6 @@
             [hakukohderyhmapalvelu.health-check :as health-check]
             [hakukohderyhmapalvelu.api-schemas :as schema]))
 
-(defn- wrap-pred [handler wrap-fn pred]
-  (cond-> handler
-          (pred)
-          wrap-fn))
-
 (defn- redirect-routes []
   (api/undocumented
     (api/GET "/" []
@@ -41,7 +36,7 @@
   (api/undocumented
     (route/not-found "<h1>Not found</h1>")))
 
-(def routes
+(defn make-routes []
   (api/api
     {:swagger
      {:ui   "/hakukohderyhmapalvelu/api-docs"
@@ -66,14 +61,25 @@
       (resource-route))
     (not-found-route)))
 
-(s/defn make-handler
+(def reloader #'reload/reloader)
+
+(s/defn make-production-handler
   [config :- c/HakukohderyhmaConfig]
-  (-> #'routes
+  (-> (make-routes config)
       (logger/wrap-with-logger)
       (json/wrap-json-response)
       (defaults/wrap-defaults (-> defaults/site-defaults
                                   (dissoc :static)
-                                  (update :security dissoc :anti-forgery)))
-      (wrap-pred
-        #(reload/wrap-reload % {:dirs ["src/clj" "src/cljc"]})
-        #(not= (-> config :public-config :environment) :production))))
+                                  (update :security dissoc :anti-forgery)))))
+
+(defn- make-reloading-handler [config]
+  (let [reload (reloader ["src/clj" "src/cljc"] true)]
+    (fn [request]
+      (reload)
+      (let [handler (make-production-handler config)]
+        (handler request)))))
+
+(defn make-handler [config]
+  (if (-> config :public-config :environment (= :production))
+    (make-production-handler config)
+    (make-reloading-handler config)))
