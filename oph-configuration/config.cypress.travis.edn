@@ -1,4 +1,4 @@
-{:environment :production
+{:environment :it
  :server      {:http {:port 19033}}
  :log         {:base-path "/root/logs"}
  :db          {:username      "postgres_user"
