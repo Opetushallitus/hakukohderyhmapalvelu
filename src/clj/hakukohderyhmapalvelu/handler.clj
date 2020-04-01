@@ -76,4 +76,4 @@
                                   (update :security dissoc :anti-forgery)))
       (wrap-pred
         #(reload/wrap-reload % {:dirs ["src/clj" "src/cljc"]})
-        #(not= (:environment config) :production))))
+        #(not= (-> config :public-config :environment) :production))))

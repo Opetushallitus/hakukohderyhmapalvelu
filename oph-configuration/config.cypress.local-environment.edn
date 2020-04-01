@@ -1,10 +1,10 @@
-{:environment :it
- :server      {:http {:port 19033}}
- :log         {:base-path "/root/logs"}
- :db          {:username      "postgres_user"
-               :password      "postgres_password"
-               :database-name "hakukohderyhmapalvelu"
-               :host          "hakukohderyhmapalvelu-e2e-db"
-               :port          5432}
- :cas         {:username "cas_username"
-               :password "cas_password"}}
+{:server        {:http {:port 19033}}
+ :log           {:base-path "/root/logs"}
+ :db            {:username      "postgres_user"
+                 :password      "postgres_password"
+                 :database-name "hakukohderyhmapalvelu"
+                 :host          "hakukohderyhmapalvelu-e2e-db"
+                 :port          5432}
+ :cas           {:username "cas_username"
+                 :password "cas_password"}
+ :public-config {:environment :it}}
