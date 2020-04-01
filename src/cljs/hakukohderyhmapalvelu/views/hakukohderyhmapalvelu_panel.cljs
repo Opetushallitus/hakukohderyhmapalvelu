@@ -29,8 +29,7 @@
                                             :input-id     input-id
                                             :on-change    (fn [])
                                             :placeholder  "Haun nimi"
-                                            :style-prefix (str style-prefix "-input")
-                                            :value        ""}]
+                                            :style-prefix (str style-prefix "-input")}]
       :input-id          input-id
       :style-prefix      style-prefix
       :label             "Haku"}]))
@@ -44,8 +43,7 @@
         on-save-button-click           (fn on-save-button-click []
                                          (re-frame/dispatch [:hakukohderyhma-create/save-hakukohderyhma]))
         visible?                       @(re-frame/subscribe [:hakukohderyhma-create/create-grid-visible?])
-        button-disabled?               (not @(re-frame/subscribe [:hakukohderyhma-create/save-button-enabled?]))
-        hakukohderyhma-name            @(re-frame/subscribe [:hakukohderyhma-create/hakukohderyhma-name])]
+        button-disabled?               (not @(re-frame/subscribe [:hakukohderyhma-create/save-button-enabled?]))]
     (when visible?
       [grid/input-and-button-without-top-row
        {:button-component [b/button
@@ -59,8 +57,7 @@
                             :input-id     input-id
                             :on-change    on-hakukohderyhma-name-changed
                             :placeholder  "Ryhmän nimi"
-                            :style-prefix (str style-prefix "-input")
-                            :value        hakukohderyhma-name}]
+                            :style-prefix (str style-prefix "-input")}]
         :style-prefix     style-prefix}])))
 
 
