@@ -8,7 +8,7 @@
 
   (start [this]
     (let [port   (-> config :config :server :http :port)
-          server (jetty/run-jetty h/handler {:port port :join? false})]
+          server (jetty/run-jetty (h/make-handler (:config config)) {:port port :join? false})]
       (assoc this :server server)))
 
   (stop [this]

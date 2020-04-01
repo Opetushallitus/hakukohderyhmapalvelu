@@ -1,13 +1,20 @@
 (ns hakukohderyhmapalvelu.handler
   (:require [compojure.api.sweet :as api]
             [compojure.route :as route]
+            [hakukohderyhmapalvelu.config :as c]
             [ring.util.http-response :as response]
             [ring.middleware.defaults :as defaults]
             [ring.middleware.json :as json]
             [ring.middleware.logger :as logger]
             [ring.middleware.reload :as reload]
+            [schema.core :as s]
             [hakukohderyhmapalvelu.health-check :as health-check]
             [hakukohderyhmapalvelu.api-schemas :as schema]))
+
+(defn- wrap-pred [handler wrap-fn pred]
+  (cond-> handler
+          (pred)
+          wrap-fn))
 
 (defn- redirect-routes []
   (api/undocumented
@@ -59,10 +66,14 @@
       (resource-route))
     (not-found-route)))
 
-(def handler (-> #'routes
-                 (logger/wrap-with-logger)
-                 (json/wrap-json-response)
-                 (defaults/wrap-defaults (-> defaults/site-defaults
-                                             (dissoc :static)
-                                             (update :security dissoc :anti-forgery)))
-                 (reload/wrap-reload {:dirs ["src/clj" "src/cljc"]})))
+(s/defn make-handler
+  [config :- c/HakukohderyhmaConfig]
+  (-> #'routes
+      (logger/wrap-with-logger)
+      (json/wrap-json-response)
+      (defaults/wrap-defaults (-> defaults/site-defaults
+                                  (dissoc :static)
+                                  (update :security dissoc :anti-forgery)))
+      (wrap-pred
+        #(reload/wrap-reload % {:dirs ["src/clj" "src/cljc"]})
+        #(not= (:environment config) :production))))
