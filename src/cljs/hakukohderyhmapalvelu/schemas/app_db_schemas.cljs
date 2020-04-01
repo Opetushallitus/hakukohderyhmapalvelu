@@ -7,8 +7,7 @@
 
 (s/defschema CreateHakukohderyhmapalvelu
   {:create-hakukohderyhma
-   {(s/optional-key :hakukohderyhma-name) s/Str
-    :visible?                             s/Bool}})
+   {:visible? s/Bool}})
 
 (s/defschema Requests
   {:requests #{s/Keyword}})

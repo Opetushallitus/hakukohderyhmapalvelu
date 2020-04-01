@@ -10,17 +10,8 @@
     visible?))
 
 (re-frame/reg-sub
-  :hakukohderyhma-create/hakukohderyhma-name
+  :hakukohderyhma-create/ongoing-request?
   (fn []
-    [(re-frame/subscribe [:state-query [:create-hakukohderyhma :hakukohderyhma-name]])])
-  (fn [[hakukohderyhma-name]]
-    hakukohderyhma-name))
-
-(re-frame/reg-sub
-  :hakukohderyhma-create/save-button-enabled?
-  (fn []
-    [(re-frame/subscribe [:state-query [:requests :hakukohderyhma-create/save-hakukohderyhma] false])
-     (re-frame/subscribe [:hakukohderyhma-create/hakukohderyhma-name])])
-  (fn [[ongoing-request? hakukohderyhma-name]]
-    (and (not ongoing-request?)
-         (seq hakukohderyhma-name))))
+    [(re-frame/subscribe [:state-query [:requests :hakukohderyhma-create/save-hakukohderyhma]])])
+  (fn [[ongoing-request?]]
+    (some? ongoing-request?)))
