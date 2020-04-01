@@ -39,16 +39,14 @@
    :input-id     s/Str
    :on-change    s/Any
    :placeholder  s/Str
-   :style-prefix s/Str
-   :value        s/Any})
+   :style-prefix s/Str})
 
 (s/defn input-text :- s/Any
   [{:keys [cypressid
            input-id
            on-change
            placeholder
-           style-prefix
-           value]} :- InputTextProps]
+           style-prefix]} :- InputTextProps]
   (let [input-text-styles (make-input-text-styles style-prefix)]
     [:div (stylefy/use-style input-text-styles)
      [:input (stylefy/use-sub-style
@@ -60,8 +58,7 @@
                                (let [value (.. event -target -value)]
                                  (on-change value)))
                 :placeholder placeholder
-                :type        "text"
-                :value       value})]]))
+                :type        "text"})]]))
 
 (defn- make-input-dropdown-styles [style-prefix]
   (merge layout/vertical-align-center-styles
