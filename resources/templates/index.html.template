@@ -6,8 +6,10 @@
     <style id="_stylefy-constant-styles_"></style>
     <style id="_stylefy-styles_"></style>
     <title>Hakukohderyhmäpalvelu</title>
+    <script src="/hakukohderyhmapalvelu/js/vendor/oph_urls.js"></script>
     <script type="text/javascript">
       const config = {{ config|safe }}
+      window.urls.addProperties({{front-properties|safe}})
     </script>
   </head>
   <body>

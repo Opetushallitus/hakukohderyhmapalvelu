@@ -3,6 +3,7 @@
             [compojure.api.sweet :as api]
             [compojure.route :as route]
             [hakukohderyhmapalvelu.config :as c]
+            [hakukohderyhmapalvelu.oph-url-properties :as oph-urls]
             [ring.util.http-response :as response]
             [ring.middleware.defaults :as defaults]
             [ring.middleware.json :as wrap-json]
@@ -22,7 +23,8 @@
   (let [public-config (-> config :public-config json/generate-string)
         rendered-page (selmer/render-file
                         "templates/index.html.template"
-                        {:config public-config})]
+                        {:config           public-config
+                         :front-properties (oph-urls/front-json)})]
     (api/undocumented
       (api/GET "/" []
         (-> (response/ok rendered-page)
