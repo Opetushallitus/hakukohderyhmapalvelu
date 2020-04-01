@@ -4,6 +4,7 @@
                   :exclusions [com.google.javascript/closure-compiler-unshaded
                                org.clojure/google-closure-library
                                org.clojure/google-closure-library-third-party]]
+                 [cheshire "5.10.0"]
                  [clj-http "3.10.0"]
                  [cljs-http "0.1.46"]
                  [com.fzakaria/slf4j-timbre "0.3.19"]
@@ -23,6 +24,7 @@
                  [ring/ring-defaults "0.3.2"]
                  [ring/ring-json "0.5.0"]
                  [secretary "1.2.3"]
+                 [selmer "1.12.19"]
                  [stylefy "1.14.1"
                   :exclusions [[org.clojure/core.async]]]
                  [prismatic/schema "1.1.12"]
