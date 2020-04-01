@@ -5,14 +5,16 @@
             [com.stuartsierra.component :as component]))
 
 (s/defschema HakukohderyhmaConfig
-  {:environment (s/enum :production :development)
+  {:environment (s/enum :production :development :it)
    :server      {:http {:port s/Int}}
    :log         {:base-path s/Str}
    :db          {:username      s/Str
                  :password      s/Str
                  :database-name s/Str
                  :host          s/Str
-                 :port          s/Int}})
+                 :port          s/Int}
+   :cas         {:username s/Str
+                 :password s/Str}})
 
 (s/defn ^:always-validate make-config :- HakukohderyhmaConfig []
   (-> (:config c/env)

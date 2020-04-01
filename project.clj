@@ -78,4 +78,12 @@
              :omit-source  true
              :aot          [hakukohderyhmapalvelu.core]
              :uberjar-name "hakukohderyhmapalvelu.jar"
-             :prep-tasks   ["compile" ["frontend:prod"]]}})
+             :prep-tasks   ["compile" ["frontend:prod"]]}}
+
+  :repositories [["releases" {:url           "https://artifactory.opintopolku.fi/artifactory/oph-sade-release-local"
+                              :sign-releases false
+                              :snapshots     false}]
+                 ["snapshots" {:url      "https://artifactory.opintopolku.fi/artifactory/oph-sade-snapshot-local"
+                               :releases {:update :never}}]
+                 ["ext-snapshots" {:url      "https://artifactory.opintopolku.fi/artifactory/ext-snapshot-local"
+                                   :releases {:update :never}}]])
