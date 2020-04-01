@@ -1,8 +1,10 @@
 {:environment {{ hakukohderyhmapalvelu_environment | default(':development') }}
- :server      {:http                   {:port {{ hakukohderyhmapalvelu_server_http_port | default('8080') }}}}
+ :server      {:http          {:port {{ hakukohderyhmapalvelu_server_http_port | default('8080') }}}}
  :log         {:base-path     "{{ hakukohderyhmapalvelu_log_path | default('/root/logs') }}"}
  :db          {:username      "{{ hakukohderyhmapalvelu_db_username | default('app') }}"
                :password      "{{ hakukohderyhmapalvelu_db_app_password }}"
                :database-name "{{ hakukohderyhmapalvelu_db_name | default('hakukohderyhmapalvelu') }}"
                :host          "{{ hakukohderyhmapalvelu_db_host }}"
-               :port          {{ hakukohderyhmapalvelu_db_port | default('5432') }}}}
+               :port          {{ hakukohderyhmapalvelu_db_port | default('5432') }}}
+ :cas         {:username      "{{ hakukohderyhmapalvelu_username_to_integrations }}"
+               :password      "{{ hakukohderyhmapalvelu_password_to_integrations }}"}}

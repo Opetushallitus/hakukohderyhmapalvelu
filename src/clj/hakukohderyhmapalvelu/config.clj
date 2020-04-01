@@ -12,7 +12,9 @@
                  :password      s/Str
                  :database-name s/Str
                  :host          s/Str
-                 :port          s/Int}})
+                 :port          s/Int}
+   :cas         {:username s/Str
+                 :password s/Str}})
 
 (s/defn ^:always-validate make-config :- HakukohderyhmaConfig []
   (-> (:config c/env)
