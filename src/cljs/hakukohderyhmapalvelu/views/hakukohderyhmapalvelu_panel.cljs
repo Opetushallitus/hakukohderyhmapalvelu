@@ -34,16 +34,18 @@
       :style-prefix      style-prefix
       :label             "Haku"}]))
 
+(defn on-save-button-click []
+  (re-frame/dispatch [:hakukohderyhma-create/save-hakukohderyhma]))
+
+(defn- on-hakukohderyhma-name-changed [hakukohderyhma-name]
+  (re-frame/dispatch [:hakukohderyhma-create/set-hakukohderyhma-name hakukohderyhma-name]))
+
 (defn- hakukohderyhma-create []
-  (let [cypressid                      "hakukohderyhma-create"
-        input-id                       "hakukohderyhma-create-input"
-        style-prefix                   "hakukohderyhma-create"
-        on-hakukohderyhma-name-changed (fn on-hakukohderyhma-name-changed [hakukohderyhma-name]
-                                         (re-frame/dispatch [:hakukohderyhma-create/set-hakukohderyhma-name hakukohderyhma-name]))
-        on-save-button-click           (fn on-save-button-click []
-                                         (re-frame/dispatch [:hakukohderyhma-create/save-hakukohderyhma]))
-        visible?                       @(re-frame/subscribe [:hakukohderyhma-create/create-grid-visible?])
-        button-disabled?               (not @(re-frame/subscribe [:hakukohderyhma-create/save-button-enabled?]))]
+  (let [cypressid        "hakukohderyhma-create"
+        input-id         "hakukohderyhma-create-input"
+        style-prefix     "hakukohderyhma-create"
+        visible?         @(re-frame/subscribe [:hakukohderyhma-create/create-grid-visible?])
+        button-disabled? (not @(re-frame/subscribe [:hakukohderyhma-create/save-button-enabled?]))]
     (when visible?
       [grid/input-and-button-without-top-row
        {:button-component [b/button
