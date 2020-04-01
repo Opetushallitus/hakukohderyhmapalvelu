@@ -21,7 +21,7 @@
        :http {:method           :post
               :http-request-id  http-request-id
               :path             "/hakukohderyhmapalvelu/api/hakukohderyhma"
-              :request-schema   schemas/Hakukohderyhma
-              :response-schema  schemas/Hakukohderyhma
+              :request-schema   schemas/HakukohderyhmaRequest
+              :response-schema  schemas/HakukohderyhmaResponse
               :response-handler [:hakukohderyhma-create/handle-save-hakukohderyhma {:nimi hakukohderyhma-name}]
               :body             {:nimi hakukohderyhma-name}}})))

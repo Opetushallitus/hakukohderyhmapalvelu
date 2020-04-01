@@ -61,9 +61,8 @@
         :tags ["api"]
         (api/POST "/hakukohderyhma" []
           :summary "Tallentaa uuden hakukohderyhmän"
-          :body [hakukohderyhma schema/Hakukohderyhma]
-          :return schema/Hakukohderyhma
-          (Thread/sleep 2000)
+          :body [hakukohderyhma schema/HakukohderyhmaRequest]
+          :return schema/HakukohderyhmaResponse
           (response/ok hakukohderyhma))
         (health-check-route))
       (resource-route))
