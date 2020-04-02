@@ -16,7 +16,7 @@
     (assoc this :audit-log (create-audit-log (-> config :log :base-path))))
 
   (stop [this]
-    (.stop (:audit-log this)))
+    (assoc this :audit-log nil))
 
   AuditLogger
   (log [this user operation target changes]
