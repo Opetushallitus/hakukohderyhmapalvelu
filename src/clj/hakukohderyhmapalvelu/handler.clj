@@ -24,7 +24,7 @@
         rendered-page (selmer/render-file
                         "templates/index.html.template"
                         {:config           public-config
-                         :front-properties (oph-urls/front-json)})]
+                         :front-properties (oph-urls/front-json config)})]
     (api/undocumented
       (api/GET "/" []
         (-> (response/ok rendered-page)
@@ -44,7 +44,13 @@
   (api/undocumented
     (route/not-found "<h1>Not found</h1>")))
 
-(defn make-routes [config]
+(s/defschema MakeHandlerArgs
+  {:config               c/HakukohderyhmaConfig
+   :organisaatio-service s/Any})
+
+(s/defn make-routes
+  [{:keys [config
+           organisaatio-service]} :- MakeHandlerArgs]
   (api/api
     {:swagger
      {:ui   "/hakukohderyhmapalvelu/api-docs"
@@ -63,7 +69,7 @@
           :summary "Tallentaa uuden hakukohderyhmän"
           :body [hakukohderyhma schema/HakukohderyhmaRequest]
           :return schema/HakukohderyhmaResponse
-          (response/ok hakukohderyhma))
+          (response/ok (.post-new-organisaatio organisaatio-service hakukohderyhma)))
         (health-check-route))
       (resource-route))
     (not-found-route)))
@@ -71,22 +77,24 @@
 (def reloader #'reload/reloader)
 
 (s/defn make-production-handler
-  [config :- c/HakukohderyhmaConfig]
-  (-> (make-routes config)
+  [args :- MakeHandlerArgs]
+  (-> (make-routes args)
       (logger/wrap-with-logger)
       (wrap-json/wrap-json-response)
       (defaults/wrap-defaults (-> defaults/site-defaults
                                   (dissoc :static)
                                   (update :security dissoc :anti-forgery)))))
 
-(defn- make-reloading-handler [config]
+(s/defn make-reloading-handler
+  [args :- MakeHandlerArgs]
   (let [reload (reloader ["src/clj" "src/cljc"] true)]
     (fn [request]
       (reload)
-      (let [handler (make-production-handler config)]
+      (let [handler (make-production-handler args)]
         (handler request)))))
 
-(defn make-handler [config]
+(s/defn make-handler
+  [{config :config :as args} :- MakeHandlerArgs]
   (if (-> config :public-config :environment (= :production))
-    (make-production-handler config)
-    (make-reloading-handler config)))
+    (make-production-handler args)
+    (make-reloading-handler args)))

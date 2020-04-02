@@ -3,12 +3,16 @@
             [hakukohderyhmapalvelu.handler :as h]
             [ring.adapter.jetty :as jetty]))
 
-(defrecord HttpServer [config]
+(defrecord HttpServer [config
+                       organisaatio-service]
   component/Lifecycle
 
   (start [this]
     (let [port   (-> config :config :server :http :port)
-          server (jetty/run-jetty (h/make-handler (:config config)) {:port port :join? false})]
+          server (jetty/run-jetty (h/make-handler
+                                    {:config               (:config config)
+                                     :organisaatio-service organisaatio-service})
+                                  {:port port :join? false})]
       (assoc this :server server)))
 
   (stop [this]

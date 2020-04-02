@@ -16,7 +16,8 @@
 (events/reg-event-fx-validating
   :hakukohderyhma-create/save-hakukohderyhma
   (fn [{db :db} [hakukohderyhma-name]]
-    (let [http-request-id     :hakukohderyhma-create/save-hakukohderyhma]
+    (let [http-request-id :hakukohderyhma-create/save-hakukohderyhma
+          body            {:nimi {:fi hakukohderyhma-name}}]
       {:db   (update db :requests (fnil conj #{}) http-request-id)
        :http {:method           :post
               :http-request-id  http-request-id
@@ -24,4 +25,4 @@
               :request-schema   schemas/HakukohderyhmaRequest
               :response-schema  schemas/HakukohderyhmaResponse
               :response-handler [:hakukohderyhma-create/handle-save-hakukohderyhma {:nimi hakukohderyhma-name}]
-              :body             {:nimi hakukohderyhma-name}}})))
+              :body             body}})))

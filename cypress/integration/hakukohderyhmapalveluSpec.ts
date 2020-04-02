@@ -96,7 +96,7 @@ describe('Hakukohderyhmäpalvelu', () => {
             hl.hakukohderyhmanLisaysSaveNewHakukohderyhmaButtonSelector,
           ).should('be.not.disabled')
         })
-        describe('Hakukohderyhmän tallentaminen', () => {
+        describe.skip('Hakukohderyhmän tallentaminen', () => {
           before(() => {
             cy.fixture('new-hakukohderyhma.json').as('hakukohderyhma')
             cy.server()

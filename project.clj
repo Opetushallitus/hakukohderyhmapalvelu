@@ -13,6 +13,7 @@
                  [com.taoensso/timbre "4.10.0"]
                  [org.flywaydb/flyway-core "6.3.2"]
                  [fi.vm.sade/auditlogger "9.0.0-SNAPSHOT"]
+                 [fi.vm.sade.java-utils/java-cas "0.6.2-SNAPSHOT"]
                  [fi.vm.sade.java-utils/java-properties "0.1.0-SNAPSHOT"]
                  [hikari-cp "2.11.0"]
                  [metosin/compojure-api "2.0.0-alpha13"]
