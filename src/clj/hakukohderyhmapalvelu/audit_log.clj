@@ -13,7 +13,7 @@
   component/Lifecycle
 
   (start [this]
-    (assoc this :audit-log (create-audit-log (-> config :log :base-path))))
+    (assoc this :audit-log (create-audit-log (-> config :config :log :base-path))))
 
   (stop [this]
     (assoc this :audit-log nil))
