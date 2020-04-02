@@ -18,6 +18,7 @@
 
 (s/defn ^:always-validate make-config :- HakukohderyhmaConfig []
   (-> (:config c/env)
+      (#(do (println (str "Luetaan konfiguraatio tiedostosta '" % "'")) %))
       (slurp)
       (edn/read-string)))
 
