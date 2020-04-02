@@ -6,7 +6,7 @@
             [hakukohderyhmapalvelu.server :as http]
             [hakukohderyhmapalvelu.audit-log :as audit-log]))
 
-(def hakukohderyhmapalvelu-system
+(defn hakukohderyhmapalvelu-system []
   (component/system-map
     :config (config/map->Config {})
 

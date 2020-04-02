@@ -6,4 +6,4 @@
 
 (defn -main [& _args]
   (timbre-config/configure-logging!)
-  (component/start-system system/hakukohderyhmapalvelu-system))
+  (component/start-system (system/hakukohderyhmapalvelu-system)))
