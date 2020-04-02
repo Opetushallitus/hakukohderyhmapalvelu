@@ -6,5 +6,5 @@
                :database-name "{{ hakukohderyhmapalvelu_db_name | default('hakukohderyhmapalvelu') }}"
                :host          "{{ hakukohderyhmapalvelu_db_host }}"
                :port          {{ hakukohderyhmapalvelu_db_port | default('5432') }}}
- :cas         {:username      "{{ hakukohderyhmapalvelu_username_to_integrations }}"
+ :cas         {:username      "{{ hakukohderyhmapalvelu_username_to_integrations | default('hakukohderyhmapalvelu') }}"
                :password      "{{ hakukohderyhmapalvelu_password_to_integrations }}"}}
