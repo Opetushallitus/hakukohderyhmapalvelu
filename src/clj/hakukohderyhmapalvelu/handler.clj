@@ -56,11 +56,11 @@
     {:swagger
      {:ui   "/hakukohderyhmapalvelu/api-docs"
       :spec "/hakukohderyhmapalvelu/swagger.json"
-      :data {:info        "Hakukohderyhmäpalvelu"
-             :description "Hakukohderyhmäpalvelu"
-             :tags        [{:name "api" :description "Hakukohderyhmäpalvelu API"}]
-             :consumes    ["application/json"]
-             :produces    ["application/json"]}}}
+      :data {:info     {:title       "Hakukohderyhmäpalvelu"
+                        :description "Hakukohderyhmäpalvelu"}
+             :tags     [{:name "api" :description "Hakukohderyhmäpalvelu API"}]
+             :consumes ["application/json"]
+             :produces ["application/json"]}}}
     (redirect-routes)
     (api/context "/hakukohderyhmapalvelu" []
       (index-route config)
