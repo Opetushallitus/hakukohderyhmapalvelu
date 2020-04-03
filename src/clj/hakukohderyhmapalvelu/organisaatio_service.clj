@@ -25,8 +25,8 @@
           response-body (.post organisaatio-service-cas-client
                                {:url  url
                                 :body body}
-                               {:request-schema  schemas/PostNewOrganisaatioRequestSchema
-                                :response-schema schemas/PostNewOrganisaatioResponseSchema})]
+                               {:request-schema  schemas/PostNewOrganisaatioRequest
+                                :response-schema schemas/PostNewOrganisaatioResponse})]
       (-> response-body
           :organisaatio
           (select-keys [:oid :nimi])))))

@@ -3,26 +3,26 @@
             [schema.core :as s]
             [schema-tools.core :as st]))
 
-(s/defschema OrganisaatioTyypitSchema
+(s/defschema OrganisaatioTyypit
   [s/Str])
 
-(s/defschema OrganisaatioRyhmatyypitSchema
+(s/defschema OrganisaatioRyhmatyypit
   [s/Str])
 
-(s/defschema OrganisaatioKayttoryhmatSchema
+(s/defschema OrganisaatioKayttoryhmat
   [s/Str])
 
-(s/defschema PostNewOrganisaatioRequestSchema
-  {:kayttoryhmat OrganisaatioKayttoryhmatSchema
+(s/defschema PostNewOrganisaatioRequest
+  {:kayttoryhmat OrganisaatioKayttoryhmat
    :parentOid    s/Str
-   :ryhmatyypit  OrganisaatioRyhmatyypitSchema
-   :tyypit       OrganisaatioTyypitSchema
-   :nimi         api-schemas/HakukohderyhmaNimiSchema})
+   :ryhmatyypit  OrganisaatioRyhmatyypit
+   :tyypit       OrganisaatioTyypit
+   :nimi         api-schemas/HakukohderyhmaNimi})
 
-(s/defschema PostNewOrganisaatioResponseSchema
+(s/defschema PostNewOrganisaatioResponse
   {:organisaatio (st/merge
                    api-schemas/HakukohderyhmaResponse
-                   PostNewOrganisaatioRequestSchema
+                   PostNewOrganisaatioRequest
                    {:kayntiosoite             {}
                     :kieletUris               []
                     :kuvaus2                  {}

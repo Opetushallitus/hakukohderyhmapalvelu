@@ -25,7 +25,7 @@
 (s/defschema HttpMethod
   (s/enum :post))
 
-(s/defschema HttpValidationSchemas
+(s/defschema HttpValidation
   {:request-schema  s/Any
    :response-schema s/Any})
 
@@ -46,7 +46,7 @@
                                 {:url    s/Str
                                  :method HttpMethod})
    {:keys [request-schema
-           response-schema]} :- HttpValidationSchemas
+           response-schema]} :- HttpValidation
    config :- c/HakukohderyhmaConfig]
   (s/validate request-schema body)
   (let [csrf-value "hakukohderyhmapalvelu"
@@ -76,7 +76,7 @@
                      :session-token         SessionToken
                      :url                   s/Str
                      (s/optional-key :body) s/Any}
-   schemas :- HttpValidationSchemas
+   schemas :- HttpValidation
    config :- c/HakukohderyhmaConfig]
   (let [cookie (.cookie session-token)]
     (do-request {:method  method
@@ -95,7 +95,7 @@
                       :url                   s/Str
                       :method                HttpMethod
                       (s/optional-key :body) s/Any}
-   schemas :- HttpValidationSchemas
+   schemas :- HttpValidation
    config :- c/HakukohderyhmaConfig]
   (let [session-token  (some-> application-session
                                .getSessionToken
