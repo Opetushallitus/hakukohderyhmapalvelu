@@ -1,7 +1,9 @@
 (ns hakukohderyhmapalvelu.organisaatio-service
   (:require [clojure.pprint]
             [hakukohderyhmapalvelu.oph-url-properties :as url]
-            [hakukohderyhmapalvelu.schemas.organisaatio-service-schemas :as schemas]))
+            [hakukohderyhmapalvelu.schemas.organisaatio-service-schemas :as schemas]
+            [schema.core :as s]
+            [hakukohderyhmapalvelu.config :as c]))
 
 (defprotocol OrganisaatioServiceProtocol
   (post-new-organisaatio [service hakukohderyhma]))
@@ -10,8 +12,9 @@
   OrganisaatioServiceProtocol
 
   (post-new-organisaatio [_ hakukohderyhma]
-    (let [url           (url/resolve-url :organisaatio-service.organisaatio.v4 (:config config))
-          parent-oid    (-> config :config :oph-organisaatio-oid)
+    (s/validate c/HakukohderyhmaConfig config)
+    (let [url           (url/resolve-url :organisaatio-service.organisaatio.v4 config)
+          parent-oid    (-> config :oph-organisaatio-oid)
           body          (merge hakukohderyhma
                                {:parentOid    parent-oid
                                 :tyypit       ["Ryhma"]

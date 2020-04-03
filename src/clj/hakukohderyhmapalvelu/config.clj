@@ -21,7 +21,7 @@
    :oph-organisaatio-oid s/Str
    :public-config        public/PublicConfig})
 
-(s/defn ^:always-validate make-config :- HakukohderyhmaConfig []
+(s/defn make-config :- HakukohderyhmaConfig []
   (-> (:config c/env)
       (#(do (println (str "Luetaan konfiguraatio tiedostosta '" % "'")) %))
       (slurp)
@@ -31,7 +31,7 @@
   component/Lifecycle
 
   (start [this]
-    (assoc this :config (make-config)))
+    (merge this (make-config)))
 
   (stop [this]
-    (assoc this :config nil)))
+    this))

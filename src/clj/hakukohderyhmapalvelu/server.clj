@@ -1,16 +1,19 @@
 (ns hakukohderyhmapalvelu.server
   (:require [com.stuartsierra.component :as component]
             [hakukohderyhmapalvelu.handler :as h]
-            [ring.adapter.jetty :as jetty]))
+            [ring.adapter.jetty :as jetty]
+            [schema.core :as s]
+            [hakukohderyhmapalvelu.config :as c]))
 
 (defrecord HttpServer [config
                        organisaatio-service]
   component/Lifecycle
 
   (start [this]
-    (let [port   (-> config :config :server :http :port)
+    (s/validate c/HakukohderyhmaConfig config)
+    (let [port   (-> config :server :http :port)
           server (jetty/run-jetty (h/make-handler
-                                    {:config               (:config config)
+                                    {:config               config
                                      :organisaatio-service organisaatio-service})
                                   {:port port :join? false})]
       (assoc this :server server)))

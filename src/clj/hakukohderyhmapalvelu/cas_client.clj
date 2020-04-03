@@ -3,10 +3,10 @@
             [clj-http.client :as http]
             [com.stuartsierra.component :as component]
             [hakukohderyhmapalvelu.caller-id :as caller-id]
-            [hakukohderyhmapalvelu.config :as config]
             [hakukohderyhmapalvelu.oph-url-properties :as url]
             [schema.core :as s]
-            [schema-tools.core :as st])
+            [schema-tools.core :as st]
+            [hakukohderyhmapalvelu.config :as c])
   (:import [fi.vm.sade.javautils.cas CasSession ApplicationSession SessionToken]
            [java.net.http HttpClient]
            [java.time Duration]
@@ -43,7 +43,7 @@
                                  :method HttpMethod})
    {:keys [request-schema
            response-schema]} :- HttpValidationSchemas
-   config :- config/HakukohderyhmaConfig]
+   config :- c/HakukohderyhmaConfig]
   (s/validate request-schema body)
   (let [csrf-value "hakukohderyhmapalvelu"
         caller-id  (-> config :oph-organisaatio-oid caller-id/make-caller-id)
@@ -73,7 +73,7 @@
                      :url                   s/Str
                      (s/optional-key :body) s/Any}
    schemas :- HttpValidationSchemas
-   config :- config/HakukohderyhmaConfig]
+   config :- c/HakukohderyhmaConfig]
   (let [cookie (.cookie session-token)]
     (do-request {:method  method
                  :url     url
@@ -92,7 +92,7 @@
                       :method                HttpMethod
                       (s/optional-key :body) s/Any}
    schemas :- HttpValidationSchemas
-   config :- config/HakukohderyhmaConfig]
+   config :- c/HakukohderyhmaConfig]
   (let [session-token  (some-> application-session
                                .getSessionToken
                                .get)
@@ -120,18 +120,20 @@
 (defrecord CasClient [config service]
   component/Lifecycle
   (start [this]
+    (s/validate c/HakukohderyhmaConfig config)
+    (s/validate s/Keyword service)
     (let [{:keys [service-url-property
-                  session-cookie-name]} (-> config :config :cas :services service)
-          caller-id           (-> config :config :oph-organisaatio-oid caller-id/make-caller-id)
+                  session-cookie-name]} (-> config :cas :services service)
+          caller-id           (-> config :oph-organisaatio-oid caller-id/make-caller-id)
           cookie-manager      (CookieManager.)
           http-client         (-> (HttpClient/newBuilder)
                                   (.cookieHandler cookie-manager)
                                   (.connectTimeout (Duration/ofSeconds 10))
                                   (.build))
-          cas-tickets-url     (-> (url/resolve-url :cas.tickets (:config config))
+          cas-tickets-url     (-> (url/resolve-url :cas.tickets config)
                                   (URI/create))
           {:keys [username
-                  password]} (-> config :config :cas)
+                  password]} (-> config :cas)
           application-session (ApplicationSession. http-client
                                                    cookie-manager
                                                    caller-id
@@ -143,7 +145,7 @@
                                                                 username
                                                                 password)
                                                    (url/resolve-url service-url-property
-                                                                    (:config config))
+                                                                    config)
                                                    session-cookie-name)]
       (assoc this :application-session application-session)))
 
@@ -160,4 +162,4 @@
                                    :url                 url
                                    :body                body}
                                   schemas
-                                  (:config config))))
+                                  config)))
