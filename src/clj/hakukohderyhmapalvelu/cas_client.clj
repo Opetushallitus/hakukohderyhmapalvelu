@@ -69,7 +69,7 @@
            body
            session-token
            url]} :- {:method                HttpMethod
-                     :session-token         s/Any
+                     :session-token         SessionToken
                      :url                   s/Str
                      (s/optional-key :body) s/Any}
    schemas :- HttpValidationSchemas
@@ -87,7 +87,7 @@
   [{:keys [application-session
            method
            url
-           body]} :- {:application-session   s/Any
+           body]} :- {:application-session   ApplicationSession
                       :url                   s/Str
                       :method                HttpMethod
                       (s/optional-key :body) s/Any}
