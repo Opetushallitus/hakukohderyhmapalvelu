@@ -3,7 +3,8 @@
             [hakukohderyhmapalvelu.handler :as h]
             [ring.adapter.jetty :as jetty]
             [schema.core :as s]
-            [hakukohderyhmapalvelu.config :as c]))
+            [hakukohderyhmapalvelu.config :as c])
+  (:import [hakukohderyhmapalvelu.organisaatio_service OrganisaatioServiceProtocol]))
 
 (defrecord HttpServer [config
                        organisaatio-service]
@@ -11,6 +12,7 @@
 
   (start [this]
     (s/validate c/HakukohderyhmaConfig config)
+    (s/validate OrganisaatioServiceProtocol organisaatio-service)
     (let [port   (-> config :server :http :port)
           server (jetty/run-jetty (h/make-handler
                                     {:config               config

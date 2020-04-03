@@ -29,6 +29,10 @@
   {:request-schema  s/Any
    :response-schema s/Any})
 
+(s/defschema CasPostOpts
+  {:url  s/Str
+   :body s/Any})
+
 (s/defn parse-and-validate
   [response :- (st/open-schema {:body s/Str})
    response-schema]
@@ -155,8 +159,9 @@
   CasClientProtocol
 
   (post [this
-         {:keys [url body]}
+         {:keys [url body] :as opts}
          schemas]
+    (s/validate CasPostOpts opts)
     (do-cas-authenticated-request {:application-session (:application-session this)
                                    :method              :post
                                    :url                 url
