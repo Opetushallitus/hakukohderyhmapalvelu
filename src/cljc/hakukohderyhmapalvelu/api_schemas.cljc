@@ -1,12 +1,12 @@
 (ns hakukohderyhmapalvelu.api-schemas
   (:require [schema.core :as s]))
 
-(s/defschema HakukohderyhmaNimiSchema
+(s/defschema HakukohderyhmaNimi
   {:fi s/Str})
 
 (s/defschema HakukohderyhmaRequest
-  {:nimi HakukohderyhmaNimiSchema})
+  {:nimi HakukohderyhmaNimi})
 
 (s/defschema HakukohderyhmaResponse
   {:oid  s/Str
-   :nimi HakukohderyhmaNimiSchema})
+   :nimi HakukohderyhmaNimi})
