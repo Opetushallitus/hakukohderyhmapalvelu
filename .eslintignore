@@ -1,0 +1,7 @@
+/.shadow-cljs/
+/.ts-out/
+/node_modules/
+/out/
+/resources/public/hakukohderyhmapalvelu/js/compiled/
+/resources/public/hakukohderyhmapalvelu/js/vendor/
+/target/

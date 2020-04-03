@@ -2,7 +2,7 @@
   (:require [goog.string :as gstring]
             [stylefy.core :as stylefy]
             [hakukohderyhmapalvelu.styles.styles-colors :as colors]
-            [hakukohderyhmapalvelu.config :as config]
+            [hakukohderyhmapalvelu.config :as c]
             [hakukohderyhmapalvelu.styles.styles-fonts :as vars]))
 
 (def ^:private body-styles
@@ -28,6 +28,6 @@
                           :font-style  "normal"}))))
 
 (defn init-styles []
-  (stylefy/init {:use-caching? (not config/debug?)})
+  (stylefy/init {:use-caching? (-> c/config :environment (= :production))})
   (stylefy/tag "body" body-styles)
   (add-font-styles))

@@ -1,0 +1,22 @@
+<!DOCTYPE html>
+<html lang="en">
+  <head>
+    <meta charset='utf-8'>
+    <meta name="viewport" content="width=device-width,initial-scale=1">
+    <style id="_stylefy-constant-styles_"></style>
+    <style id="_stylefy-styles_"></style>
+    <title>Hakukohderyhmäpalvelu</title>
+    <script src="/hakukohderyhmapalvelu/js/vendor/oph_urls.js"></script>
+    <script type="text/javascript">
+      const config = {{ config|safe }}
+      window.urls.addProperties({{front-properties|safe}})
+    </script>
+  </head>
+  <body>
+    <noscript>
+      Hakukohderyhmäpalvelu tarvitee JavaScriptiä tukevan selaimen toimiakseen.
+    </noscript>
+    <div id="app"></div>
+    <script src="/hakukohderyhmapalvelu/js/compiled/hakukohderyhmapalvelu.js"></script>
+  </body>
+</html>

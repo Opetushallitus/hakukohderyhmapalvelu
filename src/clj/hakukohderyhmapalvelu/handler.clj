@@ -1,32 +1,35 @@
 (ns hakukohderyhmapalvelu.handler
-  (:require [compojure.api.sweet :as api]
+  (:require [cheshire.core :as json]
+            [compojure.api.sweet :as api]
             [compojure.route :as route]
             [hakukohderyhmapalvelu.config :as c]
+            [hakukohderyhmapalvelu.oph-url-properties :as oph-urls]
             [ring.util.http-response :as response]
             [ring.middleware.defaults :as defaults]
-            [ring.middleware.json :as json]
+            [ring.middleware.json :as wrap-json]
             [ring.middleware.logger :as logger]
             [ring.middleware.reload :as reload]
             [schema.core :as s]
+            [selmer.parser :as selmer]
             [hakukohderyhmapalvelu.health-check :as health-check]
             [hakukohderyhmapalvelu.api-schemas :as schema]))
-
-(defn- wrap-pred [handler wrap-fn pred]
-  (cond-> handler
-          (pred)
-          wrap-fn))
 
 (defn- redirect-routes []
   (api/undocumented
     (api/GET "/" []
       (response/permanent-redirect "/hakukohderyhmapalvelu"))))
 
-(defn- index-route []
-  (api/undocumented
-    (api/GET "/" []
-      (-> (response/resource-response "index.html" {:root "public/hakukohderyhmapalvelu"})
-          (response/content-type "text/html")
-          (response/charset "utf-8")))))
+(defn- index-route [config]
+  (let [public-config (-> config :public-config json/generate-string)
+        rendered-page (selmer/render-file
+                        "templates/index.html.template"
+                        {:config           public-config
+                         :front-properties (oph-urls/front-json config)})]
+    (api/undocumented
+      (api/GET "/" []
+        (-> (response/ok rendered-page)
+            (response/content-type "text/html")
+            (response/charset "utf-8"))))))
 
 (defn- health-check-route []
   (api/undocumented
@@ -41,7 +44,13 @@
   (api/undocumented
     (route/not-found "<h1>Not found</h1>")))
 
-(def routes
+(s/defschema MakeHandlerArgs
+  {:config               c/HakukohderyhmaConfig
+   :organisaatio-service s/Any})
+
+(s/defn make-routes
+  [{:keys [config
+           organisaatio-service]} :- MakeHandlerArgs]
   (api/api
     {:swagger
      {:ui   "/hakukohderyhmapalvelu/api-docs"
@@ -53,27 +62,39 @@
              :produces    ["application/json"]}}}
     (redirect-routes)
     (api/context "/hakukohderyhmapalvelu" []
-      (index-route)
+      (index-route config)
       (api/context "/api" []
         :tags ["api"]
         (api/POST "/hakukohderyhma" []
           :summary "Tallentaa uuden hakukohderyhmän"
-          :body [hakukohderyhma schema/Hakukohderyhma]
-          :return schema/Hakukohderyhma
-          (Thread/sleep 2000)
-          (response/ok hakukohderyhma))
+          :body [hakukohderyhma schema/HakukohderyhmaRequest]
+          :return schema/HakukohderyhmaResponse
+          (response/ok (.post-new-organisaatio organisaatio-service hakukohderyhma)))
         (health-check-route))
       (resource-route))
     (not-found-route)))
 
-(s/defn make-handler
-  [config :- c/HakukohderyhmaConfig]
-  (-> #'routes
+(def reloader #'reload/reloader)
+
+(s/defn make-production-handler
+  [args :- MakeHandlerArgs]
+  (-> (make-routes args)
       (logger/wrap-with-logger)
-      (json/wrap-json-response)
+      (wrap-json/wrap-json-response)
       (defaults/wrap-defaults (-> defaults/site-defaults
                                   (dissoc :static)
-                                  (update :security dissoc :anti-forgery)))
-      (wrap-pred
-        #(reload/wrap-reload % {:dirs ["src/clj" "src/cljc"]})
-        #(not= (:environment config) :production))))
+                                  (update :security dissoc :anti-forgery)))))
+
+(s/defn make-reloading-handler
+  [args :- MakeHandlerArgs]
+  (let [reload (reloader ["src/clj" "src/cljc"] true)]
+    (fn [request]
+      (reload)
+      (let [handler (make-production-handler args)]
+        (handler request)))))
+
+(s/defn make-handler
+  [{config :config :as args} :- MakeHandlerArgs]
+  (if (-> config :public-config :environment (= :production))
+    (make-production-handler args)
+    (make-reloading-handler args)))

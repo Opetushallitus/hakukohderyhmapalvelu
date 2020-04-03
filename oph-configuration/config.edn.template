@@ -1,10 +1,14 @@
-{:environment {{ hakukohderyhmapalvelu_environment | default(':development') }}
- :server      {:http          {:port {{ hakukohderyhmapalvelu_server_http_port | default('8080') }}}}
- :log         {:base-path     "{{ hakukohderyhmapalvelu_log_path | default('/root/logs') }}"}
- :db          {:username      "{{ hakukohderyhmapalvelu_db_username | default('app') }}"
-               :password      "{{ hakukohderyhmapalvelu_db_app_password }}"
-               :database-name "{{ hakukohderyhmapalvelu_db_name | default('hakukohderyhmapalvelu') }}"
-               :host          "{{ hakukohderyhmapalvelu_db_host }}"
-               :port          {{ hakukohderyhmapalvelu_db_port | default('5432') }}}
- :cas         {:username      "{{ hakukohderyhmapalvelu_username_to_integrations | default('hakukohderyhmapalvelu') }}"
-               :password      "{{ hakukohderyhmapalvelu_password_to_integrations }}"}}
+{:server               {:http {:port {{ hakukohderyhmapalvelu_server_http_port | default('8080') }}}}
+ :log                  {:base-path "{{ hakukohderyhmapalvelu_log_path | default('/root/logs') }}"}
+ :db                   {:username      "{{ hakukohderyhmapalvelu_db_username | default('app') }}"
+                        :password      "{{ hakukohderyhmapalvelu_db_app_password }}"
+                        :database-name "{{ hakukohderyhmapalvelu_db_name | default('hakukohderyhmapalvelu') }}"
+                        :host          "{{ hakukohderyhmapalvelu_db_host }}"
+                        :port          {{ hakukohderyhmapalvelu_db_port | default('5432') }}}
+ :cas                  {:username "{{ hakukohderyhmapalvelu_username_to_integrations | default('hakukohderyhmapalvelu') }}"
+                        :password "{{ hakukohderyhmapalvelu_password_to_integrations }}"
+                        :services {:organisaatio-service {:service-url-property :cas.service.organisaatio-service
+                                                          :session-cookie-name  "SESSION"}}}
+ :urls                 {:virkailija-baseurl "{{ hakukohderyhmapalvelu_virkailija_base_url }}"}
+ :oph-organisaatio-oid "1.2.246.562.10.00000000001"
+ :public-config        {:environment {{ hakukohderyhmapalvelu_environment | default(':development') }}}}

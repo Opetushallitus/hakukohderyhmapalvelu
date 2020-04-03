@@ -9,15 +9,9 @@
     [hakukohderyhmapalvelu.fx.http-fx]
     [hakukohderyhmapalvelu.routes :as routes]
     [hakukohderyhmapalvelu.views :as views]
-    [hakukohderyhmapalvelu.config :as config]
     [hakukohderyhmapalvelu.styles.styles-init :as styles]
     [hakukohderyhmapalvelu.subs.core-subs]
     [hakukohderyhmapalvelu.subs.hakukohderyhma-create-subs]))
-
-
-(defn dev-setup []
-  (when config/debug?
-    (println "dev mode")))
 
 (defn- turn-on-schema-validation []
   (s/set-fn-validation! true))
@@ -32,5 +26,4 @@
   (styles/init-styles)
   (routes/app-routes)
   (re-frame/dispatch-sync [:core/initialize-db])
-  (dev-setup)
   (mount-root))

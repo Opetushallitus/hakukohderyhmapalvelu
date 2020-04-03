@@ -6,7 +6,7 @@
     "cypress:run:travis": "cypress run -C oph-configuration/cypress.travis.json --browser chrome --headless",
     "lint:clj": "clj-kondo --config oph-configuration/clj-kondo.config.edn --lint src",
     "lint:clj:lint-staged": "clj-kondo --config oph-configuration/clj-kondo.config.edn --lint",
-    "lint:js": "eslint --ignore-path \".gitignore\" --ext .js,.ts \"cypress\""
+    "lint:js": "eslint --ignore-path \".eslintignore\" --ext .js,.ts \"cypress\""
   },
   "husky": {
     "hooks": {

@@ -4,6 +4,7 @@
                   :exclusions [com.google.javascript/closure-compiler-unshaded
                                org.clojure/google-closure-library
                                org.clojure/google-closure-library-third-party]]
+                 [cheshire "5.10.0"]
                  [clj-http "3.10.0"]
                  [cljs-http "0.1.46"]
                  [com.fzakaria/slf4j-timbre "0.3.19"]
@@ -11,6 +12,9 @@
                  [com.stuartsierra/component "1.0.0"]
                  [com.taoensso/timbre "4.10.0"]
                  [org.flywaydb/flyway-core "6.3.2"]
+                 [fi.vm.sade/auditlogger "9.0.0-SNAPSHOT"]
+                 [fi.vm.sade.java-utils/java-cas "0.6.2-SNAPSHOT"]
+                 [fi.vm.sade.java-utils/java-properties "0.1.0-SNAPSHOT"]
                  [hikari-cp "2.11.0"]
                  [metosin/compojure-api "2.0.0-alpha13"]
                  [metosin/schema-tools "0.12.2"]
@@ -23,14 +27,14 @@
                  [ring/ring-defaults "0.3.2"]
                  [ring/ring-json "0.5.0"]
                  [secretary "1.2.3"]
+                 [selmer "1.12.19"]
                  [stylefy "1.14.1"
                   :exclusions [[org.clojure/core.async]]]
                  [prismatic/schema "1.1.12"]
                  [thheller/shadow-cljs "2.8.93"]
                  [yogthos/config "1.1.7"]
                  [environ "1.1.0"]
-                 [oph/clj-timbre-auditlog "0.1.0-SNAPSHOT"]
-                 [fi.vm.sade/auditlogger "9.0.0-SNAPSHOT"]]
+                 [oph/clj-timbre-auditlog "0.1.0-SNAPSHOT"]]
 
   :plugins [[lein-ancient "0.6.15"]
             [lein-less "1.7.5"]
