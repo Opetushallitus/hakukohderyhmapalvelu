@@ -1,16 +1,13 @@
-(ns hakukohderyhmapalvelu.organisaatio-service
-  (:require [clojure.pprint]
-            [hakukohderyhmapalvelu.api-schemas :as api-schema]
+(ns hakukohderyhmapalvelu.organisaatio.organisaatio-service
+  (:require [hakukohderyhmapalvelu.api-schemas :as api-schema]
             [hakukohderyhmapalvelu.oph-url-properties :as url]
+            [hakukohderyhmapalvelu.organisaatio.organisaatio-protocol :as organisaatio-service-protocol]
             [hakukohderyhmapalvelu.schemas.organisaatio-service-schemas :as schemas]
             [schema.core :as s]
             [hakukohderyhmapalvelu.config :as c]))
 
-(defprotocol OrganisaatioServiceProtocol
-  (post-new-organisaatio [service hakukohderyhma]))
-
 (defrecord OrganisaatioService [organisaatio-service-cas-client config]
-  OrganisaatioServiceProtocol
+  organisaatio-service-protocol/OrganisaatioServiceProtocol
 
   (post-new-organisaatio [_ hakukohderyhma]
     (s/validate c/HakukohderyhmaConfig config)

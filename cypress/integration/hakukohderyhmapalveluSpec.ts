@@ -1,12 +1,15 @@
 /// <reference types="cypress"/>
+// eslint-disable-next-line @typescript-eslint/triple-slash-reference
+/// <reference path="../support/commands.d.ts"/>
 
 import * as hs from '../selectors/hakukohderyhmaPanelSelectors'
 import * as hh from '../selectors/hakukohderyhmanHakutoimintoSelectors'
 import * as hl from '../selectors/hakukohderyhmanLisaysSelectors'
-import { HakukohderyhmaFixture } from '../fixtures/HakukohderyhmaFixture'
+import { PostHakukohderyhmaRequestFixture } from '../fixtures/PostHakukohderyhmaRequestFixture'
 
 describe('Hakukohderyhmäpalvelu', () => {
   before(() => {
+    cy.resetMocks()
     cy.visit('/')
   })
   it('Ohjaa käyttäjän polkuun /hakukohderyhmapalvelu', () => {
@@ -81,14 +84,16 @@ describe('Hakukohderyhmäpalvelu', () => {
       })
       describe('Uuden hakukohderyhmän nimen kirjoittaminen', () => {
         before(() => {
-          cy.fixture('new-hakukohderyhma.json')
-            .as('newHakukohderyhma')
-            .then(newHakukohderyhma =>
+          cy.fixture<PostHakukohderyhmaRequestFixture>(
+            'post-hakukohderyhma-request.json',
+          )
+            .as('post-hakukohderyhma-request')
+            .then(hakukohderyhma =>
               cy
                 .get(
                   hl.hakukohderyhmanLisaysNewHakukohderyhmaNameTextInputSelector,
                 )
-                .type(newHakukohderyhma.hakukohderyhmanNimi, { force: true }),
+                .type(hakukohderyhma.nimi.fi, { force: true }),
             )
         })
         it('Hakukohderyhmän tallennuspainiketta voi klikata', () => {
@@ -96,12 +101,24 @@ describe('Hakukohderyhmäpalvelu', () => {
             hl.hakukohderyhmanLisaysSaveNewHakukohderyhmaButtonSelector,
           ).should('be.not.disabled')
         })
-        describe.skip('Hakukohderyhmän tallentaminen', () => {
+        describe('Hakukohderyhmän tallentaminen', () => {
           before(() => {
-            cy.fixture('new-hakukohderyhma.json').as('hakukohderyhma')
+            cy.fixture('post-hakukohderyhma-request.json').as(
+              'post-hakukohderyhma-request',
+            )
+            cy.fixture('post-hakukohderyhma-response.json').as(
+              'post-hakukohderyhma-response',
+            )
+            cy.mockBackendRequest({
+              method: 'POST',
+              path: '/organisaatio-service/rest/organisaatio/v4',
+              service: 'organisaatio-service',
+              requestFixture: 'post-hakukohderyhma-request.json',
+              responseFixture: 'post-hakukohderyhma-response.json',
+            })
             cy.server()
             cy.route('POST', '/hakukohderyhmapalvelu/api/hakukohderyhma').as(
-              'postNewHakukohderyhma',
+              'post-hakukohderyhma',
             )
           })
           it('Tallentaa hakukohderyhmän', () => {
@@ -111,18 +128,18 @@ describe('Hakukohderyhmäpalvelu', () => {
             cy.get(
               hl.hakukohderyhmanLisaysSaveNewHakukohderyhmaButtonSelector,
             ).should('be.disabled')
-            cy.wait('@postNewHakukohderyhma')
+            cy.wait('@post-hakukohderyhma')
             cy.get(
               hl.hakukohderyhmanLisaysSaveNewHakukohderyhmaButtonSelector,
             ).should('be.enabled')
-            cy.get<HakukohderyhmaFixture>(
-              '@hakukohderyhma',
+            cy.get<PostHakukohderyhmaRequestFixture>(
+              '@post-hakukohderyhma-request',
             ).then(hakukohderyhma =>
               cy
                 .get(
                   hl.hakukohderyhmanLisaysNewHakukohderyhmaNameTextInputSelector,
                 )
-                .should('have.value', hakukohderyhma.hakukohderyhmanNimi),
+                .should('have.value', hakukohderyhma.nimi.fi),
             )
           })
         })

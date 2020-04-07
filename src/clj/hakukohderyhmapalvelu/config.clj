@@ -1,7 +1,6 @@
 (ns hakukohderyhmapalvelu.config
   (:require [clojure.edn :as edn]
             [config.core :as c]
-            [com.stuartsierra.component :as component]
             [hakukohderyhmapalvelu.public-config-schemas :as public]
             [schema.core :as s]))
 
@@ -26,12 +25,3 @@
       (#(do (println (str "Luetaan konfiguraatio tiedostosta '" % "'")) %))
       (slurp)
       (edn/read-string)))
-
-(defrecord Config []
-  component/Lifecycle
-
-  (start [this]
-    (merge this (make-config)))
-
-  (stop [this]
-    this))

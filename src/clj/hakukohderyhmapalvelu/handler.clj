@@ -3,7 +3,11 @@
             [compojure.api.sweet :as api]
             [compojure.route :as route]
             [hakukohderyhmapalvelu.config :as c]
+            [hakukohderyhmapalvelu.cas.mock.mock-cas-client-schemas :as mock-cas]
+            [hakukohderyhmapalvelu.cas.mock.mock-dispatcher-protocol :as mock-dispatcher-protocol]
+            [hakukohderyhmapalvelu.organisaatio.organisaatio-protocol :as organisaatio-service-protocol]
             [hakukohderyhmapalvelu.oph-url-properties :as oph-urls]
+            [hakukohderyhmapalvelu.schemas.class-pred :as p]
             [ring.util.http-response :as response]
             [ring.middleware.defaults :as defaults]
             [ring.middleware.json :as wrap-json]
@@ -12,8 +16,7 @@
             [schema.core :as s]
             [selmer.parser :as selmer]
             [hakukohderyhmapalvelu.health-check :as health-check]
-            [hakukohderyhmapalvelu.api-schemas :as schema])
-  (:import [hakukohderyhmapalvelu.organisaatio_service OrganisaatioServiceProtocol]))
+            [hakukohderyhmapalvelu.api-schemas :as schema]))
 
 (defn- redirect-routes []
   (api/undocumented
@@ -45,13 +48,28 @@
   (api/undocumented
     (route/not-found "<h1>Not found</h1>")))
 
+(defn- integration-test-routes [mock-dispatcher]
+  (api/context "/mock" []
+    (api/POST "/cas-client" []
+      :summary "Mockaa yhden CAS -clientilla tehdyn HTTP-kutsun"
+      :body [spec mock-cas/MockCasClientRequest]
+      (.dispatch-mock mock-dispatcher spec)
+      (response/ok {}))
+
+    (api/POST "/reset" []
+      :summary "Resetoi mockatut HTTP-kutsumääritykset"
+      (.reset-mocks mock-dispatcher)
+      (response/ok {}))))
+
 (s/defschema MakeHandlerArgs
-  {:config               c/HakukohderyhmaConfig
-   :organisaatio-service OrganisaatioServiceProtocol})
+  {:config                           c/HakukohderyhmaConfig
+   :organisaatio-service             (p/extends-class-pred organisaatio-service-protocol/OrganisaatioServiceProtocol)
+   (s/optional-key :mock-dispatcher) (p/extends-class-pred mock-dispatcher-protocol/MockDispatcherProtocol)})
 
 (s/defn make-routes
   [{:keys [config
-           organisaatio-service]} :- MakeHandlerArgs]
+           organisaatio-service
+           mock-dispatcher]} :- MakeHandlerArgs]
   (api/api
     {:swagger
      {:ui   "/hakukohderyhmapalvelu/api-docs"
@@ -71,6 +89,8 @@
           :body [hakukohderyhma schema/HakukohderyhmaRequest]
           :return schema/HakukohderyhmaResponse
           (response/ok (.post-new-organisaatio organisaatio-service hakukohderyhma)))
+        (when (-> config :public-config :environment (= :it))
+          (integration-test-routes mock-dispatcher))
         (health-check-route))
       (resource-route))
     (not-found-route)))

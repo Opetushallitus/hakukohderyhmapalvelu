@@ -1,0 +1,15 @@
+{
+  "nimi": {
+    "fi": "Testihakukohderyhmä"
+  },
+  "parentOid": "1.2.246.562.10.00000000001",
+  "tyypit": [
+    "Ryhma"
+  ],
+  "ryhmatyypit": [
+    "ryhmatyypit_2#1"
+  ],
+  "kayttoryhmat": [
+    "kayttoryhmat_1#1"
+  ]
+}

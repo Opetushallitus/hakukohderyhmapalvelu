@@ -1,8 +1,9 @@
-(ns hakukohderyhmapalvelu.cas-client
+(ns hakukohderyhmapalvelu.cas.cas-client
   (:require [cheshire.core :as json]
             [clj-http.client :as http]
             [com.stuartsierra.component :as component]
             [hakukohderyhmapalvelu.caller-id :as caller-id]
+            [hakukohderyhmapalvelu.cas.cas-protocol :as cas-protocol]
             [hakukohderyhmapalvelu.oph-url-properties :as url]
             [schema.core :as s]
             [schema-tools.core :as st]
@@ -118,9 +119,6 @@
           (request-fn new-session-token)))
       response)))
 
-(defprotocol CasClientProtocol
-  (post [this opts schemas]))
-
 (defrecord CasClient [config service]
   component/Lifecycle
   (start [this]
@@ -156,7 +154,7 @@
   (stop [this]
     (assoc this :application-session nil))
 
-  CasClientProtocol
+  cas-protocol/CasClientProtocol
 
   (post [this
          {:keys [url body] :as opts}
