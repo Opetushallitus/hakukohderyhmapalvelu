@@ -70,7 +70,8 @@
   :repl-options {:init-ns user}
 
   :aot [hakukohderyhmapalvelu.cas.cas-protocol
-        hakukohderyhmapalvelu.organisaatio.organisaatio-protocol]
+        hakukohderyhmapalvelu.organisaatio.organisaatio-protocol
+        hakukohderyhmapalvelu.cas.mock.mock-dispatcher-protocol]
 
   :profiles
   {:dev

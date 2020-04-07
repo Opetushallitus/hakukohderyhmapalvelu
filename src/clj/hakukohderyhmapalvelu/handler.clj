@@ -14,7 +14,8 @@
             [selmer.parser :as selmer]
             [hakukohderyhmapalvelu.health-check :as health-check]
             [hakukohderyhmapalvelu.api-schemas :as schema])
-  (:import [hakukohderyhmapalvelu.organisaatio.organisaatio_protocol OrganisaatioServiceProtocol]))
+  (:import [hakukohderyhmapalvelu.organisaatio.organisaatio_protocol OrganisaatioServiceProtocol]
+           [hakukohderyhmapalvelu.cas.mock.mock_dispatcher_protocol MockDispatcherProtocol]))
 
 (defn- redirect-routes []
   (api/undocumented
@@ -62,7 +63,7 @@
 (s/defschema MakeHandlerArgs
   {:config                           c/HakukohderyhmaConfig
    :organisaatio-service             OrganisaatioServiceProtocol
-   (s/optional-key :mock-dispatcher) s/Any})
+   (s/optional-key :mock-dispatcher) MockDispatcherProtocol})
 
 (s/defn make-routes
   [{:keys [config
