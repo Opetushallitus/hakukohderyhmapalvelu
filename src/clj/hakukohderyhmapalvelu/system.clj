@@ -7,7 +7,7 @@
             [hakukohderyhmapalvelu.migrations :as migrations]
             [hakukohderyhmapalvelu.cas.mock.mock-cas-client :as mock-cas-client]
             [hakukohderyhmapalvelu.cas.mock.mock-dispatcher :as mock-dispatcher]
-            [hakukohderyhmapalvelu.organisaatio-service :as organisaatio-service]
+            [hakukohderyhmapalvelu.organisaatio.organisaatio-service :as organisaatio-service]
             [hakukohderyhmapalvelu.server :as http]
             [hakukohderyhmapalvelu.audit-log :as audit-log]))
 

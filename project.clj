@@ -69,7 +69,8 @@
 
   :repl-options {:init-ns user}
 
-  :aot [hakukohderyhmapalvelu.cas.cas-protocol]
+  :aot [hakukohderyhmapalvelu.cas.cas-protocol
+        hakukohderyhmapalvelu.organisaatio.organisaatio-protocol]
 
   :profiles
   {:dev

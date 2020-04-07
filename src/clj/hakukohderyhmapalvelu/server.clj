@@ -4,7 +4,7 @@
             [ring.adapter.jetty :as jetty]
             [schema.core :as s]
             [hakukohderyhmapalvelu.config :as c])
-  (:import [hakukohderyhmapalvelu.organisaatio_service OrganisaatioServiceProtocol]))
+  (:import [hakukohderyhmapalvelu.organisaatio.organisaatio_protocol OrganisaatioServiceProtocol]))
 
 (defrecord HttpServer [config
                        organisaatio-service
