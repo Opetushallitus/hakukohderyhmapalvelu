@@ -3,12 +3,12 @@
             [clj-http.client :as http]
             [com.stuartsierra.component :as component]
             [hakukohderyhmapalvelu.caller-id :as caller-id]
+            [hakukohderyhmapalvelu.cas.cas-protocol :as cas-protocol]
             [hakukohderyhmapalvelu.oph-url-properties :as url]
             [schema.core :as s]
             [schema-tools.core :as st]
             [hakukohderyhmapalvelu.config :as c])
   (:import [fi.vm.sade.javautils.cas CasSession ApplicationSession SessionToken]
-           [hakukohderyhmapalvelu.cas.cas_protocol CasClientProtocol]
            [java.net.http HttpClient]
            [java.time Duration]
            [java.net CookieManager URI]))
@@ -154,7 +154,7 @@
   (stop [this]
     (assoc this :application-session nil))
 
-  CasClientProtocol
+  cas-protocol/CasClientProtocol
 
   (post [this
          {:keys [url body] :as opts}

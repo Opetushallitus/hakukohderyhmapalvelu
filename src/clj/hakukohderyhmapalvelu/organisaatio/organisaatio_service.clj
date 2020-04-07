@@ -1,13 +1,13 @@
 (ns hakukohderyhmapalvelu.organisaatio.organisaatio-service
   (:require [hakukohderyhmapalvelu.api-schemas :as api-schema]
             [hakukohderyhmapalvelu.oph-url-properties :as url]
+            [hakukohderyhmapalvelu.organisaatio.organisaatio-protocol :as organisaatio-service-protocol]
             [hakukohderyhmapalvelu.schemas.organisaatio-service-schemas :as schemas]
             [schema.core :as s]
-            [hakukohderyhmapalvelu.config :as c])
-  (:import [hakukohderyhmapalvelu.organisaatio.organisaatio_protocol OrganisaatioServiceProtocol]))
+            [hakukohderyhmapalvelu.config :as c]))
 
 (defrecord OrganisaatioService [organisaatio-service-cas-client config]
-  OrganisaatioServiceProtocol
+  organisaatio-service-protocol/OrganisaatioServiceProtocol
 
   (post-new-organisaatio [_ hakukohderyhma]
     (s/validate c/HakukohderyhmaConfig config)

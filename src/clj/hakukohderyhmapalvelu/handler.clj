@@ -4,7 +4,10 @@
             [compojure.route :as route]
             [hakukohderyhmapalvelu.config :as c]
             [hakukohderyhmapalvelu.cas.mock.mock-cas-client-schemas :as mock-cas]
+            [hakukohderyhmapalvelu.cas.mock.mock-dispatcher-protocol :as mock-dispatcher-protocol]
+            [hakukohderyhmapalvelu.organisaatio.organisaatio-protocol :as organisaatio-service-protocol]
             [hakukohderyhmapalvelu.oph-url-properties :as oph-urls]
+            [hakukohderyhmapalvelu.schemas.class-pred :as p]
             [ring.util.http-response :as response]
             [ring.middleware.defaults :as defaults]
             [ring.middleware.json :as wrap-json]
@@ -13,9 +16,7 @@
             [schema.core :as s]
             [selmer.parser :as selmer]
             [hakukohderyhmapalvelu.health-check :as health-check]
-            [hakukohderyhmapalvelu.api-schemas :as schema])
-  (:import [hakukohderyhmapalvelu.organisaatio.organisaatio_protocol OrganisaatioServiceProtocol]
-           [hakukohderyhmapalvelu.cas.mock.mock_dispatcher_protocol MockDispatcherProtocol]))
+            [hakukohderyhmapalvelu.api-schemas :as schema]))
 
 (defn- redirect-routes []
   (api/undocumented
@@ -62,8 +63,8 @@
 
 (s/defschema MakeHandlerArgs
   {:config                           c/HakukohderyhmaConfig
-   :organisaatio-service             OrganisaatioServiceProtocol
-   (s/optional-key :mock-dispatcher) MockDispatcherProtocol})
+   :organisaatio-service             (p/extends-class-pred organisaatio-service-protocol/OrganisaatioServiceProtocol)
+   (s/optional-key :mock-dispatcher) (p/extends-class-pred mock-dispatcher-protocol/MockDispatcherProtocol)})
 
 (s/defn make-routes
   [{:keys [config

@@ -1,11 +1,11 @@
 (ns hakukohderyhmapalvelu.cas.mock.mock-dispatcher
   (:require [clojure.core.async :as async]
             [hakukohderyhmapalvelu.cas.mock.mock-cas-client-schemas :as schema]
-            [schema.core :as s])
-  (:import [hakukohderyhmapalvelu.cas.mock.mock_dispatcher_protocol MockDispatcherProtocol]))
+            [hakukohderyhmapalvelu.cas.mock.mock-dispatcher-protocol :as mock-dispatcher-protocol]
+            [schema.core :as s]))
 
 (defrecord MockDispatcher [organisaatio-service-chan]
-  MockDispatcherProtocol
+  mock-dispatcher-protocol/MockDispatcherProtocol
 
   (dispatch-mock [this {:keys [service] :as spec}]
     (s/validate schema/MockCasClientRequest spec)
