@@ -11,15 +11,15 @@
                  [timbre-ns-pattern-level "0.1.2"]
                  [com.stuartsierra/component "1.0.0"]
                  [com.taoensso/timbre "4.10.0"]
-                 [org.flywaydb/flyway-core "6.3.2"]
+                 [org.flywaydb/flyway-core "6.3.3"]
                  [fi.vm.sade/auditlogger "9.0.0-SNAPSHOT"]
                  [fi.vm.sade.java-utils/java-cas "0.6.2-SNAPSHOT"]
                  [fi.vm.sade.java-utils/java-properties "0.1.0-SNAPSHOT"]
                  [hikari-cp "2.11.0"]
                  [metosin/compojure-api "2.0.0-alpha13"]
                  [metosin/schema-tools "0.12.2"]
-                 [org.clojure/core.async "1.0.567"]
-                 [org.postgresql/postgresql "42.2.11"]
+                 [org.clojure/core.async "1.1.587"]
+                 [org.postgresql/postgresql "42.2.12"]
                  [radicalzephyr/ring.middleware.logger "0.6.0"]
                  [re-frame "0.12.0"]
                  [reagent "0.10.0"]
@@ -31,7 +31,7 @@
                  [stylefy "1.14.1"
                   :exclusions [[org.clojure/core.async]]]
                  [prismatic/schema "1.1.12"]
-                 [thheller/shadow-cljs "2.8.93"]
+                 [thheller/shadow-cljs "2.8.94"]
                  [yogthos/config "1.1.7"]
                  [environ "1.1.0"]
                  [oph/clj-timbre-auditlog "0.1.0-SNAPSHOT"]]
@@ -72,8 +72,8 @@
   :profiles
   {:dev
             {:dependencies [[binaryage/devtools "1.0.0"]
-                            [clj-kondo "2020.03.20"]
-                            [day8.re-frame/re-frame-10x "0.6.0"]
+                            [clj-kondo "2020.04.05"]
+                            [day8.re-frame/re-frame-10x "0.6.1"]
                             [day8.re-frame/tracing "0.5.3"]
                             [reloaded.repl "0.2.4"]]
              :source-paths ["dev/clj" "dev/cljs"]}
