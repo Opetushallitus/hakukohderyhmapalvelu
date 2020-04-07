@@ -16,7 +16,8 @@
             [schema.core :as s]
             [selmer.parser :as selmer]
             [hakukohderyhmapalvelu.health-check :as health-check]
-            [hakukohderyhmapalvelu.api-schemas :as schema]))
+            [hakukohderyhmapalvelu.api-schemas :as schema])
+  (:import (hakukohderyhmapalvelu.health_check HealthChecker)))
 
 (defn- redirect-routes []
   (api/undocumented
@@ -35,10 +36,11 @@
             (response/content-type "text/html")
             (response/charset "utf-8"))))))
 
-(defn- health-check-route []
+(defn- health-check-route [health-checker]
+  (s/validate HealthChecker health-checker)
   (api/undocumented
     (api/GET "/health" []
-      (health-check/check-health))))
+      (health-check/check-health health-checker))))
 
 (defn- resource-route []
   (api/undocumented
@@ -63,11 +65,13 @@
 
 (s/defschema MakeHandlerArgs
   {:config                           c/HakukohderyhmaConfig
+   :health-checker                   (p/extends-class-pred health-check/HealthChecker)
    :organisaatio-service             (p/extends-class-pred organisaatio-service-protocol/OrganisaatioServiceProtocol)
    (s/optional-key :mock-dispatcher) (p/extends-class-pred mock-dispatcher-protocol/MockDispatcherProtocol)})
 
 (s/defn make-routes
   [{:keys [config
+           health-checker
            organisaatio-service
            mock-dispatcher]} :- MakeHandlerArgs]
   (api/api
@@ -91,7 +95,7 @@
           (response/ok (.post-new-organisaatio organisaatio-service hakukohderyhma)))
         (when (-> config :public-config :environment (= :it))
           (integration-test-routes mock-dispatcher))
-        (health-check-route))
+        (health-check-route health-checker))
       (resource-route))
     (not-found-route)))
 

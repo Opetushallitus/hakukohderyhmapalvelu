@@ -19,6 +19,7 @@
                  [metosin/compojure-api "2.0.0-alpha13"]
                  [metosin/schema-tools "0.12.2"]
                  [org.clojure/core.async "1.1.587"]
+                 [org.clojure/java.jdbc "0.7.11"]
                  [org.postgresql/postgresql "42.2.12"]
                  [radicalzephyr/ring.middleware.logger "0.6.0"]
                  [re-frame "0.12.0"]

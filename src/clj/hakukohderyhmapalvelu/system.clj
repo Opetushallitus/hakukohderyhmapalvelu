@@ -8,6 +8,7 @@
             [hakukohderyhmapalvelu.cas.mock.mock-cas-client :as mock-cas-client]
             [hakukohderyhmapalvelu.cas.mock.mock-dispatcher :as mock-dispatcher]
             [hakukohderyhmapalvelu.organisaatio.organisaatio-service :as organisaatio-service]
+            [hakukohderyhmapalvelu.health-check :as health-check]
             [hakukohderyhmapalvelu.server :as http]
             [hakukohderyhmapalvelu.audit-log :as audit-log]))
 
@@ -26,10 +27,15 @@
                                                    (organisaatio-service/map->OrganisaatioService {:config config})
                                                    [:organisaatio-service-cas-client])
 
+                           :health-checker (component/using
+                                             (health-check/map->DbHealthChecker {})
+                                             [:db])
+
                            :http-server (component/using
                                           (http/map->HttpServer {:config config})
                                           (cond-> [:db
                                                    :migrations
+                                                   :health-checker
                                                    :organisaatio-service]
                                                   it-profile?
                                                   (conj :mock-dispatcher)))]
