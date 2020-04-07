@@ -1,6 +1,5 @@
 (ns hakukohderyhmapalvelu.organisaatio.organisaatio-service
-  (:require [clojure.pprint]
-            [hakukohderyhmapalvelu.api-schemas :as api-schema]
+  (:require [hakukohderyhmapalvelu.api-schemas :as api-schema]
             [hakukohderyhmapalvelu.oph-url-properties :as url]
             [hakukohderyhmapalvelu.schemas.organisaatio-service-schemas :as schemas]
             [schema.core :as s]

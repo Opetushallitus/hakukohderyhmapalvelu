@@ -21,7 +21,7 @@
   (post [this
          {actual-url  :url
           actual-body :body}
-         schemas]
+         _]
     (if-let [{expected-method :method
               expected-path   :path
               expected-body   :request
