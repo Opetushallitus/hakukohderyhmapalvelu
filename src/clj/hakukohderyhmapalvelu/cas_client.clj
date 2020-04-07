@@ -8,6 +8,7 @@
             [schema-tools.core :as st]
             [hakukohderyhmapalvelu.config :as c])
   (:import [fi.vm.sade.javautils.cas CasSession ApplicationSession SessionToken]
+           [hakukohderyhmapalvelu.cas.cas_protocol CasClientProtocol]
            [java.net.http HttpClient]
            [java.time Duration]
            [java.net CookieManager URI]))
@@ -117,9 +118,6 @@
         (let [new-session-token (init-cas-session application-session)]
           (request-fn new-session-token)))
       response)))
-
-(defprotocol CasClientProtocol
-  (post [this opts schemas]))
 
 (defrecord CasClient [config service]
   component/Lifecycle

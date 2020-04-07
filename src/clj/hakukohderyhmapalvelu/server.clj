@@ -7,7 +7,8 @@
   (:import [hakukohderyhmapalvelu.organisaatio_service OrganisaatioServiceProtocol]))
 
 (defrecord HttpServer [config
-                       organisaatio-service]
+                       organisaatio-service
+                       mock-dispatcher]
   component/Lifecycle
 
   (start [this]
@@ -15,8 +16,10 @@
     (s/validate OrganisaatioServiceProtocol organisaatio-service)
     (let [port   (-> config :server :http :port)
           server (jetty/run-jetty (h/make-handler
-                                    {:config               config
-                                     :organisaatio-service organisaatio-service})
+                                    (cond-> {:config               config
+                                             :organisaatio-service organisaatio-service}
+                                            (some? mock-dispatcher)
+                                            (assoc :mock-dispatcher mock-dispatcher)))
                                   {:port port :join? false})]
       (assoc this :server server)))
 

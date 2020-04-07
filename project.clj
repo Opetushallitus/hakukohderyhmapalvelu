@@ -69,6 +69,8 @@
 
   :repl-options {:init-ns user}
 
+  :aot [hakukohderyhmapalvelu.cas.cas-protocol]
+
   :profiles
   {:dev
             {:dependencies [[binaryage/devtools "1.0.0"]
