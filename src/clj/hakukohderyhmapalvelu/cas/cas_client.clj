@@ -1,4 +1,4 @@
-(ns hakukohderyhmapalvelu.cas-client
+(ns hakukohderyhmapalvelu.cas.cas-client
   (:require [cheshire.core :as json]
             [clj-http.client :as http]
             [com.stuartsierra.component :as component]

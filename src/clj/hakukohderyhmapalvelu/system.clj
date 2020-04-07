@@ -1,7 +1,7 @@
 (ns hakukohderyhmapalvelu.system
   (:require [clojure.core.async :as async]
             [com.stuartsierra.component :as component]
-            [hakukohderyhmapalvelu.cas-client :as cas-client]
+            [hakukohderyhmapalvelu.cas.cas-client :as cas-client]
             [hakukohderyhmapalvelu.config :as c]
             [hakukohderyhmapalvelu.db :as db]
             [hakukohderyhmapalvelu.migrations :as migrations]
