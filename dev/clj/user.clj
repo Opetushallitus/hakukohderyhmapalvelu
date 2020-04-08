@@ -6,6 +6,12 @@
             [timbre-ns-pattern-level])
   (:import [java.util TimeZone]))
 
+(defn hkrp-reset! []
+  (try
+    (reset)
+    (catch Exception e
+      (.printStackTrace e))))
+
 (timbre/merge-config!
   {:level          :info
    :appenders      {:println
