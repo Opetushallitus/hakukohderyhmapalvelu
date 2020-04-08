@@ -8,7 +8,7 @@
 
 (defn run-query [db q]
   (jdbc/with-db-transaction [connection {:datasource (:datasource db)}]
-                           (jdbc/query connection q)))
+    (jdbc/query connection q)))
 
 (defrecord DbHealthChecker [db]
   HealthChecker
