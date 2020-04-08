@@ -16,8 +16,7 @@
             [schema.core :as s]
             [selmer.parser :as selmer]
             [hakukohderyhmapalvelu.health-check :as health-check]
-            [hakukohderyhmapalvelu.api-schemas :as schema])
-  (:import [hakukohderyhmapalvelu.health_check HealthChecker]))
+            [hakukohderyhmapalvelu.api-schemas :as schema]))
 
 (defn- redirect-routes []
   (api/undocumented
@@ -37,7 +36,7 @@
             (response/charset "utf-8"))))))
 
 (defn- health-check-route [health-checker]
-  (s/validate HealthChecker health-checker)
+  (s/validate (p/extends-class-pred health-check/HealthChecker) health-checker)
   (api/undocumented
     (api/GET "/health" []
       (health-check/check-health health-checker))))
