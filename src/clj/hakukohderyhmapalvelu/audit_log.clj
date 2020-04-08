@@ -3,7 +3,7 @@
             [com.stuartsierra.component :as component]
             [hakukohderyhmapalvelu.config :as c]
             [schema.core :as s])
-  (:import (fi.vm.sade.auditlog ApplicationType Audit)))
+  (:import [fi.vm.sade.auditlog ApplicationType Audit]))
 
 (defn- ^Audit create-audit-log [base-path]
   (cta-audit-log/create-audit-logger "hakukohderyhmapalvelu" base-path ApplicationType/VIRKAILIJA))
