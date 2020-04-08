@@ -1,7 +1,7 @@
 (ns hakukohderyhmapalvelu.health-check
   (:require [clojure.java.jdbc :as jdbc]
             [schema.core :as s])
-  (:import (hakukohderyhmapalvelu.db DbPool)))
+  (:import [hakukohderyhmapalvelu.db DbPool]))
 
 (defprotocol HealthChecker
   (check-health [this]))

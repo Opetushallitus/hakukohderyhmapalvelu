@@ -17,7 +17,7 @@
             [selmer.parser :as selmer]
             [hakukohderyhmapalvelu.health-check :as health-check]
             [hakukohderyhmapalvelu.api-schemas :as schema])
-  (:import (hakukohderyhmapalvelu.health_check HealthChecker)))
+  (:import [hakukohderyhmapalvelu.health_check HealthChecker]))
 
 (defn- redirect-routes []
   (api/undocumented
