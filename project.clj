@@ -57,6 +57,8 @@
                              :macosx  "open"
                              :linux   "xdg-open"}}}
 
+  :jvm-opts ["-Dclojure.main.report=stderr"]
+
   :aliases {"server:dev"    ["with-profile" "dev" "run"]
             "frontend:dev"  ["with-profile" "dev" "do"
                              ["run" "-m" "shadow.cljs.devtools.cli" "watch" "hakukohderyhmapalvelu"]]
