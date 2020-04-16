@@ -1,7 +1,7 @@
 # Hakukohderyhmäpalvelu
 
 [![Build Status](https://travis-ci.org/Opetushallitus/hakukohderyhmapalvelu.svg?branch=master)](https://travis-ci.org/Opetushallitus/hakukohderyhmapalvelu)
-![NPM Dependencies Status](https://img.shields.io/david/opetushallitus/hakukohderyhmapalvelu)
+![NPM Dependencies Status](https://david-dm.org/opetushallitus/hakukohderyhmapalvelu.svg)
 
 * [Palvelun ajaminen paikallisesti](#palvelun-ajaminen-paikallisesti)
 * [Testien ajaminen](#testien-ajaminen)
