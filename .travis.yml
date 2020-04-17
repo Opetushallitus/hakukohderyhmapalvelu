@@ -18,8 +18,8 @@ install:
   - git clone https://github.com/Opetushallitus/ci-tools.git
   - source ci-tools/common/setup-tools.sh
 script: >-
-  nvm install v12 &&
-  nvm use v12 &&
+  nvm install &&
+  nvm use &&
   npm install &&
   ./bin/cibuild.sh run-all-tests-and-create-uberjar &&
   bin/lein with-profile prod uberjar &&
