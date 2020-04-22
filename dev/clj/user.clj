@@ -13,8 +13,7 @@
       (.printStackTrace e))))
 
 (timbre/merge-config!
-  {:level          :info
-   :appenders      {:println
+  {:appenders      {:println
                     (appenders/println-appender {:stream :std-out})}
    :middleware     [(timbre-ns-pattern-level/middleware {"com.zaxxer.hikari.HikariConfig" :debug
                                                          "ring.middleware.logger"         :error
