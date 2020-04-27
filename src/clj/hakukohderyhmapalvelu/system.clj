@@ -1,7 +1,7 @@
 (ns hakukohderyhmapalvelu.system
   (:require [clojure.core.async :as async]
             [com.stuartsierra.component :as component]
-            [hakukohderyhmapalvelu.audit-log :as audit-log]
+            [hakukohderyhmapalvelu.audit-logger :as audit-logger]
             [hakukohderyhmapalvelu.authentication.auth-routes :as auth-routes]
             [hakukohderyhmapalvelu.cas.cas-authenticating-client :as authenticating-client]
             [hakukohderyhmapalvelu.cas.cas-ticket-client :as cas-ticket-validator]
@@ -19,7 +19,7 @@
 (defn hakukohderyhmapalvelu-system []
   (let [config            (c/make-config)
         it-profile?       (-> config :public-config :environment (= :it))
-        base-system       [:audit-logger (audit-log/map->OpintopolkuAuditLogger {:config config})
+        base-system       [:audit-logger (audit-logger/map->AuditLogger {:config config})
 
                            :db (db/map->DbPool {:config config})
 

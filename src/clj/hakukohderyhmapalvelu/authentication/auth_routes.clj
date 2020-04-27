@@ -4,7 +4,7 @@
             [compojure.api.core :as compojure-core]
             [compojure.api.sweet :as api]
             [com.stuartsierra.component :as component]
-            [hakukohderyhmapalvelu.audit-log :as audit-log]
+            [hakukohderyhmapalvelu.audit-logger-protocol :as audit-logger-protocol]
             [hakukohderyhmapalvelu.authentication.schema :as schema]
             [hakukohderyhmapalvelu.cas.cas-ticket-client-protocol :as cas-ticket-client-protocol]
             [hakukohderyhmapalvelu.config :as c]
@@ -25,7 +25,7 @@
   (fn [response virkailija henkilo username ticket]
     (log/info "user" username "logged in")
     (s/validate (p/extends-class-pred organisaatio-protocol/OrganisaatioServiceProtocol) organisaatio-service)
-    (s/validate (p/extends-class-pred audit-log/AuditLogger) audit-logger)
+    (s/validate (p/extends-class-pred audit-logger-protocol/AuditLoggerProtocol) audit-logger)
     (s/validate kayttooikeus-protocol/Virkailija virkailija)
     (s/validate s/Str (:oidHenkilo henkilo))
     (s/validate s/Str ticket)
@@ -70,7 +70,7 @@
     (s/validate (p/extends-class-pred kayttooikeus-protocol/KayttooikeusService) kayttooikeus-service)
     (s/validate (p/extends-class-pred onr-protocol/PersonService) person-service)
     (s/validate (p/extends-class-pred organisaatio-protocol/OrganisaatioServiceProtocol) organisaatio-service)
-    (s/validate (p/extends-class-pred audit-log/AuditLogger) audit-logger)
+    (s/validate (p/extends-class-pred audit-logger-protocol/AuditLoggerProtocol) audit-logger)
     (assoc this :hakukohderyhmapalvelu-url (get-in config [:urls :hakukohderyhmapalvelu-url])))
 
   (stop [this]
