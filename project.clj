@@ -16,7 +16,7 @@
                  [fi.vm.sade.java-utils/java-cas "0.6.2-SNAPSHOT"]
                  [fi.vm.sade.java-utils/java-properties "0.1.0-SNAPSHOT"]
                  [hikari-cp "2.11.0"]
-                 [metosin/compojure-api "2.0.0-alpha13"]
+                 [metosin/compojure-api "2.0.0-alpha31"]
                  [metosin/schema-tools "0.12.2"]
                  [org.clojure/core.async "1.1.587"]
                  [org.clojure/java.jdbc "0.7.11"]
