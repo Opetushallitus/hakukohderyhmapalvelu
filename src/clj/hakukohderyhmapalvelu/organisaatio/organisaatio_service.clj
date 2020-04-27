@@ -1,5 +1,6 @@
 (ns hakukohderyhmapalvelu.organisaatio.organisaatio-service
-  (:require [hakukohderyhmapalvelu.api-schemas :as api-schema]
+  (:require [com.stuartsierra.component :as component]
+            [hakukohderyhmapalvelu.api-schemas :as api-schema]
             [hakukohderyhmapalvelu.cas.cas-authenticating-client-protocol :as authenticating-client-protocol]
             [hakukohderyhmapalvelu.http :as http]
             [hakukohderyhmapalvelu.oph-url-properties :as url]
@@ -12,10 +13,18 @@
   (http/parse-and-validate response schemas/PostNewOrganisaatioResponse))
 
 (defrecord OrganisaatioService [organisaatio-service-authenticating-client config]
+  component/Lifecycle
+
+  (start [this]
+    (s/validate c/HakukohderyhmaConfig config)
+    this)
+
+  (stop [this]
+    this)
+
   organisaatio-service-protocol/OrganisaatioServiceProtocol
 
   (post-new-organisaatio [_ hakukohderyhma]
-    (s/validate c/HakukohderyhmaConfig config)
     (s/validate api-schema/HakukohderyhmaRequest hakukohderyhma)
     (let [url           (url/resolve-url :organisaatio-service.organisaatio.v4 config)
           parent-oid    (-> config :oph-organisaatio-oid)
