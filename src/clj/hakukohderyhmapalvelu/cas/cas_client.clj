@@ -24,7 +24,8 @@
       .get))
 
 (s/defschema HttpMethod
-  (s/enum :post))
+  (s/enum :post
+          :get))
 
 (s/defschema HttpValidation
   {:request-schema  s/Any
@@ -42,18 +43,20 @@
         (json/parse-string response' true)
         (s/validate response-schema response')))
 
+; TODO: Siirrä http-namespaceen
 (s/defn do-request
   [{:keys [body] :as opts} :- (st/open-schema
                                 {:url    s/Str
                                  :method HttpMethod})
-   {:keys [request-schema
-           response-schema]} :- HttpValidation
+   {:keys [request-schema]} :- HttpValidation
    config :- c/HakukohderyhmaConfig]
-  (s/validate request-schema body)
+  (when request-schema
+    (s/validate request-schema body))
   (let [csrf-value "hakukohderyhmapalvelu"
         caller-id  (-> config :oph-organisaatio-oid caller-id/make-caller-id)
         opts       (-> opts
                        (assoc :redirect-strategy :none)
+                       (assoc :throw-exceptions false)
                        (update :body json/generate-string)
                        (merge {:accept       :json
                                :content-type "application/json"})
@@ -62,9 +65,12 @@
                        (update :headers merge
                                {"Caller-Id" caller-id
                                 "CSRF"      csrf-value})
-                       (update :cookies merge {"CSRF" {:value csrf-value :path "/"}}))
-        response   (http/request opts)]
+                       (update :cookies merge {"CSRF" {:value csrf-value :path "/"}}))]
+    (http/request opts)))
 
+(defn do-json-request [opts schemas config]
+  (let [response        (do-request opts schemas config)
+        response-schema (:response-schema schemas)]
     (cond-> response
             (= (:status response) 200)
             (parse-and-validate response-schema))))
@@ -80,13 +86,13 @@
    schemas :- HttpValidation
    config :- c/HakukohderyhmaConfig]
   (let [cookie (.cookie session-token)]
-    (do-request {:method  method
-                 :url     url
-                 :body    body
-                 :cookies {(.getName cookie) {:path  (.getPath cookie)
-                                              :value (.getValue cookie)}}}
-                schemas
-                config)))
+    (do-json-request {:method  method
+                      :url     url
+                      :body    body
+                      :cookies {(.getName cookie) {:path  (.getPath cookie)
+                                                   :value (.getValue cookie)}}}
+                     schemas
+                     config)))
 
 (s/defn do-cas-authenticated-request
   [{:keys [application-session
@@ -119,6 +125,11 @@
           (request-fn new-session-token)))
       response)))
 
+(defn- create-uri [url-key config]
+  (s/validate c/HakukohderyhmaConfig config)
+  (-> (url/resolve-url url-key config)
+      (URI/create)))
+
 (defrecord CasClient [config service]
   component/Lifecycle
   (start [this]
@@ -132,8 +143,7 @@
                                   (.cookieHandler cookie-manager)
                                   (.connectTimeout (Duration/ofSeconds 10))
                                   (.build))
-          cas-tickets-url     (-> (url/resolve-url :cas.tickets config)
-                                  (URI/create))
+          cas-tickets-url     (create-uri :cas.tickets config)
           {:keys [username
                   password]} (-> config :cas)
           application-session (ApplicationSession. http-client
@@ -149,20 +159,30 @@
                                                    (url/resolve-url service-url-property
                                                                     config)
                                                    session-cookie-name)]
-      (assoc this :application-session application-session)))
+      (assoc this
+        :application-session application-session)))
 
   (stop [this]
-    (assoc this :application-session nil))
+    (assoc this
+      :application-session nil))
 
   cas-protocol/CasClientProtocol
 
   (post [this
-         {:keys [url body] :as opts}
-         schemas]
-    (s/validate CasPostOpts opts)
+           {:keys [url body] :as opts}
+           schemas]
+      (s/validate CasPostOpts opts)
+      (do-cas-authenticated-request {:application-session (:application-session this)
+                                     :method              :post
+                                     :url                 url
+                                     :body                body}
+                                    schemas
+                                    config))
+
+  (get [this url response-schema]
     (do-cas-authenticated-request {:application-session (:application-session this)
-                                   :method              :post
-                                   :url                 url
-                                   :body                body}
-                                  schemas
+                                   :method              :get
+                                   :url                 url}
+                                  {:request-schema  nil
+                                   :response-schema response-schema}
                                   config)))

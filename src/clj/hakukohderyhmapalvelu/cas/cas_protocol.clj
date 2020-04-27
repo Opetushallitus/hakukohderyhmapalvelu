@@ -1,4 +1,6 @@
-(ns hakukohderyhmapalvelu.cas.cas-protocol)
+(ns hakukohderyhmapalvelu.cas.cas-protocol
+  (:refer-clojure :exclude [get]))
 
 (defprotocol CasClientProtocol
-  (post [this opts schemas]))
+  (post [this opts schemas])
+  (get [this url response-schema]))
