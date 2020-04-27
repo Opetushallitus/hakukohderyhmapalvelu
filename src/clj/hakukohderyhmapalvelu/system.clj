@@ -9,6 +9,7 @@
             [hakukohderyhmapalvelu.cas.mock.mock-dispatcher :as mock-dispatcher]
             [hakukohderyhmapalvelu.config :as c]
             [hakukohderyhmapalvelu.db :as db]
+            [hakukohderyhmapalvelu.hakukohderyhma.hakukohderyhma-service :as hakukohderyhma-service]
             [hakukohderyhmapalvelu.health-check :as health-check]
             [hakukohderyhmapalvelu.kayttooikeus.kayttooikeus-service :as kayttooikeus-service]
             [hakukohderyhmapalvelu.migrations :as migrations]
@@ -31,6 +32,10 @@
                                                    (organisaatio-service/map->OrganisaatioService {:config config})
                                                    [:organisaatio-service-authenticating-client])
 
+                           :hakukohderyhma-service (component/using
+                                                    (hakukohderyhma-service/map->HakukohderyhmaService {})
+                                                    [:organisaatio-service])
+
                            :health-checker (component/using
                                              (health-check/map->DbHealthChecker {})
                                              [:db])
@@ -49,7 +54,7 @@
                                           (cond-> [:db
                                                    :migrations
                                                    :health-checker
-                                                   :organisaatio-service
+                                                   :hakukohderyhma-service
                                                    :auth-routes-source]
                                                   it-profile?
                                                   (conj :mock-dispatcher)))]

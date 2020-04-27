@@ -11,9 +11,9 @@
             [hakukohderyhmapalvelu.cas.mock.mock-authenticating-client-schemas :as mock-cas]
             [hakukohderyhmapalvelu.cas.mock.mock-dispatcher-protocol :as mock-dispatcher-protocol]
             [hakukohderyhmapalvelu.config :as c]
+            [hakukohderyhmapalvelu.hakukohderyhma.hakukohderyhma-service-protocol :as hakukohderyhma]
             [hakukohderyhmapalvelu.health-check :as health-check]
             [hakukohderyhmapalvelu.oph-url-properties :as oph-urls]
-            [hakukohderyhmapalvelu.organisaatio.organisaatio-protocol :as organisaatio-service-protocol]
             [hakukohderyhmapalvelu.schemas.class-pred :as p]
             [hakukohderyhmapalvelu.session-timeout :as session-timeout]
             [ring.middleware.defaults :as defaults]
@@ -89,11 +89,11 @@
    :db                               {:datasource (s/pred #(instance? DataSource %))
                                       :config c/HakukohderyhmaConfig}
    :health-checker                   (p/extends-class-pred health-check/HealthChecker)
-   :organisaatio-service             (p/extends-class-pred organisaatio-service-protocol/OrganisaatioServiceProtocol)
    :auth-routes-source               (p/extends-class-pred auth-routes/AuthRoutesSource)
+   :hakukohderyhma-service           s/Any
    (s/optional-key :mock-dispatcher) (p/extends-class-pred mock-dispatcher-protocol/MockDispatcherProtocol)})
 
-(s/defn ^:private make-authenticated-routes [organisaatio-service
+(s/defn ^:private make-authenticated-routes [hakukohderyhma-service
                                              config]
   (api/routes
     (index-route config)
@@ -103,15 +103,14 @@
         :summary "Tallentaa uuden hakukohderyhmän"
         :body [hakukohderyhma schema/HakukohderyhmaRequest]
         :return schema/HakukohderyhmaResponse
-        (let [result (organisaatio-service-protocol/post-new-organisaatio organisaatio-service hakukohderyhma)]
-          (response/ok result))))))
+        (response/ok (hakukohderyhma/create hakukohderyhma-service hakukohderyhma))))))
 
 (s/defn make-routes
   [{:keys [config
            db
            health-checker
-           organisaatio-service
            auth-routes-source
+           hakukohderyhma-service
            mock-dispatcher]} :- MakeHandlerArgs]
   (api/api
     {:swagger
@@ -128,7 +127,7 @@
                                         #(auth-middleware/with-authentication % (oph-urls/resolve-url :cas.login config) (:datasource db))
                                         session-client/wrap-session-client-headers
                                         (session-timeout/create-wrap-idle-session-timeout config)]
-                                       (-> (make-authenticated-routes organisaatio-service config)
+                                       (-> (make-authenticated-routes hakukohderyhma-service config)
                                            wrap-json/wrap-json-response
                                            api/undocumented)
                                        (auth-routes/create-auth-routes auth-routes-source))
