@@ -1,6 +1,6 @@
 (ns hakukohderyhmapalvelu.onr.onr-service
-  (:require [hakukohderyhmapalvelu.onr.onr-protocol :as onr-protocol]
-            [hakukohderyhmapalvelu.cas.cas-protocol :as cas-protocol]
+  (:require [hakukohderyhmapalvelu.cas.cas-protocol :as cas-protocol]
+            [hakukohderyhmapalvelu.onr.onr-protocol :as onr-protocol]
             [hakukohderyhmapalvelu.oph-url-properties :as url]
             [schema.core :as s]))
 

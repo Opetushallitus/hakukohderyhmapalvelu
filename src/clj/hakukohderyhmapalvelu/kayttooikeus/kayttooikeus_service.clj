@@ -1,7 +1,7 @@
 (ns hakukohderyhmapalvelu.kayttooikeus.kayttooikeus-service
-  (:require [hakukohderyhmapalvelu.kayttooikeus.kayttooikeus-protocol :as kayttooikeus-protocol]
-            [hakukohderyhmapalvelu.oph-url-properties :as url]
-            [hakukohderyhmapalvelu.cas.cas-protocol :as cas-client]))
+  (:require [hakukohderyhmapalvelu.cas.cas-protocol :as cas-client]
+            [hakukohderyhmapalvelu.kayttooikeus.kayttooikeus-protocol :as kayttooikeus-protocol]
+            [hakukohderyhmapalvelu.oph-url-properties :as url]))
 
 (defrecord HttpKayttooikeusService [kayttooikeus-cas-client config]
 

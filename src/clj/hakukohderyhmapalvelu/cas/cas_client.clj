@@ -4,10 +4,10 @@
             [com.stuartsierra.component :as component]
             [hakukohderyhmapalvelu.caller-id :as caller-id]
             [hakukohderyhmapalvelu.cas.cas-protocol :as cas-protocol]
+            [hakukohderyhmapalvelu.config :as c]
             [hakukohderyhmapalvelu.oph-url-properties :as url]
             [schema.core :as s]
-            [schema-tools.core :as st]
-            [hakukohderyhmapalvelu.config :as c])
+            [schema-tools.core :as st])
   (:import [fi.vm.sade.javautils.cas CasSession ApplicationSession SessionToken]
            [java.net.http HttpClient]
            [java.time Duration]

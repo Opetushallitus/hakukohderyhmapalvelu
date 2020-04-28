@@ -14,9 +14,14 @@
                           :port          s/Int}
    :cas                  {:username s/Str
                           :password s/Str
-                          :services {:organisaatio-service {:service-url-property s/Keyword
-                                                            :session-cookie-name  s/Str}}}
-   :urls                 {:virkailija-baseurl s/Str}
+                          :services {:organisaatio-service  {:service-url-property s/Keyword
+                                                             :session-cookie-name  s/Str}
+                                     :kayttooikeus          {:service-url-property s/Keyword
+                                                             :session-cookie-name  s/Str}
+                                     :oppijanumerorekisteri {:service-url-property s/Keyword
+                                                             :session-cookie-name  s/Str}}}
+   :urls                 {:virkailija-baseurl        s/Str
+                          :hakukohderyhmapalvelu-url s/Str}
    :oph-organisaatio-oid s/Str
    :public-config        public/PublicConfig})
 

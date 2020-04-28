@@ -1,22 +1,30 @@
 (ns hakukohderyhmapalvelu.handler
   (:require [cheshire.core :as json]
+            [clj-ring-db-session.authentication.auth-middleware :as auth-middleware]
+            [clj-ring-db-session.session.session-client :as session-client]
+            [clj-ring-db-session.session.session-store :refer [create-session-store]]
+            [compojure.api.core :as compojure-core]
             [compojure.api.sweet :as api]
             [compojure.route :as route]
-            [hakukohderyhmapalvelu.config :as c]
+            [hakukohderyhmapalvelu.api-schemas :as schema]
+            [hakukohderyhmapalvelu.authentication.auth-routes :as auth-routes]
             [hakukohderyhmapalvelu.cas.mock.mock-cas-client-schemas :as mock-cas]
             [hakukohderyhmapalvelu.cas.mock.mock-dispatcher-protocol :as mock-dispatcher-protocol]
-            [hakukohderyhmapalvelu.organisaatio.organisaatio-protocol :as organisaatio-service-protocol]
+            [hakukohderyhmapalvelu.config :as c]
+            [hakukohderyhmapalvelu.health-check :as health-check]
             [hakukohderyhmapalvelu.oph-url-properties :as oph-urls]
+            [hakukohderyhmapalvelu.organisaatio.organisaatio-protocol :as organisaatio-service-protocol]
             [hakukohderyhmapalvelu.schemas.class-pred :as p]
-            [ring.util.http-response :as response]
+            [hakukohderyhmapalvelu.session-timeout :as session-timeout]
             [ring.middleware.defaults :as defaults]
             [ring.middleware.json :as wrap-json]
             [ring.middleware.logger :as logger]
             [ring.middleware.reload :as reload]
+            [ring.middleware.session :as ring-session]
+            [ring.util.http-response :as response]
             [schema.core :as s]
-            [selmer.parser :as selmer]
-            [hakukohderyhmapalvelu.health-check :as health-check]
-            [hakukohderyhmapalvelu.api-schemas :as schema]))
+            [selmer.parser :as selmer])
+  (:import [javax.sql DataSource]))
 
 (defn- redirect-routes []
   (api/undocumented
@@ -38,7 +46,7 @@
 (defn- health-check-route [health-checker]
   (s/validate (p/extends-class-pred health-check/HealthChecker) health-checker)
   (api/undocumented
-    (api/GET "/health" []
+    (api/GET "/api/health" []
       (health-check/check-health health-checker))))
 
 (defn- resource-route []
@@ -50,7 +58,7 @@
     (route/not-found "<h1>Not found</h1>")))
 
 (defn- integration-test-routes [mock-dispatcher]
-  (api/context "/mock" []
+  (api/context "/api/mock" []
     (api/POST "/cas-client" []
       :summary "Mockaa yhden CAS -clientilla tehdyn HTTP-kutsun"
       :body [spec mock-cas/MockCasClientRequest]
@@ -62,16 +70,41 @@
       (.reset-mocks mock-dispatcher)
       (response/ok {}))))
 
+(defn- create-wrap-database-backed-session [config datasource]
+  (fn [handler] (ring-session/wrap-session handler
+                               {:root "/hakukohderyhmapalvelu"
+                                :cookie-attrs {:secure (= :production (-> config :public-config :environment))}
+                                :store (create-session-store datasource)})))
+
+
 (s/defschema MakeHandlerArgs
   {:config                           c/HakukohderyhmaConfig
+   :db                               {:datasource (s/pred #(instance? DataSource %))
+                                      :config c/HakukohderyhmaConfig}
    :health-checker                   (p/extends-class-pred health-check/HealthChecker)
    :organisaatio-service             (p/extends-class-pred organisaatio-service-protocol/OrganisaatioServiceProtocol)
+   :auth-routes-source               (p/extends-class-pred auth-routes/AuthRoutesSource)
    (s/optional-key :mock-dispatcher) (p/extends-class-pred mock-dispatcher-protocol/MockDispatcherProtocol)})
+
+(s/defn ^:private make-authenticated-routes [organisaatio-service
+                                             config]
+  (api/routes
+    (index-route config)
+    (api/context "/api" []
+      :tags ["api"]
+      (api/POST "/hakukohderyhma" []
+        :summary "Tallentaa uuden hakukohderyhmän"
+        :body [hakukohderyhma schema/HakukohderyhmaRequest]
+        :return schema/HakukohderyhmaResponse
+        (let [result (.post-new-organisaatio organisaatio-service hakukohderyhma)]
+          (response/ok result))))))
 
 (s/defn make-routes
   [{:keys [config
+           db
            health-checker
            organisaatio-service
+           auth-routes-source
            mock-dispatcher]} :- MakeHandlerArgs]
   (api/api
     {:swagger
@@ -84,17 +117,17 @@
              :produces ["application/json"]}}}
     (redirect-routes)
     (api/context "/hakukohderyhmapalvelu" []
-      (index-route config)
-      (api/context "/api" []
-        :tags ["api"]
-        (api/POST "/hakukohderyhma" []
-          :summary "Tallentaa uuden hakukohderyhmän"
-          :body [hakukohderyhma schema/HakukohderyhmaRequest]
-          :return schema/HakukohderyhmaResponse
-          (response/ok (.post-new-organisaatio organisaatio-service hakukohderyhma)))
-        (when (-> config :public-config :environment (= :it))
-          (integration-test-routes mock-dispatcher))
-        (health-check-route health-checker))
+      (compojure-core/route-middleware [(create-wrap-database-backed-session config (:datasource db))
+                                        #(auth-middleware/with-authentication % (oph-urls/resolve-url :cas.login config) (:datasource db))
+                                        session-client/wrap-session-client-headers
+                                        (session-timeout/create-wrap-idle-session-timeout config)]
+                                       (-> (make-authenticated-routes organisaatio-service config)
+                                           wrap-json/wrap-json-response
+                                           api/undocumented)
+                                       (auth-routes/create-auth-routes auth-routes-source))
+      (when (-> config :public-config :environment (= :it))
+        (integration-test-routes mock-dispatcher))
+      (health-check-route health-checker)
       (resource-route))
     (not-found-route)))
 
