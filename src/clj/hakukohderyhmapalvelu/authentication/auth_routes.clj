@@ -7,7 +7,7 @@
             [com.stuartsierra.component :as component]
             [environ.core :refer [env]]
             [hakukohderyhmapalvelu.audit-log :as audit-log]
-            [hakukohderyhmapalvelu.cas.cas-ticket-validator :as cas-ticket-validator]
+            [hakukohderyhmapalvelu.cas.cas-ticket-client-protocol :as cas-ticket-client-protocol]
             [hakukohderyhmapalvelu.config :as c]
             [hakukohderyhmapalvelu.kayttooikeus.kayttooikeus-protocol :as kayttooikeus-protocol]
             [hakukohderyhmapalvelu.onr.onr-protocol :as onr-protocol]
@@ -37,7 +37,7 @@
 (defn- cas-login [cas-ticket-validator ticket]
   (fn []
     (when ticket
-      [(cas-ticket-validator/validate-service-ticket cas-ticket-validator ticket)
+      [(cas-ticket-client-protocol/validate-service-ticket cas-ticket-validator ticket)
        ticket])))
 
 (defn- fake-login-provider [ticket]
@@ -110,7 +110,7 @@
   (start [this]
     (s/validate (s/pred #(instance? DataSource %)) (:datasource db))
     (s/validate c/HakukohderyhmaConfig config)
-    (s/validate (p/extends-class-pred cas-ticket-validator/CasTicketClientProtocol) cas-ticket-validator)
+    (s/validate (p/extends-class-pred cas-ticket-client-protocol/CasTicketClientProtocol) cas-ticket-validator)
     (s/validate (p/extends-class-pred kayttooikeus-protocol/KayttooikeusService) kayttooikeus-service)
     (s/validate (p/extends-class-pred onr-protocol/PersonService) person-service)
     (s/validate (p/extends-class-pred organisaatio-protocol/OrganisaatioServiceProtocol) organisaatio-service)

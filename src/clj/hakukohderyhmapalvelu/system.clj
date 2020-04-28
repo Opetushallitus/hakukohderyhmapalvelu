@@ -4,7 +4,7 @@
             [hakukohderyhmapalvelu.audit-log :as audit-log]
             [hakukohderyhmapalvelu.authentication.auth-routes :as auth-routes]
             [hakukohderyhmapalvelu.cas.cas-authenticating-client :as authenticating-client]
-            [hakukohderyhmapalvelu.cas.cas-ticket-validator :as cas-ticket-validator]
+            [hakukohderyhmapalvelu.cas.cas-ticket-client :as cas-ticket-validator]
             [hakukohderyhmapalvelu.cas.mock.mock-authenticating-client :as mock-authenticating-client]
             [hakukohderyhmapalvelu.cas.mock.mock-dispatcher :as mock-dispatcher]
             [hakukohderyhmapalvelu.config :as c]

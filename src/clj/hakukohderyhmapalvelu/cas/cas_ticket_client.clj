@@ -1,14 +1,11 @@
-(ns hakukohderyhmapalvelu.cas.cas-ticket-validator
+(ns hakukohderyhmapalvelu.cas.cas-ticket-client
   (:require [clojure.xml :as xml]
             [com.stuartsierra.component :as component]
             [hakukohderyhmapalvelu.cas.cas-authenticating-client :as authenticating-client]
+            [hakukohderyhmapalvelu.cas.cas-ticket-client-protocol :as cas-ticket-client-protocol]
             [hakukohderyhmapalvelu.oph-url-properties :as url]
             [taoensso.timbre :as log])
   (:import [java.io ByteArrayInputStream]))
-
-
-(defprotocol CasTicketClientProtocol
-  (validate-service-ticket [this ticket]))
 
 (defn- check-result [parse-result]
   (if (and (some? parse-result) (> (.length parse-result) 0))
@@ -46,7 +43,7 @@
   (stop [this]
     (assoc this :service-parameter nil))
 
-  CasTicketClientProtocol
+  cas-ticket-client-protocol/CasTicketClientProtocol
   (validate-service-ticket [this ticket]
     (-> (authenticating-client/do-request {:method :get
                                 :url               (url/resolve-url :cas.validate-service-ticket config {"ticket"  ticket
