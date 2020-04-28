@@ -1,16 +1,16 @@
 (ns hakukohderyhmapalvelu.onr.onr-service
-  (:require [hakukohderyhmapalvelu.cas.cas-protocol :as cas-protocol]
+  (:require [hakukohderyhmapalvelu.cas.cas-authenticating-client-protocol :as authenticating-client]
             [hakukohderyhmapalvelu.onr.onr-protocol :as onr-protocol]
             [hakukohderyhmapalvelu.oph-url-properties :as url]
             [schema.core :as s]))
 
-(defrecord HttpPersonService [onr-cas-client config]
+(defrecord HttpPersonService [onr-authenticating-client config]
 
   onr-protocol/PersonService
 
   (get-person [_ oid]
-    (let [url    (url/resolve-url :oppijanumerorekisteri.get-person config oid)]
-      (cas-protocol/get onr-cas-client url s/Any))))
+    (let [url (url/resolve-url :oppijanumerorekisteri.get-person config oid)]
+      (authenticating-client/get onr-authenticating-client url s/Any))))
 
 (def fake-onr-person {:oidHenkilo   "1.2.3.4.5.6"
                       :hetu         "020202A0202"

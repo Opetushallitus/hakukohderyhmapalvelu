@@ -1,14 +1,14 @@
 (ns hakukohderyhmapalvelu.kayttooikeus.kayttooikeus-service
-  (:require [hakukohderyhmapalvelu.cas.cas-protocol :as cas-client]
+  (:require [hakukohderyhmapalvelu.cas.cas-authenticating-client-protocol :as authenticating-client]
             [hakukohderyhmapalvelu.kayttooikeus.kayttooikeus-protocol :as kayttooikeus-protocol]
             [hakukohderyhmapalvelu.oph-url-properties :as url]))
 
-(defrecord HttpKayttooikeusService [kayttooikeus-cas-client config]
+(defrecord HttpKayttooikeusService [kayttooikeus-authenticating-client config]
 
   kayttooikeus-protocol/KayttooikeusService
   (virkailija-by-username [_ username]
     (let [url                 (url/resolve-url :kayttooikeus-service.kayttooikeus.kayttaja config {"username" username})
-          virkailija-response (cas-client/get kayttooikeus-cas-client url [kayttooikeus-protocol/Virkailija])]
+          virkailija-response (authenticating-client/get kayttooikeus-authenticating-client url [kayttooikeus-protocol/Virkailija])]
       (if-let [virkailija (first virkailija-response)]
         virkailija
         (throw (new RuntimeException

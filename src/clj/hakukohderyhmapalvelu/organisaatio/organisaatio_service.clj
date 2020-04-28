@@ -6,7 +6,7 @@
             [schema.core :as s]
             [hakukohderyhmapalvelu.config :as c]))
 
-(defrecord OrganisaatioService [organisaatio-service-cas-client config]
+(defrecord OrganisaatioService [organisaatio-service-authenticating-client config]
   organisaatio-service-protocol/OrganisaatioServiceProtocol
 
   (post-new-organisaatio [_ hakukohderyhma]
@@ -19,7 +19,7 @@
                                 :tyypit       ["Ryhma"]
                                 :ryhmatyypit  ["ryhmatyypit_2#1"]
                                 :kayttoryhmat ["kayttoryhmat_1#1"]})
-          response-body (.post organisaatio-service-cas-client
+          response-body (.post organisaatio-service-authenticating-client
                                {:url  url
                                 :body body}
                                {:request-schema  schemas/PostNewOrganisaatioRequest

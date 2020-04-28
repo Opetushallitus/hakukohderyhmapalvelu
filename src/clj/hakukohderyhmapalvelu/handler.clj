@@ -8,7 +8,7 @@
             [compojure.route :as route]
             [hakukohderyhmapalvelu.api-schemas :as schema]
             [hakukohderyhmapalvelu.authentication.auth-routes :as auth-routes]
-            [hakukohderyhmapalvelu.cas.mock.mock-cas-client-schemas :as mock-cas]
+            [hakukohderyhmapalvelu.cas.mock.mock-authenticating-client-schemas :as mock-cas]
             [hakukohderyhmapalvelu.cas.mock.mock-dispatcher-protocol :as mock-dispatcher-protocol]
             [hakukohderyhmapalvelu.config :as c]
             [hakukohderyhmapalvelu.health-check :as health-check]
@@ -59,9 +59,9 @@
 
 (defn- integration-test-routes [mock-dispatcher]
   (api/context "/api/mock" []
-    (api/POST "/cas-client" []
-      :summary "Mockaa yhden CAS -clientilla tehdyn HTTP-kutsun"
-      :body [spec mock-cas/MockCasClientRequest]
+    (api/POST "/authenticating-client" []
+      :summary "Mockaa yhden CAS-autentikoituvalla clientilla tehdyn HTTP-kutsun"
+      :body [spec mock-cas/MockCasAuthenticatingClientRequest]
       (.dispatch-mock mock-dispatcher spec)
       (response/ok {}))
 

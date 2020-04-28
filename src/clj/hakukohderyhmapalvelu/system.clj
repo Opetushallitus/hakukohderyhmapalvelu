@@ -3,9 +3,9 @@
             [com.stuartsierra.component :as component]
             [hakukohderyhmapalvelu.audit-log :as audit-log]
             [hakukohderyhmapalvelu.authentication.auth-routes :as auth-routes]
-            [hakukohderyhmapalvelu.cas.cas-client :as cas-client]
+            [hakukohderyhmapalvelu.cas.cas-authenticating-client :as authenticating-client]
             [hakukohderyhmapalvelu.cas.cas-ticket-validator :as cas-ticket-validator]
-            [hakukohderyhmapalvelu.cas.mock.mock-cas-client :as mock-cas-client]
+            [hakukohderyhmapalvelu.cas.mock.mock-authenticating-client :as mock-authenticating-client]
             [hakukohderyhmapalvelu.cas.mock.mock-dispatcher :as mock-dispatcher]
             [hakukohderyhmapalvelu.config :as c]
             [hakukohderyhmapalvelu.db :as db]
@@ -29,7 +29,7 @@
 
                            :organisaatio-service (component/using
                                                    (organisaatio-service/map->OrganisaatioService {:config config})
-                                                   [:organisaatio-service-cas-client])
+                                                   [:organisaatio-service-authenticating-client])
 
                            :health-checker (component/using
                                              (health-check/map->DbHealthChecker {})
@@ -38,13 +38,13 @@
                            :cas-ticket-validator (cas-ticket-validator/map->CasTicketClient {:config config})
 
                            :auth-routes-source (component/using
-                                                (auth-routes/map->AuthRoutesMaker {:config config})
-                                                [:db
-                                                 :cas-ticket-validator
-                                                 :kayttooikeus-service
-                                                 :person-service
-                                                 :organisaatio-service
-                                                 :audit-logger])
+                                                 (auth-routes/map->AuthRoutesMaker {:config config})
+                                                 [:db
+                                                  :cas-ticket-validator
+                                                  :kayttooikeus-service
+                                                  :person-service
+                                                  :organisaatio-service
+                                                  :audit-logger])
 
                            :http-server (component/using
                                           (http/map->HttpServer {:config config})
@@ -55,27 +55,27 @@
                                                    :auth-routes-source]
                                                   it-profile?
                                                   (conj :mock-dispatcher)))]
-        production-system [:organisaatio-service-cas-client (cas-client/map->CasClient {:service :organisaatio-service
-                                                                                        :config  config})
+        production-system [:organisaatio-service-authenticating-client (authenticating-client/map->CasAuthenticatingClient {:service :organisaatio-service
+                                                                                                                            :config  config})
 
-                           :kayttooikeus-cas-client (cas-client/map->CasClient {:service :kayttooikeus
-                                                                                :config  config})
+                           :kayttooikeus-authenticating-client (authenticating-client/map->CasAuthenticatingClient {:service :kayttooikeus
+                                                                                                                    :config  config})
 
                            :kayttooikeus-service (component/using
                                                    (kayttooikeus-service/map->HttpKayttooikeusService {:config config})
-                                                   [:kayttooikeus-cas-client])
+                                                   [:kayttooikeus-authenticating-client])
 
-                           :onr-cas-client (cas-client/map->CasClient {:service :oppijanumerorekisteri
-                                                                       :config config})
+                           :onr-authenticating-client (authenticating-client/map->CasAuthenticatingClient {:service :oppijanumerorekisteri
+                                                                                                           :config  config})
 
                            :person-service (component/using
                                              (onr-service/map->HttpPersonService {:config config})
-                                             [:onr-cas-client])]
+                                             [:onr-authenticating-client])]
         mock-system       [:mock-organisaatio-service-cas-chan (async/chan)
 
-                           :organisaatio-service-cas-client (component/using
-                                                              (mock-cas-client/map->MockedCasClient {})
-                                                              {:chan :mock-organisaatio-service-cas-chan})
+                           :organisaatio-service-authenticating-client (component/using
+                                                                         (mock-authenticating-client/map->MockedCasClient {})
+                                                                         {:chan :mock-organisaatio-service-cas-chan})
 
                            :kayttooikeus-service (kayttooikeus-service/->FakeKayttooikeusService)
 

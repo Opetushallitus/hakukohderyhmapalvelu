@@ -1,9 +1,9 @@
-(ns hakukohderyhmapalvelu.cas.cas-client
+(ns hakukohderyhmapalvelu.cas.cas-authenticating-client
   (:require [cheshire.core :as json]
             [clj-http.client :as http]
             [com.stuartsierra.component :as component]
             [hakukohderyhmapalvelu.caller-id :as caller-id]
-            [hakukohderyhmapalvelu.cas.cas-protocol :as cas-protocol]
+            [hakukohderyhmapalvelu.cas.cas-authenticating-client-protocol :as cas-authenticating-protocol]
             [hakukohderyhmapalvelu.config :as c]
             [hakukohderyhmapalvelu.oph-url-properties :as url]
             [schema.core :as s]
@@ -31,7 +31,7 @@
   {:request-schema  s/Any
    :response-schema s/Any})
 
-(s/defschema CasPostOpts
+(s/defschema PostOpts
   {:url  s/Str
    :body s/Any})
 
@@ -130,7 +130,7 @@
   (-> (url/resolve-url url-key config)
       (URI/create)))
 
-(defrecord CasClient [config service]
+(defrecord CasAuthenticatingClient [config service]
   component/Lifecycle
   (start [this]
     (s/validate c/HakukohderyhmaConfig config)
@@ -166,12 +166,12 @@
     (assoc this
       :application-session nil))
 
-  cas-protocol/CasClientProtocol
+  cas-authenticating-protocol/CasAuthenticatingClientProtocol
 
   (post [this
            {:keys [url body] :as opts}
            schemas]
-      (s/validate CasPostOpts opts)
+      (s/validate PostOpts opts)
       (do-cas-authenticated-request {:application-session (:application-session this)
                                      :method              :post
                                      :url                 url

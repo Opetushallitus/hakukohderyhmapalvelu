@@ -1,7 +1,7 @@
-(ns hakukohderyhmapalvelu.cas.mock.mock-cas-client
+(ns hakukohderyhmapalvelu.cas.mock.mock-authenticating-client
   (:require [clojure.core.async :as async]
             [clojure.string :as string]
-            [hakukohderyhmapalvelu.cas.cas-protocol :as cas-protocol]))
+            [hakukohderyhmapalvelu.cas.cas-authenticating-client-protocol :as cas-protocol]))
 
 (defn- validate-method [expected-method actual-method]
   (when-not (= actual-method expected-method)
@@ -16,7 +16,7 @@
     (format "HTTP-kutsun sanoma oli väärä\n\n\tvaadittiin:\n\n%s\n\n\toli:\n\n%s" expected-body actual-body)))
 
 (defrecord MockedCasClient [chan]
-  cas-protocol/CasClientProtocol
+  cas-protocol/CasAuthenticatingClientProtocol
 
   (post [this
          {actual-url  :url

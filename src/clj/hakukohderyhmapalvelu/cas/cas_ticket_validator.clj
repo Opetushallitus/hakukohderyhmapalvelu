@@ -1,7 +1,7 @@
 (ns hakukohderyhmapalvelu.cas.cas-ticket-validator
   (:require [clojure.xml :as xml]
             [com.stuartsierra.component :as component]
-            [hakukohderyhmapalvelu.cas.cas-client :as cas-client]
+            [hakukohderyhmapalvelu.cas.cas-authenticating-client :as authenticating-client]
             [hakukohderyhmapalvelu.oph-url-properties :as url]
             [taoensso.timbre :as log])
   (:import [java.io ByteArrayInputStream]))
@@ -48,13 +48,13 @@
 
   CasTicketClientProtocol
   (validate-service-ticket [this ticket]
-    (-> (cas-client/do-request {:method :get
-                                :url    (url/resolve-url :cas.validate-service-ticket config {"ticket"  ticket
+    (-> (authenticating-client/do-request {:method :get
+                                :url               (url/resolve-url :cas.validate-service-ticket config {"ticket"  ticket
                                                                                               "service" (:service-parameter this)})
-                                :body   {}}
-                               {:request-schema  {}
+                                :body              {}}
+                                          {:request-schema  {}
                                 :response-schema {}}
-                               config)
+                                          config)
         (assert-ok-response)
         (:body)
         (parse-username))))

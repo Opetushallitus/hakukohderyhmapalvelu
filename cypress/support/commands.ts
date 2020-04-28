@@ -13,12 +13,16 @@ Cypress.Commands.add('mockBackendRequest', (opts: MockBackendRequestOpts) => {
         .then(response => ({ request, response })),
     )
     .then(({ request, response }) => {
-      cy.request('POST', '/hakukohderyhmapalvelu/api/mock/cas-client', {
-        method: opts.method.toLowerCase(),
-        path: opts.path,
-        service: opts.service,
-        request,
-        response,
-      })
+      cy.request(
+        'POST',
+        '/hakukohderyhmapalvelu/api/mock/authenticating-client',
+        {
+          method: opts.method.toLowerCase(),
+          path: opts.path,
+          service: opts.service,
+          request,
+          response,
+        },
+      )
     })
 })
