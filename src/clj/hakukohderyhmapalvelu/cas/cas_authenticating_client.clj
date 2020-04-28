@@ -1,13 +1,11 @@
 (ns hakukohderyhmapalvelu.cas.cas-authenticating-client
-  (:require [cheshire.core :as json]
-            [clj-http.client :as http]
-            [com.stuartsierra.component :as component]
+  (:require [com.stuartsierra.component :as component]
             [hakukohderyhmapalvelu.caller-id :as caller-id]
             [hakukohderyhmapalvelu.cas.cas-authenticating-client-protocol :as cas-authenticating-protocol]
             [hakukohderyhmapalvelu.config :as c]
+            [hakukohderyhmapalvelu.http :as http]
             [hakukohderyhmapalvelu.oph-url-properties :as url]
-            [schema.core :as s]
-            [schema-tools.core :as st])
+            [schema.core :as s])
   (:import [fi.vm.sade.javautils.cas CasSession ApplicationSession SessionToken]
            [java.net.http HttpClient]
            [java.time Duration]
@@ -23,70 +21,22 @@
       .getSessionToken
       .get))
 
-(s/defschema HttpMethod
-  (s/enum :post
-          :get))
-
-(s/defschema HttpValidation
-  {:request-schema  s/Any
-   :response-schema s/Any})
-
 (s/defschema PostOpts
   {:url  s/Str
    :body s/Any})
-
-(s/defn parse-and-validate
-  [response :- (st/open-schema {:body s/Str})
-   response-schema]
-  (as-> response response'
-        (:body response')
-        (json/parse-string response' true)
-        (s/validate response-schema response')))
-
-; TODO: Siirrä http-namespaceen
-(s/defn do-request
-  [{:keys [body] :as opts} :- (st/open-schema
-                                {:url    s/Str
-                                 :method HttpMethod})
-   {:keys [request-schema]} :- HttpValidation
-   config :- c/HakukohderyhmaConfig]
-  (when request-schema
-    (s/validate request-schema body))
-  (let [csrf-value "hakukohderyhmapalvelu"
-        caller-id  (-> config :oph-organisaatio-oid caller-id/make-caller-id)
-        opts       (-> opts
-                       (assoc :redirect-strategy :none)
-                       (assoc :throw-exceptions false)
-                       (update :body json/generate-string)
-                       (merge {:accept       :json
-                               :content-type "application/json"})
-                       (update :connection-timeout (fnil identity 60000))
-                       (update :socket-timeout (fnil identity 60000))
-                       (update :headers merge
-                               {"Caller-Id" caller-id
-                                "CSRF"      csrf-value})
-                       (update :cookies merge {"CSRF" {:value csrf-value :path "/"}}))]
-    (http/request opts)))
-
-(defn do-json-request [opts schemas config]
-  (let [response        (do-request opts schemas config)
-        response-schema (:response-schema schemas)]
-    (cond-> response
-            (= (:status response) 200)
-            (parse-and-validate response-schema))))
 
 (s/defn do-request-and-validate
   [{:keys [method
            body
            session-token
-           url]} :- {:method                HttpMethod
+           url]} :- {:method                http/HttpMethod
                      :session-token         SessionToken
                      :url                   s/Str
                      (s/optional-key :body) s/Any}
-   schemas :- HttpValidation
+   schemas :- http/HttpValidation
    config :- c/HakukohderyhmaConfig]
   (let [cookie (.cookie session-token)]
-    (do-json-request {:method  method
+    (http/do-json-request {:method  method
                       :url     url
                       :body    body
                       :cookies {(.getName cookie) {:path  (.getPath cookie)
@@ -100,9 +50,9 @@
            url
            body]} :- {:application-session   ApplicationSession
                       :url                   s/Str
-                      :method                HttpMethod
+                      :method                http/HttpMethod
                       (s/optional-key :body) s/Any}
-   schemas :- HttpValidation
+   schemas :- http/HttpValidation
    config :- c/HakukohderyhmaConfig]
   (let [session-token  (some-> application-session
                                .getSessionToken
