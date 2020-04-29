@@ -1,5 +1,6 @@
 (ns hakukohderyhmapalvelu.kayttooikeus.kayttooikeus-service
   (:require [hakukohderyhmapalvelu.cas.cas-authenticating-client-protocol :as authenticating-client]
+            [hakukohderyhmapalvelu.http :as http]
             [hakukohderyhmapalvelu.kayttooikeus.kayttooikeus-protocol :as kayttooikeus-protocol]
             [hakukohderyhmapalvelu.oph-url-properties :as url]))
 
@@ -7,12 +8,18 @@
 
   kayttooikeus-protocol/KayttooikeusService
   (virkailija-by-username [_ username]
-    (let [url                 (url/resolve-url :kayttooikeus-service.kayttooikeus.kayttaja config {"username" username})
-          virkailija-response (authenticating-client/get kayttooikeus-authenticating-client url [kayttooikeus-protocol/Virkailija])]
-      (if-let [virkailija (first virkailija-response)]
-        virkailija
+    (let [url      (url/resolve-url :kayttooikeus-service.kayttooikeus.kayttaja config {"username" username})
+          response (authenticating-client/get kayttooikeus-authenticating-client url [kayttooikeus-protocol/Virkailija])
+          {:keys [status body]} response]
+      (if (= 200 status)
+        (if-let [virkailija (first (http/parse-and-validate response [kayttooikeus-protocol/Virkailija]))]
+          virkailija
+          (throw (new RuntimeException
+                      (str "No virkailija found by username " username))))
         (throw (new RuntimeException
-                    (str "No virkailija found by username '" username "', response was '" virkailija-response "'")))))))
+                    (str "Could not get virkailija by username " username
+                         ", status: " status
+                         ", body: " body)))))))
 
 (def fake-virkailija-value
   {"1.2.246.562.11.11111111111"

@@ -46,10 +46,3 @@
                                 "CSRF"      csrf-value})
                        (update :cookies merge {"CSRF" {:value csrf-value :path "/"}}))]
     (http/request opts)))
-
-(defn do-json-request [opts schemas config]
-  (let [response        (do-request opts schemas config)
-        response-schema (:response-schema schemas)]
-    (cond-> response
-            (= (:status response) 200)
-            (parse-and-validate response-schema))))

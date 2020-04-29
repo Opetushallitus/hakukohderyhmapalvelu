@@ -25,7 +25,7 @@
   {:url  s/Str
    :body s/Any})
 
-(s/defn do-request-and-validate
+(s/defn do-authenticated-json-request
   [{:keys [method
            body
            session-token
@@ -36,13 +36,13 @@
    schemas :- http/HttpValidation
    config :- c/HakukohderyhmaConfig]
   (let [cookie (.cookie session-token)]
-    (http/do-json-request {:method  method
-                           :url     url
-                           :body    body
-                           :cookies {(.getName cookie) {:path  (.getPath cookie)
-                                                        :value (.getValue cookie)}}}
-                          schemas
-                          config)))
+    (http/do-request {:method  method
+                      :url     url
+                      :body    body
+                      :cookies {(.getName cookie) {:path  (.getPath cookie)
+                                                   :value (.getValue cookie)}}}
+                     schemas
+                     config)))
 
 (s/defn do-cas-authenticated-request
   [{:keys [application-session
@@ -64,7 +64,7 @@
         request-fn     (fn [session-token']
                          (-> request-params
                              (assoc :session-token session-token')
-                             (do-request-and-validate
+                             (do-authenticated-json-request
                                schemas
                                config)))
         response       (request-fn session-token)]
