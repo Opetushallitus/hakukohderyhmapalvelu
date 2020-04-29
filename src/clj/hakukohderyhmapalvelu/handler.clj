@@ -23,7 +23,8 @@
             [ring.middleware.session :as ring-session]
             [ring.util.http-response :as response]
             [schema.core :as s]
-            [selmer.parser :as selmer])
+            [selmer.parser :as selmer]
+            [taoensso.timbre :as log])
   (:import [javax.sql DataSource]))
 
 (defn- redirect-routes []
@@ -52,6 +53,12 @@
 (defn- resource-route []
   (api/undocumented
     (route/resources "/" {:root "public/hakukohderyhmapalvelu"})))
+
+(defn- error-route []
+  (api/GET "/virhe" []
+    (do
+      (log/warn "Käyttäjä ohjattiin virhesivulle. Ohjataan edelleen palvelun juureen.")
+      (response/temporary-redirect "/hakukohderyhmapalvelu/"))))
 
 (defn- not-found-route []
   (api/undocumented
@@ -128,6 +135,7 @@
       (when (-> config :public-config :environment (= :it))
         (integration-test-routes mock-dispatcher))
       (health-check-route health-checker)
+      (error-route)
       (resource-route))
     (not-found-route)))
 
