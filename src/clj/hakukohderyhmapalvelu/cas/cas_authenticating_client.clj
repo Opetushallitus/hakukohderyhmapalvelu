@@ -37,12 +37,12 @@
    config :- c/HakukohderyhmaConfig]
   (let [cookie (.cookie session-token)]
     (http/do-json-request {:method  method
-                      :url     url
-                      :body    body
-                      :cookies {(.getName cookie) {:path  (.getPath cookie)
-                                                   :value (.getValue cookie)}}}
-                     schemas
-                     config)))
+                           :url     url
+                           :body    body
+                           :cookies {(.getName cookie) {:path  (.getPath cookie)
+                                                        :value (.getValue cookie)}}}
+                          schemas
+                          config)))
 
 (s/defn do-cas-authenticated-request
   [{:keys [application-session
