@@ -99,11 +99,11 @@
     (index-route config)
     (api/context "/api" []
       :tags ["api"]
-      (api/POST "/hakukohderyhma" []
+      (api/POST "/hakukohderyhma" {session :session}
         :summary "Tallentaa uuden hakukohderyhmän"
         :body [hakukohderyhma schema/HakukohderyhmaRequest]
         :return schema/HakukohderyhmaResponse
-        (response/ok (hakukohderyhma/create hakukohderyhma-service hakukohderyhma))))))
+        (response/ok (hakukohderyhma/create hakukohderyhma-service session hakukohderyhma))))))
 
 (s/defn make-routes
   [{:keys [config

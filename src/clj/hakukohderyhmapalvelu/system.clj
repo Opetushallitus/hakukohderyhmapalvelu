@@ -34,7 +34,7 @@
 
                            :hakukohderyhma-service (component/using
                                                     (hakukohderyhma-service/map->HakukohderyhmaService {})
-                                                    [:organisaatio-service])
+                                                    [:audit-logger :organisaatio-service])
 
                            :health-checker (component/using
                                              (health-check/map->DbHealthChecker {})
