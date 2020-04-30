@@ -8,12 +8,14 @@
 
 (s/defn load-config
   [config :- c/HakukohderyhmaConfig]
-  (let [{:keys [virkailija-baseurl]} (-> config :urls)
+  (let [{:keys [virkailija-baseurl
+                hakukohderyhmapalvelu-url]} (-> config :urls)
         [virkailija-protocol
          virkailija-host] (string/split virkailija-baseurl #":\/\/")
         oph-properties (doto (OphProperties. (into-array String ["/hakukohderyhmapalvelu-oph.properties"]))
                          (.addDefault "virkailija.protocol" virkailija-protocol)
-                         (.addDefault "host.virkailija" virkailija-host))]
+                         (.addDefault "host.virkailija" virkailija-host)
+                         (.addDefault "url-hakukohderyhmapalvelu" hakukohderyhmapalvelu-url))]
     (reset! url-properties oph-properties)))
 
 (s/defn front-json

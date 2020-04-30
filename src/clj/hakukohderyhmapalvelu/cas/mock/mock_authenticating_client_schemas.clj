@@ -1,7 +1,7 @@
-(ns hakukohderyhmapalvelu.cas.mock.mock-cas-client-schemas
+(ns hakukohderyhmapalvelu.cas.mock.mock-authenticating-client-schemas
   (:require [schema.core :as s]))
 
-(s/defschema MockCasClientRequest
+(s/defschema MockCasAuthenticatingClientRequest
   {:method   (s/enum :post)
    :path     s/Str
    :service  (s/enum :organisaatio-service)

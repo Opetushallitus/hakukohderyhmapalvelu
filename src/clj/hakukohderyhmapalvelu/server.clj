@@ -1,17 +1,20 @@
 (ns hakukohderyhmapalvelu.server
   (:require [com.stuartsierra.component :as component]
-            [hakukohderyhmapalvelu.handler :as h]
-            [ring.adapter.jetty :as jetty]
-            [schema.core :as s]
+            [hakukohderyhmapalvelu.authentication.auth-routes :as auth-routes]
             [hakukohderyhmapalvelu.config :as c]
+            [hakukohderyhmapalvelu.handler :as h]
+            [hakukohderyhmapalvelu.health-check :as health]
             [hakukohderyhmapalvelu.organisaatio.organisaatio-protocol :as organisaatio-service-protocol]
             [hakukohderyhmapalvelu.schemas.class-pred :as p]
-            [hakukohderyhmapalvelu.health-check :as health]))
+            [ring.adapter.jetty :as jetty]
+            [schema.core :as s]))
 
 (defrecord HttpServer [config
+                       db
                        health-checker
                        organisaatio-service
-                       mock-dispatcher]
+                       mock-dispatcher
+                       auth-routes-source]
   component/Lifecycle
 
   (start [this]
@@ -19,11 +22,14 @@
     (s/validate (p/extends-class-pred organisaatio-service-protocol/OrganisaatioServiceProtocol) organisaatio-service)
     (s/validate (p/extends-class-pred health/HealthChecker) health-checker)
     (s/validate s/Any organisaatio-service)
+    (s/validate (p/extends-class-pred auth-routes/AuthRoutesSource) auth-routes-source)
     (let [port   (-> config :server :http :port)
           server (jetty/run-jetty (h/make-handler
                                     (cond-> {:config               config
+                                             :db                   db
                                              :health-checker       health-checker
-                                             :organisaatio-service organisaatio-service}
+                                             :organisaatio-service organisaatio-service
+                                             :auth-routes-source   auth-routes-source}
                                             (some? mock-dispatcher)
                                             (assoc :mock-dispatcher mock-dispatcher)))
                                   {:port port :join? false})]

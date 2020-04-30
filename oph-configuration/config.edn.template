@@ -8,7 +8,12 @@
  :cas                  {:username "{{ hakukohderyhmapalvelu_username_to_integrations | default('hakukohderyhmapalvelu') }}"
                         :password "{{ hakukohderyhmapalvelu_password_to_integrations }}"
                         :services {:organisaatio-service {:service-url-property :cas.service.organisaatio-service
-                                                          :session-cookie-name  "SESSION"}}}
- :urls                 {:virkailija-baseurl "{{ hakukohderyhmapalvelu_virkailija_base_url }}"}
+                                                          :session-cookie-name  "SESSION"}
+                                   :kayttooikeus         {:service-url-property :cas.service.kayttooikeus-service
+                                                          :session-cookie-name  "JSESSIONID"}
+                                   :oppijanumerorekisteri {:service-url-property :cas.service.oppijanumerorekisteri
+                                                           :session-cookie-name  "JSESSIONID"}}}
+ :urls                 {:virkailija-baseurl "{{ hakukohderyhmapalvelu_virkailija_base_url }}"
+                        :hakukohderyhmapalvelu-url "{{ hakukohderyhmapalvelu_url }}"}
  :oph-organisaatio-oid "1.2.246.562.10.00000000001"
  :public-config        {:environment {{ hakukohderyhmapalvelu_environment | default(':development') }}}}

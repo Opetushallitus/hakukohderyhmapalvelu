@@ -7,9 +7,18 @@ import * as hh from '../selectors/hakukohderyhmanHakutoimintoSelectors'
 import * as hl from '../selectors/hakukohderyhmanLisaysSelectors'
 import { PostHakukohderyhmaRequestFixture } from '../fixtures/PostHakukohderyhmaRequestFixture'
 
+function login(): void {
+  cy.request(
+    'get',
+    '/hakukohderyhmapalvelu/auth/cas?ticket=any_ticket_is_good_for_fake_authentication',
+  )
+  cy.getCookie('ring-session').should('exist')
+}
+
 describe('Hakukohderyhmäpalvelu', () => {
   before(() => {
     cy.resetMocks()
+    login()
     cy.visit('/')
   })
   it('Ohjaa käyttäjän polkuun /hakukohderyhmapalvelu', () => {
@@ -103,6 +112,7 @@ describe('Hakukohderyhmäpalvelu', () => {
         })
         describe('Hakukohderyhmän tallentaminen', () => {
           before(() => {
+            login()
             cy.fixture('post-hakukohderyhma-request.json').as(
               'post-hakukohderyhma-request',
             )
