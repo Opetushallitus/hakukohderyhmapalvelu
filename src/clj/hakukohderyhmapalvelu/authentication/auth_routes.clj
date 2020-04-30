@@ -16,12 +16,32 @@
             [hakukohderyhmapalvelu.schemas.class-pred :as p]
             [ring.util.response :as resp]
             [schema.core :as s]
+            [schema-tools.core :as st]
             [taoensso.timbre :as log])
   (:import [hakukohderyhmapalvelu.audit_log AuditLogger]
            [hakukohderyhmapalvelu.kayttooikeus.kayttooikeus_protocol KayttooikeusService]
            [hakukohderyhmapalvelu.onr.onr_protocol PersonService]
            [hakukohderyhmapalvelu.organisaatio.organisaatio_protocol OrganisaatioServiceProtocol]
            [javax.sql DataSource]))
+
+(s/defschema Identity
+  {:username                 s/Str
+   :oid                      s/Str
+   :ticket                   s/Str
+   :last-name                s/Str
+   :first-name               s/Str
+   :lang                     s/Str
+   :organizations            s/Any
+   :user-right-organizations [s/Any]
+   :superuser                s/Bool})
+
+(s/defschema Session
+  (st/open-schema
+    {(s/optional-key :key)          s/Str
+     :client-ip                     s/Str
+     :user-agent                    s/Str
+     (s/optional-key :original-url) s/Str
+     (s/optional-key :identity)     Identity}))
 
 (defprotocol AuthRoutesSource
   (create-auth-routes [this]))
@@ -56,7 +76,7 @@
     (s/validate kayttooikeus-protocol/Virkailija virkailija)
     (s/validate s/Str (:oidHenkilo henkilo))
     (s/validate s/Str ticket)
-    (s/validate s/Any session)
+    (s/validate Session session)
 
     ; TODO : add audit-logging
 
