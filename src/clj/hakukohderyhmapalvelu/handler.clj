@@ -103,7 +103,7 @@
         :summary "Tallentaa uuden hakukohderyhmän"
         :body [hakukohderyhma schema/HakukohderyhmaRequest]
         :return schema/HakukohderyhmaResponse
-        (let [result (.post-new-organisaatio organisaatio-service hakukohderyhma)]
+        (let [result (organisaatio-service-protocol/post-new-organisaatio organisaatio-service hakukohderyhma)]
           (response/ok result))))))
 
 (s/defn make-routes
