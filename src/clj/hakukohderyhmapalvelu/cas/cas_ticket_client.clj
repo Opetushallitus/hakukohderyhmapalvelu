@@ -5,7 +5,8 @@
             [hakukohderyhmapalvelu.http :as http]
             [hakukohderyhmapalvelu.oph-url-properties :as url]
             [taoensso.timbre :as log])
-  (:import [java.io ByteArrayInputStream]))
+  (:import [java.io ByteArrayInputStream]
+           java.util.UUID))
 
 (defn- check-result [parse-result]
   (if (and (some? parse-result) (> (.length parse-result) 0))
@@ -45,13 +46,22 @@
 
   cas-ticket-client-protocol/CasTicketClientProtocol
   (validate-service-ticket [this ticket]
-    (-> (http/do-request {:method :get
-                          :url    (url/resolve-url :cas.validate-service-ticket config {"ticket"  ticket
-                                                                                        "service" (:service-parameter this)})
-                          :body   {}}
-                         {:request-schema  {}
-                          :response-schema {}}
-                         config)
-        (assert-ok-response)
-        (:body)
-        (parse-username))))
+    [(-> (http/do-request {:method :get
+                           :url    (url/resolve-url :cas.validate-service-ticket config {"ticket"  ticket
+                                                                                         "service" (:service-parameter this)})
+                           :body   {}}
+                          {:request-schema  {}
+                           :response-schema {}}
+                          config)
+         (assert-ok-response)
+         (:body)
+         (parse-username))
+     ticket]))
+
+(defrecord FakeCasTicketClient []
+  cas-ticket-client-protocol/CasTicketClientProtocol
+  (validate-service-ticket [_ ticket]
+    [(if (= ticket "USER-WITH-HAKUKOHDE-ORGANIZATION")
+       "1.2.246.562.11.22222222222"
+       "1.2.246.562.11.11111111111")
+     (str (UUID/randomUUID))]))

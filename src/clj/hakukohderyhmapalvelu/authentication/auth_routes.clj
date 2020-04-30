@@ -16,28 +16,10 @@
             [ring.util.response :as resp]
             [schema.core :as s]
             [taoensso.timbre :as log])
-  (:import [hakukohderyhmapalvelu.audit_log AuditLogger]
-           [hakukohderyhmapalvelu.kayttooikeus.kayttooikeus_protocol KayttooikeusService]
-           [hakukohderyhmapalvelu.onr.onr_protocol PersonService]
-           [hakukohderyhmapalvelu.organisaatio.organisaatio_protocol OrganisaatioServiceProtocol]
-           [javax.sql DataSource]))
+  (:import javax.sql.DataSource))
 
 (defprotocol AuthRoutesSource
   (create-auth-routes [this]))
-
-(defn- cas-login [cas-ticket-validator ticket]
-  (fn []
-    (when ticket
-      [(cas-ticket-client-protocol/validate-service-ticket cas-ticket-validator ticket)
-       ticket])))
-
-(defn- fake-login-provider [ticket]
-  (fn []
-    (let [username      (if (= ticket "USER-WITH-HAKUKOHDE-ORGANIZATION")
-                          "1.2.246.562.11.22222222222"
-                          "1.2.246.562.11.11111111111")
-          unique-ticket (str (System/currentTimeMillis) "-" (rand-int (Integer/MAX_VALUE)))]
-      [username unique-ticket])))
 
 (defn- create-login-success-handler [organisaatio-service audit-logger session]
   (fn [response virkailija henkilo username ticket]
@@ -68,23 +50,6 @@
      (resp/redirect login-failed-url))
     ([]
      (resp/redirect login-failed-url))))
-
-(s/defn login [login-provider
-               kayttooikeus-service :- KayttooikeusService
-               person-service :- PersonService
-               organization-service :- OrganisaatioServiceProtocol
-               db
-               audit-logger :- AuditLogger
-               config :- c/HakukohderyhmaConfig
-               redirect-url :- s/Str
-               session]
-  (crdsa-login/login {:login-provider       login-provider
-                      :virkailija-finder    #(kayttooikeus-protocol/virkailija-by-username kayttooikeus-service %)
-                      :henkilo-finder       #(onr-protocol/get-person person-service %)
-                      :success-redirect-url redirect-url
-                      :do-on-success        (create-login-success-handler organization-service audit-logger session)
-                      :login-failed-handler (create-login-failed-handler (url/resolve-url :cas.failure config))
-                      :datasource           (:datasource db)}))
 
 (defn- cas-initiated-logout [logout-request]
   (log/warn (str "Saatiin logout-pyyntö'" logout-request "', mutta cas-initiated logoutia ei ole vielä toteutettu!"))
@@ -117,21 +82,16 @@
       (compojure-core/route-middleware [session-client/wrap-session-client-headers]
                                        (api/undocumented
                                          (api/GET "/cas" [ticket :as request]
-                                           (let [redirect-url   (or (get-in request [:session :original-url])
-                                                                    (:hakukohderyhmapalvelu-url this))
-                                                 environment    (-> config :public-config :environment)
-                                                 login-provider (if (= :it environment)
-                                                                  (fake-login-provider ticket)
-                                                                  (cas-login cas-ticket-validator ticket))]
-                                             (login login-provider
-                                                    kayttooikeus-service
-                                                    person-service
-                                                    organisaatio-service
-                                                    db
-                                                    audit-logger
-                                                    config
-                                                    redirect-url
-                                                    (:session request))))
+                                           (let [redirect-url (or (get-in request [:session :original-url])
+                                                                  (:hakukohderyhmapalvelu-url this))]
+                                             (crdsa-login/login
+                                              {:login-provider       #(cas-ticket-client-protocol/validate-service-ticket cas-ticket-validator ticket)
+                                               :virkailija-finder    #(kayttooikeus-protocol/virkailija-by-username kayttooikeus-service %)
+                                               :henkilo-finder       #(onr-protocol/get-person person-service %)
+                                               :success-redirect-url redirect-url
+                                               :do-on-success        (create-login-success-handler organisaatio-service audit-logger (:session request))
+                                               :login-failed-handler (create-login-failed-handler (url/resolve-url :cas.failure config))
+                                               :datasource           (:datasource db)})))
                                          (api/POST "/cas" [logout-request]
                                            (cas-initiated-logout logout-request))
                                          (api/GET "/logout" {session :session}

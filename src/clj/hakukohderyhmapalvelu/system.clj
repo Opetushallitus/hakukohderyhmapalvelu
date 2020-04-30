@@ -35,8 +35,6 @@
                                              (health-check/map->DbHealthChecker {})
                                              [:db])
 
-                           :cas-ticket-validator (cas-ticket-validator/map->CasTicketClient {:config config})
-
                            :auth-routes-source (component/using
                                                  (auth-routes/map->AuthRoutesMaker {:config config})
                                                  [:db
@@ -68,6 +66,8 @@
                            :onr-authenticating-client (authenticating-client/map->CasAuthenticatingClient {:service :oppijanumerorekisteri
                                                                                                            :config  config})
 
+                           :cas-ticket-validator (cas-ticket-validator/map->CasTicketClient {:config config})
+
                            :person-service (component/using
                                              (onr-service/map->HttpPersonService {:config config})
                                              [:onr-authenticating-client])]
@@ -80,6 +80,8 @@
                            :kayttooikeus-service (kayttooikeus-service/->FakeKayttooikeusService)
 
                            :person-service (onr-service/->FakePersonService)
+
+                           :cas-ticket-validator (cas-ticket-validator/map->FakeCasTicketClient {})
 
                            :mock-dispatcher (component/using
                                               (mock-dispatcher/map->MockDispatcher {})
