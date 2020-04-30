@@ -1,7 +1,8 @@
-(ns hakukohderyhmapalvelu.cas.mock.mock-cas-client
-  (:require [clojure.core.async :as async]
+(ns hakukohderyhmapalvelu.cas.mock.mock-authenticating-client
+  (:require [cheshire.core :as json]
+            [clojure.core.async :as async]
             [clojure.string :as string]
-            [hakukohderyhmapalvelu.cas.cas-protocol :as cas-protocol]))
+            [hakukohderyhmapalvelu.cas.cas-authenticating-client-protocol :as cas-protocol]))
 
 (defn- validate-method [expected-method actual-method]
   (when-not (= actual-method expected-method)
@@ -16,7 +17,7 @@
     (format "HTTP-kutsun sanoma oli väärä\n\n\tvaadittiin:\n\n%s\n\n\toli:\n\n%s" expected-body actual-body)))
 
 (defrecord MockedCasClient [chan]
-  cas-protocol/CasClientProtocol
+  cas-protocol/CasAuthenticatingClientProtocol
 
   (post [this
          {actual-url  :url
@@ -34,5 +35,6 @@
                            (validate-body expected-body actual-body)))]
         (if (seq errors)
           (throw (Exception. (format "Hakukohderyhmäpalvelun taustajärjestelmä yritti tehdä määritysten vastaisen HTTP-kutsun:\n\n%s" (clojure.string/join "\n" errors))))
-          mock-response))
+          {:status 200
+           :body (json/generate-string mock-response) }))
       (throw (Exception. (format "Hakukohderyhmäpalvelun taustajärjestelmä yritti lähettää määrittämättömän HTTP-kutsun osoitteeseen %s datalla %s" actual-url actual-body))))))
