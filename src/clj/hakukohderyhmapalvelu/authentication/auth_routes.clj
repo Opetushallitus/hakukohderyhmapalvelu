@@ -1,11 +1,9 @@
 (ns hakukohderyhmapalvelu.authentication.auth-routes
   (:require [clj-ring-db-session.authentication.login :as crdsa-login]
             [clj-ring-db-session.session.session-client :as session-client]
-            [clojure.string :as string]
             [compojure.api.core :as compojure-core]
             [compojure.api.sweet :as api]
             [com.stuartsierra.component :as component]
-            [environ.core :refer [env]]
             [hakukohderyhmapalvelu.audit-log :as audit-log]
             [hakukohderyhmapalvelu.cas.cas-ticket-client-protocol :as cas-ticket-client-protocol]
             [hakukohderyhmapalvelu.config :as c]
@@ -45,14 +43,6 @@
 
 (defprotocol AuthRoutesSource
   (create-auth-routes [this]))
-
-(defn- rewrite-url-for-environment
-  "Ensure that https is used when available (due to https termination on
-   non-development environments)"
-  [url-from-session]
-  (if (:dev? env)
-    url-from-session
-    (string/replace url-from-session #"^http://" "https://")))
 
 (defn- cas-login [cas-ticket-validator ticket]
   (fn []
@@ -146,9 +136,8 @@
       (compojure-core/route-middleware [session-client/wrap-session-client-headers]
                                        (api/undocumented
                                          (api/GET "/cas" [ticket :as request]
-                                           (let [redirect-url   (if-let [url-from-session (get-in request [:session :original-url])]
-                                                                  (rewrite-url-for-environment url-from-session)
-                                                                  (:hakukohderyhmapalvelu-url this))
+                                           (let [redirect-url   (or (get-in request [:session :original-url])
+                                                                    (:hakukohderyhmapalvelu-url this))
                                                  environment    (-> config :public-config :environment)
                                                  login-provider (if (= :it environment)
                                                                   (fake-login-provider ticket)
