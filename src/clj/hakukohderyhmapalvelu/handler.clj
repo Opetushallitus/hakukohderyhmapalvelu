@@ -22,7 +22,6 @@
             [clj-timbre-access-logging]
             [ring.middleware.defaults :as defaults]
             [ring.middleware.json :as wrap-json]
-            [ring.middleware.logger :as logger]
             [ring.middleware.reload :as reload]
             [ring.middleware.session :as ring-session]
             [ring.util.http-response :as response]
@@ -153,7 +152,6 @@
        {:path (str (-> args :config :log :base-path)
                    "/access_hakukohderyhmapalvelu"
                    (when (:hostname env) (str "_" (:hostname env))))})
-      (logger/wrap-with-logger)
       (wrap-json/wrap-json-response)
       (defaults/wrap-defaults (-> defaults/site-defaults
                                   (dissoc :static)

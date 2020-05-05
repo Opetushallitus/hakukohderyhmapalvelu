@@ -6,7 +6,13 @@
             [hakukohderyhmapalvelu.health-check :as health]
             [hakukohderyhmapalvelu.schemas.class-pred :as p]
             [ring.adapter.jetty :as jetty]
-            [schema.core :as s]))
+            [schema.core :as s])
+  (:import org.eclipse.jetty.server.handler.ErrorHandler))
+
+(defonce jetty-error-handler
+  (proxy [ErrorHandler] []
+    (handleErrorPage [_ writer _ _]
+      (.write writer "Internal server error\n"))))
 
 (defrecord HttpServer [config
                        db
@@ -29,7 +35,10 @@
                                              :auth-routes-source     auth-routes-source}
                                             (some? mock-dispatcher)
                                             (assoc :mock-dispatcher mock-dispatcher)))
-                                  {:port port :join? false})]
+                                  {:port         port
+                                   :join?        false
+                                   :configurator (fn [server]
+                                                   (.setErrorHandler server jetty-error-handler))})]
       (assoc this :server server)))
 
   (stop [this]
