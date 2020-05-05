@@ -24,4 +24,6 @@
 (s/set-fn-validation! true)
 (set-init! #(do
               (require 'hakukohderyhmapalvelu.system)
-              ((resolve 'hakukohderyhmapalvelu.system/hakukohderyhmapalvelu-system))))
+              (require 'hakukohderyhmapalvelu.config)
+              ((resolve 'hakukohderyhmapalvelu.system/hakukohderyhmapalvelu-system)
+               ((resolve 'hakukohderyhmapalvelu.config/make-config)))))

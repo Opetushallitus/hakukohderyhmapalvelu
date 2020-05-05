@@ -7,7 +7,6 @@
             [hakukohderyhmapalvelu.cas.cas-ticket-client :as cas-ticket-validator]
             [hakukohderyhmapalvelu.cas.mock.mock-authenticating-client :as mock-authenticating-client]
             [hakukohderyhmapalvelu.cas.mock.mock-dispatcher :as mock-dispatcher]
-            [hakukohderyhmapalvelu.config :as c]
             [hakukohderyhmapalvelu.db :as db]
             [hakukohderyhmapalvelu.hakukohderyhma.hakukohderyhma-service :as hakukohderyhma-service]
             [hakukohderyhmapalvelu.health-check :as health-check]
@@ -17,9 +16,8 @@
             [hakukohderyhmapalvelu.organisaatio.organisaatio-service :as organisaatio-service]
             [hakukohderyhmapalvelu.server :as http]))
 
-(defn hakukohderyhmapalvelu-system []
-  (let [config            (c/make-config)
-        it-profile?       (-> config :public-config :environment (= :it))
+(defn hakukohderyhmapalvelu-system [config]
+  (let [it-profile?       (-> config :public-config :environment (= :it))
         base-system       [:audit-logger (audit-logger/map->AuditLogger {:config config})
 
                            :db (db/map->DbPool {:config config})
