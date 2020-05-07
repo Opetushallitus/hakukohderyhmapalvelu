@@ -57,11 +57,13 @@
   (api/undocumented
     (route/resources "/" {:root "public/hakukohderyhmapalvelu"})))
 
-(defn- error-route []
-  (api/GET "/virhe" []
-    (do
-      (log/warn "Käyttäjä ohjattiin virhesivulle. Ohjataan edelleen palvelun juureen.")
-      (response/temporary-redirect "/hakukohderyhmapalvelu/"))))
+(defn- error-routes []
+  (api/undocumented
+    (api/GET "/login-error" []
+        (do
+          (log/warn "Kirjautuminen epäonnistui ja käyttäjä ohjattiin virhesivulle.")
+          (-> (response/internal-server-error "<h1>Virhe sisäänkirjautumisessa.</h1>")
+              (response/content-type "text/html"))))))
 
 (defn- not-found-route []
   (api/undocumented
@@ -137,7 +139,7 @@
       (when (-> config :public-config :environment (= :it))
         (integration-test-routes mock-dispatcher))
       (health-check-route health-checker)
-      (error-route)
+      (error-routes)
       (resource-route))
     (not-found-route)))
 
