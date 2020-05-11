@@ -21,35 +21,25 @@
 (defprotocol AuthRoutesSource
   (create-auth-routes [this]))
 
-(defn- create-login-success-handler [organisaatio-service audit-logger]
-  (fn [response virkailija henkilo username ticket]
-    (log/info "user" username "logged in")
-    (s/validate (p/extends-class-pred organisaatio-protocol/OrganisaatioServiceProtocol) organisaatio-service)
-    (s/validate (p/extends-class-pred audit-logger-protocol/AuditLoggerProtocol) audit-logger)
-    (s/validate kayttooikeus-protocol/Virkailija virkailija)
-    (s/validate s/Str (:oidHenkilo henkilo))
-    (s/validate s/Str ticket)
-    (s/validate schema/Session (:session response))
+(defn- login-succeeded [organisaatio-service audit-logger response virkailija henkilo username ticket]
+  (log/info "user" username "logged in")
+  (s/validate (p/extends-class-pred organisaatio-protocol/OrganisaatioServiceProtocol) organisaatio-service)
+  (s/validate (p/extends-class-pred audit-logger-protocol/AuditLoggerProtocol) audit-logger)
+  (s/validate kayttooikeus-protocol/Virkailija virkailija)
+  (s/validate s/Str (:oidHenkilo henkilo))
+  (s/validate s/Str ticket)
 
-    ; TODO : add audit-logging
+  (s/validate schema/Session (:session response))
+  ; TODO : add audit-logging
 
-    (update-in
-      response
-      [:session :identity]
-      assoc
-      :user-right-organizations []                          ; TODO : Add organisations
-      :superuser false                                      ; TODO : Add organisations
-      :organizations {}                                     ; TODO : Add organisations
-      )))
+  response)
 
-(defn- create-login-failed-handler [login-failed-url]
-  (fn
-    ([e]
-     (.printStackTrace e)
-     (log/error e "Error in login ticket handling")
-     (resp/redirect login-failed-url))
-    ([]
-     (resp/redirect login-failed-url))))
+(defn- login-failed
+  ([login-failed-url e]
+   (log/error e "Error in login ticket handling")
+   (resp/redirect login-failed-url))
+  ([login-failed-url]
+   (resp/redirect login-failed-url)))
 
 (defn- cas-initiated-logout [logout-request]
   (log/warn (str "Saatiin logout-pyyntö'" logout-request "', mutta cas-initiated logoutia ei ole vielä toteutettu!"))
@@ -71,10 +61,18 @@
     (s/validate (p/extends-class-pred onr-protocol/PersonService) person-service)
     (s/validate (p/extends-class-pred organisaatio-protocol/OrganisaatioServiceProtocol) organisaatio-service)
     (s/validate (p/extends-class-pred audit-logger-protocol/AuditLoggerProtocol) audit-logger)
-    (assoc this :hakukohderyhmapalvelu-url (get-in config [:urls :hakukohderyhmapalvelu-url])))
+    (assoc this :hakukohderyhmapalvelu-url (get-in config [:urls :hakukohderyhmapalvelu-url]))
+    (assoc this :login-failure-url (url/resolve-url :cas.failure config))
+    (s/validate s/Str (get-in config [:urls :hakukohderyhmapalvelu-url]))
+    (s/validate s/Str (url/resolve-url :cas.failure config))
+    (assoc this
+      :hakukohderyhmapalvelu-url (get-in config [:urls :hakukohderyhmapalvelu-url])
+      :login-failure-url (url/resolve-url :cas.failure config)))
 
   (stop [this]
-    (assoc this :hakukohderyhmapalvelu-url nil))
+    (assoc this
+      :hakukohderyhmapalvelu-url nil
+      :login-failure-url nil))
 
   AuthRoutesSource
   (create-auth-routes [this]
@@ -82,16 +80,22 @@
       (compojure-core/route-middleware [session-client/wrap-session-client-headers]
                                        (api/undocumented
                                          (api/GET "/cas" [ticket :as request]
-                                           (let [redirect-url (or (get-in request [:session :original-url])
-                                                                  (:hakukohderyhmapalvelu-url this))]
-                                             (crdsa-login/login
-                                              {:login-provider       #(cas-ticket-client-protocol/validate-service-ticket cas-ticket-validator ticket)
-                                               :virkailija-finder    #(kayttooikeus-protocol/virkailija-by-username kayttooikeus-service %)
-                                               :henkilo-finder       #(onr-protocol/get-person person-service %)
-                                               :success-redirect-url redirect-url
-                                               :do-on-success        (create-login-success-handler organisaatio-service audit-logger)
-                                               :login-failed-handler (create-login-failed-handler (url/resolve-url :cas.failure config))
-                                               :datasource           (:datasource db)})))
+                                           (try
+                                             (if-let [[username _] (cas-ticket-client-protocol/validate-service-ticket cas-ticket-validator ticket)]
+                                               (let [redirect-url (or (get-in request [:session :original-url])
+                                                                      (:hakukohderyhmapalvelu-url this))
+                                                     virkailija   (kayttooikeus-protocol/virkailija-by-username kayttooikeus-service username)
+                                                     henkilo      (onr-protocol/get-person person-service (:oidHenkilo virkailija))
+                                                     response     (crdsa-login/login
+                                                                    {:username             username
+                                                                     :henkilo              henkilo
+                                                                     :ticket               ticket
+                                                                     :success-redirect-url redirect-url
+                                                                     :datasource           (:datasource db)})]
+                                                 (login-succeeded organisaatio-service audit-logger response virkailija henkilo username ticket))
+                                               (login-failed (:login-failure-url this)))
+                                             (catch Exception e
+                                               (login-failed (:login-failure-url this) e))))
                                          (api/POST "/cas" [logout-request]
                                            (cas-initiated-logout logout-request))
                                          (api/GET "/logout" {session :session}
