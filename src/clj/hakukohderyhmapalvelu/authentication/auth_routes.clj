@@ -21,7 +21,7 @@
 (defprotocol AuthRoutesSource
   (create-auth-routes [this]))
 
-(defn- create-login-success-handler [organisaatio-service audit-logger session]
+(defn- create-login-success-handler [organisaatio-service audit-logger]
   (fn [response virkailija henkilo username ticket]
     (log/info "user" username "logged in")
     (s/validate (p/extends-class-pred organisaatio-protocol/OrganisaatioServiceProtocol) organisaatio-service)
@@ -29,7 +29,7 @@
     (s/validate kayttooikeus-protocol/Virkailija virkailija)
     (s/validate s/Str (:oidHenkilo henkilo))
     (s/validate s/Str ticket)
-    (s/validate schema/Session session)
+    (s/validate schema/Session (:session response))
 
     ; TODO : add audit-logging
 
@@ -89,7 +89,7 @@
                                                :virkailija-finder    #(kayttooikeus-protocol/virkailija-by-username kayttooikeus-service %)
                                                :henkilo-finder       #(onr-protocol/get-person person-service %)
                                                :success-redirect-url redirect-url
-                                               :do-on-success        (create-login-success-handler organisaatio-service audit-logger (:session request))
+                                               :do-on-success        (create-login-success-handler organisaatio-service audit-logger)
                                                :login-failed-handler (create-login-failed-handler (url/resolve-url :cas.failure config))
                                                :datasource           (:datasource db)})))
                                          (api/POST "/cas" [logout-request]

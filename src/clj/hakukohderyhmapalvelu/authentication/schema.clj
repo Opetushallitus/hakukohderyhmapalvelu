@@ -8,15 +8,12 @@
    :ticket                   s/Str
    :last-name                s/Str
    :first-name               s/Str
-   :lang                     s/Str
-   :organizations            s/Any
-   :user-right-organizations [s/Any]
-   :superuser                s/Bool})
+   :lang                     s/Str})
 
 (s/defschema Session
   (st/open-schema
     {(s/optional-key :key)          s/Str
-     :client-ip                     s/Str
-     :user-agent                    s/Str
+     (s/optional-key :client-ip)    s/Str
+     (s/optional-key :user-agent)   s/Str
      (s/optional-key :original-url) s/Str
      (s/optional-key :identity)     Identity}))
