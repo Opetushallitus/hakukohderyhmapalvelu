@@ -4,7 +4,7 @@
             [compojure.api.core :as compojure-core]
             [compojure.api.sweet :as api]
             [com.stuartsierra.component :as component]
-            [hakukohderyhmapalvelu.audit-logger-protocol :as audit-logger-protocol]
+            [hakukohderyhmapalvelu.audit-logger-protocol :as audit]
             [hakukohderyhmapalvelu.authentication.schema :as schema]
             [hakukohderyhmapalvelu.cas.cas-ticket-client-protocol :as cas-ticket-client-protocol]
             [hakukohderyhmapalvelu.config :as c]
@@ -21,18 +21,29 @@
 (defprotocol AuthRoutesSource
   (create-auth-routes [this]))
 
-(defn- login-succeeded [organisaatio-service audit-logger response virkailija henkilo username ticket]
+(def kirjautuminen (audit/->operation "kirjautuminen"))
+
+(defn- add-request-session-data-to [response-session request]
+  (merge response-session
+         (select-keys (:session request) [:key :user-agent])))
+
+(defn- login-succeeded [organisaatio-service audit-logger request response virkailija henkilo username ticket]
   (log/info "user" username "logged in")
-  (s/validate (p/extends-class-pred organisaatio-protocol/OrganisaatioServiceProtocol) organisaatio-service)
-  (s/validate (p/extends-class-pred audit-logger-protocol/AuditLoggerProtocol) audit-logger)
-  (s/validate kayttooikeus-protocol/Virkailija virkailija)
-  (s/validate s/Str (:oidHenkilo henkilo))
-  (s/validate s/Str ticket)
+  (let [session     (add-request-session-data-to (:session response) request)
+        henkilo-oid (:oidHenkilo henkilo)]
+    (s/validate (p/extends-class-pred organisaatio-protocol/OrganisaatioServiceProtocol) organisaatio-service)
+    (s/validate (p/extends-class-pred audit/AuditLoggerProtocol) audit-logger)
+    (s/validate kayttooikeus-protocol/Virkailija virkailija)
+    (s/validate s/Str henkilo-oid)
+    (s/validate s/Str ticket)
+    (s/validate schema/Session (:session response))
 
-  (s/validate schema/Session (:session response))
-  ; TODO : add audit-logging
-
-  response)
+    (audit/log audit-logger
+               (audit/->user session)
+               kirjautuminen
+               (audit/->target {:henkiloOid henkilo-oid})
+               (audit/->changes {} {:ticket ticket}))
+    response))
 
 (defn- login-failed
   ([login-failed-url e]
@@ -60,7 +71,7 @@
     (s/validate (p/extends-class-pred kayttooikeus-protocol/KayttooikeusService) kayttooikeus-service)
     (s/validate (p/extends-class-pred onr-protocol/PersonService) person-service)
     (s/validate (p/extends-class-pred organisaatio-protocol/OrganisaatioServiceProtocol) organisaatio-service)
-    (s/validate (p/extends-class-pred audit-logger-protocol/AuditLoggerProtocol) audit-logger)
+    (s/validate (p/extends-class-pred audit/AuditLoggerProtocol) audit-logger)
     (assoc this :hakukohderyhmapalvelu-url (get-in config [:urls :hakukohderyhmapalvelu-url]))
     (assoc this :login-failure-url (url/resolve-url :cas.failure config))
     (s/validate s/Str (get-in config [:urls :hakukohderyhmapalvelu-url]))
@@ -92,7 +103,7 @@
                                                                      :ticket               ticket
                                                                      :success-redirect-url redirect-url
                                                                      :datasource           (:datasource db)})]
-                                                 (login-succeeded organisaatio-service audit-logger response virkailija henkilo username ticket))
+                                                 (login-succeeded organisaatio-service audit-logger request response virkailija henkilo username ticket))
                                                (login-failed (:login-failure-url this)))
                                              (catch Exception e
                                                (login-failed (:login-failure-url this) e))))
