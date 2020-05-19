@@ -110,4 +110,4 @@
                                          (api/POST "/cas" [logout-request]
                                            (cas-initiated-logout logout-request))
                                          (api/GET "/logout" {session :session}
-                                           (crdsa-login/logout session (url/resolve-url :cas.logout config) (:datasource db))))))))
+                                           (crdsa-login/logout session (url/resolve-url :cas.logout config))))))))

@@ -129,7 +129,7 @@
     (api/context "/hakukohderyhmapalvelu" []
       (compojure-core/route-middleware [(create-wrap-database-backed-session config (:datasource db))
                                         clj-access-logging/wrap-session-access-logging
-                                        #(auth-middleware/with-authentication % (oph-urls/resolve-url :cas.login config) (:datasource db))
+                                        #(auth-middleware/with-authentication % (oph-urls/resolve-url :cas.login config))
                                         session-client/wrap-session-client-headers
                                         (session-timeout/create-wrap-idle-session-timeout config)]
                                        (-> (make-authenticated-routes hakukohderyhma-service config)
