@@ -6,6 +6,7 @@
             [compojure.api.core :as compojure-core]
             [compojure.api.sweet :as api]
             [compojure.route :as route]
+            [environ.core :refer [env]]
             [hakukohderyhmapalvelu.api-schemas :as schema]
             [hakukohderyhmapalvelu.authentication.auth-routes :as auth-routes]
             [hakukohderyhmapalvelu.cas.mock.mock-authenticating-client-schemas :as mock-cas]
@@ -16,9 +17,11 @@
             [hakukohderyhmapalvelu.oph-url-properties :as oph-urls]
             [hakukohderyhmapalvelu.schemas.class-pred :as p]
             [hakukohderyhmapalvelu.session-timeout :as session-timeout]
+            [clj-access-logging]
+            [clj-stdout-access-logging]
+            [clj-timbre-access-logging]
             [ring.middleware.defaults :as defaults]
             [ring.middleware.json :as wrap-json]
-            [ring.middleware.logger :as logger]
             [ring.middleware.reload :as reload]
             [ring.middleware.session :as ring-session]
             [ring.util.http-response :as response]
@@ -83,7 +86,6 @@
                                 :cookie-attrs {:secure (= :production (-> config :public-config :environment))}
                                 :store (create-session-store datasource)})))
 
-
 (s/defschema MakeHandlerArgs
   {:config                           c/HakukohderyhmaConfig
    :db                               {:datasource (s/pred #(instance? DataSource %))
@@ -124,6 +126,7 @@
     (redirect-routes)
     (api/context "/hakukohderyhmapalvelu" []
       (compojure-core/route-middleware [(create-wrap-database-backed-session config (:datasource db))
+                                        clj-access-logging/wrap-session-access-logging
                                         #(auth-middleware/with-authentication % (oph-urls/resolve-url :cas.login config) (:datasource db))
                                         session-client/wrap-session-client-headers
                                         (session-timeout/create-wrap-idle-session-timeout config)]
@@ -143,7 +146,12 @@
 (s/defn make-production-handler
   [args :- MakeHandlerArgs]
   (-> (make-routes args)
-      (logger/wrap-with-logger)
+      (clj-access-logging/wrap-access-logging)
+      (clj-stdout-access-logging/wrap-stdout-access-logging)
+      (clj-timbre-access-logging/wrap-timbre-access-logging
+       {:path (str (-> args :config :log :base-path)
+                   "/access_hakukohderyhmapalvelu"
+                   (when (:hostname env) (str "_" (:hostname env))))})
       (wrap-json/wrap-json-response)
       (defaults/wrap-defaults (-> defaults/site-defaults
                                   (dissoc :static)
