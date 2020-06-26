@@ -10,7 +10,7 @@ import { PostHakukohderyhmaRequestFixture } from '../fixtures/PostHakukohderyhma
 function login(): void {
   cy.request(
     'get',
-    '/hakukohderyhmapalvelu/auth/cas?ticket=any_ticket_is_good_for_fake_authentication',
+    `/hakukohderyhmapalvelu/auth/cas?ticket=any_unique_ticket_is_good_for_fake_authentication-${Math.random()}`,
   )
   cy.getCookie('ring-session').should('exist')
 }

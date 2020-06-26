@@ -57,11 +57,13 @@
   (api/undocumented
     (route/resources "/" {:root "public/hakukohderyhmapalvelu"})))
 
-(defn- error-route []
-  (api/GET "/virhe" []
-    (do
-      (log/warn "Käyttäjä ohjattiin virhesivulle. Ohjataan edelleen palvelun juureen.")
-      (response/temporary-redirect "/hakukohderyhmapalvelu/"))))
+(defn- error-routes []
+  (api/undocumented
+    (api/GET "/login-error" []
+        (do
+          (log/warn "Kirjautuminen epäonnistui ja käyttäjä ohjattiin virhesivulle.")
+          (-> (response/internal-server-error "<h1>Virhe sisäänkirjautumisessa.</h1>")
+              (response/content-type "text/html"))))))
 
 (defn- not-found-route []
   (api/undocumented
@@ -127,7 +129,7 @@
     (api/context "/hakukohderyhmapalvelu" []
       (compojure-core/route-middleware [(create-wrap-database-backed-session config (:datasource db))
                                         clj-access-logging/wrap-session-access-logging
-                                        #(auth-middleware/with-authentication % (oph-urls/resolve-url :cas.login config) (:datasource db))
+                                        #(auth-middleware/with-authentication % (oph-urls/resolve-url :cas.login config))
                                         session-client/wrap-session-client-headers
                                         (session-timeout/create-wrap-idle-session-timeout config)]
                                        (-> (make-authenticated-routes hakukohderyhma-service config)
@@ -137,7 +139,7 @@
       (when (-> config :public-config :environment (= :it))
         (integration-test-routes mock-dispatcher))
       (health-check-route health-checker)
-      (error-route)
+      (error-routes)
       (resource-route))
     (not-found-route)))
 

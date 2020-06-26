@@ -11,9 +11,9 @@
 
 (s/defschema Virkailija
   {:oidHenkilo     s/Str
-      :username       s/Str
-      :kayttajaTyyppi s/Str
-      :organisaatiot  [KayttooikeudetOrganisaatiossa]})
+   :username       s/Str
+   :kayttajaTyyppi s/Str
+   :organisaatiot  [KayttooikeudetOrganisaatiossa]})
 
 (defprotocol KayttooikeusService
   (virkailija-by-username [this username]))
