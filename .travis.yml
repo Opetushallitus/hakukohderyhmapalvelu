@@ -23,7 +23,7 @@ script: >-
   npm install &&
   ./bin/cibuild.sh run-all-tests-and-create-uberjar &&
   bin/lein with-profile prod uberjar &&
-  export BASE_IMAGE="baseimage-fatjar:jdk11" &&
+  export BASE_IMAGE="baseimage-fatjar-openjdk11:master" &&
   ./ci-tools/common/pull-image.sh &&
   cp -v ./target/hakukohderyhmapalvelu.jar $DOCKER_BUILD_DIR/artifact/hakukohderyhmapalvelu.jar &&
   cp -vr ./oph-configuration $DOCKER_BUILD_DIR/config/ &&
