@@ -35,7 +35,7 @@
                  [ring/ring-session-timeout "0.2.0"]
                  [secretary "1.2.3"]
                  [selmer "1.12.31"]
-                 [stylefy "1.14.1"
+                 [stylefy "2.2.1"
                   :exclusions [[org.clojure/core.async]]]
                  [prismatic/schema "1.1.12"]
                  [thheller/shadow-cljs "2.8.94"]
