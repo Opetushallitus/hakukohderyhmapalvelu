@@ -86,10 +86,10 @@
                             [reloaded.repl "0.2.4"]]
              :source-paths ["dev/clj" "dev/cljs"]}
 
-   :prod    {:dependencies [[day8.re-frame/tracing-stubs "0.5.3"]]}
+   :prod    {:dependencies [[day8.re-frame/tracing-stubs "0.6.0"]]}
 
    :uberjar {:source-paths ["env/prod/clj"]
-             :dependencies [[day8.re-frame/tracing-stubs "0.5.3"]]
+             :dependencies [[day8.re-frame/tracing-stubs "0.6.0"]]
              :omit-source  true
              :aot          [hakukohderyhmapalvelu.core]
              :uberjar-name "hakukohderyhmapalvelu.jar"
