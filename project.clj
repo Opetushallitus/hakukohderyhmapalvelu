@@ -22,7 +22,7 @@
                  [hikari-cp "2.13.0"]
                  [metosin/compojure-api "2.0.0-alpha31"]
                  [metosin/schema-tools "0.12.2"]
-                 [org.clojure/core.async "1.1.587"]
+                 [org.clojure/core.async "1.3.610"]
                  [org.clojure/java.jdbc "0.7.11"]
                  [org.clojure/core.match "1.0.0"]
                  [org.postgresql/postgresql "42.2.12"]
