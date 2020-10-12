@@ -5,7 +5,7 @@
                                org.clojure/google-closure-library
                                org.clojure/google-closure-library-third-party]]
                  [cheshire "5.10.0"]
-                 [clj-http "3.10.0"]
+                 [clj-http "3.10.3"]
                  [cljs-http "0.1.46"]
                  [com.fzakaria/slf4j-timbre "0.3.19"]
                  [timbre-ns-pattern-level "0.1.2"]
