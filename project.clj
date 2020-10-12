@@ -38,7 +38,7 @@
                  [stylefy "2.2.1"
                   :exclusions [[org.clojure/core.async]]]
                  [prismatic/schema "1.1.12"]
-                 [thheller/shadow-cljs "2.8.94"]
+                 [thheller/shadow-cljs "2.11.5"]
                  [yogthos/config "1.1.7"]
                  [environ "1.2.0"]
                  [oph/clj-timbre-auditlog "0.1.0-SNAPSHOT"]]

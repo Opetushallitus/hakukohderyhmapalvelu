@@ -48,7 +48,7 @@
     "lint-staged": "10.4.0",
     "lint-prepush": "2.1.0",
     "prettier": "2.1.2",
-    "shadow-cljs": "2.8.94",
+    "shadow-cljs": "2.11.5",
     "ts-loader": "6.2.2",
     "typescript": "3.8.3",
     "webpack": "4.42.1"
