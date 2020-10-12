@@ -38,7 +38,7 @@
     "@types/mocha": "8.0.3",
     "clj-kondo": "2020.1.13",
     "cypress": "4.3.0",
-    "eslint": "6.8.0",
+    "eslint": "7.11.0",
     "eslint-config-airbnb-base": "14.1.0",
     "eslint-config-prettier": "6.10.1",
     "eslint-plugin-cypress": "2.10.3",
