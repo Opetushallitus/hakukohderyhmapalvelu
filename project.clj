@@ -11,7 +11,7 @@
                  [com.fzakaria/slf4j-timbre "0.3.20"]
                  [timbre-ns-pattern-level "0.1.2"]
                  [com.stuartsierra/component "1.0.0"]
-                 [org.flywaydb/flyway-core "6.3.3"]
+                 [org.flywaydb/flyway-core "7.0.2"]
                  [fi.vm.sade/auditlogger "9.0.0-SNAPSHOT"]
                  [fi.vm.sade.java-utils/java-cas "0.6.2-SNAPSHOT"]
                  [fi.vm.sade.java-utils/java-properties "0.1.0-SNAPSHOT"]
