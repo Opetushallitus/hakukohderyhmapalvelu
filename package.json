@@ -46,7 +46,7 @@
     "eslint-plugin-prettier": "3.1.4",
     "husky": "4.3.0",
     "lint-staged": "10.4.0",
-    "lint-prepush": "1.2.0",
+    "lint-prepush": "2.1.0",
     "prettier": "2.0.2",
     "shadow-cljs": "2.8.94",
     "ts-loader": "6.2.2",
