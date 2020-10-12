@@ -27,7 +27,7 @@
                  [org.clojure/core.match "1.0.0"]
                  [org.postgresql/postgresql "42.2.17"]
                  [yesql "0.5.3"]
-                 [re-frame "0.12.0"]
+                 [re-frame "1.1.1"]
                  [reagent "0.10.0"]
                  [ring "1.8.0"]
                  [ring/ring-defaults "0.3.2"]
