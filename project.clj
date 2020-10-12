@@ -19,7 +19,7 @@
                  [oph/clj-stdout-access-logging "1.0.0-SNAPSHOT"]
                  [oph/clj-timbre-access-logging "1.0.0-SNAPSHOT"]
                  [oph/clj-ring-db-cas-session "0.3.0-SNAPSHOT"]
-                 [hikari-cp "2.11.0"]
+                 [hikari-cp "2.13.0"]
                  [metosin/compojure-api "2.0.0-alpha31"]
                  [metosin/schema-tools "0.12.2"]
                  [org.clojure/core.async "1.1.587"]
