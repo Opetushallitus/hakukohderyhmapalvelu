@@ -79,7 +79,7 @@
 
   :profiles
   {:dev
-            {:dependencies [[binaryage/devtools "1.0.0"]
+            {:dependencies [[binaryage/devtools "1.0.2"]
                             [clj-kondo "2020.04.05"]
                             [day8.re-frame/re-frame-10x "0.6.1"]
                             [day8.re-frame/tracing "0.5.3"]
