@@ -44,7 +44,6 @@
                  [oph/clj-timbre-auditlog "0.1.0-SNAPSHOT"]]
 
   :plugins [[lein-ancient "0.6.15"]
-            [lein-less "1.7.5"]
             [lein-shell "0.5.0"]]
 
   :min-lein-version "2.5.3"
