@@ -25,7 +25,7 @@
                  [org.clojure/core.async "1.3.610"]
                  [org.clojure/java.jdbc "0.7.11"]
                  [org.clojure/core.match "1.0.0"]
-                 [org.postgresql/postgresql "42.2.12"]
+                 [org.postgresql/postgresql "42.2.17"]
                  [yesql "0.5.3"]
                  [re-frame "0.12.0"]
                  [reagent "0.10.0"]
