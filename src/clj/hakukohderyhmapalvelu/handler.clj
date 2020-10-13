@@ -35,12 +35,16 @@
     (api/GET "/" []
       (response/permanent-redirect "/hakukohderyhmapalvelu"))))
 
+(defn- production-environment? [config]
+  (-> config :public-config :environment (= :production)))
+
 (defn- index-route [config]
   (let [public-config (-> config :public-config json/generate-string)
         rendered-page (selmer/render-file
                         "templates/index.html.template"
                         {:config           public-config
-                         :front-properties (oph-urls/front-json config)})]
+                         :front-properties (oph-urls/front-json config)
+                         :apply-raamit     (production-environment? config)})]
     (api/undocumented
       (api/GET "/" []
         (-> (response/ok rendered-page)
@@ -169,6 +173,6 @@
 
 (s/defn make-handler
   [{config :config :as args} :- MakeHandlerArgs]
-  (if (-> config :public-config :environment (= :production))
+  (if (production-environment? config)
     (make-production-handler args)
     (make-reloading-handler args)))
