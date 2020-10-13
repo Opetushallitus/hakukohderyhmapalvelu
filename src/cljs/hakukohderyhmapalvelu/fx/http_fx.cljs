@@ -31,4 +31,4 @@
                          (do-request path {:json-params body}))]
         (->> response :body (s/validate response-schema))
         (re-frame/dispatch [:http/remove-http-request-id http-request-id])
-        (re-frame/dispatch response-handler body)))))
+        (re-frame/dispatch (conj response-handler response))))))

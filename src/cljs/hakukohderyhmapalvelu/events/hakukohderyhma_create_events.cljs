@@ -9,8 +9,8 @@
 
 (events/reg-event-db-validating
   :hakukohderyhma-create/handle-save-hakukohderyhma
-  (fn [db [hakukohderyhma]]
-    (println (str "DEBUG :hakukohderyhma-create/handle-save-hakukohderyhma, " hakukohderyhma))
+  (fn [db [hakukohderyhma response]]
+    (println (str "DEBUG :hakukohderyhma-create/handle-save-hakukohderyhma: " {:hakukohderyhma hakukohderyhma :response response}))
     db))
 
 (events/reg-event-fx-validating
