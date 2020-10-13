@@ -60,10 +60,10 @@
 (defn- error-routes []
   (api/undocumented
     (api/GET "/login-error" []
-        (do
-          (log/warn "Kirjautuminen epäonnistui ja käyttäjä ohjattiin virhesivulle.")
-          (-> (response/internal-server-error "<h1>Virhe sisäänkirjautumisessa.</h1>")
-              (response/content-type "text/html"))))))
+      (do
+        (log/warn "Kirjautuminen epäonnistui ja käyttäjä ohjattiin virhesivulle.")
+        (-> (response/internal-server-error "<h1>Virhe sisäänkirjautumisessa.</h1>")
+            (response/content-type "text/html"))))))
 
 (defn- not-found-route []
   (api/undocumented
@@ -84,14 +84,14 @@
 
 (defn- create-wrap-database-backed-session [config datasource]
   (fn [handler] (ring-session/wrap-session handler
-                               {:root "/hakukohderyhmapalvelu"
-                                :cookie-attrs {:secure (= :production (-> config :public-config :environment))}
-                                :store (create-session-store datasource)})))
+                                           {:root         "/hakukohderyhmapalvelu"
+                                            :cookie-attrs {:secure (= :production (-> config :public-config :environment))}
+                                            :store        (create-session-store datasource)})))
 
 (s/defschema MakeHandlerArgs
   {:config                           c/HakukohderyhmaConfig
    :db                               {:datasource (s/pred #(instance? DataSource %))
-                                      :config c/HakukohderyhmaConfig}
+                                      :config     c/HakukohderyhmaConfig}
    :health-checker                   (p/extends-class-pred health-check/HealthChecker)
    :auth-routes-source               (p/extends-class-pred auth-routes/AuthRoutesSource)
    :hakukohderyhma-service           s/Any
@@ -151,9 +151,9 @@
       (clj-access-logging/wrap-access-logging)
       (clj-stdout-access-logging/wrap-stdout-access-logging)
       (clj-timbre-access-logging/wrap-timbre-access-logging
-       {:path (str (-> args :config :log :base-path)
-                   "/access_hakukohderyhmapalvelu"
-                   (when (:hostname env) (str "_" (:hostname env))))})
+        {:path (str (-> args :config :log :base-path)
+                    "/access_hakukohderyhmapalvelu"
+                    (when (:hostname env) (str "_" (:hostname env))))})
       (wrap-json/wrap-json-response)
       (defaults/wrap-defaults (-> defaults/site-defaults
                                   (dissoc :static)
