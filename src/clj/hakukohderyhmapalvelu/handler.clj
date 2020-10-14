@@ -39,17 +39,21 @@
   (-> config :public-config :environment (= :production)))
 
 (defn- index-route [config]
-  (let [public-config (-> config :public-config json/generate-string)
-        rendered-page (selmer/render-file
-                        "templates/index.html.template"
-                        {:config           public-config
-                         :front-properties (oph-urls/front-json config)
-                         :apply-raamit     (production-environment? config)})]
+  (let [public-config  (-> config :public-config json/generate-string)
+        rendered-page  (selmer/render-file
+                         "templates/index.html.template"
+                         {:config           public-config
+                          :front-properties (oph-urls/front-json config)
+                          :apply-raamit     (production-environment? config)})
+        index-response (fn []
+                         (-> (response/ok rendered-page)
+                             (response/content-type "text/html")
+                             (response/charset "utf-8")))]
     (api/undocumented
       (api/GET "/" []
-        (-> (response/ok rendered-page)
-            (response/content-type "text/html")
-            (response/charset "utf-8"))))))
+        (index-response))
+      (api/GET "/hakukohderyhmien-hallinta" []
+        (index-response)))))
 
 (defn- health-check-route [health-checker]
   (s/validate (p/extends-class-pred health-check/HealthChecker) health-checker)

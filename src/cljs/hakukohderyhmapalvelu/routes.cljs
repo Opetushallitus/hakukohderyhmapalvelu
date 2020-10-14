@@ -1,22 +1,27 @@
 (ns hakukohderyhmapalvelu.routes
-  (:require-macros [secretary.core :refer [defroute]])
-  (:import [goog History]
-           [goog.history EventType])
-  (:require [secretary.core :as secretary]
-            [goog.events :as gevents]
+  (:require [reitit.coercion.spec :as rss]
+            [reitit.frontend :as rf]
+            [reitit.frontend.easy :as rfe]
             [re-frame.core :as re-frame]))
 
-(defn hook-browser-navigation! []
-  (doto (History.)
-    (gevents/listen
-      EventType/NAVIGATE
-      (fn [^js event]
-        (secretary/dispatch! (.-token event))))
-    (.setEnabled true)))
+(def routes
+  [["/"
+    {:redirect :panel-menu/hakukohderyhmien-hallinta-panel}]
+   ["/hakukohderyhmapalvelu"
+    {:redirect :panel-menu/hakukohderyhmien-hallinta-panel}]
+   ["/hakukohderyhmapalvelu/hakukohderyhmien-hallinta"
+    {:name :panel-menu/hakukohderyhmien-hallinta-panel}]])
 
 (defn app-routes []
-  (secretary/set-config! :prefix "#")
-  (defroute "/" []
-            (secretary/dispatch! "/hakukohderyhmapalvelu"))
-  (defroute "/hakukohderyhmapalvelu" [])
-  (hook-browser-navigation!))
+  (rfe/start!
+    (rf/router
+      routes
+      {:data {:coercion rss/coercion}})
+    (fn [m]
+      (let [{:keys [name redirect]} (-> m :data)]
+        (cond redirect
+              (rfe/replace-state redirect)
+
+              name
+              (re-frame/dispatch [:panel-menu/set-active-panel name]))))
+    {:use-fragment false}))

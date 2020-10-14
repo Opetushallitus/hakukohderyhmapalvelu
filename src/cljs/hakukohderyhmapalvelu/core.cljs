@@ -26,6 +26,6 @@
 (defn init []
   (turn-on-schema-validation)
   (styles/init-styles)
-  (routes/app-routes)
   (re-frame/dispatch-sync [:core/initialize-db])
+  (routes/app-routes)
   (mount-root))

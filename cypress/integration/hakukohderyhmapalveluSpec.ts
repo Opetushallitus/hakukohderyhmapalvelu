@@ -21,9 +21,11 @@ describe('Hakukohderyhmäpalvelu', () => {
     login()
     cy.visit('/')
   })
-  it('Ohjaa käyttäjän polkuun /hakukohderyhmapalvelu', () => {
+  it('Ohjaa käyttäjän polkuun /hakukohderyhmapalvelu/hakukohderyhmien-hallinta', () => {
     cy.location().should(location => {
-      expect(location.pathname).to.equal('/hakukohderyhmapalvelu')
+      expect(location.pathname).to.equal(
+        '/hakukohderyhmapalvelu/hakukohderyhmien-hallinta',
+      )
     })
   })
   it('Näyttää päätason otsikon', () => {

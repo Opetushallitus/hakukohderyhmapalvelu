@@ -21,6 +21,7 @@
                  [oph/clj-ring-db-cas-session "0.3.0-SNAPSHOT"]
                  [hikari-cp "2.13.0"]
                  [metosin/compojure-api "2.0.0-alpha31"]
+                 [metosin/reitit "0.5.6"]
                  [metosin/schema-tools "0.12.2"]
                  [org.clojure/core.async "1.3.610"]
                  [org.clojure/java.jdbc "0.7.11"]
@@ -33,7 +34,6 @@
                  [ring/ring-defaults "0.3.2"]
                  [ring/ring-json "0.5.0"]
                  [ring/ring-session-timeout "0.2.0"]
-                 [secretary "1.2.3"]
                  [selmer "1.12.31"]
                  [stylefy "2.2.1"
                   :exclusions [[org.clojure/core.async]]]
