@@ -8,8 +8,3 @@
   :core/initialize-db
   (fn-traced [_ _]
     db/default-db))
-
-(re-frame/reg-event-db
-  :core/set-active-panel
-  (fn-traced [db [_ active-panel]]
-    (assoc db :active-panel active-panel)))

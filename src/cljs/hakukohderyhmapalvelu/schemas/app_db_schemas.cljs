@@ -2,8 +2,14 @@
   (:require [schema.core :as s]
             [schema-tools.core :as st]))
 
+(def panels [:panel-menu/haun-asetukset-panel
+             :panel-menu/hakukohderyhmapalvelu-panel])
+
 (s/defschema ActivePanel
-  {:active-panel (s/enum :hakukohderyhmapalvelu-panel)})
+  {:active-panel (apply s/enum panels)})
+
+(s/defschema Lang
+  {:lang (s/enum :fi)})
 
 (s/defschema CreateHakukohderyhmapalvelu
   {:create-hakukohderyhma
@@ -14,5 +20,6 @@
 
 (s/defschema AppDb
   (st/merge ActivePanel
+            Lang
             Requests
             CreateHakukohderyhmapalvelu))

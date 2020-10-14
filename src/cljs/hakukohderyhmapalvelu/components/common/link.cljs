@@ -1,6 +1,5 @@
 (ns hakukohderyhmapalvelu.components.common.link
-  (:require [hakukohderyhmapalvelu.browser-events :as events]
-            [hakukohderyhmapalvelu.schemas.props-schemas :as ps]
+  (:require [hakukohderyhmapalvelu.schemas.props-schemas :as ps]
             [hakukohderyhmapalvelu.styles.styles-colors :as colors]
             [schema.core :as s]
             [schema-tools.core :as st]
@@ -24,7 +23,9 @@
   {(s/optional-key :cypressid) s/Str
    :href                       s/Str
    :label                      s/Str
-   :on-click                   s/Any})
+   :on-click                   s/Any
+   (s/optional-key :role)      s/Str
+   (s/optional-key :tabindex)  s/Int})
 
 (s/defschema LinkWithExtraStylesProps
   (st/merge LinkProps
@@ -35,14 +36,18 @@
            label
            href
            on-click
-           styles]} :- LinkWithExtraStylesProps]
+           styles
+           role
+           tabindex]} :- LinkWithExtraStylesProps]
   [:a (stylefy/use-style
         (merge link-styles styles)
         {:cypressid cypressid
          :href      href
          :on-click  (fn prevent-default-and-click [event]
-                      (events/preventDefault event)
-                      (on-click event))})
+                      (.preventDefault event)
+                      (on-click event))
+         :role      role
+         :tabIndex  tabindex})
    label])
 
 (s/defn link-with-left-separator :- s/Any

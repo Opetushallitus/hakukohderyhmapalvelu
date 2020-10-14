@@ -1,12 +1,16 @@
 (ns hakukohderyhmapalvelu.subs.core-subs
-  (:require [re-frame.core :as re-frame]))
-
-(re-frame/reg-sub
-  :active-panel
-  (fn [db _]
-    (:active-panel db)))
+  (:require [hakukohderyhmapalvelu.i18n.translations :as t]
+            [re-frame.core :as re-frame]))
 
 (re-frame/reg-sub
   :state-query
   (fn [db [_ path default]]
     (get-in db path default)))
+
+(re-frame/reg-sub
+  :translation
+  (fn []
+    [(re-frame/subscribe [:state-query [:lang]])])
+  (fn [[lang] [_ tx-key]]
+    (or (-> t/translations tx-key lang)
+        tx-key)))

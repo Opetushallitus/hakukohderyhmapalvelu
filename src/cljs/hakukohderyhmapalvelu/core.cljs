@@ -6,12 +6,14 @@
     [hakukohderyhmapalvelu.events.core-events]
     [hakukohderyhmapalvelu.events.hakukohderyhma-create-events]
     [hakukohderyhmapalvelu.events.http-events]
+    [hakukohderyhmapalvelu.events.panel-menu-events]
     [hakukohderyhmapalvelu.fx.http-fx]
     [hakukohderyhmapalvelu.routes :as routes]
     [hakukohderyhmapalvelu.views :as views]
     [hakukohderyhmapalvelu.styles.styles-init :as styles]
     [hakukohderyhmapalvelu.subs.core-subs]
-    [hakukohderyhmapalvelu.subs.hakukohderyhma-create-subs]))
+    [hakukohderyhmapalvelu.subs.hakukohderyhma-create-subs]
+    [hakukohderyhmapalvelu.subs.panel-menu-subs]))
 
 (defn- turn-on-schema-validation []
   (s/set-fn-validation! true))

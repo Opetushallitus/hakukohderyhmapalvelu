@@ -19,5 +19,5 @@
   (defroute "/" []
             (secretary/dispatch! "/hakukohderyhmapalvelu"))
   (defroute "/hakukohderyhmapalvelu" []
-            (re-frame/dispatch [:core/set-active-panel :hakukohderyhmapalvelu-panel]))
+            (re-frame/dispatch [:panel-menu/set-active-panel :panel-menu/hakukohderyhmapalvelu-panel]))
   (hook-browser-navigation!))
