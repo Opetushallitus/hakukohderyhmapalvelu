@@ -18,6 +18,5 @@
   (secretary/set-config! :prefix "#")
   (defroute "/" []
             (secretary/dispatch! "/hakukohderyhmapalvelu"))
-  (defroute "/hakukohderyhmapalvelu" []
-            (re-frame/dispatch [:panel-menu/set-active-panel :panel-menu/hakukohderyhmapalvelu-panel]))
+  (defroute "/hakukohderyhmapalvelu" [])
   (hook-browser-navigation!))

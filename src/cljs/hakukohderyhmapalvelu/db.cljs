@@ -1,5 +1,7 @@
 (ns hakukohderyhmapalvelu.db)
 
 (def default-db
-  {:requests #{}
-   :lang     :fi})
+  {:active-panel          :panel-menu/hakukohderyhmapalvelu-panel
+   :requests              #{}
+   :lang                  :fi
+   :create-hakukohderyhma {:visible? false}})

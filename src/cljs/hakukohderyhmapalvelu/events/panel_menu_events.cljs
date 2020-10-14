@@ -1,9 +1,9 @@
 (ns hakukohderyhmapalvelu.events.panel-menu-events
   (:require
-    [re-frame.core :as re-frame]
+    [hakukohderyhmapalvelu.macros.event-macros :as events]
     [day8.re-frame.tracing :refer-macros [fn-traced]]))
 
-(re-frame/reg-event-db
+(events/reg-event-db-validating
   :panel-menu/set-active-panel
-  (fn-traced [db [_ active-panel]]
+  (fn-traced [db [active-panel]]
     (assoc db :active-panel active-panel)))
