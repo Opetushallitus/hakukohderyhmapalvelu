@@ -3,7 +3,7 @@
             [schema-tools.core :as st]))
 
 (def panels [:panel-menu/haun-asetukset-panel
-             :panel-menu/hakukohderyhmapalvelu-panel])
+             :panel-menu/hakukohderyhmien-hallinta-panel])
 
 (s/defschema ActivePanel
   {:active-panel (apply s/enum panels)})

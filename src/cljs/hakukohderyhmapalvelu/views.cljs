@@ -1,11 +1,11 @@
 (ns hakukohderyhmapalvelu.views
   (:require [hakukohderyhmapalvelu.views.panel-menu :as m]
-            [hakukohderyhmapalvelu.views.hakukohderyhmapalvelu-panel :as h]
+            [hakukohderyhmapalvelu.views.hakukohderyhmien-hallinta-panel :as h]
             [re-frame.core :as re-frame]))
 
 (defn- panels [panel-name]
   (let [panel (case panel-name
-                :panel-menu/hakukohderyhmapalvelu-panel [h/hakukohderyhmapalvelu-panel]
+                :panel-menu/hakukohderyhmien-hallinta-panel [h/hakukohderyhmien-hallinta-panel]
                 [:div])]
     [:<>
      [m/panel-menu]

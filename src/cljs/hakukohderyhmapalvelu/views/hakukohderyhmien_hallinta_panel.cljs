@@ -1,4 +1,4 @@
-(ns hakukohderyhmapalvelu.views.hakukohderyhmapalvelu-panel
+(ns hakukohderyhmapalvelu.views.hakukohderyhmien-hallinta-panel
   (:require [hakukohderyhmapalvelu.components.common.button :as b]
             [hakukohderyhmapalvelu.components.common.checkbox :as checkbox]
             [hakukohderyhmapalvelu.components.common.grid :as grid]
@@ -93,7 +93,7 @@
       :style-prefix      style-prefix
       :label             "Hakukohderyhmät"}]))
 
-(defn hakukohderyhmapalvelu-panel []
+(defn hakukohderyhmien-hallinta-panel []
   [p/panel
    {:cypressid "hakukohderyhmapalvelu-panel"}
    "Hakukohderyhmien hallinta"
