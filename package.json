@@ -40,7 +40,7 @@
     "@typescript-eslint/parser": "^4.4.1",
     "@types/mocha": "8.0.3",
     "clj-kondo": "2020.1.13",
-    "cypress": "4.3.0",
+    "cypress": "^5.4.0",
     "eslint": "7.11.0",
     "eslint-config-airbnb-base": "14.2.0",
     "eslint-config-prettier": "6.12.0",
