@@ -13,9 +13,6 @@
     </script>
   </head>
   <body>
-    <noscript>
-      Hakukohderyhmäpalvelu tarvitee JavaScriptiä tukevan selaimen toimiakseen.
-    </noscript>
     <div id="app"></div>
     {% if apply-raamit %}<script src="/virkailija-raamit/apply-raamit.js"></script>{% endif %}
     <script src="/hakukohderyhmapalvelu/js/compiled/hakukohderyhmapalvelu.js"></script>
