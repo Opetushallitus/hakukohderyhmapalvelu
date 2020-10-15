@@ -53,6 +53,8 @@
       (api/GET "/" []
         (index-response))
       (api/GET "/hakukohderyhmien-hallinta" []
+        (index-response))
+      (api/GET "/haun-asetukset" []
         (index-response)))))
 
 (defn- health-check-route [health-checker]

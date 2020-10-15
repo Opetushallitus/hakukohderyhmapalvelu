@@ -2,11 +2,23 @@
   (:require [schema.core :as s]
             [schema-tools.core :as st]))
 
-(def panels [:panel-menu/haun-asetukset-panel
-             :panel-menu/hakukohderyhmien-hallinta-panel])
+(s/defschema HakukohderyhmienHallintaPanel
+  {:panel      (s/eq :panel-menu/hakukohderyhmien-hallinta-panel)
+   :parameters {:query {}
+                :path  {}}})
+
+(s/defschema HaunAsetuksetPanel
+  {:panel      (s/eq :panel-menu/haun-asetukset-panel)
+   :parameters {:query {:hakuOid s/Str}
+                :path  {}}})
 
 (s/defschema ActivePanel
-  {:active-panel (apply s/enum panels)})
+  {:active-panel
+   (s/conditional
+     #(-> % :panel (= :panel-menu/hakukohderyhmien-hallinta-panel))
+     HakukohderyhmienHallintaPanel
+     #(-> % :panel (= :panel-menu/haun-asetukset-panel))
+     HaunAsetuksetPanel)})
 
 (s/defschema Lang
   {:lang (s/enum :fi)})

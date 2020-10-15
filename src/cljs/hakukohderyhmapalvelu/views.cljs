@@ -16,5 +16,5 @@
 
 (defn main-panel []
   [:div
-   (let [active-panel @(re-frame/subscribe [:panel-menu/active-panel])]
-     [show-panel active-panel])])
+   (let [{panel :panel} @(re-frame/subscribe [:panel-menu/active-panel])]
+     [show-panel panel])])
