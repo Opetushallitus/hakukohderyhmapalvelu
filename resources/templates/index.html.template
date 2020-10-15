@@ -8,7 +8,7 @@
     <title>Hakukohderyhmäpalvelu</title>
     <script src="/hakukohderyhmapalvelu/js/vendor/oph_urls.js"></script>
     <script type="text/javascript">
-      const config = {{ config|safe }}
+      const frontendConfig = {{ frontend-config|safe }}
       window.urls.addProperties({{front-properties|safe}})
     </script>
   </head>

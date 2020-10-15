@@ -7,7 +7,7 @@
 
 (s/defn make-config :- cs/PublicConfig
   []
-  (let [parsed-object (-> js/config
+  (let [parsed-object (-> js/frontendConfig
                           (js->clj :keywordize-keys true))]
     (walk/prewalk
       (fn prewalk-config [x]

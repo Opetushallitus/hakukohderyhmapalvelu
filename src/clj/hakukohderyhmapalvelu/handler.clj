@@ -42,7 +42,7 @@
   (let [public-config  (-> config :public-config json/generate-string)
         rendered-page  (selmer/render-file
                          "templates/index.html.template"
-                         {:config           public-config
+                         {:frontend-config  public-config
                           :front-properties (oph-urls/front-json config)
                           :apply-raamit     (production-environment? config)})
         index-response (fn []
