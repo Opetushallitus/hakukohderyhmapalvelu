@@ -8,6 +8,9 @@
     "lint:clj:lint-staged": "clj-kondo --config oph-configuration/clj-kondo.config.edn --lint",
     "lint:js": "eslint --ignore-path \".eslintignore\" --ext .js,.ts \"cypress\""
   },
+  "engines": {
+    "node": ">=14"
+  },
   "husky": {
     "hooks": {
       "pre-push": "lint-prepush"
