@@ -36,8 +36,8 @@
     }
   },
   "devDependencies": {
-    "@typescript-eslint/eslint-plugin": "4.4.0",
-    "@typescript-eslint/parser": "4.4.0",
+    "@typescript-eslint/eslint-plugin": "^4.4.1",
+    "@typescript-eslint/parser": "^4.4.1",
     "@types/mocha": "8.0.3",
     "clj-kondo": "2020.1.13",
     "cypress": "4.3.0",
