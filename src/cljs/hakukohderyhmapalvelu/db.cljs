@@ -1,7 +1,8 @@
-(ns hakukohderyhmapalvelu.db)
+(ns hakukohderyhmapalvelu.db
+  (:require [hakukohderyhmapalvelu.routes :as routes]))
 
 (def default-db
-  {:active-panel          {:panel      :panel-menu/hakukohderyhmien-hallinta-panel
+  {:active-panel          {:panel      routes/default-panel
                            :parameters {:path  {}
                                         :query {}}}
    :requests              #{}

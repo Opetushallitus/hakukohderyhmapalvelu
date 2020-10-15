@@ -3,21 +3,21 @@
             [schema-tools.core :as st]))
 
 (s/defschema HakukohderyhmienHallintaPanel
-  {:panel      (s/eq :panel-menu/hakukohderyhmien-hallinta-panel)
+  {:panel      (s/eq :panel/hakukohderyhmien-hallinta)
    :parameters {:query {}
                 :path  {}}})
 
 (s/defschema HaunAsetuksetPanel
-  {:panel      (s/eq :panel-menu/haun-asetukset-panel)
+  {:panel      (s/eq :panel/haun-asetukset)
    :parameters {:query {:hakuOid s/Str}
                 :path  {}}})
 
 (s/defschema ActivePanel
   {:active-panel
    (s/conditional
-     #(-> % :panel (= :panel-menu/hakukohderyhmien-hallinta-panel))
+     #(-> % :panel (= :panel/hakukohderyhmien-hallinta))
      HakukohderyhmienHallintaPanel
-     #(-> % :panel (= :panel-menu/haun-asetukset-panel))
+     #(-> % :panel (= :panel/haun-asetukset))
      HaunAsetuksetPanel)})
 
 (s/defschema Lang

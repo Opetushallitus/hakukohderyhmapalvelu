@@ -4,16 +4,16 @@
     [re-frame.core :as re-frame]
     [schema.core :as s]
     [hakukohderyhmapalvelu.events.core-events]
-    [hakukohderyhmapalvelu.events.hakukohderyhma-create-events]
+    [hakukohderyhmapalvelu.events.hakukohderyhmien-hallinta-events]
     [hakukohderyhmapalvelu.events.http-events]
-    [hakukohderyhmapalvelu.events.panel-menu-events]
+    [hakukohderyhmapalvelu.events.panel-events]
     [hakukohderyhmapalvelu.fx.http-fx]
     [hakukohderyhmapalvelu.routes :as routes]
     [hakukohderyhmapalvelu.views :as views]
     [hakukohderyhmapalvelu.styles.styles-init :as styles]
     [hakukohderyhmapalvelu.subs.core-subs]
     [hakukohderyhmapalvelu.subs.hakukohderyhma-create-subs]
-    [hakukohderyhmapalvelu.subs.panel-menu-subs]))
+    [hakukohderyhmapalvelu.subs.panel-subs]))
 
 (defn- turn-on-schema-validation []
   (s/set-fn-validation! true))

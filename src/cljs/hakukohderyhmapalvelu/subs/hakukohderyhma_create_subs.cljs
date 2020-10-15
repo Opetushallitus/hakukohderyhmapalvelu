@@ -3,15 +3,15 @@
 
 
 (re-frame/reg-sub
-  :hakukohderyhma-create/create-grid-visible?
+  :hakukohderyhmien-hallinta/create-grid-visible?
   (fn []
     [(re-frame/subscribe [:state-query [:create-hakukohderyhma :visible?] false])])
   (fn [[visible?]]
     visible?))
 
 (re-frame/reg-sub
-  :hakukohderyhma-create/ongoing-request?
+  :hakukohderyhmien-hallinta/ongoing-request?
   (fn []
-    [(re-frame/subscribe [:state-query [:requests :hakukohderyhma-create/save-hakukohderyhma]])])
+    [(re-frame/subscribe [:state-query [:requests :hakukohderyhmien-hallinta/save-hakukohderyhma]])])
   (fn [[ongoing-request?]]
     (some? ongoing-request?)))

@@ -1,18 +1,21 @@
 (ns hakukohderyhmapalvelu.routes
-  (:require [reitit.coercion.spec :as rss]
+  (:require [hakukohderyhmapalvelu.config :as c]
+            [reitit.coercion.spec :as rss]
             [reitit.frontend :as rf]
             [reitit.frontend.easy :as rfe]
             [re-frame.core :as re-frame]))
 
+(def default-panel (:default-panel c/config))
+
 (def routes
   [["/"
-    {:redirect :panel-menu/hakukohderyhmien-hallinta-panel}]
+    {:redirect default-panel}]
    ["/hakukohderyhmapalvelu"
-    {:redirect :panel-menu/hakukohderyhmien-hallinta-panel}]
+    {:redirect default-panel}]
    ["/hakukohderyhmapalvelu/hakukohderyhmien-hallinta"
-    {:name :panel-menu/hakukohderyhmien-hallinta-panel}]
+    {:name default-panel}]
    ["/hakukohderyhmapalvelu/haun-asetukset"
-    {:name       :panel-menu/haun-asetukset-panel
+    {:name       :panel/haun-asetukset
      :parameters {:query {:hakuOid string?}}}]])
 
 (defn app-routes []
@@ -29,7 +32,7 @@
               (rfe/replace-state redirect)
 
               name
-              (re-frame/dispatch [:panel-menu/set-active-panel
+              (re-frame/dispatch [:panel/set-active-panel
                                   {:panel      name
                                    :parameters {:path  path
                                                 :query query}}]))))

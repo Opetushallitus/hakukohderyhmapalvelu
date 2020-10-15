@@ -5,8 +5,8 @@
 
 (defn- panels [panel-name]
   (let [panel (case panel-name
-                :panel-menu/hakukohderyhmien-hallinta-panel [h/hakukohderyhmien-hallinta-panel]
-                :panel-menu/haun-asetukset-panel [a/haun-asetukset-panel]
+                :panel/hakukohderyhmien-hallinta [h/hakukohderyhmien-hallinta-panel]
+                :panel/haun-asetukset [a/haun-asetukset-panel]
                 [:div])]
     [:<>
      panel]))
@@ -16,5 +16,5 @@
 
 (defn main-panel []
   [:div
-   (let [{panel :panel} @(re-frame/subscribe [:panel-menu/active-panel])]
+   (let [{panel :panel} @(re-frame/subscribe [:panel/active-panel])]
      [show-panel panel])])

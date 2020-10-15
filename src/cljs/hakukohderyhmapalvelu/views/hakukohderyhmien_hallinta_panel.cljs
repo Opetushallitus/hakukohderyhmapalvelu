@@ -36,7 +36,7 @@
       :label             "Haku"}]))
 
 (defn on-save-button-click [hakukohderyhma-name]
-  (re-frame/dispatch [:hakukohderyhma-create/save-hakukohderyhma hakukohderyhma-name]))
+  (re-frame/dispatch [:hakukohderyhmien-hallinta/save-hakukohderyhma hakukohderyhma-name]))
 
 (defn- hakukohderyhma-create []
   (let [input-value (reagent/atom "")]
@@ -44,8 +44,8 @@
       (let [cypressid        "hakukohderyhma-create"
             input-id         "hakukohderyhma-create-input"
             style-prefix     "hakukohderyhma-create"
-            visible?         @(re-frame/subscribe [:hakukohderyhma-create/create-grid-visible?])
-            ongoing-request? @(re-frame/subscribe [:hakukohderyhma-create/ongoing-request?])
+            visible?         @(re-frame/subscribe [:hakukohderyhmien-hallinta/create-grid-visible?])
+            ongoing-request? @(re-frame/subscribe [:hakukohderyhmien-hallinta/ongoing-request?])
             button-disabled? (or ongoing-request?
                                  (-> @input-value seq nil?))]
         (when visible?
@@ -75,7 +75,7 @@
                                 :href      ""
                                 :label     "Luo uusi ryhmä"
                                 :on-click  (fn [_]
-                                             (re-frame/dispatch [:hakukohderyhma-create/toggle-grid-visibility]))}]])
+                                             (re-frame/dispatch [:hakukohderyhmien-hallinta/toggle-grid-visibility]))}]])
 
 (defn- hakukohderyhma-select []
   (let [cypressid    "hakukohderyhma-select"
