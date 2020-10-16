@@ -24,7 +24,6 @@
                           :http-request-id http-request-id
                           :path            "/hakukohderyhmapalvelu/api/hakukohderyhma"
                           :request-schema  schemas/HakukohderyhmaRequest
-                          :response-schema schemas/HakukohderyhmaResponse}
-       :response-handler [:hakukohderyhmien-hallinta/handle-save-hakukohderyhma {:nimi hakukohderyhma-name}]
-       :cas?             false
+                          :response-schema schemas/HakukohderyhmaResponse
+                          :response-handler [:hakukohderyhmien-hallinta/handle-save-hakukohderyhma {:nimi hakukohderyhma-name}]}
        :body             body})))

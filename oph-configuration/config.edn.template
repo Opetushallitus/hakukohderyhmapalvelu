@@ -17,4 +17,5 @@
                         :hakukohderyhmapalvelu-url "{{ hakukohderyhmapalvelu_url }}"}
  :oph-organisaatio-oid "1.2.246.562.10.00000000001"
  :public-config        {:environment   {{ hakukohderyhmapalvelu_environment | default(':development') }}
-                        :default-panel :panel/hakukohderyhmien-hallinta}}
+                        :default-panel :panel/hakukohderyhmien-hallinta
+                        :caller-id     "{{hakukohderyhmapalvelu_frontend_caller_id | default('1.2.246.562.10.00000000001.hakukohderyhmapalvelu.frontend')}}"}}

@@ -8,9 +8,14 @@
     (get-in db path default)))
 
 (re-frame/reg-sub
+  :lang
+  (fn [db]
+    (:lang db)))
+
+(re-frame/reg-sub
   :translation
   (fn []
-    [(re-frame/subscribe [:state-query [:lang]])])
+    [(re-frame/subscribe [:lang])])
   (fn [[lang] [_ tx-key]]
     (or (-> t/translations tx-key lang)
         tx-key)))

@@ -17,4 +17,5 @@
                         :hakukohderyhmapalvelu-url "http://localhost:19033/hakukohderyhmapalvelu"}
  :oph-organisaatio-oid "1.2.246.562.10.00000000001"
  :public-config        {:environment   :it
-                        :default-panel :panel/hakukohderyhmien-hallinta}}
+                        :default-panel :panel/hakukohderyhmien-hallinta
+                        :caller-id     "1.2.246.562.10.00000000001.hakukohderyhmapalvelu.frontend"}}

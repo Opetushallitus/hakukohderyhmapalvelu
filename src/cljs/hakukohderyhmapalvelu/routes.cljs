@@ -1,5 +1,7 @@
 (ns hakukohderyhmapalvelu.routes
-  (:require [hakukohderyhmapalvelu.config :as c]
+  (:require [camel-snake-kebab.core :as csk]
+            [camel-snake-kebab.extras :as cske]
+            [hakukohderyhmapalvelu.config :as c]
             [reitit.coercion.spec :as rss]
             [reitit.frontend :as rf]
             [reitit.frontend.easy :as rfe]
@@ -34,6 +36,6 @@
               name
               (re-frame/dispatch [:panel/set-active-panel
                                   {:panel      name
-                                   :parameters {:path  path
-                                                :query query}}]))))
+                                   :parameters {:path  (cske/transform-keys csk/->kebab-case-keyword path)
+                                                :query (cske/transform-keys csk/->kebab-case-keyword query)}}]))))
     {:use-fragment false}))

@@ -4,7 +4,9 @@
     [day8.re-frame.tracing :refer-macros [fn-traced]]))
 
 (defn- make-haun-asetukset-dispatches [{:keys [query]}]
-  [[:haun-asetukset/get-haku (:hakuOid query)]])
+  (let [haku-oid (:haku-oid query)]
+    [[:haun-asetukset/get-haku haku-oid]
+     [:haun-asetukset/get-ohjausparametrit haku-oid]]))
 
 (defn- make-dispatches [{:keys [panel parameters]}]
   (when-let [make-fn (when (= panel :panel/haun-asetukset)

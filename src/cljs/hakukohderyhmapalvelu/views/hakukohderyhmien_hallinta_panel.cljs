@@ -1,14 +1,16 @@
 (ns hakukohderyhmapalvelu.views.hakukohderyhmien-hallinta-panel
-  (:require [hakukohderyhmapalvelu.components.common.button :as b]
-            [hakukohderyhmapalvelu.components.common.checkbox :as checkbox]
-            [hakukohderyhmapalvelu.components.common.grid :as grid]
+  (:require [goog.string :as gstring]
+            [hakukohderyhmapalvelu.components.common.button :as b]
+            [hakukohderyhmapalvelu.components.common.checkbox :as c]
             [hakukohderyhmapalvelu.components.common.input :as input]
+            [hakukohderyhmapalvelu.components.common.label :as label-component]
             [hakukohderyhmapalvelu.components.common.link :as l]
             [hakukohderyhmapalvelu.components.common.panel :as p]
             [hakukohderyhmapalvelu.styles.layout-styles :as layout]
             [re-frame.core :as re-frame]
             [reagent.core :as reagent]
-            [stylefy.core :as stylefy]))
+            [stylefy.core :as stylefy]
+            [hakukohderyhmapalvelu.styles.styles-colors :as colors]))
 
 (def ^:private hakukohderyhmapalvelu-grid-styles
   {:display  "grid"
@@ -17,14 +19,78 @@
                   "/ 1fr 1fr")
    :grid-gap "15px"})
 
+(defn- make-search-control-styles [style-prefix]
+  (merge layout/vertical-align-center-styles
+         {:cursor          "pointer"
+          :grid-area       style-prefix
+          :justify-self    "end"
+          ::stylefy/manual [["input + label"
+                             {:margin-left "10px"}]]}))
+
+(defn- checkbox-with-label
+  [{:keys [checkbox-id
+           cypressid
+           label
+           style-prefix]}]
+  (let [search-control-styles (make-search-control-styles style-prefix)]
+    [:div (stylefy/use-style search-control-styles)
+     [c/checkbox
+      {:id        checkbox-id
+       :checked?  true
+       :cypressid cypressid
+       :on-change (fn [])}]
+     [label-component/label
+      {:cypressid cypressid
+       :label     label
+       :for       checkbox-id}]]))
+
+(def ^:private grid-gap "10px")
+
+(defn- format-grid-row [row n style-prefix]
+  (->> [(repeat n style-prefix) "1fr" style-prefix]
+       flatten
+       (apply gstring/format row)))
+
+(defn make-input-with-label-and-control-styles
+  [style-prefix]
+  (let [grid (str (format-grid-row "[%s-heading-row-start] \"%s-heading %s-control\" %s [%s-heading-row-end]" 3 style-prefix)
+                  (format-grid-row "[%s-input-row-start] \"%s-input %s-input\" %s [%s-input-row-end]" 3 style-prefix)
+                  "/ 1fr 1fr")]
+    {:display             "grid"
+     :grid-area           style-prefix
+     :grid                grid
+     :grid-gap            grid-gap
+     ::stylefy/sub-styles {:heading
+                           (merge layout/vertical-align-center-styles
+                                  {:color     colors/black
+                                   :grid-area (str style-prefix "-heading")})}}))
+
+(defn input-with-label-and-control
+  [{:keys [control-component
+           cypressid
+           input-component
+           input-id
+           style-prefix
+           label]}]
+  (let [input-styles (make-input-with-label-and-control-styles style-prefix)]
+    [:div (stylefy/use-style input-styles)
+     [:label (stylefy/use-sub-style
+               input-styles
+               :heading
+               {:cypressid (str cypressid "-label")
+                :for       input-id})
+      label]
+     input-component
+     control-component]))
+
 (defn- haku-search []
   (let [input-id     "haku-search-input"
         style-prefix "haku-search"]
-    [grid/input-with-label-and-control
-     {:control-component [checkbox/checkbox-with-label {:checkbox-id  "haku-search-checkbox"
-                                                        :cypressid    "haku-search-checkbox"
-                                                        :label        "Näytä myös päättyneet"
-                                                        :style-prefix (str style-prefix "-control")}]
+    [input-with-label-and-control
+     {:control-component [checkbox-with-label {:checkbox-id  "haku-search-checkbox"
+                                               :cypressid    "haku-search-checkbox"
+                                               :label        "Näytä myös päättyneet"
+                                               :style-prefix (str style-prefix "-control")}]
       :cypressid         "haku-search"
       :input-component   [input/input-text {:cypressid    "haku-search-input"
                                             :input-id     input-id
@@ -38,6 +104,23 @@
 (defn on-save-button-click [hakukohderyhma-name]
   (re-frame/dispatch [:hakukohderyhmien-hallinta/save-hakukohderyhma hakukohderyhma-name]))
 
+(defn- make-input-without-top-row-styles [style-prefix]
+  (let [grid (str (format-grid-row "[%s-top-row-start] \". .\" %s [%s-top-row-end]" 1 style-prefix)
+                  (format-grid-row "[%s-input-row-start] \"%s-input %s-button\" %s [%s-input-row-end]" 3 style-prefix)
+                  "/ minmax(auto, 100%) minmax(auto, 1fr)")]
+    {:display  "grid"
+     :grid     grid
+     :grid-gap grid-gap}))
+
+(defn input-and-button-without-top-row
+  [{:keys [button-component
+           input-component
+           style-prefix]}]
+  (let [input-styles (make-input-without-top-row-styles style-prefix)]
+    [:div (stylefy/use-style input-styles)
+     input-component
+     button-component]))
+
 (defn- hakukohderyhma-create []
   (let [input-value (reagent/atom "")]
     (fn []
@@ -49,7 +132,7 @@
             button-disabled? (or ongoing-request?
                                  (-> @input-value seq nil?))]
         (when visible?
-          [grid/input-and-button-without-top-row
+          [input-and-button-without-top-row
            {:button-component [b/button
                                {:cypressid    (str cypressid "-button")
                                 :disabled?    button-disabled?
@@ -81,7 +164,7 @@
   (let [cypressid    "hakukohderyhma-select"
         input-id     "hakukohderyhma-select-input"
         style-prefix "hakukohderyhma-select"]
-    [grid/input-with-label-and-control
+    [input-with-label-and-control
      {:control-component [add-new-hakukohderyhma-link
                           {:cypressid (str cypressid "-add-new-hakukohderyhma")}]
       :cypressid         cypressid

@@ -8,12 +8,14 @@
     [hakukohderyhmapalvelu.events.haun-asetukset-events]
     [hakukohderyhmapalvelu.events.http-events]
     [hakukohderyhmapalvelu.events.panel-events]
+    [hakukohderyhmapalvelu.fx.dispatch-debounced-fx]
     [hakukohderyhmapalvelu.fx.http-fx]
     [hakukohderyhmapalvelu.routes :as routes]
     [hakukohderyhmapalvelu.views :as views]
     [hakukohderyhmapalvelu.styles.styles-init :as styles]
     [hakukohderyhmapalvelu.subs.core-subs]
     [hakukohderyhmapalvelu.subs.hakukohderyhma-create-subs]
+    [hakukohderyhmapalvelu.subs.haun-asetukset-subs]
     [hakukohderyhmapalvelu.subs.panel-subs]))
 
 (defn- turn-on-schema-validation []
