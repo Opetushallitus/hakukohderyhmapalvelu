@@ -26,4 +26,5 @@
                           :request-schema  schemas/HakukohderyhmaRequest
                           :response-schema schemas/HakukohderyhmaResponse}
        :response-handler [:hakukohderyhmien-hallinta/handle-save-hakukohderyhma {:nimi hakukohderyhma-name}]
+       :cas?             false
        :body             body})))

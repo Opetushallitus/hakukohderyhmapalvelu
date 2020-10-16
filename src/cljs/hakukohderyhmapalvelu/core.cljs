@@ -5,6 +5,7 @@
     [schema.core :as s]
     [hakukohderyhmapalvelu.events.core-events]
     [hakukohderyhmapalvelu.events.hakukohderyhmien-hallinta-events]
+    [hakukohderyhmapalvelu.events.haun-asetukset-events]
     [hakukohderyhmapalvelu.events.http-events]
     [hakukohderyhmapalvelu.events.panel-events]
     [hakukohderyhmapalvelu.fx.http-fx]

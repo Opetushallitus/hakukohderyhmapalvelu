@@ -3,7 +3,18 @@
     [hakukohderyhmapalvelu.macros.event-macros :as events]
     [day8.re-frame.tracing :refer-macros [fn-traced]]))
 
-(events/reg-event-db-validating
+(defn- make-haun-asetukset-dispatches [{:keys [query]}]
+  [[:haun-asetukset/get-haku (:hakuOid query)]])
+
+(defn- make-dispatches [{:keys [panel parameters]}]
+  (when-let [make-fn (when (= panel :panel/haun-asetukset)
+                       make-haun-asetukset-dispatches)]
+    (make-fn parameters)))
+
+(events/reg-event-fx-validating
   :panel/set-active-panel
-  (fn-traced [db [active-panel]]
-    (assoc db :active-panel active-panel)))
+  (fn-traced [{db :db} [active-panel]]
+    (let [dispatches (make-dispatches active-panel)]
+      (cond-> {:db (assoc db :active-panel active-panel)}
+              (seq dispatches)
+              (assoc :dispatch-n dispatches)))))
