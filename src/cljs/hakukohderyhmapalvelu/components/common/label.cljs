@@ -17,6 +17,6 @@
                      :for                        s/Str}]
   [:label (stylefy/use-style
             label-styles
-            {:cypressid (str cypressid "-label")
+            {:cypressid cypressid
              :for       for})
    label])

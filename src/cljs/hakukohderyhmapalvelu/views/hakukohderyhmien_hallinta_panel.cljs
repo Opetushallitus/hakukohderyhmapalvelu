@@ -37,10 +37,10 @@
      [c/checkbox
       {:id        checkbox-id
        :checked?  true
-       :cypressid cypressid
+       :cypressid (str cypressid "-input")
        :on-change (fn [])}]
      [label-component/label
-      {:cypressid cypressid
+      {:cypressid (str cypressid "-label")
        :label     label
        :for       checkbox-id}]]))
 

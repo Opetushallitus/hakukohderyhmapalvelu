@@ -140,7 +140,6 @@ describe('Hakukohderyhmäpalvelu', () => {
             cy.get(
               hl.hakukohderyhmanLisaysSaveNewHakukohderyhmaButtonSelector,
             ).should('be.disabled')
-            cy.wait('@post-hakukohderyhma')
             cy.get(
               hl.hakukohderyhmanLisaysSaveNewHakukohderyhmaButtonSelector,
             ).should('be.enabled')

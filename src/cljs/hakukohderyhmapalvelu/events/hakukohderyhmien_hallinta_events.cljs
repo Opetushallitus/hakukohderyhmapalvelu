@@ -19,11 +19,11 @@
   (fn-traced [{db :db} [hakukohderyhma-name]]
     (let [http-request-id :hakukohderyhmien-hallinta/save-hakukohderyhma
           body            {:nimi {:fi hakukohderyhma-name}}]
-      {:db               (update db :requests (fnil conj #{}) http-request-id)
-       :http             {:method          :post
-                          :http-request-id http-request-id
-                          :path            "/hakukohderyhmapalvelu/api/hakukohderyhma"
-                          :request-schema  schemas/HakukohderyhmaRequest
-                          :response-schema schemas/HakukohderyhmaResponse
-                          :response-handler [:hakukohderyhmien-hallinta/handle-save-hakukohderyhma {:nimi hakukohderyhma-name}]}
-       :body             body})))
+      {:db   (update db :requests (fnil conj #{}) http-request-id)
+       :http {:method           :post
+              :http-request-id  http-request-id
+              :path             "/hakukohderyhmapalvelu/api/hakukohderyhma"
+              :request-schema   schemas/HakukohderyhmaRequest
+              :response-schema  schemas/HakukohderyhmaResponse
+              :response-handler [:hakukohderyhmien-hallinta/handle-save-hakukohderyhma {:nimi hakukohderyhma-name}]
+              :body             body}})))
