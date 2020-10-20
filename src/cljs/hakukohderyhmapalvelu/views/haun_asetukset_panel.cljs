@@ -83,12 +83,13 @@
        :haun-asetus-key haun-asetus-key}]
      (when enabled?
        [haun-asetukset-label-container
-        {:component [i/input-text
+        {:component [i/input-number
                      {:input-id    text-input-id
                       :on-change   (fn [value]
                                      (println (str value)))
                       :placeholder text-input-label
-                      :aria-label  text-input-label}]}])]))
+                      :aria-label  text-input-label
+                      :min         1}]}])]))
 
 (defn- haun-asetukset []
   (let [haku-oid  @(re-frame/subscribe [:haun-asetukset/selected-haku-oid])

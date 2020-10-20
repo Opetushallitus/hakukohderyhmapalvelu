@@ -55,6 +55,27 @@
              :type        "text"
              :aria-label  aria-label})])
 
+(s/defn input-number
+  [{:keys [input-id
+           on-change
+           placeholder
+           aria-label
+           min]} :- {:input-id    s/Str
+                     :on-change   s/Any
+                     :placeholder s/Str
+                     :aria-label  s/Str
+                     :min         s/Int}]
+  [:input (stylefy/use-style
+            input-text-styles
+            {:id          input-id
+             :on-change   (fn [event]
+                            (let [value (.. event -target -value)]
+                              (on-change value)))
+             :placeholder placeholder
+             :type        "number"
+             :aria-label  aria-label
+             :min         min})])
+
 (def ^:private input-dropdown-styles
   (merge
     layout/vertical-align-center-styles
