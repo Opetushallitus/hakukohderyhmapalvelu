@@ -111,7 +111,7 @@
         :haun-asetus-key :haun-asetukset/jarjestetyt-hakutoiveet}]
       [haun-asetukset-checkbox
        {:haku-oid        haku-oid
-        :haun-asetus-key :haun-asetukset/vain-yksi-hakemus-rajoitus}]]]))
+        :haun-asetus-key :haun-asetukset/useita-hakemuksia}]]]))
 
 (defn haun-asetukset-panel []
   [p/panel

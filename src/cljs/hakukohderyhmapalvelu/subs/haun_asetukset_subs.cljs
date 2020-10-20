@@ -29,7 +29,6 @@
       ohjausparametri-value
       haun-asetus-key)))
 
-
 (re-frame/reg-sub
   :haun-asetukset/haun-asetus-disabled?
   (fn [[_ haku-oid]]

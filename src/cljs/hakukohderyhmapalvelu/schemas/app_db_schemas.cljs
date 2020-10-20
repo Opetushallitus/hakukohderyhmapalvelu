@@ -53,7 +53,7 @@
                                                     "Hakukierros päättyy")
    (s/optional-key :jarjestetytHakutoiveet)       s/Bool
    (s/optional-key :hakutoiveidenMaaraRajoitettu) s/Bool
-   (s/optional-key :vainYksiHakemusRajoitus)      s/Bool
+   (s/optional-key :useitaHakemuksia)             s/Bool
    (s/optional-key :sijoittelu)                   s/Bool
    :__modified__                                  s/Int
    :__modifiedBy__                                s/Str})

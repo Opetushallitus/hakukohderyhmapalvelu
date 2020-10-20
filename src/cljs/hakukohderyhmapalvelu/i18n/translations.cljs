@@ -9,5 +9,5 @@
    {:fi "Hakukohteiden määrä"}
    :haun-asetukset/jarjestetyt-hakutoiveet
    {:fi "Hakukohteiden priorisointi"}
-   :haun-asetukset/vain-yksi-hakemus-rajoitus
+   :haun-asetukset/useita-hakemuksia
    {:fi "Vain yksi hakemus -rajoitus"}})
