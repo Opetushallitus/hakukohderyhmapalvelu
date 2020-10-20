@@ -108,7 +108,7 @@
        {:haku-oid haku-oid}]
       [haun-asetukset-checkbox
        {:haku-oid        haku-oid
-        :haun-asetus-key :haun-asetukset/hakukohteiden-priorisointi}]
+        :haun-asetus-key :haun-asetukset/jarjestetyt-hakutoiveet}]
       [haun-asetukset-checkbox
        {:haku-oid        haku-oid
         :haun-asetus-key :haun-asetukset/vain-yksi-hakemus-rajoitus}]]]))

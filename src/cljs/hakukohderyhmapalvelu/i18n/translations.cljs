@@ -7,7 +7,7 @@
    {:fi "Hakukohteiden määrä -rajoitus"}
    :haun-asetukset/hakukohteiden-maara
    {:fi "Hakukohteiden määrä"}
-   :haun-asetukset/hakukohteiden-priorisointi
+   :haun-asetukset/jarjestetyt-hakutoiveet
    {:fi "Hakukohteiden priorisointi"}
    :haun-asetukset/vain-yksi-hakemus-rajoitus
    {:fi "Vain yksi hakemus -rajoitus"}})

@@ -5,8 +5,8 @@
     :haun-asetukset/hakukohteiden-maara-rajoitettu
     :hakutoiveidenMaaraRajoitettu
 
-    :haun-asetukset/hakukohteiden-priorisointi
-    :hakukohteidenPriorisointi
+    :haun-asetukset/jarjestetyt-hakutoiveet
+    :jarjestetytHakutoiveet
 
     :haun-asetukset/vain-yksi-hakemus-rajoitus
     :vainYksiHakemusRajoitus))
@@ -16,6 +16,6 @@
   (cond-> ohjausparametri-value
           (some #{haun-asetus-key}
                 #{:haun-asetukset/hakukohteiden-maara-rajoitettu
-                  :haun-asetukset/hakukohteiden-priorisointi
+                  :haun-asetukset/jarjestetyt-hakutoiveet
                   :haun-asetukset/vain-yksi-hakemus-rajoitus})
           true?))
