@@ -13,6 +13,9 @@
    :font-weight      vars/font-weight-regular
    :line-height      "24px"})
 
+(def ^:private input-styles
+  {::stylefy/mode [[:disabled {:background-color "inherit"}]]})
+
 (defn- add-font-styles []
   (doseq [format ["woff" "woff2"]]
     (doseq [weight [vars/font-weight-regular
@@ -30,4 +33,5 @@
 (defn init-styles []
   (stylefy/init {:use-caching? (-> c/config :environment (= :production))})
   (stylefy/tag "body" body-styles)
+  (stylefy/tag "input" input-styles)
   (add-font-styles))

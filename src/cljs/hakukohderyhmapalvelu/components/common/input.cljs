@@ -29,7 +29,8 @@
           :position      "relative"
           ::stylefy/mode [["::placeholder" {:color colors/gray-lighten-1}]
                           [:focus {:border-color colors/blue-lighten-2
-                                   :box-shadow   effects/inset-box-shadow-effect-blue}]]}))
+                                   :box-shadow   effects/inset-box-shadow-effect-blue}]
+                          [:disabled {:background-color colors/gray-lighten-5}]]}))
 
 (def ^:private input-debounce-timeout 500)
 
@@ -71,11 +72,13 @@
                on-change
                placeholder
                aria-label
-               min]} :- {:input-id    s/Str
-                         :on-change   s/Any
-                         :placeholder s/Str
-                         :aria-label  s/Str
-                         :min         s/Int}]
+               min
+               disabled?]} :- {:input-id                   s/Str
+                               :on-change                  s/Any
+                               :placeholder                s/Str
+                               :aria-label                 s/Str
+                               :min                        s/Int
+                               (s/optional-key :disabled?) s/Bool}]
       [:input (stylefy/use-style
                 input-text-styles
                 {:id          input-id
@@ -85,7 +88,8 @@
                  :placeholder placeholder
                  :type        "number"
                  :aria-label  aria-label
-                 :min         min})])))
+                 :min         min
+                 :disabled    disabled?})])))
 
 (def ^:private input-dropdown-styles
   (merge
