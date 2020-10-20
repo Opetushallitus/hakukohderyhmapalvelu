@@ -83,6 +83,22 @@
      input-component
      control-component]))
 
+(defn- make-hakukohderyhmien-hallinta-input-styles
+  [style-prefix]
+  (merge
+    layout/vertical-align-center-styles
+    {:grid-area style-prefix
+     :position  "relative"}))
+
+(defn- hakukohderyhmien-hallinta-input
+  [{:keys [style-prefix] :as props}]
+  (let [hakukohderyhmien-hallinta-input-styles (make-hakukohderyhmien-hallinta-input-styles
+                                                 style-prefix)
+        props' (dissoc props :style-prefix)]
+    [:div
+     (stylefy/use-style hakukohderyhmien-hallinta-input-styles)
+     [input/input-text props']]))
+
 (defn- haku-search []
   (let [input-id     "haku-search-input"
         style-prefix "haku-search"]
@@ -92,11 +108,12 @@
                                                :label        "Näytä myös päättyneet"
                                                :style-prefix (str style-prefix "-control")}]
       :cypressid         "haku-search"
-      :input-component   [input/input-text {:cypressid    "haku-search-input"
-                                            :input-id     input-id
-                                            :on-change    (fn [])
-                                            :placeholder  "Haun nimi"
-                                            :style-prefix (str style-prefix "-input")}]
+      :input-component   [hakukohderyhmien-hallinta-input
+                          {:cypressid    "haku-search-input"
+                           :input-id     input-id
+                           :on-change    (fn [])
+                           :placeholder  "Haun nimi"
+                           :style-prefix (str style-prefix "-input")}]
       :input-id          input-id
       :style-prefix      style-prefix
       :label             "Haku"}]))
@@ -139,7 +156,7 @@
                                 :label        "Tallenna"
                                 :on-click     (partial on-save-button-click @input-value)
                                 :style-prefix (str style-prefix "-button")}]
-            :input-component  [input/input-text
+            :input-component  [hakukohderyhmien-hallinta-input
                                {:cypressid    (str cypressid "-input")
                                 :input-id     input-id
                                 :on-change    (partial reset! input-value)
@@ -160,6 +177,23 @@
                                 :on-click  (fn [_]
                                              (re-frame/dispatch [:hakukohderyhmien-hallinta/toggle-grid-visibility]))}]])
 
+(defn- make-hakukohderyhmien-hallinta-input-dropdown-styles
+  [style-prefix]
+  (merge
+    layout/vertical-align-center-styles
+    {:grid-area style-prefix
+     :width     "100%"}))
+
+(defn- hakukohderyhmien-hallinta-input-dropdown
+  [{:keys [style-prefix] :as props}]
+  (let [hakukohderyhmien-hallinta-input-dropdown-styles (make-hakukohderyhmien-hallinta-input-dropdown-styles
+                                                          style-prefix)
+        props'                                          (dissoc props :style-prefix)]
+    [:div
+     (stylefy/use-style
+       hakukohderyhmien-hallinta-input-dropdown-styles)
+     [input/input-dropdown props']]))
+
 (defn- hakukohderyhma-select []
   (let [cypressid    "hakukohderyhma-select"
         input-id     "hakukohderyhma-select-input"
@@ -168,7 +202,7 @@
      {:control-component [add-new-hakukohderyhma-link
                           {:cypressid (str cypressid "-add-new-hakukohderyhma")}]
       :cypressid         cypressid
-      :input-component   [input/input-dropdown
+      :input-component   [hakukohderyhmien-hallinta-input-dropdown
                           {:cypressid        (str cypressid "-dropdown")
                            :style-prefix     (str style-prefix "-input")
                            :unselected-label "Hakukohderyhmä"}]
