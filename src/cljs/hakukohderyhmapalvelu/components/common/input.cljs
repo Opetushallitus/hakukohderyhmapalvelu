@@ -5,6 +5,9 @@
             [hakukohderyhmapalvelu.styles.styles-effects :as effects]
             [hakukohderyhmapalvelu.styles.styles-fonts :as fonts]
             [hakukohderyhmapalvelu.styles.layout-styles :as layout]
+            [hakukohderyhmapalvelu.validators.input-number-validator :as inv]
+            [hakukohderyhmapalvelu.validators.input-text-validator :as itv]
+            [reagent.core :as reagent]
             [schema.core :as s]
             [stylefy.core :as stylefy]))
 
@@ -12,7 +15,9 @@
 
 (def ^:private input-container-styles
   (let [input-left-right-padding "10px"]
-    {:border        (str "2px solid " colors/gray-lighten-3)
+    {:border-width  "2px"
+     :border-style  "solid"
+     :border-color  colors/gray-lighten-3
      :border-radius "3px"
      :box-sizing    "border-box"
      :box-shadow    effects/inset-box-shadow-effect-black
@@ -32,6 +37,17 @@
                                    :box-shadow   effects/inset-box-shadow-effect-blue}]
                           [:disabled {:background-color colors/gray-lighten-5}]]}))
 
+(def ^:private input-text-invalid-styles
+  (merge
+    input-text-styles
+    {:border-color  colors/red
+     :color         colors/red
+     ::stylefy/mode [["::placeholder" {:color colors/red}]
+                     [:focus {:border-color colors/red
+                              :box-shadow   effects/inset-box-shadow-effect-blue}]
+                     [:disabled {:background-color colors/red}]]}))
+
+
 (def ^:private input-debounce-timeout 500)
 
 (defn input-text
@@ -39,7 +55,8 @@
   (let [on-change-debounced (d/debounce
                               (fn [on-change value]
                                 (on-change value))
-                              input-debounce-timeout)]
+                              input-debounce-timeout)
+        invalid?            (reagent/atom false)]
     (s/fn render-input-text
       [{:keys [cypressid
                input-id
@@ -50,23 +67,30 @@
                                 :on-change                  s/Any
                                 :placeholder                s/Str
                                 :aria-label                 s/Str}]
-      [:input (stylefy/use-style
-                input-text-styles
-                {:cypressid   cypressid
-                 :id          input-id
-                 :on-change   (fn [event]
-                                (let [value (.. event -target -value)]
-                                  (on-change-debounced on-change value)))
-                 :placeholder placeholder
-                 :type        "text"
-                 :aria-label  aria-label})])))
+      (let [validate (itv/input-text-validator)]
+        [:input (stylefy/use-style
+                  (cond-> input-text-styles
+                          @invalid?
+                          (merge input-text-invalid-styles))
+                  {:cypressid   cypressid
+                   :id          input-id
+                   :on-change   (fn [event]
+                                  (let [value  (.. event -target -value)
+                                        valid? (validate value)]
+                                    (reset! invalid? (not valid?))
+                                    (when valid?
+                                      (on-change-debounced on-change value))))
+                   :placeholder placeholder
+                   :type        "text"
+                   :aria-label  aria-label})]))))
 
 (defn input-number
   []
   (let [on-change-debounced (d/debounce
                               (fn [on-change value]
                                 (on-change value))
-                              input-debounce-timeout)]
+                              input-debounce-timeout)
+        invalid?            (reagent/atom false)]
     (s/fn render-input-number
       [{:keys [input-id
                on-change
@@ -79,17 +103,27 @@
                                :aria-label                 s/Str
                                :min                        s/Int
                                (s/optional-key :disabled?) s/Bool}]
-      [:input (stylefy/use-style
-                input-text-styles
-                {:id          input-id
-                 :on-change   (fn [event]
-                                (let [value (.. event -target -value)]
-                                  (on-change-debounced on-change value)))
-                 :placeholder placeholder
-                 :type        "number"
-                 :aria-label  aria-label
-                 :min         min
-                 :disabled    disabled?})])))
+      (let [validate (inv/input-number-validator
+                       min
+                       nil)]
+        [:input (stylefy/use-style
+                  (cond-> input-text-styles
+                          @invalid?
+                          (merge input-text-invalid-styles))
+                  {:id          input-id
+                   :on-change   (fn [event]
+                                  (let [value  (.. event -target -value)
+                                        valid? (validate value)]
+                                    (reset! invalid? (not valid?))
+                                    (when valid?
+                                      (on-change-debounced
+                                        on-change
+                                        value))))
+                   :placeholder placeholder
+                   :type        "number"
+                   :aria-label  aria-label
+                   :min         min
+                   :disabled    disabled?})]))))
 
 (def ^:private input-dropdown-styles
   (merge

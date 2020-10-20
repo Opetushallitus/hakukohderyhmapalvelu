@@ -12,3 +12,5 @@
 (def gray-lighten-5 "#F5F5F5")
 
 (def white "#FFFFFF")
+
+(def red "#FF0000")

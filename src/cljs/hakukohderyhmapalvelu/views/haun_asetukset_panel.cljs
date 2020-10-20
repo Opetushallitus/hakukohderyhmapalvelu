@@ -76,7 +76,8 @@
         id-prefix        (get-id-prefix haun-asetus-key)
         enabled?         @(re-frame/subscribe [:haun-asetukset/haun-asetus haku-oid haun-asetus-key])
         text-input-id    (str id-prefix "-input")
-        text-input-label @(re-frame/subscribe [:translation :haun-asetukset/hakukohteiden-maara])]
+        text-input-label @(re-frame/subscribe [:translation :haun-asetukset/hakukohteiden-maara])
+        disabled?        @(re-frame/subscribe [:haun-asetukset/haun-asetukset-disabled? haku-oid])]
     [:<>
      [haun-asetukset-checkbox
       {:haku-oid        haku-oid
@@ -89,7 +90,8 @@
                                      (println (str value)))
                       :placeholder text-input-label
                       :aria-label  text-input-label
-                      :min         1}]}])]))
+                      :min         1
+                      :disabled?   disabled?}]}])]))
 
 (defn- haun-asetukset []
   (let [haku-oid  @(re-frame/subscribe [:haun-asetukset/selected-haku-oid])
