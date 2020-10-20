@@ -10,17 +10,32 @@
    :grid-template-columns "[haun-asetukset-label] 2fr [haun-asetukset-input] 4fr [end]"
    :grid-auto-rows        "30px"})
 
+(defn- get-id-prefix [haun-asetus-key]
+  (str (namespace haun-asetus-key)
+       "-"
+       (name haun-asetus-key)))
+
+(def ^:private haun-asetus-checkbox-label-styles
+  {:grid-column-start "haun-asetukset-label"})
+
+(defn- haun-asetukset-label [{:keys [label
+                                     for]}]
+  [:div
+   (stylefy/use-style haun-asetus-checkbox-label-styles)
+   [l/label
+    {:label label
+     :for   for}]])
+
 (defn- haun-asetukset-checkbox [{:keys [haku-oid
                                         haun-asetus-key]}]
-  (let [id-prefix   (str (namespace haun-asetus-key)
-                         "-"
-                         (name haun-asetus-key))
+  (let [id-prefix   (get-id-prefix haun-asetus-key)
         checkbox-id (str id-prefix "-checkbox")
         checked?    (true? @(re-frame/subscribe [:haun-asetukset/haun-asetus haku-oid haun-asetus-key]))
-        disabled?   @(re-frame/subscribe [:haun-asetukset/haun-asetus-disabled? haku-oid])]
+        disabled?   @(re-frame/subscribe [:haun-asetukset/haun-asetus-disabled? haku-oid])
+        label       @(re-frame/subscribe [:translation haun-asetus-key])]
     [:<>
-     [l/label
-      {:label @(re-frame/subscribe [:translation haun-asetus-key])
+     [haun-asetukset-label
+      {:label label
        :for   checkbox-id}]
      [c/checkbox
       {:id        checkbox-id
@@ -31,7 +46,6 @@
                                         haku-oid
                                         haun-asetus-key
                                         (not checked?)]))}]]))
-
 
 (defn- haun-asetukset []
   (let [haku-oid  @(re-frame/subscribe [:haun-asetukset/selected-haku-oid])
