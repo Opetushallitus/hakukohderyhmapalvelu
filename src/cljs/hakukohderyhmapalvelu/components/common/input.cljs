@@ -35,13 +35,15 @@
   {(s/optional-key :cypressid) s/Str
    :input-id                   s/Str
    :on-change                  s/Any
-   :placeholder                s/Str})
+   :placeholder                s/Str
+   :aria-label                 s/Str})
 
 (s/defn input-text :- s/Any
   [{:keys [cypressid
            input-id
            on-change
-           placeholder]} :- InputTextProps]
+           placeholder
+           aria-label]} :- InputTextProps]
   [:input (stylefy/use-style
             input-text-styles
             {:cypressid   cypressid
@@ -50,7 +52,8 @@
                             (let [value (.. event -target -value)]
                               (on-change value)))
              :placeholder placeholder
-             :type        "text"})])
+             :type        "text"
+             :aria-label  aria-label})])
 
 (def ^:private input-dropdown-styles
   (merge

@@ -72,9 +72,11 @@
                                                            (not checked?)]))}]}]]))
 
 (defn- hakukohteiden-maara-rajoitettu [{:keys [haku-oid]}]
-  (let [haun-asetus-key :haun-asetukset/hakukohteiden-maara-rajoitettu
-        id-prefix       (get-id-prefix haun-asetus-key)
-        enabled?        @(re-frame/subscribe [:haun-asetukset/haun-asetus haku-oid haun-asetus-key])]
+  (let [haun-asetus-key  :haun-asetukset/hakukohteiden-maara-rajoitettu
+        id-prefix        (get-id-prefix haun-asetus-key)
+        enabled?         @(re-frame/subscribe [:haun-asetukset/haun-asetus haku-oid haun-asetus-key])
+        text-input-id    (str id-prefix "-input")
+        text-input-label @(re-frame/subscribe [:translation :haun-asetukset/hakukohteiden-maara])]
     [:<>
      [haun-asetukset-checkbox
       {:haku-oid        haku-oid
@@ -82,10 +84,11 @@
      (when enabled?
        [haun-asetukset-label-container
         {:component [i/input-text
-                     {:input-id    (str id-prefix "-input")
+                     {:input-id    text-input-id
                       :on-change   (fn [value]
                                      (println (str value)))
-                      :placeholder @(re-frame/subscribe [:translation :haun-asetukset/hakukohteiden-maara])}]}])]))
+                      :placeholder text-input-label
+                      :aria-label  text-input-label}]}])]))
 
 (defn- haun-asetukset []
   (let [haku-oid  @(re-frame/subscribe [:haun-asetukset/selected-haku-oid])

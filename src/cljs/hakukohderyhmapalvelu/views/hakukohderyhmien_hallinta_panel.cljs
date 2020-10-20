@@ -94,14 +94,15 @@
   [{:keys [style-prefix] :as props}]
   (let [hakukohderyhmien-hallinta-input-styles (make-hakukohderyhmien-hallinta-input-styles
                                                  style-prefix)
-        props' (dissoc props :style-prefix)]
+        props'                                 (dissoc props :style-prefix)]
     [:div
      (stylefy/use-style hakukohderyhmien-hallinta-input-styles)
      [input/input-text props']]))
 
 (defn- haku-search []
-  (let [input-id     "haku-search-input"
-        style-prefix "haku-search"]
+  (let [input-id         "haku-search-input"
+        style-prefix     "haku-search"
+        text-input-label "Haun nimi"]
     [input-with-label-and-control
      {:control-component [checkbox-with-label {:checkbox-id  "haku-search-checkbox"
                                                :cypressid    "haku-search-checkbox"
@@ -112,7 +113,8 @@
                           {:cypressid    "haku-search-input"
                            :input-id     input-id
                            :on-change    (fn [])
-                           :placeholder  "Haun nimi"
+                           :placeholder  text-input-label
+                           :aria-label   text-input-label
                            :style-prefix (str style-prefix "-input")}]
       :input-id          input-id
       :style-prefix      style-prefix
@@ -139,7 +141,8 @@
      button-component]))
 
 (defn- hakukohderyhma-create []
-  (let [input-value (reagent/atom "")]
+  (let [input-value      (reagent/atom "")
+        text-input-label "Ryhmän nimi"]
     (fn []
       (let [cypressid        "hakukohderyhma-create"
             input-id         "hakukohderyhma-create-input"
@@ -160,7 +163,8 @@
                                {:cypressid    (str cypressid "-input")
                                 :input-id     input-id
                                 :on-change    (partial reset! input-value)
-                                :placeholder  "Ryhmän nimi"
+                                :placeholder  text-input-label
+                                :aria-label   text-input-label
                                 :style-prefix (str style-prefix "-input")}]
             :style-prefix     style-prefix}])))))
 
