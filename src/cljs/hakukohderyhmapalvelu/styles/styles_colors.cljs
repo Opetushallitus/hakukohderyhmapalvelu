@@ -7,7 +7,7 @@
 (def blue-lighten-3 "#A6DCEE")
 
 (def gray "#666666")
-(def gray-lighten-1 "#999999")
+(def gray-lighten-1 "#666666")
 (def gray-lighten-3 "#CCCCCC")
 (def gray-lighten-5 "#F5F5F5")
 
