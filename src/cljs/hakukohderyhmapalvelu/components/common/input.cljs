@@ -1,5 +1,6 @@
 (ns hakukohderyhmapalvelu.components.common.input
   (:require [hakukohderyhmapalvelu.components.common.material-icons :as icon]
+            [hakukohderyhmapalvelu.debounce :as d]
             [hakukohderyhmapalvelu.styles.styles-colors :as colors]
             [hakukohderyhmapalvelu.styles.styles-effects :as effects]
             [hakukohderyhmapalvelu.styles.styles-fonts :as fonts]
@@ -30,51 +31,61 @@
                           [:focus {:border-color colors/blue-lighten-2
                                    :box-shadow   effects/inset-box-shadow-effect-blue}]]}))
 
+(def ^:private input-debounce-timeout 500)
 
-(s/defschema InputTextProps
-  {(s/optional-key :cypressid) s/Str
-   :input-id                   s/Str
-   :on-change                  s/Any
-   :placeholder                s/Str
-   :aria-label                 s/Str})
+(defn input-text
+  []
+  (let [on-change-debounced (d/debounce
+                              (fn [on-change value]
+                                (on-change value))
+                              input-debounce-timeout)]
+    (s/fn render-input-text
+      [{:keys [cypressid
+               input-id
+               on-change
+               placeholder
+               aria-label]} :- {(s/optional-key :cypressid) s/Str
+                                :input-id                   s/Str
+                                :on-change                  s/Any
+                                :placeholder                s/Str
+                                :aria-label                 s/Str}]
+      [:input (stylefy/use-style
+                input-text-styles
+                {:cypressid   cypressid
+                 :id          input-id
+                 :on-change   (fn [event]
+                                (let [value (.. event -target -value)]
+                                  (on-change-debounced on-change value)))
+                 :placeholder placeholder
+                 :type        "text"
+                 :aria-label  aria-label})])))
 
-(s/defn input-text :- s/Any
-  [{:keys [cypressid
-           input-id
-           on-change
-           placeholder
-           aria-label]} :- InputTextProps]
-  [:input (stylefy/use-style
-            input-text-styles
-            {:cypressid   cypressid
-             :id          input-id
-             :on-change   (fn [event]
-                            (let [value (.. event -target -value)]
-                              (on-change value)))
-             :placeholder placeholder
-             :type        "text"
-             :aria-label  aria-label})])
-
-(s/defn input-number
-  [{:keys [input-id
-           on-change
-           placeholder
-           aria-label
-           min]} :- {:input-id    s/Str
-                     :on-change   s/Any
-                     :placeholder s/Str
-                     :aria-label  s/Str
-                     :min         s/Int}]
-  [:input (stylefy/use-style
-            input-text-styles
-            {:id          input-id
-             :on-change   (fn [event]
-                            (let [value (.. event -target -value)]
-                              (on-change value)))
-             :placeholder placeholder
-             :type        "number"
-             :aria-label  aria-label
-             :min         min})])
+(defn input-number
+  []
+  (let [on-change-debounced (d/debounce
+                              (fn [on-change value]
+                                (on-change value))
+                              input-debounce-timeout)]
+    (s/fn render-input-number
+      [{:keys [input-id
+               on-change
+               placeholder
+               aria-label
+               min]} :- {:input-id    s/Str
+                         :on-change   s/Any
+                         :placeholder s/Str
+                         :aria-label  s/Str
+                         :min         s/Int}]
+      [:input (stylefy/use-style
+                input-text-styles
+                {:id          input-id
+                 :on-change   (fn [event]
+                                (let [value (.. event -target -value)]
+                                  (on-change-debounced on-change value)))
+                 :placeholder placeholder
+                 :type        "number"
+                 :aria-label  aria-label
+                 :min         min})])))
 
 (def ^:private input-dropdown-styles
   (merge
