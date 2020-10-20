@@ -54,7 +54,7 @@
   (let [id-prefix   (get-id-prefix haun-asetus-key)
         checkbox-id (str id-prefix "-checkbox")
         checked?    @(re-frame/subscribe [:haun-asetukset/haun-asetus haku-oid haun-asetus-key])
-        disabled?   @(re-frame/subscribe [:haun-asetukset/haun-asetus-disabled? haku-oid])
+        disabled?   @(re-frame/subscribe [:haun-asetukset/haun-asetukset-disabled? haku-oid])
         label       @(re-frame/subscribe [:translation haun-asetus-key])]
     [:<>
      [haun-asetukset-label

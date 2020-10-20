@@ -30,7 +30,7 @@
       haun-asetus-key)))
 
 (re-frame/reg-sub
-  :haun-asetukset/haun-asetus-disabled?
+  :haun-asetukset/haun-asetukset-disabled?
   (fn [[_ haku-oid]]
     [(re-frame/subscribe [:state-query
                           [:ohjausparametrit/save-in-progress haku-oid]])])
