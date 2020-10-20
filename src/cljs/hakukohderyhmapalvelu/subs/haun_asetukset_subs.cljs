@@ -24,8 +24,11 @@
   (fn [[_ haku-oid haun-asetus-key]]
     [(re-frame/subscribe [:state-query
                           [:ohjausparametrit haku-oid (m/haun-asetus-key->ohjausparametri haun-asetus-key)]])])
-  (fn [[haun-asetus]]
-    haun-asetus))
+  (fn [[ohjausparametri-value] [_ _ haun-asetus-key]]
+    (m/ohjausparametri-value->haun-asetus-value
+      ohjausparametri-value
+      haun-asetus-key)))
+
 
 (re-frame/reg-sub
   :haun-asetukset/haun-asetus-disabled?
