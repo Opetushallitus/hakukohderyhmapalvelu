@@ -42,22 +42,22 @@
   {:haut {s/Str Haku}})
 
 (s/defschema HaunOhjausparametrit
-  {(s/optional-key :PH_OPVP)                    (s/named
-                                                  {:date s/Int}
-                                                  "Opiskelijan paikan vastaanotto päättyy")
-   (s/optional-key :PH_HPVOA)                   (s/named
-                                                  {:value s/Int}
-                                                  "Hakijakohtainen paikan vastaanottoaika")
-   (s/optional-key :PH_HKP)                     (s/named
-                                                  {:date s/Int}
-                                                  "Hakukierros päättyy")
-   (s/optional-key :jarjestetytHakutoiveet)     s/Bool
-   (s/optional-key :hakukohteidenMaaraRajoitus) s/Bool
-   (s/optional-key :hakukohteidenPriorisointi)  s/Bool
-   (s/optional-key :vainYksiHakemusRajoitus)    s/Bool
-   (s/optional-key :sijoittelu)                 s/Bool
-   :__modified__                                s/Int
-   :__modifiedBy__                              s/Str})
+  {(s/optional-key :PH_OPVP)                      (s/named
+                                                    {:date s/Int}
+                                                    "Opiskelijan paikan vastaanotto päättyy")
+   (s/optional-key :PH_HPVOA)                     (s/named
+                                                    {:value s/Int}
+                                                    "Hakijakohtainen paikan vastaanottoaika")
+   (s/optional-key :PH_HKP)                       (s/named
+                                                    {:date s/Int}
+                                                    "Hakukierros päättyy")
+   (s/optional-key :jarjestetytHakutoiveet)       s/Bool
+   (s/optional-key :hakutoiveidenMaaraRajoitettu) s/Bool
+   (s/optional-key :hakukohteidenPriorisointi)    s/Bool
+   (s/optional-key :vainYksiHakemusRajoitus)      s/Bool
+   (s/optional-key :sijoittelu)                   s/Bool
+   :__modified__                                  s/Int
+   :__modifiedBy__                                s/Str})
 
 (s/defschema HakujenOhjausparametrit
   {:ohjausparametrit                  {s/Str HaunOhjausparametrit}

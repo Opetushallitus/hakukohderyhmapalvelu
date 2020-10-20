@@ -3,7 +3,7 @@
 (def translations
   {:haun-asetukset/title
    {:fi "Haun asetukset"}
-   :haun-asetukset/hakukohteiden-maara-rajoitus
+   :haun-asetukset/hakukohteiden-maara-rajoitettu
    {:fi "Hakukohteiden määrä -rajoitus"}
    :haun-asetukset/hakukohteiden-maara
    {:fi "Hakukohteiden määrä"}

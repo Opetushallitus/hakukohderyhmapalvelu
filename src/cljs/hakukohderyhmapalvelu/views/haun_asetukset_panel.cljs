@@ -71,8 +71,8 @@
                                                            haun-asetus-key
                                                            (not checked?)]))}]}]]))
 
-(defn- hakukohteiden-maara-rajoitus [{:keys [haku-oid]}]
-  (let [haun-asetus-key :haun-asetukset/hakukohteiden-maara-rajoitus
+(defn- hakukohteiden-maara-rajoitettu [{:keys [haku-oid]}]
+  (let [haun-asetus-key :haun-asetukset/hakukohteiden-maara-rajoitettu
         id-prefix       (get-id-prefix haun-asetus-key)
         enabled?        @(re-frame/subscribe [:haun-asetukset/haun-asetus haku-oid haun-asetus-key])]
     [:<>
@@ -104,7 +104,7 @@
         haun-asetukset-grid-styles
         {:role            "form"
          :aria-labelledby header-id})
-      [hakukohteiden-maara-rajoitus
+      [hakukohteiden-maara-rajoitettu
        {:haku-oid haku-oid}]
       [haun-asetukset-checkbox
        {:haku-oid        haku-oid
