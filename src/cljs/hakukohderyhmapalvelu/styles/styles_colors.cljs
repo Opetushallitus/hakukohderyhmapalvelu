@@ -2,6 +2,7 @@
 
 (def black "#2A2A2A")
 
+(def blue "#0A789C")
 (def blue-lighten-1 "#159ECB")
 (def blue-lighten-2 "#00B5F0")
 (def blue-lighten-3 "#A6DCEE")

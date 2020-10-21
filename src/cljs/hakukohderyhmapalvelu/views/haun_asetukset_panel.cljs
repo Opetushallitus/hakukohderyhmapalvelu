@@ -37,39 +37,41 @@
    (stylefy/use-style haun-asetukset-label-styles)
    component])
 
-(defn- haun-asetukset-label [{:keys [label
-                                     for]}]
+(defn- haun-asetukset-label [{:keys [id
+                                     label]}]
   [haun-asetukset-label-container
    {:component [l/label
-                {:label label
-                 :for   for}]}])
+                {:id    id
+                 :label label}]}])
 
 (defn- haun-asetukset-input [{:keys [input-component]}]
   [:div
    (stylefy/use-style haun-asetukset-input-styles)
    input-component])
 
-(defn- haun-asetukset-checkbox [{:keys [haku-oid
-                                        haun-asetus-key]}]
+(defn- haun-asetukset-checkbox-slider [{:keys [haku-oid
+                                               haun-asetus-key]}]
   (let [id-prefix   (get-id-prefix haun-asetus-key)
         checkbox-id (str id-prefix "-checkbox")
+        label-id    (str id-prefix "-label")
         checked?    @(re-frame/subscribe [:haun-asetukset/haun-asetus haku-oid haun-asetus-key])
         disabled?   @(re-frame/subscribe [:haun-asetukset/haun-asetukset-disabled? haku-oid])
         label       @(re-frame/subscribe [:translation haun-asetus-key])]
     [:<>
      [haun-asetukset-label
-      {:label label
-       :for   checkbox-id}]
+      {:id    label-id
+       :label label}]
      [haun-asetukset-input
-      {:input-component [c/checkbox
-                         {:id        checkbox-id
-                          :checked?  checked?
-                          :disabled? disabled?
-                          :on-change (fn []
-                                       (re-frame/dispatch [:haun-asetukset/set-haun-asetus
-                                                           haku-oid
-                                                           haun-asetus-key
-                                                           (not checked?)]))}]}]]))
+      {:input-component [c/checkbox-slider
+                         {:id              checkbox-id
+                          :aria-labelledby label-id
+                          :checked?        checked?
+                          :disabled?       disabled?
+                          :on-change       (fn []
+                                             (re-frame/dispatch [:haun-asetukset/set-haun-asetus
+                                                                 haku-oid
+                                                                 haun-asetus-key
+                                                                 (not checked?)]))}]}]]))
 
 (defn- hakukohteiden-maara-rajoitettu [{:keys [haku-oid]}]
   (let [checkbox-haun-asetus-key :haun-asetukset/hakukohteiden-maara-rajoitettu
@@ -79,7 +81,7 @@
         text-input-label         @(re-frame/subscribe [:translation :haun-asetukset/hakukohteiden-maara])
         disabled?                @(re-frame/subscribe [:haun-asetukset/haun-asetukset-disabled? haku-oid])]
     [:<>
-     [haun-asetukset-checkbox
+     [haun-asetukset-checkbox-slider
       {:haku-oid        haku-oid
        :haun-asetus-key checkbox-haun-asetus-key}]
      (when enabled?
@@ -115,10 +117,10 @@
          :aria-labelledby header-id})
       [hakukohteiden-maara-rajoitettu
        {:haku-oid haku-oid}]
-      [haun-asetukset-checkbox
+      [haun-asetukset-checkbox-slider
        {:haku-oid        haku-oid
         :haun-asetus-key :haun-asetukset/jarjestetyt-hakutoiveet}]
-      [haun-asetukset-checkbox
+      [haun-asetukset-checkbox-slider
        {:haku-oid        haku-oid
         :haun-asetus-key :haun-asetukset/useita-hakemuksia}]]]))
 
