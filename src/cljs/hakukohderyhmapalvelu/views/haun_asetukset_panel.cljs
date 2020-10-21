@@ -19,7 +19,7 @@
 
 (def ^:private haun-asetukset-grid-item-layout-styles
   (merge
-    (layout/flex-row-styles "flex-start" "center")
+    (layout/flex-column-styles "flex-start" "center")
     {:padding "5px 0"}))
 
 (def ^:private haun-asetukset-label-styles

@@ -12,7 +12,7 @@
   {:display         "flex"
    :justify-content "space-between"})
 
-(defn flex-row-styles [align-items justify-content]
+(defn flex-column-styles [align-items justify-content]
   {:display         "flex"
    :flex-flow       "column nowrap"
    :align-items     align-items
