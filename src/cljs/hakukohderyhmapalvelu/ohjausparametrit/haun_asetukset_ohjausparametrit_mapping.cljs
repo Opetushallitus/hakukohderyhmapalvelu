@@ -12,7 +12,10 @@
     :jarjestetytHakutoiveet
 
     :haun-asetukset/useita-hakemuksia
-    :useitaHakemuksia))
+    :useitaHakemuksia
+
+    :haun-asetukset/sijoittelu
+    :sijoittelu))
 
 (defn- parse-int [value]
   (.parseInt js/Number value 10))
@@ -21,7 +24,8 @@
   (some #{haun-asetus-key}
         #{:haun-asetukset/hakukohteiden-maara-rajoitettu
           :haun-asetukset/jarjestetyt-hakutoiveet
-          :haun-asetukset/useita-hakemuksia}))
+          :haun-asetukset/useita-hakemuksia
+          :haun-asetukset/sijoittelu}))
 
 (defn- >0-number-value? [haun-asetus-key value]
   (and (= haun-asetus-key :haun-asetukset/hakukohteiden-maara-rajoitus)

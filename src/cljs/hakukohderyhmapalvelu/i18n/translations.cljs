@@ -10,4 +10,6 @@
    :haun-asetukset/jarjestetyt-hakutoiveet
    {:fi "Hakukohteiden priorisointi"}
    :haun-asetukset/useita-hakemuksia
-   {:fi "Vain yksi hakemus -rajoitus"}})
+   {:fi "Vain yksi hakemus -rajoitus"}
+   :haun-asetukset/sijoittelu
+   {:fi "Haussa käytetään sijoittelua"}})
