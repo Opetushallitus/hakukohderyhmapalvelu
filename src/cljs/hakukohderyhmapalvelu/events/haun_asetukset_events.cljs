@@ -61,7 +61,7 @@
       {:db                 (assoc-in db
                                      [:ohjausparametrit haku-oid ohjausparametrit-key]
                                      ohjausparametri-value)
-       :dispatch-debounced {:id       :haun-asetukset/set-haun-asetus
+       :dispatch-debounced {:id       :haun-asetukset/save-ohjausparametrit
                             :timeout  1000
                             :dispatch [:haun-asetukset/save-ohjausparametrit haku-oid]}})))
 
