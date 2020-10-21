@@ -72,22 +72,25 @@
                                                            (not checked?)]))}]}]]))
 
 (defn- hakukohteiden-maara-rajoitettu [{:keys [haku-oid]}]
-  (let [haun-asetus-key  :haun-asetukset/hakukohteiden-maara-rajoitettu
-        id-prefix        (get-id-prefix haun-asetus-key)
-        enabled?         @(re-frame/subscribe [:haun-asetukset/haun-asetus haku-oid haun-asetus-key])
-        text-input-id    (str id-prefix "-input")
-        text-input-label @(re-frame/subscribe [:translation :haun-asetukset/hakukohteiden-maara])
-        disabled?        @(re-frame/subscribe [:haun-asetukset/haun-asetukset-disabled? haku-oid])]
+  (let [checkbox-haun-asetus-key :haun-asetukset/hakukohteiden-maara-rajoitettu
+        id-prefix                (get-id-prefix checkbox-haun-asetus-key)
+        enabled?                 @(re-frame/subscribe [:haun-asetukset/haun-asetus haku-oid checkbox-haun-asetus-key])
+        text-input-id            (str id-prefix "-input")
+        text-input-label         @(re-frame/subscribe [:translation :haun-asetukset/hakukohteiden-maara])
+        disabled?                @(re-frame/subscribe [:haun-asetukset/haun-asetukset-disabled? haku-oid])]
     [:<>
      [haun-asetukset-checkbox
       {:haku-oid        haku-oid
-       :haun-asetus-key haun-asetus-key}]
+       :haun-asetus-key checkbox-haun-asetus-key}]
      (when enabled?
        [haun-asetukset-label-container
         {:component [i/input-number
                      {:input-id    text-input-id
                       :on-change   (fn [value]
-                                     (println (str value)))
+                                     (re-frame/dispatch [:haun-asetukset/set-haun-asetus
+                                                         haku-oid
+                                                         :haun-asetukset/hakukohteiden-maara-rajoitus
+                                                         value]))
                       :placeholder text-input-label
                       :aria-label  text-input-label
                       :min         1
