@@ -1,4 +1,5 @@
-(ns hakukohderyhmapalvelu.ohjausparametrit.haun-asetukset-ohjausparametrit-mapping)
+(ns hakukohderyhmapalvelu.ohjausparametrit.haun-asetukset-ohjausparametrit-mapping
+  (:require [hakukohderyhmapalvelu.dates.date-parser :as d]))
 
 (defn haun-asetus-key->ohjausparametri [haun-asetus-key]
   (case haun-asetus-key
@@ -15,7 +16,10 @@
     :useitaHakemuksia
 
     :haun-asetukset/sijoittelu
-    :sijoittelu))
+    :sijoittelu
+
+    :haun-asetukset/valintatulokset-valmiina-viimeistaan
+    :PH_VTSSV))
 
 (defn- parse-int [value]
   (.parseInt js/Number value 10))
@@ -44,8 +48,21 @@
               ->haun-asetus-value))
        (apply comp)))
 
+(defn- date-value? [haun-asetus-key _]
+  (= haun-asetus-key :haun-asetukset/valintatulokset-valmiina-viimeistaan))
+
+(defn- local-date->long [date]
+  (let [date' (-> date
+                  d/iso-date-time-local-str->date
+                  d/date->long)]
+    {:date date'}))
+
+(defn- long->date [ohjausparametrit-date]
+  (some-> ohjausparametrit-date :date d/long->date))
+
 (def ^:private ohjausparametri-value->haun-asetus-value-mappings
-  [[useita-hakemuksia? not]
+  [[date-value? long->date]
+   [useita-hakemuksia? not]
    [boolean-value? true?]
    [(constantly true) identity]])
 
@@ -58,7 +75,8 @@
     (f ohjausparametri-value)))
 
 (def ^:private haun-asetus-value->ohjausparametri-value-mappings
-  [[>0-number-value? parse-int]
+  [[date-value? local-date->long]
+   [>0-number-value? parse-int]
    [useita-hakemuksia? not]
    [(constantly true) identity]])
 

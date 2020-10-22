@@ -51,6 +51,9 @@
    (s/optional-key :PH_HKP)                       (s/named
                                                     {:date s/Int}
                                                     "Hakukierros päättyy")
+   (s/optional-key :PH_VTSSV)                     (s/named
+                                                    {:date s/Int}
+                                                    "Valintatulokset valmiina viimeistään")
    (s/optional-key :jarjestetytHakutoiveet)       s/Bool
    (s/optional-key :hakutoiveidenMaaraRajoitettu) s/Bool
    (s/optional-key :hakutoiveidenEnimmaismaara)   s/Int

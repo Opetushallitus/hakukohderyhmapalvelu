@@ -3,6 +3,7 @@
             [hakukohderyhmapalvelu.components.common.input :as i]
             [hakukohderyhmapalvelu.components.common.label :as l]
             [hakukohderyhmapalvelu.components.common.panel :as p]
+            [hakukohderyhmapalvelu.dates.date-parser :as d]
             [hakukohderyhmapalvelu.styles.layout-styles :as layout]
             [re-frame.core :as re-frame]
             [stylefy.core :as stylefy]))
@@ -108,12 +109,39 @@
                       :min         1
                       :disabled?   disabled?}]}])]))
 
+(defn- haun-asetukset-date-time [{:keys [haku-oid
+                                         haun-asetus-key]}]
+  (let [id-prefix           (get-id-prefix haun-asetus-key)
+        label-id            (str id-prefix "-label")
+        date-time-picker-id (str id-prefix "-date-time-picker")
+        label               @(re-frame/subscribe [:translation haun-asetus-key])
+        value               (some-> @(re-frame/subscribe [:haun-asetukset/haun-asetus haku-oid haun-asetus-key])
+                                    d/date->iso-date-time-local-str)]
+    [:<>
+     [haun-asetukset-label
+      {:id    label-id
+       :label label
+       :for   date-time-picker-id}]
+     [haun-asetukset-input
+      {:input-component [i/input-date-time
+                         (cond-> {:id        date-time-picker-id
+                                  :on-change (fn [value]
+                                               (re-frame/dispatch [:haun-asetukset/set-haun-asetus
+                                                                   haku-oid
+                                                                   haun-asetus-key
+                                                                   value]))}
+                                 value
+                                 (assoc :value value))]}]]))
+
 (defn- haun-asetukset-sijoittelu [{:keys [haku-oid]}]
   [:<>
    [haun-asetukset-checkbox
     {:haku-oid        haku-oid
      :haun-asetus-key :haun-asetukset/sijoittelu
-     :type            :checkbox}]])
+     :type            :checkbox}]
+   [haun-asetukset-date-time
+    {:haku-oid        haku-oid
+     :haun-asetus-key :haun-asetukset/valintatulokset-valmiina-viimeistaan}]])
 
 (defn- haun-asetukset []
   (let [haku-oid  @(re-frame/subscribe [:haun-asetukset/selected-haku-oid])

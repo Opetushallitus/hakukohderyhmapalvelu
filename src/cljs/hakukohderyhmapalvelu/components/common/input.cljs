@@ -5,6 +5,7 @@
             [hakukohderyhmapalvelu.styles.styles-effects :as effects]
             [hakukohderyhmapalvelu.styles.styles-fonts :as fonts]
             [hakukohderyhmapalvelu.styles.layout-styles :as layout]
+            [hakukohderyhmapalvelu.validators.input-date-time-validator :as idtv]
             [hakukohderyhmapalvelu.validators.input-number-validator :as inv]
             [hakukohderyhmapalvelu.validators.input-text-validator :as itv]
             [reagent.core :as reagent]
@@ -47,6 +48,13 @@
                               :box-shadow   effects/inset-box-shadow-effect-blue}]
                      [:disabled {:background-color colors/red}]]}))
 
+(def ^:private input-date-time-styles
+  {})
+
+(def ^:private input-date-time-invalid-styles
+  (merge
+    input-date-time-styles
+    {:color "red"}))
 
 (def ^:private input-debounce-timeout 500)
 
@@ -124,6 +132,37 @@
                    :aria-label  aria-label
                    :min         min
                    :disabled    disabled?})]))))
+
+(defn input-date-time
+  []
+  (let [on-change-debounced (d/debounce
+                              (fn [on-change value]
+                                (on-change value))
+                              input-debounce-timeout)
+        validate            (idtv/input-date-time-validator)
+        invalid?            (reagent/atom false)]
+    (s/fn render-input-date
+      [{:keys [id
+               value
+               on-change]} :- {:id                     s/Str
+                               (s/optional-key :value) s/Str
+                               :on-change              s/Any}]
+      [:input (stylefy/use-style
+                (cond-> input-date-time-styles
+                        @invalid?
+                        (merge input-date-time-invalid-styles))
+                {:id        id
+                 :value     value
+                 :type      "datetime-local"
+                 :on-change (fn [event]
+                              (let [value' (.. event -target -value)
+                                    type   (.. event -target -type)
+                                    valid? (validate value' type)]
+                                (reset! invalid? (not valid?))
+                                (when valid?
+                                  (on-change-debounced
+                                    on-change
+                                    value'))))})])))
 
 (def ^:private input-dropdown-styles
   (merge
