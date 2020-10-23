@@ -41,19 +41,28 @@
 (s/defschema Haut
   {:haut {s/Str Haku}})
 
+(s/defschema OhjausparametritInt
+  {:value s/Int})
+
+(s/defschema OhjausparametritDate
+  {:date s/Int})
+
 (s/defschema HaunOhjausparametrit
   {(s/optional-key :PH_OPVP)                      (s/named
-                                                    {:date s/Int}
+                                                    OhjausparametritDate
                                                     "Opiskelijan paikan vastaanotto päättyy")
    (s/optional-key :PH_HPVOA)                     (s/named
-                                                    {:value s/Int}
+                                                    OhjausparametritInt
                                                     "Hakijakohtainen paikan vastaanottoaika")
    (s/optional-key :PH_HKP)                       (s/named
-                                                    {:date s/Int}
+                                                    OhjausparametritDate
                                                     "Hakukierros päättyy")
    (s/optional-key :PH_VTSSV)                     (s/named
-                                                    {:date s/Int}
+                                                    OhjausparametritDate
                                                     "Valintatulokset valmiina viimeistään")
+   (s/optional-key :PH_VSSAV)                     (s/named
+                                                    OhjausparametritDate
+                                                    "Varasijasäännöt astuvat voimaan")
    (s/optional-key :jarjestetytHakutoiveet)       s/Bool
    (s/optional-key :hakutoiveidenMaaraRajoitettu) s/Bool
    (s/optional-key :hakutoiveidenEnimmaismaara)   s/Int

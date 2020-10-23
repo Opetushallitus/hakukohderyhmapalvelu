@@ -14,4 +14,6 @@
    :haun-asetukset/sijoittelu
    {:fi "Haussa käytetään sijoittelua"}
    :haun-asetukset/valintatulokset-valmiina-viimeistaan
-   {:fi "Valintatulokset valmiina viimeistään"}})
+   {:fi "Valintatulokset valmiina viimeistään"}
+   :haun-asetukset/varasijasaannot-astuvat-voimaan
+   {:fi "Varasijasäännöt astuvat voimaan"}})

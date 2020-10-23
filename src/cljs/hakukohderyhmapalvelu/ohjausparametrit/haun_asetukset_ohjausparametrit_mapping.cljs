@@ -19,7 +19,10 @@
     :sijoittelu
 
     :haun-asetukset/valintatulokset-valmiina-viimeistaan
-    :PH_VTSSV))
+    :PH_VTSSV
+
+    :haun-asetukset/varasijasaannot-astuvat-voimaan
+    :PH_VSSAV))
 
 (defn- parse-int [value]
   (.parseInt js/Number value 10))
@@ -49,7 +52,9 @@
        (apply comp)))
 
 (defn- date-value? [haun-asetus-key _]
-  (= haun-asetus-key :haun-asetukset/valintatulokset-valmiina-viimeistaan))
+  (some #{haun-asetus-key}
+        #{:haun-asetukset/valintatulokset-valmiina-viimeistaan
+          :haun-asetukset/varasijasaannot-astuvat-voimaan}))
 
 (defn- local-date->long [date]
   (let [date' (-> date
