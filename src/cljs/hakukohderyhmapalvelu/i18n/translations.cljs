@@ -16,4 +16,6 @@
    :haun-asetukset/valintatulokset-valmiina-viimeistaan
    {:fi "Valintatulokset valmiina viimeistään"}
    :haun-asetukset/varasijasaannot-astuvat-voimaan
-   {:fi "Varasijasäännöt astuvat voimaan"}})
+   {:fi "Varasijasäännöt astuvat voimaan"}
+   :haun-asetukset/varasijataytto-paattyy
+   {:fi "Varasijatäyttö päättyy"}})

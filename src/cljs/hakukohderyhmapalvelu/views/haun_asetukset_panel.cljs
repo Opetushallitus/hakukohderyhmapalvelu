@@ -144,7 +144,10 @@
      :haun-asetus-key :haun-asetukset/valintatulokset-valmiina-viimeistaan}]
    [haun-asetukset-date-time
     {:haku-oid        haku-oid
-     :haun-asetus-key :haun-asetukset/varasijasaannot-astuvat-voimaan}]])
+     :haun-asetus-key :haun-asetukset/varasijasaannot-astuvat-voimaan}]
+   [haun-asetukset-date-time
+    {:haku-oid        haku-oid
+     :haun-asetus-key :haun-asetukset/varasijataytto-paattyy}]])
 
 (defn- haun-asetukset []
   (let [haku-oid  @(re-frame/subscribe [:haun-asetukset/selected-haku-oid])

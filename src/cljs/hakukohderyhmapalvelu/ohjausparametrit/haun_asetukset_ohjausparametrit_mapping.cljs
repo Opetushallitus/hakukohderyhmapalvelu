@@ -22,7 +22,10 @@
     :PH_VTSSV
 
     :haun-asetukset/varasijasaannot-astuvat-voimaan
-    :PH_VSSAV))
+    :PH_VSSAV
+
+    :haun-asetukset/varasijataytto-paattyy
+    :PH_VSTP))
 
 (defn- parse-int [value]
   (.parseInt js/Number value 10))
@@ -54,7 +57,8 @@
 (defn- date-value? [haun-asetus-key _]
   (some #{haun-asetus-key}
         #{:haun-asetukset/valintatulokset-valmiina-viimeistaan
-          :haun-asetukset/varasijasaannot-astuvat-voimaan}))
+          :haun-asetukset/varasijasaannot-astuvat-voimaan
+          :haun-asetukset/varasijataytto-paattyy}))
 
 (defn- local-date->long [date]
   (let [date' (-> date

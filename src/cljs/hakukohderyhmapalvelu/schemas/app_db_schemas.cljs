@@ -63,6 +63,9 @@
    (s/optional-key :PH_VSSAV)                     (s/named
                                                     OhjausparametritDate
                                                     "Varasijasäännöt astuvat voimaan")
+   (s/optional-key :PH_VSTP)                      (s/named
+                                                    OhjausparametritDate
+                                                    "Varasijatäyttö päättyy")
    (s/optional-key :jarjestetytHakutoiveet)       s/Bool
    (s/optional-key :hakutoiveidenMaaraRajoitettu) s/Bool
    (s/optional-key :hakutoiveidenEnimmaismaara)   s/Int
