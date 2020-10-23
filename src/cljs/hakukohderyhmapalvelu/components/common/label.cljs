@@ -13,13 +13,16 @@
   [{:keys [id
            cypressid
            label
-           for]} :- {(s/optional-key :id)        s/Str
-                     (s/optional-key :cypressid) s/Str
-                     :label                      s/Str
-                     (s/optional-key :for)       s/Str}]
+           for
+           hidden]} :- {(s/optional-key :id)        s/Str
+                        (s/optional-key :cypressid) s/Str
+                        :label                      s/Str
+                        (s/optional-key :for)       s/Str
+                        (s/optional-key :hidden)    s/Bool}]
   [:label (stylefy/use-style
             label-styles
             {:cypressid cypressid
              :for       for
-             :id        id})
+             :id        id
+             :hidden    hidden})
    label])

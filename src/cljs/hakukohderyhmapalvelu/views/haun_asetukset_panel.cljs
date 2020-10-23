@@ -5,6 +5,7 @@
             [hakukohderyhmapalvelu.components.common.panel :as p]
             [hakukohderyhmapalvelu.dates.date-parser :as d]
             [hakukohderyhmapalvelu.styles.layout-styles :as layout]
+            [reagent.core :as reagent]
             [re-frame.core :as re-frame]
             [stylefy.core :as stylefy]))
 
@@ -21,7 +22,8 @@
 (def ^:private haun-asetukset-grid-item-layout-styles
   (merge
     (layout/flex-column-styles "flex-start" "center")
-    {:padding "5px 0"}))
+    {:padding "5px 0"
+     :width   "350px"}))
 
 (def ^:private haun-asetukset-label-styles
   (merge
@@ -111,27 +113,81 @@
 
 (defn- haun-asetukset-date-time [{:keys [haku-oid
                                          haun-asetus-key]}]
-  (let [id-prefix           (get-id-prefix haun-asetus-key)
-        label-id            (str id-prefix "-label")
-        date-time-picker-id (str id-prefix "-date-time-picker")
-        label               @(re-frame/subscribe [:translation haun-asetus-key])
-        value               (some-> @(re-frame/subscribe [:haun-asetukset/haun-asetus haku-oid haun-asetus-key])
-                                    d/date->iso-date-time-local-str)]
+  (let [id-prefix                 (get-id-prefix haun-asetus-key)
+        label-id                  (str id-prefix "-label")
+        date-time-picker-id       (str id-prefix "-date-time-picker")
+        label                     @(re-frame/subscribe [:translation haun-asetus-key])
+        datetime-local-supported? false                     ;(dl/datetime-local-supported?)]
+        datetime-local-value      (some-> @(re-frame/subscribe
+                                             [:haun-asetukset/haun-asetus haku-oid haun-asetus-key])
+                                          d/date->iso-date-time-local-str)
+        get-date-value            (fn get-date-value [datetime-local-value]
+                                    (some-> datetime-local-value (subs 0 10)))
+        get-time-value            (fn get-time-value [datetime-local-value]
+                                    (some-> datetime-local-value (subs 11)))
+        date-value                (reagent/atom (get-date-value
+                                                  datetime-local-value))
+        time-value                (reagent/atom (get-time-value
+                                                  datetime-local-value))
+        set-datetime-local        (fn set-datetime-local []
+                                    (when (and @date-value
+                                               @time-value)
+                                      (let [datetime-local-value (str @date-value "T" @time-value)]
+                                        (re-frame/dispatch [:haun-asetukset/set-haun-asetus
+                                                            haku-oid
+                                                            haun-asetus-key
+                                                            datetime-local-value]))))]
+
     [:<>
      [haun-asetukset-label
-      {:id    label-id
-       :label label
-       :for   date-time-picker-id}]
+      (cond-> {:id    label-id
+               :label label}
+              datetime-local-supported?
+              (assoc :for date-time-picker-id))]
      [haun-asetukset-input
-      {:input-component [i/input-date-time
-                         (cond-> {:id        date-time-picker-id
-                                  :on-change (fn [value]
-                                               (re-frame/dispatch [:haun-asetukset/set-haun-asetus
-                                                                   haku-oid
-                                                                   haun-asetus-key
-                                                                   value]))}
-                                 value
-                                 (assoc :value value))]}]]))
+      {:input-component
+       (if datetime-local-supported?
+         [i/input-datetime-local
+          (cond-> {:id        date-time-picker-id
+                   :on-change (fn [value]
+                                (reset! date-value (some-> value (subs 0 10)))
+                                (re-frame/dispatch [:haun-asetukset/set-haun-asetus
+                                                    haku-oid
+                                                    haun-asetus-key
+                                                    value]))}
+                  datetime-local-value
+                  (assoc :value datetime-local-value))]
+         (let [date-picker-id   (str id-prefix "-date-picker")
+               time-picker-id   (str id-prefix "-time-picker")
+               date-label-id    (str date-picker-id "-label")
+               time-label-id    (str time-picker-id "-label")
+               date-describedby @(re-frame/subscribe [:translation :haun-asetukset/input-date-describedby])
+               time-describedby @(re-frame/subscribe [:translation :haun-asetukset/input-time-describedby])]
+           [:div
+            [l/label
+             {:id     date-label-id
+              :label  date-describedby
+              :hidden true}]
+            [i/input-date
+             (cond-> {:id               date-picker-id
+                      :on-change        (fn [value]
+                                          (reset! date-value value)
+                                          (set-datetime-local))
+                      :aria-describedby date-label-id}
+                     @date-value
+                     (assoc :value @date-value))]
+            [l/label
+             {:id     time-label-id
+              :label  time-describedby
+              :hidden true}]
+            [i/input-time
+             (cond-> {:id               time-picker-id
+                      :on-change        (fn [value]
+                                          (reset! time-value value)
+                                          (set-datetime-local))
+                      :aria-describedby time-label-id}
+                     @time-value
+                     (assoc :value @time-value))]]))}]]))
 
 (defn- haun-asetukset-sijoittelu [{:keys [haku-oid]}]
   [:<>

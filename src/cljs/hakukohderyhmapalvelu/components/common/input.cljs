@@ -5,9 +5,11 @@
             [hakukohderyhmapalvelu.styles.styles-effects :as effects]
             [hakukohderyhmapalvelu.styles.styles-fonts :as fonts]
             [hakukohderyhmapalvelu.styles.layout-styles :as layout]
+            [hakukohderyhmapalvelu.validators.input-date-validator :as idv]
             [hakukohderyhmapalvelu.validators.input-date-time-validator :as idtv]
             [hakukohderyhmapalvelu.validators.input-number-validator :as inv]
             [hakukohderyhmapalvelu.validators.input-text-validator :as itv]
+            [hakukohderyhmapalvelu.validators.input-time-validator :as itiv]
             [reagent.core :as reagent]
             [schema.core :as s]
             [stylefy.core :as stylefy]))
@@ -70,27 +72,30 @@
                input-id
                on-change
                placeholder
-               aria-label]} :- {(s/optional-key :cypressid) s/Str
-                                :input-id                   s/Str
-                                :on-change                  s/Any
-                                :placeholder                s/Str
-                                :aria-label                 s/Str}]
+               aria-label
+               aria-describedby]} :- {(s/optional-key :cypressid)        s/Str
+                                      :input-id                          s/Str
+                                      :on-change                         s/Any
+                                      :placeholder                       s/Str
+                                      :aria-label                        s/Str
+                                      (s/optional-key :aria-describedby) s/Str}]
       (let [validate (itv/input-text-validator)]
         [:input (stylefy/use-style
                   (cond-> input-text-styles
                           @invalid?
                           (merge input-text-invalid-styles))
-                  {:cypressid   cypressid
-                   :id          input-id
-                   :on-change   (fn [event]
-                                  (let [value  (.. event -target -value)
-                                        valid? (validate value)]
-                                    (reset! invalid? (not valid?))
-                                    (when valid?
-                                      (on-change-debounced on-change value))))
-                   :placeholder placeholder
-                   :type        "text"
-                   :aria-label  aria-label})]))))
+                  {:cypressid        cypressid
+                   :id               input-id
+                   :on-change        (fn [event]
+                                       (let [value  (.. event -target -value)
+                                             valid? (validate value)]
+                                         (reset! invalid? (not valid?))
+                                         (when valid?
+                                           (on-change-debounced on-change value))))
+                   :placeholder      placeholder
+                   :type             "text"
+                   :aria-label       aria-label
+                   :aria-describedby aria-describedby})]))))
 
 (defn input-number
   []
@@ -133,7 +138,75 @@
                    :min         min
                    :disabled    disabled?})]))))
 
-(defn input-date-time
+(defn input-date
+  []
+  (let [on-change-debounced (d/debounce
+                              (fn [on-change value]
+                                (on-change value))
+                              input-debounce-timeout)
+        validate            (idv/input-date-validator)
+        invalid?            (reagent/atom false)]
+    (s/fn render-input-date
+      [{:keys [id
+               value
+               on-change
+               aria-describedby]} :- {:id                                s/Str
+                                      (s/optional-key :value)            s/Str
+                                      :on-change                         s/Any
+                                      (s/optional-key :aria-describedby) s/Str}]
+      [:input (stylefy/use-style
+                (cond-> input-date-time-styles
+                        @invalid?
+                        (merge input-date-time-invalid-styles))
+                {:id               id
+                 :type             "date"
+                 :value            value
+                 :on-change        (fn [event]
+                                     (let [value' (.. event -target -value)
+                                           type   (.. event -target -type)
+                                           valid? (validate value' type)]
+                                       (reset! invalid? (not valid?))
+                                       (when valid?
+                                         (on-change-debounced
+                                           on-change
+                                           value'))))
+                 :aria-describedby aria-describedby})])))
+
+(defn input-time
+  []
+  (let [on-change-debounced (d/debounce
+                              (fn [on-change value]
+                                (on-change value))
+                              input-debounce-timeout)
+        validate            (itiv/input-time-validator)
+        invalid?            (reagent/atom false)]
+    (s/fn render-input-time
+      [{:keys [id
+               value
+               on-change
+               aria-describedby]} :- {:id                                s/Str
+                                      (s/optional-key :value)            s/Str
+                                      :on-change                         s/Any
+                                      (s/optional-key :aria-describedby) s/Str}]
+      [:input (stylefy/use-style
+                (cond-> input-date-time-styles
+                        @invalid?
+                        (merge input-date-time-invalid-styles))
+                {:id               id
+                 :type             "time"
+                 :value            value
+                 :on-change        (fn [event]
+                                     (let [value' (.. event -target -value)
+                                           type   (.. event -target -type)
+                                           valid? (validate value' type)]
+                                       (reset! invalid? (not valid?))
+                                       (when valid?
+                                         (on-change-debounced
+                                           on-change
+                                           value'))))
+                 :aria-describedby aria-describedby})])))
+
+(defn input-datetime-local
   []
   (let [on-change-debounced (d/debounce
                               (fn [on-change value]
@@ -141,7 +214,7 @@
                               input-debounce-timeout)
         validate            (idtv/input-date-time-validator)
         invalid?            (reagent/atom false)]
-    (s/fn render-input-date
+    (s/fn render-input-datetime-local
       [{:keys [id
                value
                on-change]} :- {:id                     s/Str

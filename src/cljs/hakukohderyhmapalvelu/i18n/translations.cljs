@@ -18,4 +18,8 @@
    :haun-asetukset/varasijasaannot-astuvat-voimaan
    {:fi "Varasijasäännöt astuvat voimaan"}
    :haun-asetukset/varasijataytto-paattyy
-   {:fi "Varasijatäyttö päättyy"}})
+   {:fi "Varasijatäyttö päättyy"}
+   :haun-asetukset/input-date-describedby
+   {:fi "Syötä tähän kenttään päivämäärästä ja kellonajasta muodostuvan arvon päivämäärä"}
+   :haun-asetukset/input-time-describedby
+   {:fi "Syötä tähän kenttään päivämäärästä ja kellonajasta muodostuvan arvon kellonaika"}})

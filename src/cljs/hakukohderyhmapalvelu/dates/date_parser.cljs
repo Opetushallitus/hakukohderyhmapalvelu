@@ -6,11 +6,28 @@
 
 (defonce date-hour-minute-formatter (f/formatters :date-hour-minute))
 
+(defonce date-formatter (f/formatters :date))
+
+(defonce time-formatter (f/formatters :hour-minute))
+
 (defn iso-date-time-local-str->date [date-str]
   (when-not (string/blank? date-str)
     (try
       (f/parse-local date-hour-minute-formatter date-str)
       (catch js/Error _))))
+
+(defn iso-date-str->date [date-str]
+  (when-not (string/blank? date-str)
+    (try
+      (f/parse-local date-formatter date-str)
+      (catch js/Error _))))
+
+(defn iso-time-str->date [time-str]
+  (when-not (string/blank? time-str)
+    (try
+      (f/parse-local time-formatter time-str)
+      (catch js/Error e
+        (println (str "ERROR: " e))))))
 
 (defn date->long [date]
   (try
