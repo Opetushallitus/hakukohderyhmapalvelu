@@ -11,6 +11,10 @@
    {:fi "Hakukohteiden priorisointi"}
    :haun-asetukset/useita-hakemuksia
    {:fi "Vain yksi hakemus -rajoitus"}
+   :haun-asetukset/hakijakohtainen-paikan-vastaanottoaika
+   {:fi "Hakijakohtainen paikan vastaanottoaika (vrk)"}
+   :haun-asetukset/paikan-vastaanotto-paattyy
+   {:fi "Opiskelijan paikan vastaanotto päättyy"}
    :haun-asetukset/hakukierros-paattyy
    {:fi "Hakukierros päättyy"}
    :haun-asetukset/sijoittelu

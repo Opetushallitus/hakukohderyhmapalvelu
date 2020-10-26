@@ -15,6 +15,12 @@
     :haun-asetukset/useita-hakemuksia
     :useitaHakemuksia
 
+    :haun-asetukset/hakijakohtainen-paikan-vastaanottoaika
+    :PH_HPVOA
+
+    :haun-asetukset/paikan-vastaanotto-paattyy
+    :PH_OPVP
+
     :haun-asetukset/hakukierros-paattyy
     :PH_HKP
 
@@ -40,6 +46,9 @@
           :haun-asetukset/useita-hakemuksia
           :haun-asetukset/sijoittelu}))
 
+(defn- int-value? [haun-asetus-key _]
+  (= haun-asetus-key :haun-asetukset/hakijakohtainen-paikan-vastaanottoaika))
+
 (defn- >0-number-value? [haun-asetus-key value]
   (and (= haun-asetus-key :haun-asetukset/hakukohteiden-maara-rajoitus)
        (> (parse-int value) 0)))
@@ -59,7 +68,8 @@
 
 (defn- date-value? [haun-asetus-key _]
   (some #{haun-asetus-key}
-        #{:haun-asetukset/hakukierros-paattyy
+        #{:haun-asetukset/paikan-vastaanotto-paattyy
+          :haun-asetukset/hakukierros-paattyy
           :haun-asetukset/valintatulokset-valmiina-viimeistaan
           :haun-asetukset/varasijasaannot-astuvat-voimaan
           :haun-asetukset/varasijataytto-paattyy}))
@@ -73,10 +83,17 @@
 (defn- long->date [ohjausparametrit-date]
   (some-> ohjausparametrit-date :date d/long->date))
 
+(defn- string->int-value [s]
+  {:value (parse-int s)})
+
+(defn- int-value->string [int-value]
+  (:value int-value))
+
 (def ^:private ohjausparametri-value->haun-asetus-value-mappings
   [[date-value? long->date]
    [useita-hakemuksia? not]
    [boolean-value? true?]
+   [int-value? int-value->string]
    [(constantly true) identity]])
 
 (defn ohjausparametri-value->haun-asetus-value [ohjausparametri-value
@@ -91,6 +108,7 @@
   [[date-value? local-date->long]
    [>0-number-value? parse-int]
    [useita-hakemuksia? not]
+   [int-value? string->int-value]
    [(constantly true) identity]])
 
 (defn haun-asetus-value->ohjausparametri-value [haun-asetus-value

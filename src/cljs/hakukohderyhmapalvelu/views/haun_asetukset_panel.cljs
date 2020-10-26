@@ -201,6 +201,29 @@
                      @time-value
                      (assoc :value @time-value))]]))}]]))
 
+(defn- hakijakohtainen-paikan-vastaanottoaika [{:keys [haku-oid]}]
+  (let [id-prefix (get-id-prefix :haun-asetukset/hakijakohtainen-paikan-vastaanottoaika)
+        label-id  (str id-prefix "-label")
+        input-id  (str id-prefix "-input")
+        label     @(re-frame/subscribe [:translation :haun-asetukset/hakijakohtainen-paikan-vastaanottoaika])
+        disabled? @(re-frame/subscribe [:haun-asetukset/haun-asetukset-disabled? haku-oid])
+        value     @(re-frame/subscribe [:haun-asetukset/haun-asetus haku-oid :haun-asetukset/hakijakohtainen-paikan-vastaanottoaika])]
+    [:<>
+     [haun-asetukset-label
+      {:id    label-id
+       :label label}]
+     [haun-asetukset-input
+      {:input-component [i/input-number
+                         {:input-id  input-id
+                          :value     value
+                          :on-change (fn [value]
+                                       (re-frame/dispatch [:haun-asetukset/set-haun-asetus
+                                                           haku-oid
+                                                           :haun-asetukset/hakijakohtainen-paikan-vastaanottoaika
+                                                           value]))
+                          :min       0
+                          :disabled? disabled?}]}]]))
+
 (defn- haun-asetukset-sijoittelu [{:keys [haku-oid]}]
   (let [sijoittelu? @(re-frame/subscribe [:haun-asetukset/haun-asetus haku-oid :haun-asetukset/sijoittelu])]
     (cond-> [:<>
@@ -249,6 +272,12 @@
        {:haku-oid        haku-oid
         :haun-asetus-key :haun-asetukset/useita-hakemuksia
         :type            :slider}]
+      [hakijakohtainen-paikan-vastaanottoaika
+       {:haku-oid haku-oid}]
+      [haun-asetukset-date-time
+       {:haku-oid                haku-oid
+        :haun-asetus-key         :haun-asetukset/paikan-vastaanotto-paattyy
+        :bold-left-label-margin? false}]
       [haun-asetukset-date-time
        {:haku-oid                haku-oid
         :haun-asetus-key         :haun-asetukset/hakukierros-paattyy
