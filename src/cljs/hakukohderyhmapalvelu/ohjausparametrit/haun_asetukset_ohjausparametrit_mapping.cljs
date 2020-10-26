@@ -125,4 +125,6 @@
     [:haun-asetukset/valintatulokset-valmiina-viimeistaan
      :haun-asetukset/varasijasaannot-astuvat-voimaan
      :haun-asetukset/varasijataytto-paattyy]
+    :haun-asetukset/hakukohteiden-maara-rajoitettu
+    [:haun-asetukset/hakukohteiden-maara-rajoitus]
     []))
