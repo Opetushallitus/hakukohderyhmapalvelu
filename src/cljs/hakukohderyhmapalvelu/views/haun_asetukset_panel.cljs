@@ -111,6 +111,7 @@
         {:component [i/input-number
                      {:input-id    text-input-id
                       :value       value
+                      :required?   true
                       :on-empty    (fn []
                                      (re-frame/dispatch [:haun-asetukset/unset-haun-asetus
                                                          haku-oid
@@ -127,6 +128,7 @@
 
 (defn- haun-asetukset-date-time [{:keys [haku-oid
                                          haun-asetus-key
+                                         required?
                                          bold-left-label-margin?]}]
   (let [id-prefix                 (get-id-prefix haun-asetus-key)
         label-id                  (str id-prefix "-label")
@@ -165,6 +167,12 @@
        (if datetime-local-supported?
          [i/input-datetime-local
           (cond-> {:id        date-time-picker-id
+                   :required? required?
+                   :on-empty  (fn []
+                                (reset! date-value nil)
+                                (re-frame/dispatch [:haun-asetukset/unset-haun-asetus
+                                                    haku-oid
+                                                    haun-asetus-key]))
                    :on-change (fn [value]
                                 (reset! date-value (some-> value (subs 0 10)))
                                 (re-frame/dispatch [:haun-asetukset/set-haun-asetus
@@ -220,6 +228,7 @@
       {:input-component [i/input-number
                          {:input-id  input-id
                           :value     value
+                          :required? false
                           :on-empty  (fn []
                                        (re-frame/dispatch [:haun-asetukset/unset-haun-asetus
                                                            haku-oid
@@ -243,14 +252,17 @@
             (into [[haun-asetukset-date-time
                     {:haku-oid                haku-oid
                      :haun-asetus-key         :haun-asetukset/valintatulokset-valmiina-viimeistaan
+                     :required?               false
                      :bold-left-label-margin? true}]
                    [haun-asetukset-date-time
                     {:haku-oid                haku-oid
                      :haun-asetus-key         :haun-asetukset/varasijasaannot-astuvat-voimaan
+                     :required?               false
                      :bold-left-label-margin? true}]
                    [haun-asetukset-date-time
                     {:haku-oid                haku-oid
                      :haun-asetus-key         :haun-asetukset/varasijataytto-paattyy
+                     :required?               false
                      :bold-left-label-margin? true}]]))))
 
 (defn- haun-asetukset []
@@ -285,10 +297,12 @@
       [haun-asetukset-date-time
        {:haku-oid                haku-oid
         :haun-asetus-key         :haun-asetukset/paikan-vastaanotto-paattyy
+        :required?               false
         :bold-left-label-margin? false}]
       [haun-asetukset-date-time
        {:haku-oid                haku-oid
         :haun-asetus-key         :haun-asetukset/hakukierros-paattyy
+        :required?               true
         :bold-left-label-margin? false}]
       [haun-asetukset-sijoittelu
        {:haku-oid haku-oid}]]]))
