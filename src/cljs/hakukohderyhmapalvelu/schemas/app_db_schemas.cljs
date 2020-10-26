@@ -71,8 +71,8 @@
    (s/optional-key :hakutoiveidenEnimmaismaara)   s/Int
    (s/optional-key :useitaHakemuksia)             s/Bool
    (s/optional-key :sijoittelu)                   s/Bool
-   :__modified__                                  s/Int
-   :__modifiedBy__                                s/Str})
+   (s/optional-key :__modified__)                 s/Int
+   (s/optional-key :__modifiedBy__)               s/Str})
 
 (s/defschema HakujenOhjausparametrit
   {:ohjausparametrit                  {s/Str HaunOhjausparametrit}
