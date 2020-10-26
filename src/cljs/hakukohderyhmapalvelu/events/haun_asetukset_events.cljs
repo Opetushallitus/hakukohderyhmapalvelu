@@ -54,12 +54,12 @@
 (events/reg-event-fx-validating
   :haun-asetukset/set-haun-asetus
   (fn-traced [{db :db} [haku-oid haun-asetus-key haun-asetus-value]]
-    (let [ohjausparametrit-key  (m/haun-asetus-key->ohjausparametri haun-asetus-key)
+    (let [ohjausparametri-key   (m/haun-asetus-key->ohjausparametri haun-asetus-key)
           ohjausparametri-value (m/haun-asetus-value->ohjausparametri-value
                                   haun-asetus-value
                                   haun-asetus-key)]
       {:db                 (assoc-in db
-                                     [:ohjausparametrit haku-oid ohjausparametrit-key]
+                                     [:ohjausparametrit haku-oid ohjausparametri-key]
                                      ohjausparametri-value)
        :dispatch-debounced {:id       :haun-asetukset/save-ohjausparametrit
                             :timeout  1000
