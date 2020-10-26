@@ -111,13 +111,13 @@
                placeholder
                aria-label
                min
-               disabled?]} :- {:input-id                   s/Str
-                               :value                      (s/maybe s/Int)
-                               :on-change                  s/Any
-                               :placeholder                s/Str
-                               :aria-label                 s/Str
-                               :min                        s/Int
-                               (s/optional-key :disabled?) s/Bool}]
+               disabled?]} :- {:input-id                     s/Str
+                               :value                        (s/maybe s/Int)
+                               :on-change                    s/Any
+                               (s/optional-key :placeholder) s/Str
+                               (s/optional-key :aria-label)  s/Str
+                               :min                          s/Int
+                               (s/optional-key :disabled?)   s/Bool}]
       (let [validate (inv/input-number-validator
                        min
                        nil)]
@@ -125,21 +125,23 @@
                   (cond-> input-text-styles
                           @invalid?
                           (merge input-text-invalid-styles))
-                  {:id          input-id
-                   :value       value
-                   :on-change   (fn [event]
-                                  (let [value  (.. event -target -value)
-                                        valid? (validate value)]
-                                    (reset! invalid? (not valid?))
-                                    (when valid?
-                                      (on-change-debounced
-                                        on-change
-                                        value))))
-                   :placeholder placeholder
-                   :type        "number"
-                   :aria-label  aria-label
-                   :min         min
-                   :disabled    disabled?})]))))
+                  (merge {:id        input-id
+                          :value     value
+                          :on-change (fn [event]
+                                       (let [value  (.. event -target -value)
+                                             valid? (validate value)]
+                                         (reset! invalid? (not valid?))
+                                         (when valid?
+                                           (on-change-debounced
+                                             on-change
+                                             value))))
+                          :type      "number"
+                          :min       min
+                          :disabled  disabled?}
+                         (when placeholder
+                           {:placeholder placeholder})
+                         (when aria-label
+                           {:aria-label aria-label})))]))))
 
 (defn input-date
   []
