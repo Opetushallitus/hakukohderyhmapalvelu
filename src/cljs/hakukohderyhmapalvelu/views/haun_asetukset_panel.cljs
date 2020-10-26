@@ -99,7 +99,8 @@
         enabled?                 @(re-frame/subscribe [:haun-asetukset/haun-asetus haku-oid checkbox-haun-asetus-key])
         text-input-id            (str id-prefix "-input")
         text-input-label         @(re-frame/subscribe [:translation :haun-asetukset/hakukohteiden-maara])
-        disabled?                @(re-frame/subscribe [:haun-asetukset/haun-asetukset-disabled? haku-oid])]
+        disabled?                @(re-frame/subscribe [:haun-asetukset/haun-asetukset-disabled? haku-oid])
+        value                    @(re-frame/subscribe [:haun-asetukset/haun-asetus haku-oid :haun-asetukset/hakukohteiden-maara-rajoitus])]
     [:<>
      [haun-asetukset-checkbox
       {:haku-oid        haku-oid
@@ -109,6 +110,7 @@
        [haun-asetukset-label-container
         {:component [i/input-number
                      {:input-id    text-input-id
+                      :value       value
                       :on-change   (fn [value]
                                      (re-frame/dispatch [:haun-asetukset/set-haun-asetus
                                                          haku-oid

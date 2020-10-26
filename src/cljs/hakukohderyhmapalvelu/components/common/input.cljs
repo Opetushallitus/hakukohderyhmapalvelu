@@ -106,11 +106,13 @@
         invalid?            (reagent/atom false)]
     (s/fn render-input-number
       [{:keys [input-id
+               value
                on-change
                placeholder
                aria-label
                min
                disabled?]} :- {:input-id                   s/Str
+                               :value                      (s/maybe s/Int)
                                :on-change                  s/Any
                                :placeholder                s/Str
                                :aria-label                 s/Str
@@ -124,6 +126,7 @@
                           @invalid?
                           (merge input-text-invalid-styles))
                   {:id          input-id
+                   :value       value
                    :on-change   (fn [event]
                                   (let [value  (.. event -target -value)
                                         valid? (validate value)]
