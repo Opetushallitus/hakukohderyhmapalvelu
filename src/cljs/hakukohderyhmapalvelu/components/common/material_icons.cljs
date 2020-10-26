@@ -25,3 +25,5 @@
 (defn arrow-drop-down []
   [material-icon "arrow_drop_down"])
 
+(defn done []
+  [material-icon "done"])

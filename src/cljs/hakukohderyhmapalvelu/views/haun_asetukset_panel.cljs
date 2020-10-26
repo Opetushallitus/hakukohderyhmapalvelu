@@ -80,20 +80,18 @@
     [:<>
      [haun-asetukset-label
       {:id    label-id
-       :label label
-       :for   checkbox-id}]
+       :label label}]
      [haun-asetukset-input
       {:input-component [checkbox-fn
-                         (cond-> {:id        checkbox-id
-                                  :checked?  checked?
-                                  :disabled? disabled?
-                                  :on-change (fn []
-                                               (re-frame/dispatch [:haun-asetukset/set-haun-asetus
-                                                                   haku-oid
-                                                                   haun-asetus-key
-                                                                   (not checked?)]))}
-                                 (= type :slider)
-                                 (assoc :aria-labelledby label-id))]}]]))
+                         {:id              checkbox-id
+                          :checked?        checked?
+                          :disabled?       disabled?
+                          :on-change       (fn []
+                                             (re-frame/dispatch [:haun-asetukset/set-haun-asetus
+                                                                 haku-oid
+                                                                 haun-asetus-key
+                                                                 (not checked?)]))
+                          :aria-labelledby label-id}]}]]))
 
 (defn- hakukohteiden-maara-rajoitettu [{:keys [haku-oid]}]
   (let [checkbox-haun-asetus-key :haun-asetukset/hakukohteiden-maara-rajoitettu

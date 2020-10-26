@@ -24,7 +24,7 @@
          {:cursor          "pointer"
           :grid-area       style-prefix
           :justify-self    "end"
-          ::stylefy/manual [["input + label"
+          ::stylefy/manual [["div + label"
                              {:margin-left "10px"}]]}))
 
 (defn- checkbox-with-label
@@ -32,17 +32,19 @@
            cypressid
            label
            style-prefix]}]
-  (let [search-control-styles (make-search-control-styles style-prefix)]
+  (let [search-control-styles (make-search-control-styles style-prefix)
+        label-id              (str cypressid "-label")]
     [:div (stylefy/use-style search-control-styles)
      [c/checkbox
-      {:id        checkbox-id
-       :checked?  true
-       :cypressid (str cypressid "-input")
-       :on-change (fn [])}]
+      {:id              checkbox-id
+       :checked?        true
+       :cypressid       (str cypressid "-input")
+       :on-change       (fn [])
+       :aria-labelledby label-id}]
      [label-component/label
       {:cypressid (str cypressid "-label")
        :label     label
-       :for       checkbox-id}]]))
+       :id        label-id}]]))
 
 (def ^:private grid-gap "10px")
 

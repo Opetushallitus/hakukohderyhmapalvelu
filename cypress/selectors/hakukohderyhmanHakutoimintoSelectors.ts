@@ -2,7 +2,7 @@ export const haunHakutoimintoHeadingSelector =
   'label[cypressid=haku-search-label]:visible'
 
 export const haunHakutoimintoNaytaMyosPaattyneetCheckboxSelector =
-  'input[cypressid=haku-search-checkbox-input]:visible'
+  'div[cypressid=haku-search-checkbox-input]:visible'
 
 export const haunHakutoimintoNaytaMyosPaattyneetTextSelector =
   'label[cypressid=haku-search-checkbox-label]:visible'

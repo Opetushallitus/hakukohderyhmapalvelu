@@ -39,7 +39,7 @@ describe('Hakukohderyhmäpalvelu', () => {
       cy.get(hh.haunHakutoimintoHeadingSelector).should('have.text', 'Haku')
       cy.get(hh.haunHakutoimintoNaytaMyosPaattyneetCheckboxSelector).should(
         'have.attr',
-        'type',
+        'role',
         'checkbox',
       )
       cy.get(hh.haunHakutoimintoNaytaMyosPaattyneetTextSelector).should(

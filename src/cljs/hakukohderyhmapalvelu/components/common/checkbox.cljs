@@ -1,32 +1,72 @@
 (ns hakukohderyhmapalvelu.components.common.checkbox
-  (:require [hakukohderyhmapalvelu.styles.styles-colors :as colors]
+  (:require [hakukohderyhmapalvelu.components.common.material-icons :as mi]
+            [hakukohderyhmapalvelu.styles.styles-colors :as colors]
             [schema.core :as s]
             [stylefy.core :as stylefy]
             [hakukohderyhmapalvelu.styles.layout-styles :as layout]))
 
 (def ^:private checkbox-styles
-  {:cursor "pointer"})
+  (merge
+    (layout/flex-row-styles "center" "center")
+    {:border-radius "5px"
+     :border-width  "1px"
+     :border-style  "solid"
+     :color         colors/white
+     :cursor        "pointer"
+     :height        "22px"
+     :user-select   "none"
+     :width         "22px"}))
+
+(def ^:private checkbox-unchecked-styles
+  {:border-color colors/gray-lighten-3})
+
+(def ^:private checkbox-checked-styles
+  {:background-color colors/blue-lighten-1
+   :border-color     colors/blue-lighten-1})
+
+(def ^:private checkbox-checked-disabled-styles
+  {:color colors/gray-lighten-3})
+
+(def ^:private checkbox-disabled-styles
+  {:background-color colors/gray-lighten-5
+   :border-color     colors/gray-lighten-3
+   :cursor           "default"
+   :pointer-events   "none"})
 
 (s/defn checkbox
   [{:keys [id
            on-change
            checked?
            disabled?
-           cypressid]} :- {:id                         s/Str
-                           :on-change                  s/Any
-                           :checked?                   s/Bool
-                           (s/optional-key :disabled?) s/Bool
-                           (s/optional-key :cypressid) s/Str}]
-
-  [:input
-   (stylefy/use-style
-     checkbox-styles
-     {:id        id
-      :cypressid cypressid
-      :checked   checked?
-      :disabled  disabled?
-      :on-change on-change
-      :type      "checkbox"})])
+           cypressid
+           aria-labelledby]} :- {:id                         s/Str
+                                 :on-change                  s/Any
+                                 :checked?                   s/Bool
+                                 (s/optional-key :disabled?) s/Bool
+                                 (s/optional-key :cypressid) s/Str
+                                 :aria-labelledby            s/Str}]
+  [:div
+   (cond-> (stylefy/use-style
+             checkbox-styles
+             {:id              id
+              :role            "checkbox"
+              :aria-labelledby aria-labelledby
+              :tabIndex        0
+              :aria-checked    checked?
+              :cypressid       cypressid
+              :aria-disabled   disabled?})
+           (not checked?)
+           (update :style merge checkbox-unchecked-styles)
+           (and checked? (not disabled?))
+           (update :style merge checkbox-checked-styles)
+           (and checked? disabled?)
+           (update :style merge checkbox-checked-disabled-styles)
+           (not disabled?)
+           (assoc :on-click on-change)
+           disabled?
+           (update :style merge checkbox-disabled-styles))
+   (when checked?
+     [mi/done])])
 
 (def ^:private checkbox-slider-styles
   (merge
