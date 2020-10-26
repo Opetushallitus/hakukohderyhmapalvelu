@@ -3,6 +3,7 @@
             [hakukohderyhmapalvelu.components.common.input :as i]
             [hakukohderyhmapalvelu.components.common.label :as l]
             [hakukohderyhmapalvelu.components.common.panel :as p]
+            [hakukohderyhmapalvelu.dates.datetime-local :as dl]
             [hakukohderyhmapalvelu.dates.date-parser :as d]
             [hakukohderyhmapalvelu.styles.styles-colors :as colors]
             [hakukohderyhmapalvelu.styles.layout-styles :as layout]
@@ -127,7 +128,7 @@
         label-id                  (str id-prefix "-label")
         date-time-picker-id       (str id-prefix "-date-time-picker")
         label                     @(re-frame/subscribe [:translation haun-asetus-key])
-        datetime-local-supported? false                     ;(dl/datetime-local-supported?)]
+        datetime-local-supported? (dl/datetime-local-supported?)
         datetime-local-value      (some-> @(re-frame/subscribe
                                              [:haun-asetukset/haun-asetus haku-oid haun-asetus-key])
                                           d/date->iso-date-time-local-str)

@@ -58,9 +58,19 @@
           ohjausparametri-value (m/haun-asetus-value->ohjausparametri-value
                                   haun-asetus-value
                                   haun-asetus-key)]
-      {:db                 (assoc-in db
-                                     [:ohjausparametrit haku-oid ohjausparametri-key]
-                                     ohjausparametri-value)
+      {:db                 (as-> db db'
+                                 (assoc-in db'
+                                           [:ohjausparametrit haku-oid ohjausparametri-key]
+                                           ohjausparametri-value)
+                                 (cond-> db'
+                                         (not ohjausparametri-value)
+                                         (update-in
+                                           [:ohjausparametrit haku-oid]
+                                           (fn [ohjausparametrit]
+                                             (apply (partial dissoc ohjausparametrit)
+                                                    (->> haun-asetus-key
+                                                         m/clear-keys-on-empty-value
+                                                         (map m/haun-asetus-key->ohjausparametri)))))))
        :dispatch-debounced {:id       :haun-asetukset/save-ohjausparametrit
                             :timeout  1000
                             :dispatch [:haun-asetukset/save-ohjausparametrit haku-oid]}})))
