@@ -4,6 +4,7 @@
             [hakukohderyhmapalvelu.components.common.label :as l]
             [hakukohderyhmapalvelu.components.common.panel :as p]
             [hakukohderyhmapalvelu.dates.date-parser :as d]
+            [hakukohderyhmapalvelu.styles.styles-colors :as colors]
             [hakukohderyhmapalvelu.styles.layout-styles :as layout]
             [reagent.core :as reagent]
             [re-frame.core :as re-frame]
@@ -22,33 +23,41 @@
 (def ^:private haun-asetukset-grid-item-layout-styles
   (merge
     (layout/flex-column-styles "flex-start" "center")
-    {:padding "5px 0"
-     :width   "350px"}))
+    {:padding-left   "20px"
+     :padding-top    "5px"
+     :padding-bottom "5px"
+     :width          "350px"}))
 
 (def ^:private haun-asetukset-label-styles
   (merge
     haun-asetukset-grid-item-layout-styles
-    {:grid-column-start "haun-asetukset-label"}))
+    {:border-left       (str "1px solid " colors/gray-lighten-3)
+     :grid-column-start "haun-asetukset-label"}))
 
 (def ^:private haun-asetukset-input-styles
   (merge
     haun-asetukset-grid-item-layout-styles
     {:grid-column-start "haun-asetukset-input"}))
 
-(defn- haun-asetukset-label-container [{:keys [component]}]
+(defn- haun-asetukset-label-container [{:keys [component
+                                               bold-left-label-margin?]}]
   [:div
-   (stylefy/use-style haun-asetukset-label-styles)
+   (cond-> (stylefy/use-style haun-asetukset-label-styles)
+           bold-left-label-margin?
+           (merge {:style {:border-left (str "2px solid " colors/blue-lighten-1)}}))
    component])
 
 (defn- haun-asetukset-label [{:keys [id
                                      label
-                                     for]}]
+                                     for
+                                     bold-left-label-margin?]}]
   [haun-asetukset-label-container
-   {:component [l/label
-                (cond-> {:id    id
-                         :label label}
-                        for
-                        (assoc :for for))]}])
+   {:component               [l/label
+                              (cond-> {:id    id
+                                       :label label}
+                                      for
+                                      (assoc :for for))]
+    :bold-left-label-margin? bold-left-label-margin?}])
 
 (defn- haun-asetukset-input [{:keys [input-component]}]
   [:div
@@ -112,7 +121,8 @@
                       :disabled?   disabled?}]}])]))
 
 (defn- haun-asetukset-date-time [{:keys [haku-oid
-                                         haun-asetus-key]}]
+                                         haun-asetus-key
+                                         bold-left-label-margin?]}]
   (let [id-prefix                 (get-id-prefix haun-asetus-key)
         label-id                  (str id-prefix "-label")
         date-time-picker-id       (str id-prefix "-date-time-picker")
@@ -140,8 +150,9 @@
 
     [:<>
      [haun-asetukset-label
-      (cond-> {:id    label-id
-               :label label}
+      (cond-> {:id                      label-id
+               :label                   label
+               :bold-left-label-margin? bold-left-label-margin?}
               datetime-local-supported?
               (assoc :for date-time-picker-id))]
      [haun-asetukset-input
@@ -198,14 +209,17 @@
                :type            :checkbox}]]
             sijoittelu?
             (into [[haun-asetukset-date-time
-                    {:haku-oid        haku-oid
-                     :haun-asetus-key :haun-asetukset/valintatulokset-valmiina-viimeistaan}]
+                    {:haku-oid                haku-oid
+                     :haun-asetus-key         :haun-asetukset/valintatulokset-valmiina-viimeistaan
+                     :bold-left-label-margin? true}]
                    [haun-asetukset-date-time
-                    {:haku-oid        haku-oid
-                     :haun-asetus-key :haun-asetukset/varasijasaannot-astuvat-voimaan}]
+                    {:haku-oid                haku-oid
+                     :haun-asetus-key         :haun-asetukset/varasijasaannot-astuvat-voimaan
+                     :bold-left-label-margin? true}]
                    [haun-asetukset-date-time
-                    {:haku-oid        haku-oid
-                     :haun-asetus-key :haun-asetukset/varasijataytto-paattyy}]]))))
+                    {:haku-oid                haku-oid
+                     :haun-asetus-key         :haun-asetukset/varasijataytto-paattyy
+                     :bold-left-label-margin? true}]]))))
 
 (defn- haun-asetukset []
   (let [haku-oid  @(re-frame/subscribe [:haun-asetukset/selected-haku-oid])
