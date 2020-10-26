@@ -247,6 +247,10 @@
        {:haku-oid        haku-oid
         :haun-asetus-key :haun-asetukset/useita-hakemuksia
         :type            :slider}]
+      [haun-asetukset-date-time
+       {:haku-oid                haku-oid
+        :haun-asetus-key         :haun-asetukset/hakukierros-paattyy
+        :bold-left-label-margin? false}]
       [haun-asetukset-sijoittelu
        {:haku-oid haku-oid}]]]))
 

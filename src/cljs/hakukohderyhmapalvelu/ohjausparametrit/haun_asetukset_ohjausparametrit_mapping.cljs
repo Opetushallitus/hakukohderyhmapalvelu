@@ -15,6 +15,9 @@
     :haun-asetukset/useita-hakemuksia
     :useitaHakemuksia
 
+    :haun-asetukset/hakukierros-paattyy
+    :PH_HKP
+
     :haun-asetukset/sijoittelu
     :sijoittelu
 
@@ -56,7 +59,8 @@
 
 (defn- date-value? [haun-asetus-key _]
   (some #{haun-asetus-key}
-        #{:haun-asetukset/valintatulokset-valmiina-viimeistaan
+        #{:haun-asetukset/hakukierros-paattyy
+          :haun-asetukset/valintatulokset-valmiina-viimeistaan
           :haun-asetukset/varasijasaannot-astuvat-voimaan
           :haun-asetukset/varasijataytto-paattyy}))
 

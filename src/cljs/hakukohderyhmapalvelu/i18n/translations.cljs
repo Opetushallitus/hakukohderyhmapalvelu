@@ -11,6 +11,8 @@
    {:fi "Hakukohteiden priorisointi"}
    :haun-asetukset/useita-hakemuksia
    {:fi "Vain yksi hakemus -rajoitus"}
+   :haun-asetukset/hakukierros-paattyy
+   {:fi "Hakukierros päättyy"}
    :haun-asetukset/sijoittelu
    {:fi "Haussa käytetään sijoittelua"}
    :haun-asetukset/valintatulokset-valmiina-viimeistaan
