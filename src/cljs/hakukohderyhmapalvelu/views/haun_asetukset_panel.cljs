@@ -111,6 +111,10 @@
         {:component [i/input-number
                      {:input-id    text-input-id
                       :value       value
+                      :on-empty    (fn []
+                                     (re-frame/dispatch [:haun-asetukset/unset-haun-asetus
+                                                         haku-oid
+                                                         :haun-asetukset/hakukohteiden-maara-rajoitus]))
                       :on-change   (fn [value]
                                      (re-frame/dispatch [:haun-asetukset/set-haun-asetus
                                                          haku-oid
@@ -216,6 +220,10 @@
       {:input-component [i/input-number
                          {:input-id  input-id
                           :value     value
+                          :on-empty  (fn []
+                                       (re-frame/dispatch [:haun-asetukset/unset-haun-asetus
+                                                           haku-oid
+                                                           :haun-asetukset/hakijakohtainen-paikan-vastaanottoaika]))
                           :on-change (fn [value]
                                        (re-frame/dispatch [:haun-asetukset/set-haun-asetus
                                                            haku-oid

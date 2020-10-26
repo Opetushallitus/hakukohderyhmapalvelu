@@ -99,20 +99,22 @@
 
 (defn input-number
   []
-  (let [on-change-debounced (d/debounce
-                              (fn [on-change value]
-                                (on-change value))
-                              input-debounce-timeout)
-        invalid?            (reagent/atom false)]
+  (let [debounced (d/debounce
+                    (fn [handler & args]
+                      (apply handler args))
+                    input-debounce-timeout)
+        invalid?  (reagent/atom false)]
     (s/fn render-input-number
       [{:keys [input-id
                value
+               on-empty
                on-change
                placeholder
                aria-label
                min
                disabled?]} :- {:input-id                     s/Str
                                :value                        (s/maybe s/Int)
+                               :on-empty                     s/Any
                                :on-change                    s/Any
                                (s/optional-key :placeholder) s/Str
                                (s/optional-key :aria-label)  s/Str
@@ -131,10 +133,10 @@
                                        (let [value  (.. event -target -value)
                                              valid? (validate value)]
                                          (reset! invalid? (not valid?))
-                                         (when valid?
-                                           (on-change-debounced
-                                             on-change
-                                             value))))
+                                         (cond (empty? value)
+                                               (debounced on-empty)
+                                               valid?
+                                               (debounced on-change value))))
                           :type      "number"
                           :min       min
                           :disabled  disabled?}

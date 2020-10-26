@@ -76,6 +76,21 @@
                             :dispatch [:haun-asetukset/save-ohjausparametrit haku-oid]}})))
 
 (events/reg-event-fx-validating
+  :haun-asetukset/unset-haun-asetus
+  (fn-traced [{db :db} [haku-oid haun-asetus-key]]
+    (let [ohjausparametri-key (m/haun-asetus-key->ohjausparametri haun-asetus-key)]
+      {:db                 (update-in db [:ohjausparametrit haku-oid]
+                                      (fn [os]
+                                        (apply dissoc os
+                                               ohjausparametri-key
+                                               (->> haun-asetus-key
+                                                    m/clear-keys-on-empty-value
+                                                    (map m/haun-asetus-key->ohjausparametri)))))
+       :dispatch-debounced {:id       :haun-asetukset/save-ohjausparametrit
+                            :timeout  1000
+                            :dispatch [:haun-asetukset/save-ohjausparametrit haku-oid]}})))
+
+(events/reg-event-fx-validating
   :haun-asetukset/save-ohjausparametrit
   (fn-traced [{db :db} [haku-oid]]
     (let [url  (urls/get-url :ohjausparametrit-service.parametri haku-oid)
