@@ -46,7 +46,7 @@
                             :width            "20px"}}}))
 
 (def ^:private checkbox-slider-container-checked-styles
-  {:background-color colors/blue})
+  {:background-color colors/blue-lighten-1})
 
 (def ^:private checkbox-slider-checkbox-checked-styles
   {:transform "translateX(18px)"})
