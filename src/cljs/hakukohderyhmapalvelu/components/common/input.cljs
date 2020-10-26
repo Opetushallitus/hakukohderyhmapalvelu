@@ -149,6 +149,7 @@
                                                (debounced on-change value))))
                           :type      "number"
                           :min       min
+                          :required  required?
                           :disabled  disabled?}
                          (when placeholder
                            {:placeholder placeholder})
@@ -254,6 +255,7 @@
                  {:id        id
                   :value     value
                   :type      "datetime-local"
+                  :required  required?
                   :on-change (fn [event]
                                (let [value' (.. event -target -value)
                                      type   (.. event -target -type)
