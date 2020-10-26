@@ -190,20 +190,22 @@
                      (assoc :value @time-value))]]))}]]))
 
 (defn- haun-asetukset-sijoittelu [{:keys [haku-oid]}]
-  [:<>
-   [haun-asetukset-checkbox
-    {:haku-oid        haku-oid
-     :haun-asetus-key :haun-asetukset/sijoittelu
-     :type            :checkbox}]
-   [haun-asetukset-date-time
-    {:haku-oid        haku-oid
-     :haun-asetus-key :haun-asetukset/valintatulokset-valmiina-viimeistaan}]
-   [haun-asetukset-date-time
-    {:haku-oid        haku-oid
-     :haun-asetus-key :haun-asetukset/varasijasaannot-astuvat-voimaan}]
-   [haun-asetukset-date-time
-    {:haku-oid        haku-oid
-     :haun-asetus-key :haun-asetukset/varasijataytto-paattyy}]])
+  (let [sijoittelu? @(re-frame/subscribe [:haun-asetukset/haun-asetus haku-oid :haun-asetukset/sijoittelu])]
+    (cond-> [:<>
+             [haun-asetukset-checkbox
+              {:haku-oid        haku-oid
+               :haun-asetus-key :haun-asetukset/sijoittelu
+               :type            :checkbox}]]
+            sijoittelu?
+            (into [[haun-asetukset-date-time
+                    {:haku-oid        haku-oid
+                     :haun-asetus-key :haun-asetukset/valintatulokset-valmiina-viimeistaan}]
+                   [haun-asetukset-date-time
+                    {:haku-oid        haku-oid
+                     :haun-asetus-key :haun-asetukset/varasijasaannot-astuvat-voimaan}]
+                   [haun-asetukset-date-time
+                    {:haku-oid        haku-oid
+                     :haun-asetus-key :haun-asetukset/varasijataytto-paattyy}]]))))
 
 (defn- haun-asetukset []
   (let [haku-oid  @(re-frame/subscribe [:haun-asetukset/selected-haku-oid])
