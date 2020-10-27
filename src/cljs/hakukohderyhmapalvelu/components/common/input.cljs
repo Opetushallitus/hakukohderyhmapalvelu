@@ -106,6 +106,8 @@
                     (fn [handler & args]
                       (apply handler args))
                     input-debounce-timeout)
+        ext-value (reagent/atom value)
+        int-value (reagent/atom value)
         invalid?  (reagent/atom (not
                                  ((inv/input-number-validator
                                    {:min       min
@@ -130,6 +132,8 @@
                                (s/optional-key :aria-label)  s/Str
                                :min                          s/Int
                                (s/optional-key :disabled?)   s/Bool}]
+      (when (not= value @ext-value)
+        (reset! int-value (reset! ext-value value)))
       (let [validate (inv/input-number-validator
                       {:min       min
                        :required? required?})]
@@ -138,15 +142,16 @@
                           @invalid?
                           (merge input-text-invalid-styles))
                   (merge {:id        input-id
-                          :value     value
+                          :value     @int-value
                           :on-change (fn [event]
                                        (let [value  (.. event -target -value)
                                              valid? (validate value)]
+                                         (reset! int-value value)
                                          (reset! invalid? (not valid?))
-                                         (cond (empty? value)
-                                               (debounced on-empty)
-                                               valid?
-                                               (debounced on-change value))))
+                                         (when valid?
+                                           (if (empty? value)
+                                             (debounced on-empty)
+                                             (debounced on-change value)))))
                           :type      "number"
                           :min       min
                           :required  required?
@@ -231,7 +236,9 @@
   (let [debounced (d/debounce
                     (fn [handler & args]
                       (apply handler args))
-                   input-debounce-timeout)
+                    input-debounce-timeout)
+        ext-value (reagent/atom value)
+        int-value (reagent/atom value)
         invalid?  (reagent/atom (not
                                  ((idtv/input-date-time-validator
                                    {:required? required?})
@@ -246,6 +253,8 @@
                                (s/optional-key :value) s/Str
                                :on-empty               s/Any
                                :on-change              s/Any}]
+      (when (not= value @ext-value)
+        (reset! int-value (reset! ext-value value)))
       (let [validate (idtv/input-date-time-validator
                       {:required? required?})]
         [:input (stylefy/use-style
@@ -253,18 +262,19 @@
                          @invalid?
                          (merge input-date-time-invalid-styles))
                  {:id        id
-                  :value     value
+                  :value     @int-value
                   :type      "datetime-local"
                   :required  required?
                   :on-change (fn [event]
                                (let [value' (.. event -target -value)
                                      type   (.. event -target -type)
                                      valid? (validate value' type)]
+                                 (reset! int-value value')
                                  (reset! invalid? (not valid?))
-                                 (cond (empty? value')
-                                       (debounced on-empty)
-                                       valid?
-                                       (debounced on-change value'))))})]))))
+                                 (when valid?
+                                   (if (empty? value')
+                                     (debounced on-empty)
+                                     (debounced on-change value')))))})]))))
 
 (def ^:private input-dropdown-styles
   (merge
