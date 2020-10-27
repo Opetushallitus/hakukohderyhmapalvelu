@@ -11,6 +11,9 @@
             [re-frame.core :as re-frame]
             [stylefy.core :as stylefy]))
 
+(def ^:private haun-asetukset-header-styles
+  {:font-weight "normal"})
+
 (def ^:private haun-asetukset-grid-styles
   {:display               "grid"
    :grid-template-columns "[haun-asetukset-label] 2fr [haun-asetukset-input] 4fr [end]"
@@ -275,7 +278,9 @@
     [:section
      [:header
       [:h3
-       {:id header-id}
+       (stylefy/use-style
+        haun-asetukset-header-styles
+        {:id header-id})
        (str haku-name)]]
      [:div
       (stylefy/use-style
