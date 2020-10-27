@@ -32,7 +32,7 @@
   {:requests #{s/Keyword}})
 
 (s/defschema LocalizedString
-  {:fi                  s/Str
+  {(s/optional-key :fi) s/Str
    (s/optional-key :sv) s/Str
    (s/optional-key :en) s/Str})
 
@@ -40,11 +40,19 @@
   (s/constrained s/Str #(clojure.string/includes? % "#")))
 
 (s/defschema Haku
-  {:nimi                LocalizedString
-   :kohdejoukkoKoodiUri KoodiUri})
+  {:nimi                               LocalizedString
+   (s/optional-key :hakulomakeAtaruId) s/Str
+   :kohdejoukkoKoodiUri                KoodiUri})
 
 (s/defschema Haut
   {:haut {s/Str Haku}})
+
+(s/defschema Form
+  {:key  s/Str
+   :name LocalizedString})
+
+(s/defschema Forms
+  {:forms {s/Str Form}})
 
 (s/defschema OhjausparametritInt
   {:value s/Int})
@@ -89,4 +97,5 @@
             Requests
             CreateHakukohderyhmapalvelu
             Haut
+            Forms
             HakujenOhjausparametrit))

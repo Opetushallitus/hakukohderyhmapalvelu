@@ -39,6 +39,14 @@
     (some? haku-oid)))
 
 (re-frame/reg-sub
+  :haun-asetukset/form
+  (fn [[_ haku-oid]]
+    [(re-frame/subscribe [:haun-asetukset/haku haku-oid])
+     (re-frame/subscribe [:state-query [:forms]])])
+  (fn [[haku forms]]
+    (get forms (:hakulomakeAtaruId haku))))
+
+(re-frame/reg-sub
   :haun-asetukset/kk?
   (fn [[_ haku-oid]]
     [(re-frame/subscribe [:haun-asetukset/haku haku-oid])])

@@ -9,5 +9,6 @@
    :lang                              :fi
    :create-hakukohderyhma             {:visible? false}
    :haut                              {}
+   :forms                             {}
    :ohjausparametrit                  {}
    :ohjausparametrit/save-in-progress #{}})

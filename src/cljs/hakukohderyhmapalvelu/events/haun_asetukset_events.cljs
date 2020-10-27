@@ -5,6 +5,27 @@
             [day8.re-frame.tracing :refer-macros [fn-traced]]))
 
 (events/reg-event-fx-validating
+  :haun-asetukset/get-forms
+  (fn-traced [_ _]
+    (let [url (urls/get-url :lomake-editori.forms)]
+      {:http {:http-request-id  :haun-asetukset/get-forms
+              :method           :get
+              :path             url
+              :response-handler [:haun-asetukset/handle-get-forms]
+              :cas              :lomake-editori.login
+              :body             {}}})))
+
+(events/reg-event-db-validating
+  :haun-asetukset/handle-get-forms
+  (fn-traced [db [response]]
+    (->> (:forms response)
+         (map (fn [f] [(:key f)
+                       {:key  (:key f)
+                        :name (:name f)}]))
+         (into {})
+         (assoc db :forms))))
+
+(events/reg-event-fx-validating
   :haun-asetukset/get-haku
   (fn-traced [_ [haku-oid]]
     (let [url (urls/get-url :kouta-internal.haku haku-oid)]
@@ -20,7 +41,9 @@
   (fn-traced [db [haku-oid response]]
     (let [haku (select-keys
                  response
-                 [:nimi :kohdejoukkoKoodiUri])]
+                 [:nimi
+                  :hakulomakeAtaruId
+                  :kohdejoukkoKoodiUri])]
       (assoc-in db
                 [:haut haku-oid]
                 haku))))

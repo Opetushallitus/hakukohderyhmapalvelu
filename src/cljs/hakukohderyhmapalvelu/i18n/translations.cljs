@@ -29,5 +29,9 @@
    {:fi "Syötä tähän kenttään päivämäärästä ja kellonajasta muodostuvan arvon päivämäärä"}
    :haun-asetukset/input-time-describedby
    {:fi "Syötä tähän kenttään päivämäärästä ja kellonajasta muodostuvan arvon kellonaika"}
+   :application-form
+   {:fi "Hakulomake"}
+   :modify-haku
+   {:fi "Haun muokkaus"}
    :required-legend
    {:fi "* merkityt kentät ovat pakollisia"}})
