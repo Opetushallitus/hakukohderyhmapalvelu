@@ -20,7 +20,7 @@
   (fn-traced [db [haku-oid response]]
     (let [haku (select-keys
                  response
-                 [:nimi])]
+                 [:nimi :kohdejoukkoKoodiUri])]
       (assoc-in db
                 [:haut haku-oid]
                 haku))))

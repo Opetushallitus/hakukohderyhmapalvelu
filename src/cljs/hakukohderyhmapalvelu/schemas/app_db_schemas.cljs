@@ -1,5 +1,6 @@
 (ns hakukohderyhmapalvelu.schemas.app-db-schemas
-  (:require [schema.core :as s]
+  (:require [clojure.string]
+            [schema.core :as s]
             [schema-tools.core :as st]))
 
 (s/defschema HakukohderyhmienHallintaPanel
@@ -35,8 +36,12 @@
    (s/optional-key :sv) s/Str
    (s/optional-key :en) s/Str})
 
+(s/defschema KoodiUri
+  (s/constrained s/Str #(clojure.string/includes? % "#")))
+
 (s/defschema Haku
-  {:nimi LocalizedString})
+  {:nimi                LocalizedString
+   :kohdejoukkoKoodiUri KoodiUri})
 
 (s/defschema Haut
   {:haut {s/Str Haku}})

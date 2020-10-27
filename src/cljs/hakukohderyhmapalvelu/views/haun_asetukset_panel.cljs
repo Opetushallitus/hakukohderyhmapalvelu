@@ -251,7 +251,8 @@
                           :disabled? disabled?}]}]]))
 
 (defn- haun-asetukset-sijoittelu [{:keys [haku-oid]}]
-  (let [sijoittelu? @(re-frame/subscribe [:haun-asetukset/haun-asetus haku-oid :haun-asetukset/sijoittelu])]
+  (let [sijoittelu? @(re-frame/subscribe [:haun-asetukset/haun-asetus haku-oid :haun-asetukset/sijoittelu])
+        kk?         @(re-frame/subscribe [:haun-asetukset/kk? haku-oid])]
     (cond-> [:<>
              [haun-asetukset-checkbox
               {:haku-oid                haku-oid
@@ -262,12 +263,12 @@
             (into [[haun-asetukset-date-time
                     {:haku-oid                haku-oid
                      :haun-asetus-key         :haun-asetukset/valintatulokset-valmiina-viimeistaan
-                     :required?               false
+                     :required?               kk?
                      :bold-left-label-margin? true}]
                    [haun-asetukset-date-time
                     {:haku-oid                haku-oid
                      :haun-asetus-key         :haun-asetukset/varasijasaannot-astuvat-voimaan
-                     :required?               false
+                     :required?               kk?
                      :bold-left-label-margin? true}]
                    [haun-asetukset-date-time
                     {:haku-oid                haku-oid

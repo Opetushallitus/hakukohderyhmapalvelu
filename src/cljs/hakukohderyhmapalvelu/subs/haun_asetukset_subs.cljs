@@ -1,5 +1,6 @@
 (ns hakukohderyhmapalvelu.subs.haun-asetukset-subs
   (:require [hakukohderyhmapalvelu.ohjausparametrit.haun-asetukset-ohjausparametrit-mapping :as m]
+            [clojure.string]
             [re-frame.core :as re-frame]))
 
 (re-frame/reg-sub
@@ -36,3 +37,13 @@
                           [:ohjausparametrit/save-in-progress haku-oid]])])
   (fn [[haku-oid]]
     (some? haku-oid)))
+
+(re-frame/reg-sub
+  :haun-asetukset/kk?
+  (fn [[_ haku-oid]]
+    [(re-frame/subscribe [:haun-asetukset/haku haku-oid])])
+  (fn [[haku]]
+    (and (string? (:kohdejoukkoKoodiUri haku))
+         (clojure.string/starts-with?
+          (:kohdejoukkoKoodiUri haku)
+          "haunkohdejoukko_12#"))))
