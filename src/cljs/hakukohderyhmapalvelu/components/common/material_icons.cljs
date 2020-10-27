@@ -6,7 +6,7 @@
    :font-feature-settings   "liga"
    :font-weight             "normal"
    :font-style              "normal"
-   :font-size               "24px"
+   :font-size               "16px"
    :display                 "inline-block"
    :line-height             1
    :text-transform          "none"

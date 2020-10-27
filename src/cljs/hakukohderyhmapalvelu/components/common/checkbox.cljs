@@ -13,9 +13,9 @@
      :border-style  "solid"
      :color         colors/white
      :cursor        "pointer"
-     :height        "22px"
+     :height        "16px"
      :user-select   "none"
-     :width         "22px"}))
+     :width         "16px"}))
 
 (def ^:private checkbox-unchecked-styles
   {:border-color colors/gray-lighten-3})
