@@ -7,7 +7,6 @@
 
 (def ^:private body-styles
   {:background-color colors/gray-lighten-5
-   :color            colors/gray
    :font-family      vars/font-family
    :font-size        "16px"
    :font-weight      vars/font-weight-regular
