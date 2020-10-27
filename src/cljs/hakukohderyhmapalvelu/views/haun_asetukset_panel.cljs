@@ -41,6 +41,10 @@
     haun-asetukset-grid-item-layout-styles
     {:grid-column-start "haun-asetukset-input"}))
 
+(def ^:private haun-asetukset-required-legend-styles
+  {:color   colors/gray-lighten-1
+   :padding-top "1em"})
+
 (defn- haun-asetukset-label-container [{:keys [component
                                                bold-left-label-margin?]}]
   [:div
@@ -52,11 +56,12 @@
 (defn- haun-asetukset-label [{:keys [id
                                      label
                                      for
+                                     required?
                                      bold-left-label-margin?]}]
   [haun-asetukset-label-container
    {:component               [l/label
                               (cond-> {:id    id
-                                       :label label}
+                                       :label (str label (when required? " *"))}
                                       for
                                       (assoc :for for))]
     :bold-left-label-margin? bold-left-label-margin?}])
@@ -116,6 +121,7 @@
         [haun-asetukset-label
          {:id                      text-input-label-id
           :label                   text-input-label
+          :required?               true
           :bold-left-label-margin? true}]
         [haun-asetukset-input
          {:input-component [i/input-number
@@ -168,6 +174,7 @@
      [haun-asetukset-label
       (cond-> {:id                      label-id
                :label                   label
+               :required?               required?
                :bold-left-label-margin? bold-left-label-margin?}
               datetime-local-supported?
               (assoc :for date-time-picker-id))]
@@ -319,7 +326,11 @@
         :required?               true
         :bold-left-label-margin? false}]
       [haun-asetukset-sijoittelu
-       {:haku-oid haku-oid}]]]))
+       {:haku-oid haku-oid}]]
+     [:div
+      (stylefy/use-style
+       haun-asetukset-required-legend-styles)
+      @(re-frame/subscribe [:translation :required-legend])]]))
 
 (defn haun-asetukset-panel []
   [p/panel

@@ -28,4 +28,6 @@
    :haun-asetukset/input-date-describedby
    {:fi "Syötä tähän kenttään päivämäärästä ja kellonajasta muodostuvan arvon päivämäärä"}
    :haun-asetukset/input-time-describedby
-   {:fi "Syötä tähän kenttään päivämäärästä ja kellonajasta muodostuvan arvon kellonaika"}})
+   {:fi "Syötä tähän kenttään päivämäärästä ja kellonajasta muodostuvan arvon kellonaika"}
+   :required-legend
+   {:fi "* merkityt kentät ovat pakollisia"}})
