@@ -1,5 +1,6 @@
 (ns hakukohderyhmapalvelu.views.haun-asetukset-panel
   (:require [hakukohderyhmapalvelu.components.common.checkbox :as c]
+            [hakukohderyhmapalvelu.components.common.headings :as h]
             [hakukohderyhmapalvelu.components.common.input :as i]
             [hakukohderyhmapalvelu.components.common.label :as l]
             [hakukohderyhmapalvelu.components.common.panel :as p]
@@ -10,9 +11,6 @@
             [reagent.core :as reagent]
             [re-frame.core :as re-frame]
             [stylefy.core :as stylefy]))
-
-(def ^:private haun-asetukset-header-styles
-  {:font-weight "normal"})
 
 (def ^:private haun-asetukset-grid-styles
   {:display               "grid"
@@ -277,10 +275,9 @@
         haku-name (-> haku :nimi lang)]
     [:section
      [:header
-      [:h3
-       (stylefy/use-style
-        haun-asetukset-header-styles
-        {:id header-id})
+      [h/heading
+       {:cypressid header-id
+        :level     :h3}
        (str haku-name)]]
      [:div
       (stylefy/use-style
