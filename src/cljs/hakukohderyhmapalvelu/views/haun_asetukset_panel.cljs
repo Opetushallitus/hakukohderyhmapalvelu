@@ -3,6 +3,7 @@
             [hakukohderyhmapalvelu.components.common.headings :as h]
             [hakukohderyhmapalvelu.components.common.input :as i]
             [hakukohderyhmapalvelu.components.common.label :as l]
+            [hakukohderyhmapalvelu.components.common.link :as a]
             [hakukohderyhmapalvelu.components.common.panel :as p]
             [hakukohderyhmapalvelu.dates.datetime-local :as dl]
             [hakukohderyhmapalvelu.dates.date-parser :as d]
@@ -328,16 +329,16 @@
        [:div
         (stylefy/use-style haun-asetukset-haun-tiedot-data-styles)
         (when form
-          [:a
-           {:href   (urls/get-url :lomake-editori.editor (:key form))
-            :target "_blank"}
-           (get-in form [:name lang])])]
+          [a/link
+           {:href     (urls/get-url :lomake-editori.editor (:key form))
+            :label    (get-in form [:name lang])
+            :on-click (fn [])}])]
        [:div
         (stylefy/use-style haun-asetukset-haun-tiedot-modify-styles)
-        [:a
-         {:href   (urls/get-url :kouta.haku haku-oid)
-          :target "_blank"}
-         @(re-frame/subscribe [:translation :modify-haku])]]]]
+        [a/link
+         {:href     (urls/get-url :kouta.haku haku-oid)
+          :label    @(re-frame/subscribe [:translation :modify-haku])
+          :on-click (fn [])}]]]]
      [:div
       (stylefy/use-style
         haun-asetukset-grid-styles

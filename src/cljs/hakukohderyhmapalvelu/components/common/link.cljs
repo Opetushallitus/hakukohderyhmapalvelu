@@ -6,8 +6,8 @@
             [stylefy.core :as stylefy]))
 
 (def ^:private link-styles
-  {:color           colors/blue-lighten-2
-   :text-decoration "none"})
+  {:color         colors/blue-lighten-2
+   ::stylefy/mode [[:hover {:text-decoration "none"}]]})
 
 (def ^:private link-left-margin-styles
   {:position      "relative"
