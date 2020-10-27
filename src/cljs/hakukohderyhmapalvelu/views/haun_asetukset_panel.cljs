@@ -68,7 +68,8 @@
 
 (defn- haun-asetukset-checkbox [{:keys [haku-oid
                                         haun-asetus-key
-                                        type]}]
+                                        type
+                                        bold-left-label-margin?]}]
   (let [id-prefix   (get-id-prefix haun-asetus-key)
         checkbox-id (str id-prefix "-checkbox")
         label-id    (str id-prefix "-label")
@@ -80,8 +81,9 @@
                       :slider c/checkbox-slider)]
     [:<>
      [haun-asetukset-label
-      {:id    label-id
-       :label label}]
+      {:id                      label-id
+       :label                   label
+       :bold-left-label-margin? bold-left-label-margin?}]
      [haun-asetukset-input
       {:input-component [checkbox-fn
                          {:id              checkbox-id
@@ -99,33 +101,39 @@
         id-prefix                (get-id-prefix checkbox-haun-asetus-key)
         enabled?                 @(re-frame/subscribe [:haun-asetukset/haun-asetus haku-oid checkbox-haun-asetus-key])
         text-input-id            (str id-prefix "-input")
+        text-input-label-id      (str id-prefix "-input-label")
         text-input-label         @(re-frame/subscribe [:translation :haun-asetukset/hakukohteiden-maara])
         disabled?                @(re-frame/subscribe [:haun-asetukset/haun-asetukset-disabled? haku-oid])
         value                    @(re-frame/subscribe [:haun-asetukset/haun-asetus haku-oid :haun-asetukset/hakukohteiden-maara-rajoitus])]
     [:<>
      [haun-asetukset-checkbox
-      {:haku-oid        haku-oid
-       :haun-asetus-key checkbox-haun-asetus-key
-       :type            :slider}]
+      {:haku-oid                haku-oid
+       :haun-asetus-key         checkbox-haun-asetus-key
+       :type                    :slider
+       :bold-left-label-margin? enabled?}]
      (when enabled?
-       [haun-asetukset-label-container
-        {:component [i/input-number
-                     {:input-id    text-input-id
-                      :value       value
-                      :required?   true
-                      :on-empty    (fn []
-                                     (re-frame/dispatch [:haun-asetukset/unset-haun-asetus
-                                                         haku-oid
-                                                         :haun-asetukset/hakukohteiden-maara-rajoitus]))
-                      :on-change   (fn [value]
-                                     (re-frame/dispatch [:haun-asetukset/set-haun-asetus
-                                                         haku-oid
-                                                         :haun-asetukset/hakukohteiden-maara-rajoitus
-                                                         value]))
-                      :placeholder text-input-label
-                      :aria-label  text-input-label
-                      :min         1
-                      :disabled?   disabled?}]}])]))
+       [:<>
+        [haun-asetukset-label
+         {:id                      text-input-label-id
+          :label                   text-input-label
+          :bold-left-label-margin? true}]
+        [haun-asetukset-input
+         {:input-component [i/input-number
+                            {:input-id   text-input-id
+                             :value      value
+                             :required?  true
+                             :on-empty   (fn []
+                                           (re-frame/dispatch [:haun-asetukset/unset-haun-asetus
+                                                               haku-oid
+                                                               :haun-asetukset/hakukohteiden-maara-rajoitus]))
+                             :on-change  (fn [value]
+                                           (re-frame/dispatch [:haun-asetukset/set-haun-asetus
+                                                               haku-oid
+                                                               :haun-asetukset/hakukohteiden-maara-rajoitus
+                                                               value]))
+                             :aria-label text-input-label
+                             :min        1
+                             :disabled?  disabled?}]}]])]))
 
 (defn- haun-asetukset-date-time [{:keys [haku-oid
                                          haun-asetus-key
@@ -246,9 +254,10 @@
   (let [sijoittelu? @(re-frame/subscribe [:haun-asetukset/haun-asetus haku-oid :haun-asetukset/sijoittelu])]
     (cond-> [:<>
              [haun-asetukset-checkbox
-              {:haku-oid        haku-oid
-               :haun-asetus-key :haun-asetukset/sijoittelu
-               :type            :checkbox}]]
+              {:haku-oid                haku-oid
+               :haun-asetus-key         :haun-asetukset/sijoittelu
+               :type                    :checkbox
+               :bold-left-label-margin? sijoittelu?}]]
             sijoittelu?
             (into [[haun-asetukset-date-time
                     {:haku-oid                haku-oid
@@ -287,13 +296,15 @@
       [hakukohteiden-maara-rajoitettu
        {:haku-oid haku-oid}]
       [haun-asetukset-checkbox
-       {:haku-oid        haku-oid
-        :haun-asetus-key :haun-asetukset/jarjestetyt-hakutoiveet
-        :type            :slider}]
+       {:haku-oid                haku-oid
+        :haun-asetus-key         :haun-asetukset/jarjestetyt-hakutoiveet
+        :type                    :slider
+        :bold-left-label-margin? false}]
       [haun-asetukset-checkbox
-       {:haku-oid        haku-oid
-        :haun-asetus-key :haun-asetukset/useita-hakemuksia
-        :type            :slider}]
+       {:haku-oid                haku-oid
+        :haun-asetus-key         :haun-asetukset/useita-hakemuksia
+        :type                    :slider
+        :bold-left-label-margin? false}]
       [hakijakohtainen-paikan-vastaanottoaika
        {:haku-oid haku-oid}]
       [haun-asetukset-date-time
