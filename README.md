@@ -4,6 +4,12 @@
 ![NPM Dependencies Status](https://david-dm.org/opetushallitus/hakukohderyhmapalvelu.svg)
 
 * [Palvelun ajaminen paikallisesti](#palvelun-ajaminen-paikallisesti)
+  * [Vain kerran tehtävät työvaiheet](#vain-kerran-tehtävät-työvaiheet)
+  * [Käyttö](#käyttö)
+    * [Palvelun käynnistäminen](#palvelun-käynnistäminen)
+    * [Palvelun pysäyttäminen](#palvelun-pysäyttäminen)
+    * [Palvelun logien tarkastelu](#palvelun-logien-tarkastelu)
+    * [Palvelun komponenttien tilan tarkastelu](#palvelun-komponenttien-tilan-tarkastelu)
 * [Testien ajaminen](#testien-ajaminen)
   * [Lint](#lint)
     * [Clojure(Script) -tiedostojen lint](#clojurescript--tiedostojen-lint)
@@ -21,58 +27,64 @@
 
 Kloonaa ja valmistele omien ohjeiden mukaan käyttökuntoon [local-environment](https://github.com/Opetushallitus/local-environment) -ympäristö.
 
-### Palvelun ajaminen paikallisesti
-
-Tämä on suositeltu tapa ajaa palvelua paikallisesti.
+### Vain kerran tehtävät työvaiheet
 
 1. Valmistele palvelun konfiguraatio
    * Mene aiemmin kloonaamaasi [local-environment](https://github.com/Opetushallitus/local-environment) -repositoryyn.
    * Mikäli et ole vielä kertaakaan valmistellut local-environment -ympäristöä, tee se repositoryn ohjeiden mukaan.
-   * Generoi konfiguraatiotiedosto palvelua varten. Generointi lataa S3:sta untuva-, hahtuva- ja pallero -ympäristöjen salaisuudet ja generoi jokaista ympäristöä vastaavan hakukohderyhmäpalvelun konfiguraation.
+   * Generoi konfiguraatiotiedosto palvelua varten. Generointi lataa S3:sta untuva-, hahtuva- ja pallero -ympäristöjen salaisuudet ja generoi jokaista ympäristöä vastaavan hakukohderyhmäpalvelun konfiguraation. Tee siis tämä local-environment -repoistoryssä.
    ```bash
    rm -f .opintopolku-local/.templates_compiled # Aja tämä komento, mikäli haluat pakottaa konfiguraation generoinnin
    make compile-templates
    ```
-   * Konfiguraatiotiedostot löytyvät tämän repositoryn alta hakemistosta `oph-configurations/{hahtuva,pallero,untuva}/oph-configuration/hakukohderyhmapalvelu.config.edn`
+   * Konfiguraatiotiedostot löytyvät nyt local-environment -repositoryn alta hakemistosta `oph-configurations/{hahtuva,pallero,untuva}/oph-configuration/hakukohderyhmapalvelu.config.edn`
 2. Valmistele nginx -containerin konfiguraatio
+   * Mikäli käytät Mac OS -käyttöjärjestelmää, sinun ei tarvitse tehdä mitään.
    * Mikäli käytät Linuxia, etkä Mac OS -käyttöjärjestelmää, editoi tämän repositoryn `nginx/nginx.conf` -tiedostoa: korvaa kaikki `host.docker.internal` -osoitteet sillä IP-osoitteella, joka koneesi `docker0` -sovittimessa on käytössä. Tämän IP:n saat esimerkiksi komennolla `/sbin/ifconfig docker0` selville.
-3. Asenna NPM-riippuvuudet
-   * Käytä Node.js v14:ää. Jos sinulla on NVM, voit kirjoittaa tämän repositoryn juuressa
-   ```bash
-   nvm use
-   npm install
+3. Konfiguroi SSH-client
+   * Tarvitset SSH-tunnelia varten SSH-konfiguraatioosi tiedon useista porttiohjauksista.
+   * Kun olet ensin alustanut local-environment -ympäristön kohdan 1 mukaan, voit yksinkertaisimmillaan lisätä seuraavan rivin `~./ssh/config` -tiedostosi ensimmäiseksi riviksi:
    ```
-4. Käynnistä nginx
-   * Tämän repositoryn juuressa
-   ```bash
-   docker-compose up
+   Include /polku/local-environment-repositoryysi/docker/ssh/config
    ```
-5. Käynnistä taustajärjestelmä
-   * Tämän repositoryn juuressa
-   ```bash
-   TIMBRE_NS_BLACKLIST='["clj-timbre-auditlog.audit-log"]' CONFIG=/polku/local-environment-repositoryn-juureen/oph-configurations/pallero/oph-configuration/hakukohderyhmapalvelu.config.edn lein server:dev
-   ```
-6. Käynnistä selainohjelman kehityspalvelin
-   * Tämän repositoryn juuressa
-   ```bash
-   lein frontend:dev
-   ```
-7. Palvelu on käytettävissä osoitteessa `http://localhost:9030/hakukohderyhmapalvelu`
+   * Mikäli et halua määrittää kyseistä `Include` -direktiiviä, voit tarjota kyseiset porttiohjauskonfiguraatiot SSH-clientillesi jotenkin toisin.
+   
 
-### Palvelun ajaminen paikallisesti local-environment -ympäristön avulla
+### Käyttö
 
-Palvelun ajaminen on helppoa, mutta valitettavasti erityisesti Mac OS -käyttöjärjestelmällä tämän ratkaisun vuoksi hidasta. *Tämä vaihtoehto ei ole suositeltava*
+Tämä on suositeltu tapa ajaa palvelua paikallisesti. Tässä ohjeessa oletetaan, että local-environment -repository löytyy hakukohderyhmäpalvelu -hakemiston vierestä, samasta hakemistosta.
 
-Käynnistä Hakukohderyhmäpalvelu sanomalla `local-environment` -repositoryn juuressa:
- 
-```sh
-make start-hakukohderyhmapalvelu
+Käynnistetty palvelu on käytettävissä osoitteessa (http://localhost:9030/hakukohderyhmapalvelu).
+
+Kun ajat palvelua, käynnistä aina ensin SSH-yhteys käyttämääsi ympäristöön. Oletuksena se on `pallero`:
+
+```
+ssh bastion.pallero
 ```
 
-Muita tuettuja komentoja: 
+#### Palvelun käynnistäminen
 
-```sh
-make {restart,kill}-hakukohderyhmapalvelu
+```bash
+make start
+```
+
+#### Palvelun pysäyttäminen
+
+```bash
+make kill
+```
+
+#### Palvelun logien tarkastelu
+
+```bash
+make logs
+```
+
+
+#### Palvelun komponenttien tilan tarkastelu
+
+```bash
+make status
 ```
 
 ## Testien ajaminen
