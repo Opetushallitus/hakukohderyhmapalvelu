@@ -109,11 +109,11 @@
         ext-value (reagent/atom value)
         int-value (reagent/atom value)
         invalid?  (reagent/atom (not
-                                 ((inv/input-number-validator
-                                   {:min       min
-                                    :required? required?})
-                                  value
-                                  "number")))]
+                                  ((inv/input-number-validator
+                                     {:min       min
+                                      :required? required?})
+                                   value
+                                   "number")))]
     (s/fn render-input-number
       [{:keys [input-id
                value
@@ -133,8 +133,8 @@
       (when (not= value @ext-value)
         (reset! int-value (reset! ext-value value)))
       (let [validate (inv/input-number-validator
-                      {:min       min
-                       :required? required?})]
+                       {:min       min
+                        :required? required?})]
         [:input (stylefy/use-style
                   (cond-> input-text-styles
                           @invalid?
@@ -242,10 +242,10 @@
         ext-value (reagent/atom value)
         int-value (reagent/atom value)
         invalid?  (reagent/atom (not
-                                 ((idtv/input-date-time-validator
-                                   {:required? required?})
-                                  value
-                                  "datetime-local")))]
+                                  ((idtv/input-date-time-validator
+                                     {:required? required?})
+                                   value
+                                   "datetime-local")))]
     (s/fn render-input-datetime-local
       [{:keys [id
                value
@@ -256,23 +256,23 @@
       (when (not= value @ext-value)
         (reset! int-value (reset! ext-value value)))
       (let [validate (idtv/input-date-time-validator
-                      {:required? required?})]
+                       {:required? required?})]
         [:input (stylefy/use-style
-                 (cond-> input-date-time-styles
-                         @invalid?
-                         (merge input-date-time-invalid-styles))
-                 {:id        id
-                  :value     @int-value
-                  :type      "datetime-local"
-                  :required  required?
-                  :on-change (fn [event]
-                               (let [value' (.. event -target -value)
-                                     type   (.. event -target -type)
-                                     valid? (validate value' type)]
-                                 (reset! int-value value')
-                                 (reset! invalid? (not valid?))
-                                 (when valid?
-                                   (debounced on-change value'))))})]))))
+                  (cond-> input-date-time-styles
+                          @invalid?
+                          (merge input-date-time-invalid-styles))
+                  {:id        id
+                   :value     @int-value
+                   :type      "datetime-local"
+                   :required  required?
+                   :on-change (fn [event]
+                                (let [value' (.. event -target -value)
+                                      type   (.. event -target -type)
+                                      valid? (validate value' type)]
+                                  (reset! int-value value')
+                                  (reset! invalid? (not valid?))
+                                  (when valid?
+                                    (debounced on-change value'))))})]))))
 
 (def ^:private input-dropdown-styles
   (merge
