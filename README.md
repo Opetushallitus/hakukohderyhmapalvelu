@@ -21,6 +21,48 @@
 
 Kloonaa ja valmistele omien ohjeiden mukaan käyttökuntoon [local-environment](https://github.com/Opetushallitus/local-environment) -ympäristö.
 
+### Palvelun ajaminen paikallisesti
+
+Tämä on suositeltu tapa ajaa palvelua paikallisesti.
+
+1. Valmistele palvelun konfiguraatio
+   * Mene aiemmin kloonaamaasi [local-environment](https://github.com/Opetushallitus/local-environment) -repositoryyn.
+   * Mikäli et ole vielä kertaakaan valmistellut local-environment -ympäristöä, tee se repositoryn ohjeiden mukaan.
+   * Generoi konfiguraatiotiedosto palvelua varten. Generointi lataa S3:sta untuva-, hahtuva- ja pallero -ympäristöjen salaisuudet ja generoi jokaista ympäristöä vastaavan hakukohderyhmäpalvelun konfiguraation.
+   ```bash
+   rm -f .opintopolku-local/.templates_compiled # Aja tämä komento, mikäli haluat pakottaa konfiguraation generoinnin
+   make compile-templates
+   ```
+   * Konfiguraatiotiedostot löytyvät tämän repositoryn alta hakemistosta `oph-configurations/{hahtuva,pallero,untuva}/oph-configuration/hakukohderyhmapalvelu.config.edn`
+2. Valmistele nginx -containerin konfiguraatio
+   * Mikäli käytät Linuxia, etkä Mac OS -käyttöjärjestelmää, editoi tämän repositoryn `nginx/nginx.conf` -tiedostoa: korvaa kaikki `host.docker.internal` -osoitteet sillä IP-osoitteella, joka koneesi `docker0` -sovittimessa on käytössä. Tämän IP:n saat esimerkiksi komennolla `/sbin/ifconfig docker0` selville.
+3. Asenna NPM-riippuvuudet
+   * Käytä Node.js v14:ää. Jos sinulla on NVM, voit kirjoittaa tämän repositoryn juuressa
+   ```bash
+   nvm use
+   npm install
+   ```
+4. Käynnistä nginx
+   * Tämän repositoryn juuressa
+   ```bash
+   docker-compose up
+   ```
+5. Käynnistä taustajärjestelmä
+   * Tämän repositoryn juuressa
+   ```bash
+   TIMBRE_NS_BLACKLIST='["clj-timbre-auditlog.audit-log"]' CONFIG=/polku/local-environment-repositoryn-juureen/oph-configurations/pallero/oph-configuration/hakukohderyhmapalvelu.config.edn lein server:dev
+   ```
+6. Käynnistä selainohjelman kehityspalvelin
+   * Tämän repositoryn juuressa
+   ```bash
+   lein frontend:dev
+   ```
+7. Palvelu on käytettävissä osoitteessa `http://localhost:9030/hakukohderyhmapalvelu`
+
+### Palvelun ajaminen paikallisesti local-environment -ympäristön avulla
+
+Palvelun ajaminen on helppoa, mutta valitettavasti erityisesti Mac OS -käyttöjärjestelmällä tämän ratkaisun vuoksi hidasta. *Tämä vaihtoehto ei ole suositeltava*
+
 Käynnistä Hakukohderyhmäpalvelu sanomalla `local-environment` -repositoryn juuressa:
  
 ```sh

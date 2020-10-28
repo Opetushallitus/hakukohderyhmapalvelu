@@ -1,0 +1,13 @@
+version: '3.7'
+services:
+  hakukohderyhmapalvelu-nginx-local:
+    image: nginx
+    container_name: hakukohderyhmapalvelu-nginx-local
+    networks:
+      hakukohderyhmapalvelu-local-network:
+    ports:
+      - "9030:9030"
+    volumes:
+      - "./nginx:/etc/nginx"
+networks:
+  hakukohderyhmapalvelu-local-network:
