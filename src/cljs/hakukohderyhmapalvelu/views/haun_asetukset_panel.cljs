@@ -225,9 +225,6 @@
             datetime-local-value      (some-> @(re-frame/subscribe
                                                  [:haun-asetukset/haun-asetus haku-oid haun-asetus-key])
                                               d/date->iso-date-time-local-str)]
-
-        (println (str {:date-value          @date-value-int :time-value @time-value-int
-                       :the-real-date-value @date-value :the-real-time-value @time-value}))
         [:<>
          [haun-asetukset-label
           (cond-> {:id                      label-id
