@@ -292,6 +292,7 @@
     [:<>
      [haun-asetukset-label
       {:id    label-id
+       :for   input-id
        :label label}]
      [haun-asetukset-input
       {:input-component [i/input-number
