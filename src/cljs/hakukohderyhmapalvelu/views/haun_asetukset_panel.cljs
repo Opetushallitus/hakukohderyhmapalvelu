@@ -378,7 +378,8 @@
      [:header
       [h/heading
        {:cypressid header-id
-        :level     :h3}
+        :level     :h3
+        :id        header-id}
        (str haku-name)]]
      [haun-tiedot haku-oid header-id]
      [:div
