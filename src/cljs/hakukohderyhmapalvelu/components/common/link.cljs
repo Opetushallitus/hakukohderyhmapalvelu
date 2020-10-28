@@ -23,7 +23,7 @@
   {(s/optional-key :cypressid)        s/Str
    :href                              s/Str
    :label                             s/Str
-   :on-click                          s/Any
+   (s/optional-key :on-click)         s/Any
    (s/optional-key :aria-describedby) s/Str
    (s/optional-key :role)             s/Str
    (s/optional-key :tabindex)         s/Int})
@@ -42,15 +42,19 @@
            role
            tabindex]} :- LinkWithExtraStylesProps]
   [:a (stylefy/use-style
-        (merge link-styles styles)
-        {:cypressid        cypressid
-         :href             href
-         :on-click         (fn prevent-default-and-click [event]
+       (merge link-styles styles)
+       (merge {:cypressid cypressid
+               :href      href}
+              (when on-click
+                {:on-click (fn prevent-default-and-click [event]
                              (.preventDefault event)
-                             (on-click event))
-         :aria-describedby aria-describedby
-         :role             role
-         :tabIndex         tabindex})
+                             (on-click event))})
+              (when aria-describedby
+                {:aria-describedby aria-describedby})
+              (when role
+                {:role role})
+              (when tabindex
+                {:tabIndex tabindex})))
    label])
 
 (s/defn link-with-left-separator :- s/Any

@@ -383,15 +383,13 @@
           [a/link
            {:href             (urls/get-url :lomake-editori.editor (:key form))
             :label            @(re-frame/subscribe [:translation :modify-form])
-            :aria-describedby form-name-id
-            :on-click         (fn [])}]])]
+            :aria-describedby form-name-id}]])]
       [:div
        (stylefy/use-style haun-asetukset-haun-tiedot-modify-styles)
        [a/link
         {:href             (urls/get-url :kouta.haku haku-oid)
          :label            @(re-frame/subscribe [:translation :modify-haku])
-         :aria-describedby haku-name-id
-         :on-click         (fn [])}]]]]))
+         :aria-describedby haku-name-id}]]]]))
 
 (defn- haun-asetukset []
   (let [haku-oid  @(re-frame/subscribe [:haun-asetukset/selected-haku-oid])
