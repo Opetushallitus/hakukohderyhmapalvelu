@@ -29,6 +29,8 @@
    {:fi "Syötä tähän kenttään päivämäärästä ja kellonajasta muodostuvan arvon päivämäärä"}
    :haun-asetukset/input-time-describedby
    {:fi "Syötä tähän kenttään päivämäärästä ja kellonajasta muodostuvan arvon kellonaika"}
+   :application-periods
+   {:fi "Hakuajat"}
    :application-form
    {:fi "Hakulomake"}
    :modify-form

@@ -50,8 +50,14 @@
 (def ^:private haun-asetukset-haun-tiedot-data-styles
   {:grid-column-start "haun-tiedot-data"})
 
+(def ^:private haun-asetukset-haun-tiedot-hakuajat-styles
+  {:list-style "none"
+   :margin     "0"
+   :padding    "0"})
+
 (def ^:private haun-asetukset-haun-tiedot-modify-styles
   {:grid-column-start "haun-tiedot-modify"
+   :grid-row-start    "1"
    :white-space       "nowrap"})
 
 (def ^:private haun-asetukset-label-styles
@@ -333,14 +339,32 @@
                      :required?               false
                      :bold-left-label-margin? true}]]))))
 
+(defn- hakuajat [haku-oid hakuajat-id]
+  (let [hakuajat @(re-frame/subscribe [:haun-asetukset/hakuajat haku-oid])]
+    [:div
+     (stylefy/use-style haun-asetukset-haun-tiedot-data-styles)
+     (into [:ol
+            (merge (stylefy/use-style haun-asetukset-haun-tiedot-hakuajat-styles)
+                   {:id hakuajat-id})]
+           (map (fn [hakuaika]
+                  [:li (:alkaa hakuaika) " - " (:paattyy hakuaika)])
+                hakuajat))]))
+
 (defn- haun-tiedot [haku-oid haku-name-id]
   (let [form         @(re-frame/subscribe [:haun-asetukset/form haku-oid])
         lang         @(re-frame/subscribe [:lang])
+        hakuajat-id  (str "haun-asetukset-" haku-oid "-hakuajat")
         form-name-id (str "haun-asetukset-" haku-oid "-form-name")]
     [:div
      (stylefy/use-style haun-asetukset-haun-tiedot-styles)
      [:div
       (stylefy/use-style haun-asetukset-haun-tiedot-card-styles)
+      [:div
+       (stylefy/use-style haun-asetukset-haun-tiedot-label-styles)
+       [:label
+        {:for hakuajat-id}
+        @(re-frame/subscribe [:translation :application-periods])]]
+      [hakuajat haku-oid hakuajat-id]
       [:div
        (stylefy/use-style haun-asetukset-haun-tiedot-label-styles)
        [:label

@@ -43,7 +43,8 @@
                  response
                  [:nimi
                   :hakulomakeAtaruId
-                  :kohdejoukkoKoodiUri])]
+                  :kohdejoukkoKoodiUri
+                  :hakuajat])]
       (assoc-in db
                 [:haut haku-oid]
                 haku))))

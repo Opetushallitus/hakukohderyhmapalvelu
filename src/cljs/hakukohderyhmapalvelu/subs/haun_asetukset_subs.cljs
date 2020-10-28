@@ -1,7 +1,14 @@
 (ns hakukohderyhmapalvelu.subs.haun-asetukset-subs
   (:require [hakukohderyhmapalvelu.ohjausparametrit.haun-asetukset-ohjausparametrit-mapping :as m]
+            [cljs-time.format :as f]
             [clojure.string]
             [re-frame.core :as re-frame]))
+
+(defn- iso->finnish
+  [s]
+  (let [in-fmt  (f/formatter "yyyy-MM-dd'T'HH:mm:ss")
+        out-fmt (f/formatter "dd.MM.yyyy 'klo' HH.mm.ss")]
+    (f/unparse-local out-fmt (f/parse-local in-fmt s))))
 
 (re-frame/reg-sub
   :haun-asetukset/selected-haku-oid
@@ -55,3 +62,14 @@
          (clojure.string/starts-with?
           (:kohdejoukkoKoodiUri haku)
           "haunkohdejoukko_12#"))))
+
+(re-frame/reg-sub
+  :haun-asetukset/hakuajat
+  (fn [[_ haku-oid]]
+    [(re-frame/subscribe [:haun-asetukset/haku haku-oid])])
+  (fn [[haku]]
+    (mapv (fn [hakuaika]
+            (merge {:alkaa (iso->finnish (:alkaa hakuaika))}
+                   (when (:paattyy hakuaika)
+                     {:paattyy (iso->finnish (:paattyy hakuaika))})))
+          (:hakuajat haku))))

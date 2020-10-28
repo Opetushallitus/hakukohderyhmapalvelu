@@ -39,10 +39,15 @@
 (s/defschema KoodiUri
   (s/constrained s/Str #(clojure.string/includes? % "#")))
 
+(s/defschema Hakuaika
+  {:alkaa                    s/Str
+   (s/optional-key :paattyy) s/Str})
+
 (s/defschema Haku
   {:nimi                               LocalizedString
    (s/optional-key :hakulomakeAtaruId) s/Str
-   :kohdejoukkoKoodiUri                KoodiUri})
+   :kohdejoukkoKoodiUri                KoodiUri
+   :hakuajat                           [Hakuaika]})
 
 (s/defschema Haut
   {:haut {s/Str Haku}})
