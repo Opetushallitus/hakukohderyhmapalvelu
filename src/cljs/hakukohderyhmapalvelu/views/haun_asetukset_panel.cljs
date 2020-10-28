@@ -339,43 +339,45 @@
                      :required?               false
                      :bold-left-label-margin? true}]]))))
 
-(defn- hakuajat [haku-oid hakuajat-id]
+(defn- hakuajat [haku-oid hakuajat-label-id]
   (let [hakuajat @(re-frame/subscribe [:haun-asetukset/hakuajat haku-oid])]
     [:div
      (stylefy/use-style haun-asetukset-haun-tiedot-data-styles)
      (into [:ol
             (merge (stylefy/use-style haun-asetukset-haun-tiedot-hakuajat-styles)
-                   {:id hakuajat-id})]
+                   {:aria-labelledby hakuajat-label-id})]
            (map (fn [hakuaika]
                   [:li (:alkaa hakuaika) " - " (:paattyy hakuaika)])
                 hakuajat))]))
 
 (defn- haun-tiedot [haku-oid haku-name-id]
-  (let [form         @(re-frame/subscribe [:haun-asetukset/form haku-oid])
-        lang         @(re-frame/subscribe [:lang])
-        hakuajat-id  (str "haun-asetukset-" haku-oid "-hakuajat")
-        form-name-id (str "haun-asetukset-" haku-oid "-form-name")]
+  (let [form               @(re-frame/subscribe [:haun-asetukset/form haku-oid])
+        lang               @(re-frame/subscribe [:lang])
+        hakuajat-label-id  (str "haun-asetukset-" haku-oid "-hakuajat-label")
+        form-name-label-id (str "haun-asetukset-" haku-oid "-form-name-label")
+        form-name-id       (str "haun-asetukset-" haku-oid "-form-name")]
     [:div
      (stylefy/use-style haun-asetukset-haun-tiedot-styles)
      [:div
       (stylefy/use-style haun-asetukset-haun-tiedot-card-styles)
       [:div
        (stylefy/use-style haun-asetukset-haun-tiedot-label-styles)
-       [:label
-        {:for hakuajat-id}
+       [:span
+        {:id hakuajat-label-id}
         @(re-frame/subscribe [:translation :application-periods])]]
-      [hakuajat haku-oid hakuajat-id]
+      [hakuajat haku-oid hakuajat-label-id]
       [:div
        (stylefy/use-style haun-asetukset-haun-tiedot-label-styles)
-       [:label
-        {:for form-name-id}
+       [:span
+        {:id form-name-label-id}
         @(re-frame/subscribe [:translation :application-form])]]
       [:div
        (stylefy/use-style haun-asetukset-haun-tiedot-data-styles)
        (when form
          [:<>
           [:span
-           {:id form-name-id}
+           {:id              form-name-id
+            :aria-labelledby form-name-label-id}
            (get-in form [:name lang])
            " "]
           [a/link
