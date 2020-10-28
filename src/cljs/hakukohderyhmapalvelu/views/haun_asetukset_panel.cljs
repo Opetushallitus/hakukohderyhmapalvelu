@@ -152,10 +152,6 @@
                             {:input-id   text-input-id
                              :value      value
                              :required?  true
-                             :on-empty   (fn []
-                                           (re-frame/dispatch [:haun-asetukset/unset-haun-asetus
-                                                               haku-oid
-                                                               :haun-asetukset/hakukohteiden-maara-rajoitus]))
                              :on-change  (fn [value]
                                            (re-frame/dispatch [:haun-asetukset/set-haun-asetus
                                                                haku-oid
@@ -246,10 +242,6 @@
              [i/input-datetime-local
               (cond-> {:id        date-time-picker-id
                        :required? required?
-                       :on-empty  (fn []
-                                    (re-frame/dispatch [:haun-asetukset/unset-haun-asetus
-                                                        haku-oid
-                                                        haun-asetus-key]))
                        :on-change (fn [value]
                                     (re-frame/dispatch [:haun-asetukset/set-haun-asetus
                                                         haku-oid
@@ -307,10 +299,6 @@
                          {:input-id  input-id
                           :value     value
                           :required? false
-                          :on-empty  (fn []
-                                       (re-frame/dispatch [:haun-asetukset/unset-haun-asetus
-                                                           haku-oid
-                                                           :haun-asetukset/hakijakohtainen-paikan-vastaanottoaika]))
                           :on-change (fn [value]
                                        (re-frame/dispatch [:haun-asetukset/set-haun-asetus
                                                            haku-oid

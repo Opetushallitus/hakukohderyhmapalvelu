@@ -37,7 +37,9 @@
     :PH_VSTP))
 
 (defn- parse-int [value]
-  (.parseInt js/Number value 10))
+  (let [i (.parseInt js/Number value 10)]
+    (when-not (.isNaN js/Number i)
+      i)))
 
 (defn- boolean-value? [haun-asetus-key _]
   (some #{haun-asetus-key}
@@ -75,16 +77,18 @@
           :haun-asetukset/varasijataytto-paattyy}))
 
 (defn- local-date->long [date]
-  (let [date' (-> date
-                  d/iso-date-time-local-str->date
-                  d/date->long)]
-    {:date date'}))
+  (when-not (empty? date)
+    (let [date' (-> date
+                    d/iso-date-time-local-str->date
+                    d/date->long)]
+      {:date date'})))
 
 (defn- long->date [ohjausparametrit-date]
   (some-> ohjausparametrit-date :date d/long->date))
 
 (defn- string->int-value [s]
-  {:value (parse-int s)})
+  (when-not (empty? s)
+    {:value (parse-int s)}))
 
 (defn- int-value->string [int-value]
   (:value int-value))

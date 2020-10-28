@@ -118,7 +118,6 @@
       [{:keys [input-id
                value
                required?
-               on-empty
                on-change
                placeholder
                aria-label
@@ -126,7 +125,6 @@
                disabled?]} :- {:input-id                     s/Str
                                :value                        (s/maybe s/Int)
                                :required?                    s/Bool
-                               :on-empty                     s/Any
                                :on-change                    s/Any
                                (s/optional-key :placeholder) s/Str
                                (s/optional-key :aria-label)  s/Str
@@ -149,9 +147,7 @@
                                          (reset! int-value value)
                                          (reset! invalid? (not valid?))
                                          (when valid?
-                                           (if (empty? value)
-                                             (debounced on-empty)
-                                             (debounced on-change value)))))
+                                           (debounced on-change value))))
                           :type      "number"
                           :min       min
                           :required  required?
@@ -247,11 +243,9 @@
     (s/fn render-input-datetime-local
       [{:keys [id
                value
-               on-empty
                on-change]} :- {:id                     s/Str
                                :required?              s/Bool
                                (s/optional-key :value) s/Str
-                               :on-empty               s/Any
                                :on-change              s/Any}]
       (when (not= value @ext-value)
         (reset! int-value (reset! ext-value value)))
@@ -272,9 +266,7 @@
                                  (reset! int-value value')
                                  (reset! invalid? (not valid?))
                                  (when valid?
-                                   (if (empty? value')
-                                     (debounced on-empty)
-                                     (debounced on-change value')))))})]))))
+                                   (debounced on-change value'))))})]))))
 
 (def ^:private input-dropdown-styles
   (merge
