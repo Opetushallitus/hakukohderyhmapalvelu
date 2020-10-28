@@ -265,6 +265,7 @@
                   :hidden true}]
                 [i/input-date
                  (cond-> {:id               date-picker-id
+                          :required?        required?
                           :on-change        (fn [value]
                                               (reset! date-value-int {:value    value
                                                                       :modified (t/now)})
@@ -279,6 +280,7 @@
                   :hidden true}]
                 [i/input-time
                  (cond-> {:id               time-picker-id
+                          :required?        required?
                           :on-change        (fn [value]
                                               (reset! time-value-int {:value    value
                                                                       :modified (t/now)})
