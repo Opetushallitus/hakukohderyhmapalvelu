@@ -169,10 +169,12 @@
       [{:keys [id
                value
                on-change
-               aria-describedby]} :- {:id                                s/Str
-                                      (s/optional-key :value)            s/Str
-                                      :on-change                         s/Any
-                                      (s/optional-key :aria-describedby) s/Str}]
+               aria-describedby
+               aria-labelledby]} :- {:id                                s/Str
+                                     (s/optional-key :value)            s/Str
+                                     :on-change                         s/Any
+                                     (s/optional-key :aria-describedby) s/Str
+                                     (s/optional-key :aria-labelledby)  s/Str}]
       [:input (stylefy/use-style
                 (cond-> input-date-time-styles
                         @invalid?
@@ -189,7 +191,8 @@
                                          (on-change-debounced
                                            on-change
                                            value'))))
-                 :aria-describedby aria-describedby})])))
+                 :aria-describedby aria-describedby
+                 :aria-labelledby  aria-labelledby})])))
 
 (defn input-time
   []
@@ -203,10 +206,12 @@
       [{:keys [id
                value
                on-change
-               aria-describedby]} :- {:id                                s/Str
-                                      (s/optional-key :value)            s/Str
-                                      :on-change                         s/Any
-                                      (s/optional-key :aria-describedby) s/Str}]
+               aria-describedby
+               aria-labelledby]} :- {:id                                s/Str
+                                     (s/optional-key :value)            s/Str
+                                     :on-change                         s/Any
+                                     (s/optional-key :aria-describedby) s/Str
+                                     (s/optional-key :aria-labelledby)  s/Str}]
       [:input (stylefy/use-style
                 (cond-> input-date-time-styles
                         @invalid?
@@ -223,7 +228,8 @@
                                          (on-change-debounced
                                            on-change
                                            value'))))
-                 :aria-describedby aria-describedby})])))
+                 :aria-describedby aria-describedby
+                 :aria-labelledby  aria-labelledby})])))
 
 (s/defn input-datetime-local :- s/Any
   [{:keys [required? value]} :- {:required?              s/Bool

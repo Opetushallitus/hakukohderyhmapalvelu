@@ -249,15 +249,15 @@
                                                         value]))}
                       datetime-local-value
                       (assoc :value datetime-local-value))]
-             (let [date-picker-id   (str id-prefix "-date-picker")
-                   time-picker-id   (str id-prefix "-time-picker")
-                   date-label-id    (str date-picker-id "-label")
-                   time-label-id    (str time-picker-id "-label")
-                   date-describedby @(re-frame/subscribe [:translation :haun-asetukset/input-date-describedby])
-                   time-describedby @(re-frame/subscribe [:translation :haun-asetukset/input-time-describedby])]
+             (let [date-picker-id      (str id-prefix "-date-picker")
+                   time-picker-id      (str id-prefix "-time-picker")
+                   date-describedby-id (str date-picker-id "-describedby")
+                   time-describedby-id (str time-picker-id "-describedby")
+                   date-describedby    @(re-frame/subscribe [:translation :haun-asetukset/input-date-describedby])
+                   time-describedby    @(re-frame/subscribe [:translation :haun-asetukset/input-time-describedby])]
                [:div
                 [l/label
-                 {:id     date-label-id
+                 {:id     date-describedby-id
                   :label  date-describedby
                   :hidden true}]
                 [i/input-date
@@ -266,11 +266,12 @@
                                               (reset! date-value-int {:value    value
                                                                       :modified (t/now)})
                                               (set-datetime-local))
-                          :aria-describedby date-label-id}
+                          :aria-describedby date-describedby-id
+                          :aria-labelledby  label-id}
                          @date-value
                          (assoc :value @date-value))]
                 [l/label
-                 {:id     time-label-id
+                 {:id     time-describedby-id
                   :label  time-describedby
                   :hidden true}]
                 [i/input-time
@@ -279,7 +280,8 @@
                                               (reset! time-value-int {:value    value
                                                                       :modified (t/now)})
                                               (set-datetime-local))
-                          :aria-describedby time-label-id}
+                          :aria-describedby time-describedby-id
+                          :aria-labelledby  label-id}
                          @time-value
                          (assoc :value @time-value))]]))}]]))))
 
