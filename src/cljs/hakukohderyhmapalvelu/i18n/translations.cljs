@@ -31,7 +31,9 @@
    {:fi "Syötä tähän kenttään päivämäärästä ja kellonajasta muodostuvan arvon kellonaika"}
    :application-form
    {:fi "Hakulomake"}
+   :modify-form
+   {:fi "muokkaa lomaketta"}
    :modify-haku
-   {:fi "Haun muokkaus"}
+   {:fi "muokkaa hakua"}
    :required-legend
    {:fi "* merkityt kentät ovat pakollisia"}})

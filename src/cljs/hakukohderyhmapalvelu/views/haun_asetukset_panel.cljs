@@ -333,10 +333,43 @@
                      :required?               false
                      :bold-left-label-margin? true}]]))))
 
+(defn- haun-tiedot [haku-oid haku-name-id]
+  (let [form         @(re-frame/subscribe [:haun-asetukset/form haku-oid])
+        lang         @(re-frame/subscribe [:lang])
+        form-name-id (str "haun-asetukset-" haku-oid "-form-name")]
+    [:div
+     (stylefy/use-style haun-asetukset-haun-tiedot-styles)
+     [:div
+      (stylefy/use-style haun-asetukset-haun-tiedot-card-styles)
+      [:div
+       (stylefy/use-style haun-asetukset-haun-tiedot-label-styles)
+       [:label
+        {:for form-name-id}
+        @(re-frame/subscribe [:translation :application-form])]]
+      [:div
+       (stylefy/use-style haun-asetukset-haun-tiedot-data-styles)
+       (when form
+         [:<>
+          [:span
+           {:id form-name-id}
+           (get-in form [:name lang])
+           " "]
+          [a/link
+           {:href             (urls/get-url :lomake-editori.editor (:key form))
+            :label            @(re-frame/subscribe [:translation :modify-form])
+            :aria-describedby form-name-id
+            :on-click         (fn [])}]])]
+      [:div
+       (stylefy/use-style haun-asetukset-haun-tiedot-modify-styles)
+       [a/link
+        {:href             (urls/get-url :kouta.haku haku-oid)
+         :label            @(re-frame/subscribe [:translation :modify-haku])
+         :aria-describedby haku-name-id
+         :on-click         (fn [])}]]]]))
+
 (defn- haun-asetukset []
   (let [haku-oid  @(re-frame/subscribe [:haun-asetukset/selected-haku-oid])
         haku      @(re-frame/subscribe [:haun-asetukset/haku haku-oid])
-        form      @(re-frame/subscribe [:haun-asetukset/form haku-oid])
         lang      @(re-frame/subscribe [:lang])
         id-prefix (str "haun-asetukset-" haku-oid)
         header-id (str id-prefix "-header")
@@ -347,26 +380,7 @@
        {:cypressid header-id
         :level     :h3}
        (str haku-name)]]
-     [:div
-      (stylefy/use-style haun-asetukset-haun-tiedot-styles)
-      [:div
-       (stylefy/use-style haun-asetukset-haun-tiedot-card-styles)
-       [:div
-        (stylefy/use-style haun-asetukset-haun-tiedot-label-styles)
-        @(re-frame/subscribe [:translation :application-form])]
-       [:div
-        (stylefy/use-style haun-asetukset-haun-tiedot-data-styles)
-        (when form
-          [a/link
-           {:href     (urls/get-url :lomake-editori.editor (:key form))
-            :label    (get-in form [:name lang])
-            :on-click (fn [])}])]
-       [:div
-        (stylefy/use-style haun-asetukset-haun-tiedot-modify-styles)
-        [a/link
-         {:href     (urls/get-url :kouta.haku haku-oid)
-          :label    @(re-frame/subscribe [:translation :modify-haku])
-          :on-click (fn [])}]]]]
+     [haun-tiedot haku-oid header-id]
      [:div
       (stylefy/use-style
         haun-asetukset-grid-styles

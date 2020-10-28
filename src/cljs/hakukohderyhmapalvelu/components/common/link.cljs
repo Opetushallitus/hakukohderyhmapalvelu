@@ -20,12 +20,13 @@
                                 :top         "1px"}]]})
 
 (s/defschema LinkProps
-  {(s/optional-key :cypressid) s/Str
-   :href                       s/Str
-   :label                      s/Str
-   :on-click                   s/Any
-   (s/optional-key :role)      s/Str
-   (s/optional-key :tabindex)  s/Int})
+  {(s/optional-key :cypressid)        s/Str
+   :href                              s/Str
+   :label                             s/Str
+   :on-click                          s/Any
+   (s/optional-key :aria-describedby) s/Str
+   (s/optional-key :role)             s/Str
+   (s/optional-key :tabindex)         s/Int})
 
 (s/defschema LinkWithExtraStylesProps
   (st/merge LinkProps
@@ -37,17 +38,19 @@
            href
            on-click
            styles
+           aria-describedby
            role
            tabindex]} :- LinkWithExtraStylesProps]
   [:a (stylefy/use-style
         (merge link-styles styles)
-        {:cypressid cypressid
-         :href      href
-         :on-click  (fn prevent-default-and-click [event]
-                      (.preventDefault event)
-                      (on-click event))
-         :role      role
-         :tabIndex  tabindex})
+        {:cypressid        cypressid
+         :href             href
+         :on-click         (fn prevent-default-and-click [event]
+                             (.preventDefault event)
+                             (on-click event))
+         :aria-describedby aria-describedby
+         :role             role
+         :tabIndex         tabindex})
    label])
 
 (s/defn link-with-left-separator :- s/Any
