@@ -155,17 +155,18 @@
           :bold-left-label-margin? true}]
         [haun-asetukset-input
          {:input-component [i/input-number
-                            {:input-id   text-input-id
-                             :value      value
-                             :required?  true
-                             :on-change  (fn [value]
-                                           (re-frame/dispatch [:haun-asetukset/set-haun-asetus
-                                                               haku-oid
-                                                               :haun-asetukset/hakukohteiden-maara-rajoitus
-                                                               value]))
-                             :aria-label text-input-label
-                             :min        1
-                             :disabled?  disabled?}]}]])]))
+                            (merge {:input-id   text-input-id
+                                    :required?  true
+                                    :on-change  (fn [value]
+                                                  (re-frame/dispatch [:haun-asetukset/set-haun-asetus
+                                                                      haku-oid
+                                                                      :haun-asetukset/hakukohteiden-maara-rajoitus
+                                                                      value]))
+                                    :aria-label text-input-label
+                                    :min        1
+                                    :disabled?  disabled?}
+                                   (when value
+                                     {:value value}))]}]])]))
 
 (defn- haun-asetukset-date-time [{:keys [haku-oid
                                          haun-asetus-key]}]
@@ -304,16 +305,17 @@
        :label label}]
      [haun-asetukset-input
       {:input-component [i/input-number
-                         {:input-id  input-id
-                          :value     value
-                          :required? false
-                          :on-change (fn [value]
-                                       (re-frame/dispatch [:haun-asetukset/set-haun-asetus
-                                                           haku-oid
-                                                           :haun-asetukset/hakijakohtainen-paikan-vastaanottoaika
-                                                           value]))
-                          :min       0
-                          :disabled? disabled?}]}]]))
+                         (merge {:input-id  input-id
+                                 :required? false
+                                 :on-change (fn [value]
+                                              (re-frame/dispatch [:haun-asetukset/set-haun-asetus
+                                                                  haku-oid
+                                                                  :haun-asetukset/hakijakohtainen-paikan-vastaanottoaika
+                                                                  value]))
+                                 :min       0
+                                 :disabled? disabled?}
+                                (when value
+                                  {:value value}))]}]]))
 
 (defn- haun-asetukset-sijoittelu [{:keys [haku-oid]}]
   (let [sijoittelu? @(re-frame/subscribe [:haun-asetukset/haun-asetus haku-oid :haun-asetukset/sijoittelu])

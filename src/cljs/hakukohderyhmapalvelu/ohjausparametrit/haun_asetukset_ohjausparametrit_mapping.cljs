@@ -91,10 +91,12 @@
     {:value (parse-int s)}))
 
 (defn- int-value->string [int-value]
-  (:value int-value))
+  (when-let [value (:value int-value)]
+    (str value)))
 
 (def ^:private ohjausparametri-value->haun-asetus-value-mappings
   [[date-value? long->date]
+   [>0-number-value? str]
    [useita-hakemuksia? not]
    [boolean-value? true?]
    [int-value? int-value->string]

@@ -98,10 +98,10 @@
                    :aria-describedby aria-describedby})]))))
 
 (s/defn input-number :- s/Any
-  [{:keys [value required? min]} :- {:value     (s/maybe s/Int)
-                                     :required? s/Bool
-                                     :min       s/Int
-                                     s/Any      s/Any}]
+  [{:keys [value required? min]} :- {(s/optional-key :value) s/Str
+                                     :required?              s/Bool
+                                     :min                    s/Int
+                                     s/Any                   s/Any}]
   (let [debounced (d/debounce
                     (fn [handler & args]
                       (apply handler args))
@@ -112,8 +112,7 @@
                                   ((inv/input-number-validator
                                      {:min       min
                                       :required? required?})
-                                   value
-                                   "number")))]
+                                   value)))]
     (s/fn render-input-number
       [{:keys [input-id
                value
@@ -123,7 +122,7 @@
                aria-label
                min
                disabled?]} :- {:input-id                     s/Str
-                               :value                        (s/maybe s/Int)
+                               (s/optional-key :value)       s/Str
                                :required?                    s/Bool
                                :on-change                    s/Any
                                (s/optional-key :placeholder) s/Str
