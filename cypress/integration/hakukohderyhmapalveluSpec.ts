@@ -5,7 +5,7 @@
 import * as hs from '../selectors/hakukohderyhmaPanelSelectors'
 import * as hh from '../selectors/hakukohderyhmanHakutoimintoSelectors'
 import * as hl from '../selectors/hakukohderyhmanLisaysSelectors'
-import { PostHakukohderyhmaRequestFixture } from '../fixtures/PostHakukohderyhmaRequestFixture'
+import { PostHakukohderyhmaRequestFixture } from '../fixtures/hakukohderyhmapalvelu/PostHakukohderyhmaRequestFixture'
 
 describe('Hakukohderyhmäpalvelu', () => {
   before(() => {
@@ -88,7 +88,7 @@ describe('Hakukohderyhmäpalvelu', () => {
       describe('Uuden hakukohderyhmän nimen kirjoittaminen', () => {
         before(() => {
           cy.fixture<PostHakukohderyhmaRequestFixture>(
-            'post-hakukohderyhma-request.json',
+            'hakukohderyhmapalvelu/post-hakukohderyhma-request.json',
           )
             .as('post-hakukohderyhma-request')
             .then(hakukohderyhma =>
@@ -107,18 +107,20 @@ describe('Hakukohderyhmäpalvelu', () => {
         describe('Hakukohderyhmän tallentaminen', () => {
           before(() => {
             cy.login()
-            cy.fixture('post-hakukohderyhma-request.json').as(
-              'post-hakukohderyhma-request',
-            )
-            cy.fixture('post-hakukohderyhma-response.json').as(
-              'post-hakukohderyhma-response',
-            )
+            cy.fixture(
+              'hakukohderyhmapalvelu/post-hakukohderyhma-request.json',
+            ).as('post-hakukohderyhma-request')
+            cy.fixture(
+              'hakukohderyhmapalvelu/post-hakukohderyhma-response.json',
+            ).as('post-hakukohderyhma-response')
             cy.mockBackendRequest({
               method: 'POST',
               path: '/organisaatio-service/rest/organisaatio/v4',
               service: 'organisaatio-service',
-              requestFixture: 'post-hakukohderyhma-request.json',
-              responseFixture: 'post-hakukohderyhma-response.json',
+              requestFixture:
+                'hakukohderyhmapalvelu/post-hakukohderyhma-request.json',
+              responseFixture:
+                'hakukohderyhmapalvelu/post-hakukohderyhma-response.json',
             })
             cy.server()
             cy.route('POST', '/hakukohderyhmapalvelu/api/hakukohderyhma').as(
