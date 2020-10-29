@@ -32,3 +32,14 @@ Cypress.Commands.add(
       })
   },
 )
+
+Cypress.Commands.add(
+  'login',
+  (): Cypress.Chainable<Cypress.Cookie | null> =>
+    cy
+      .request(
+        'get',
+        `/hakukohderyhmapalvelu/auth/cas?ticket=any_unique_ticket_is_good_for_fake_authentication-${Math.random()}`,
+      )
+      .then(() => cy.getCookie('ring-session').should('exist')),
+)

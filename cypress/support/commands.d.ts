@@ -17,5 +17,7 @@ declare namespace Cypress {
     resetMocks(): Chainable<Response>
 
     mockBackendRequest(opts: MockBackendRequestOpts): Chainable<Response>
+
+    login(): Chainable<Cypress.Cookie | null>
   }
 }
