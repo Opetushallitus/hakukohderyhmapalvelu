@@ -370,12 +370,14 @@
            " "]
           [a/link
            {:href             (urls/get-url :lomake-editori.editor (:key form))
+            :target           "_blank"
             :label            @(re-frame/subscribe [:translation :modify-form])
             :aria-describedby form-name-id}]])]
       [:div
        (stylefy/use-style haun-asetukset-haun-tiedot-modify-styles)
        [a/link
         {:href             (urls/get-url :kouta.haku haku-oid)
+         :target           "_blank"
          :label            @(re-frame/subscribe [:translation :modify-haku])
          :aria-describedby haku-name-id}]]]]))
 

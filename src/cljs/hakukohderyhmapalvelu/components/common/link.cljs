@@ -23,6 +23,7 @@
   {(s/optional-key :cypressid)        s/Str
    :href                              s/Str
    :label                             s/Str
+   (s/optional-key :target)           s/Str
    (s/optional-key :on-click)         s/Any
    (s/optional-key :aria-describedby) s/Str
    (s/optional-key :role)             s/Str
@@ -36,6 +37,7 @@
   [{:keys [cypressid
            label
            href
+           target
            on-click
            styles
            aria-describedby
@@ -45,6 +47,8 @@
        (merge link-styles styles)
        (merge {:cypressid cypressid
                :href      href}
+              (when target
+                {:target target})
               (when on-click
                 {:on-click (fn prevent-default-and-click [event]
                              (.preventDefault event)
