@@ -7,13 +7,21 @@ $(NODE_MODULES): package.json package-lock.json
 	touch $(NODE_MODULES)
 
 start-docker:
-	@$(DOCKER_COMPOSE) up -d
+	@$(DOCKER_COMPOSE) up -d hakukohderyhmapalvelu-nginx-local
+
+start-docker-cypress:
+	@$(DOCKER_COMPOSE) up -d hakukohderyhmapalvelu-nginx-local
+	@$(DOCKER_COMPOSE) up -d hakukohderyhmapalvelu-e2e-db-local
 
 kill-docker:
 	@$(DOCKER_COMPOSE) kill
 
+kill-docker-cypress:
+	@$(DOCKER_COMPOSE) kill hakukohderyhmapalvelu-e2e-db-local
+
 start: $(NODE_MODULES) start-docker
-	@$(PM2) start pm2.config.js
+	@$(PM2) start pm2.config.js --only hakukohderyhmapalvelu-frontend
+	@$(PM2) start pm2.config.js --only hakukohderyhmapalvelu-backend
 
 log: $(NODE_MODULES)
 	@$(PM2) logs --timestamp
@@ -25,3 +33,10 @@ status: $(NODE_MODULES)
 
 kill: $(NODE_MODULES) kill-docker
 	@$(PM2) kill
+
+start-cypress: start-docker-cypress
+	@$(PM2) start pm2.config.js --only hakukohderyhmapalvelu-frontend
+	@$(PM2) start pm2.config.js --only hakukohderyhmapalvelu-backend-cypress
+
+stop-cypress: kill-docker-cypress
+	@$(PM2) stop pm2.config.js --only hakukohderyhmapalvelu-backend-cypress

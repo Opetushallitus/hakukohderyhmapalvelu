@@ -105,17 +105,20 @@ npm run lint:js
 
 ### E2E-testit
 
-Käynnistä `local-environment` -repositoryssä E2E:tä varten dedikoidut instanssit palvelusta:
+1. Mikäli et vielä ole kertaakaan valmistellut local-environment -ympäristöä, suorita ensin kohdan [vain kerran tehtävät työvaiheet](#vain-kerran-tehtävät-työvaiheet) mukaiset toimenpiteet.
 
-```sh
-make start-hakukohderyhmapalvelu-e2e
+Jotta voit ajaa testejä, käynnistä Cypress-testejä varten dedikoitu instanssi palvelusta. Instanssi tarvitsee käynnistää vain kerran, vaikka ajat testejä monta kertaa. HUOM: tämä komento uudelleenkäynnistää frontend-käännöksetn.
+
+```bash
+make start-cypress
 ```
 
-Jos haluat samalla komennolla käynnistää rinnakain toimivat instanssit palvelusta normaalia käyttöä ja E2E-testejä varten, tee se seuraavalla komennolla:
+Voit sammuttaa palvelun komennoilla:
 
-```sh
-make start-hakukohderyhmapalvelu-all
-``` 
+```
+make kill # Sammuttaa sekä Cypress -instanssit että normaalia kehitystä varten tarkoitetut instanssit palvelusta.
+make kill-cypress # Sammuttaa ainoastaan Cypress -instanssit palvelusta
+```
 
 #### Testien ajaminen Cypress-käyttöliittymän kautta
 
