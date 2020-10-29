@@ -6,7 +6,8 @@
     "cypress:run:travis": "cypress run -C oph-configuration/cypress.travis.json --browser chrome --headless",
     "lint:clj": "clj-kondo --config oph-configuration/clj-kondo.config.edn --lint src",
     "lint:clj:lint-staged": "clj-kondo --config oph-configuration/clj-kondo.config.edn --lint",
-    "lint:js": "eslint --ignore-path \".eslintignore\" --ext .js,.ts \"cypress\""
+    "lint:js": "eslint --ignore-path \".eslintignore\" --ext .js,.ts \"cypress\"",
+    "tsc:type-check": "tsc -p cypress/tsconfig.json"
   },
   "engines": {
     "node": ">=14"
@@ -27,6 +28,9 @@
   "lint-prepush": {
     "base": "master",
     "tasks": {
+      "cypress/**/*.ts": [
+        "./bin/type-check.sh"
+      ],
       "cypress/**/*.{js,ts}": [
         "npm run lint:js"
       ],
