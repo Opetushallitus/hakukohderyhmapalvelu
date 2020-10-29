@@ -186,7 +186,7 @@
                                     (on-change "")
                                     (and (seq date-value) (seq time-value))
                                     (on-change (str date-value "T" time-value))))]
-    (fn [{:keys [value on-change required? label-id]}]
+    (fn [{:keys [value on-change required? disabled? label-id]}]
       (when (not= value @prev-value-prop)
         (reset! prev-value-prop value)
         (reset! local-date-value (get-date-value value))
@@ -199,6 +199,7 @@
        [i/input-date
         (cond-> {:id               date-picker-id
                  :required?        required?
+                 :disabled?        disabled?
                  :on-change        (fn [value]
                                      (set-datetime-local
                                       on-change
@@ -215,6 +216,7 @@
        [i/input-time
         (cond-> {:id               time-picker-id
                  :required?        required?
+                 :disabled?        disabled?
                  :on-change        (fn [value]
                                      (set-datetime-local
                                       on-change
@@ -236,7 +238,8 @@
         datetime-local-supported? (dl/datetime-local-supported?)
         datetime-local-value      (some-> @(re-frame/subscribe
                                             [:haun-asetukset/haun-asetus haku-oid haun-asetus-key])
-                                          d/date->iso-date-time-local-str)]
+                                          d/date->iso-date-time-local-str)
+        disabled?                 @(re-frame/subscribe [:haun-asetukset/haun-asetukset-disabled? haku-oid])]
     [:<>
      [haun-asetukset-label
       (cond-> {:id                      label-id
@@ -251,6 +254,7 @@
          [i/input-datetime-local
           (cond-> {:id        date-time-picker-id
                    :required? required?
+                   :disabled? disabled?
                    :on-change (fn [value]
                                 (re-frame/dispatch [:haun-asetukset/set-haun-asetus
                                                     haku-oid
@@ -265,6 +269,7 @@
                                                     haun-asetus-key
                                                     value]))
                    :required? required?
+                   :disabled? disabled?
                    :id-prefix id-prefix
                    :label-id  label-id}
                   datetime-local-value

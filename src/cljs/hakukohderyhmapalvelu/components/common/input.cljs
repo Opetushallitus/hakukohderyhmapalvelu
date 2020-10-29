@@ -161,11 +161,13 @@
       [{:keys [id
                value
                required?
+               disabled?
                on-change
                aria-describedby
                aria-labelledby]} :- {:id                                s/Str
                                      (s/optional-key :value)            s/Str
                                      :required?                         s/Bool
+                                     :disabled?                         s/Bool
                                      :on-change                         s/Any
                                      (s/optional-key :aria-describedby) s/Str
                                      (s/optional-key :aria-labelledby)  s/Str}]
@@ -187,6 +189,8 @@
                                         (reset! local-value value')
                                         (when (validate value' type)
                                           (debounced on-change value'))))
+                  :required         required?
+                  :disabled         disabled?
                   :aria-describedby aria-describedby
                   :aria-labelledby  aria-labelledby})]))))
 
@@ -204,10 +208,12 @@
                value
                on-change
                required?
+               disabled?
                aria-describedby
                aria-labelledby]} :- {:id                                s/Str
                                      (s/optional-key :value)            s/Str
                                      :required?                         s/Bool
+                                     :disabled?                         s/Bool
                                      :on-change                         s/Any
                                      (s/optional-key :aria-describedby) s/Str
                                      (s/optional-key :aria-labelledby)  s/Str}]
@@ -229,6 +235,8 @@
                                         (reset! local-value value')
                                         (when (validate value' type)
                                           (debounced on-change value'))))
+                  :required         required?
+                  :disabled         disabled?
                   :aria-describedby aria-describedby
                   :aria-labelledby  aria-labelledby})]))))
 
@@ -245,8 +253,10 @@
       [{:keys [id
                value
                required?
+               disabled?
                on-change]} :- {:id                     s/Str
                                :required?              s/Bool
+                               :disabled?              s/Bool
                                (s/optional-key :value) s/Str
                                :on-change              s/Any}]
       (when (not= value @prev-prop-value)
@@ -262,6 +272,7 @@
                    :value     @local-value
                    :type      "datetime-local"
                    :required  required?
+                   :disabled  disabled?
                    :on-change (fn [event]
                                 (let [value' (.. event -target -value)
                                       type   (.. event -target -type)]
