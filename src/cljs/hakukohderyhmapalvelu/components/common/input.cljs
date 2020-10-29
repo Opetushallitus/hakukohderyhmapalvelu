@@ -98,21 +98,14 @@
                    :aria-describedby aria-describedby})]))))
 
 (s/defn input-number :- s/Any
-  [{:keys [value required? min]} :- {(s/optional-key :value) s/Str
-                                     :required?              s/Bool
-                                     :min                    s/Int
-                                     s/Any                   s/Any}]
-  (let [debounced (d/debounce
-                    (fn [handler & args]
-                      (apply handler args))
-                    input-debounce-timeout)
-        ext-value (reagent/atom value)
-        int-value (reagent/atom value)
-        invalid?  (reagent/atom (not
-                                  ((inv/input-number-validator
-                                     {:min       min
-                                      :required? required?})
-                                   value)))]
+  [{:keys [value]} :- {(s/optional-key :value) s/Str
+                       s/Any                   s/Any}]
+  (let [debounced       (d/debounce
+                         (fn [handler & args]
+                           (apply handler args))
+                         input-debounce-timeout)
+        prev-prop-value (atom value)
+        local-value     (reagent/atom value)]
     (s/fn render-input-number
       [{:keys [input-id
                value
@@ -129,24 +122,23 @@
                                (s/optional-key :aria-label)  s/Str
                                :min                          s/Int
                                (s/optional-key :disabled?)   s/Bool}]
-      (when (not= value @ext-value)
-        (reset! int-value (reset! ext-value value)))
+      (when (not= value @prev-prop-value)
+        (reset! prev-prop-value value)
+        (reset! local-value value))
       (let [validate (inv/input-number-validator
                        {:min       min
                         :required? required?})]
         [:input (stylefy/use-style
                   (cond-> input-text-styles
-                          @invalid?
+                          (not (validate @local-value))
                           (merge input-text-invalid-styles))
                   (merge {:id        input-id
-                          :value     @int-value
+                          :value     @local-value
                           :on-change (fn [event]
-                                       (let [value  (.. event -target -value)
-                                             valid? (validate value)]
-                                         (reset! int-value value)
-                                         (reset! invalid? (not valid?))
-                                         (when valid?
-                                           (debounced on-change value))))
+                                       (let [value' (.. event -target -value)]
+                                         (reset! local-value value')
+                                         (when (validate value')
+                                           (debounced on-change value'))))
                           :type      "number"
                           :min       min
                           :required  required?
@@ -157,18 +149,14 @@
                            {:aria-label aria-label})))]))))
 
 (s/defn input-date :- s/Any
-  [{:keys [required? value]} :- {:required?              s/Bool
-                                 (s/optional-key :value) s/Str
-                                 s/Any                   s/Any}]
-  (let [debounced (d/debounce
-                   (fn [handler & args]
-                     (apply handler args))
-                   input-debounce-timeout)
-        validate  (idv/input-date-validator
-                   {:required? required?})
-        ext-value (reagent/atom value)
-        int-value (reagent/atom value)
-        invalid?  (reagent/atom (not (validate value)))]
+  [{:keys [value]} :- {(s/optional-key :value) s/Str
+                       s/Any                   s/Any}]
+  (let [debounced       (d/debounce
+                         (fn [handler & args]
+                           (apply handler args))
+                         input-debounce-timeout)
+        prev-prop-value (atom value)
+        local-value     (reagent/atom value)]
     (s/fn render-input-date
       [{:keys [id
                value
@@ -181,41 +169,36 @@
                                      :on-change                         s/Any
                                      (s/optional-key :aria-describedby) s/Str
                                      (s/optional-key :aria-labelledby)  s/Str}]
-      (when (not= value @ext-value)
-        (reset! int-value (reset! ext-value value)))
+      (when (not= value @prev-prop-value)
+        (reset! prev-prop-value value)
+        (reset! local-value value))
       (let [validate (idv/input-date-validator
                       {:required? required?})]
         [:input (stylefy/use-style
                  (cond-> input-date-time-styles
-                         @invalid?
+                         (not (validate @local-value "date"))
                          (merge input-date-time-invalid-styles))
                  {:id               id
                   :type             "date"
-                  :value            @int-value
+                  :value            @local-value
                   :on-change        (fn [event]
                                       (let [value' (.. event -target -value)
-                                            type   (.. event -target -type)
-                                            valid? (validate value' type)]
-                                        (reset! int-value value')
-                                        (reset! invalid? (not valid?))
-                                        (when valid?
+                                            type   (.. event -target -type)]
+                                        (reset! local-value value')
+                                        (when (validate value' type)
                                           (debounced on-change value'))))
                   :aria-describedby aria-describedby
                   :aria-labelledby  aria-labelledby})]))))
 
 (s/defn input-time :- s/Any
-  [{:keys [required? value]} :- {:required?              s/Bool
-                                 (s/optional-key :value) s/Str
-                                 s/Any                   s/Any}]
-  (let [debounced (d/debounce
-                   (fn [handler & args]
-                     (apply handler args))
-                   input-debounce-timeout)
-        validate  (itiv/input-time-validator
-                   {:required? required?})
-        ext-value (reagent/atom value)
-        int-value (reagent/atom value)
-        invalid?  (reagent/atom (not (validate value)))]
+  [{:keys [value]} :- {(s/optional-key :value) s/Str
+                       s/Any                   s/Any}]
+  (let [debounced       (d/debounce
+                         (fn [handler & args]
+                           (apply handler args))
+                         input-debounce-timeout)
+        prev-prop-value (atom value)
+        local-value     (reagent/atom value)]
     (s/fn render-input-time
       [{:keys [id
                value
@@ -228,69 +211,62 @@
                                      :on-change                         s/Any
                                      (s/optional-key :aria-describedby) s/Str
                                      (s/optional-key :aria-labelledby)  s/Str}]
-      (when (not= value @ext-value)
-        (reset! int-value (reset! ext-value value)))
+      (when (not= value @prev-prop-value)
+        (reset! prev-prop-value value)
+        (reset! local-value value))
       (let [validate (itiv/input-time-validator
                       {:required? required?})]
         [:input (stylefy/use-style
                  (cond-> input-date-time-styles
-                         @invalid?
+                         (not (validate @local-value "time"))
                          (merge input-date-time-invalid-styles))
                  {:id               id
                   :type             "time"
-                  :value            @int-value
+                  :value            @local-value
                   :on-change        (fn [event]
                                       (let [value' (.. event -target -value)
-                                            type   (.. event -target -type)
-                                            valid? (validate value' type)]
-                                        (reset! int-value value')
-                                        (reset! invalid? (not valid?))
-                                        (when valid?
+                                            type   (.. event -target -type)]
+                                        (reset! local-value value')
+                                        (when (validate value' type)
                                           (debounced on-change value'))))
                   :aria-describedby aria-describedby
                   :aria-labelledby  aria-labelledby})]))))
 
 (s/defn input-datetime-local :- s/Any
-  [{:keys [required? value]} :- {:required?              s/Bool
-                                 (s/optional-key :value) s/Str
-                                 s/Any                   s/Any}]
-  (let [debounced (d/debounce
-                    (fn [handler & args]
-                      (apply handler args))
-                    input-debounce-timeout)
-        ext-value (reagent/atom value)
-        int-value (reagent/atom value)
-        invalid?  (reagent/atom (not
-                                  ((idtv/input-date-time-validator
-                                     {:required? required?})
-                                   value
-                                   "datetime-local")))]
+  [{:keys [value]} :- {(s/optional-key :value) s/Str
+                       s/Any                   s/Any}]
+  (let [debounced       (d/debounce
+                         (fn [handler & args]
+                           (apply handler args))
+                         input-debounce-timeout)
+        prev-prop-value (atom value)
+        local-value     (reagent/atom value)]
     (s/fn render-input-datetime-local
       [{:keys [id
                value
+               required?
                on-change]} :- {:id                     s/Str
                                :required?              s/Bool
                                (s/optional-key :value) s/Str
                                :on-change              s/Any}]
-      (when (not= value @ext-value)
-        (reset! int-value (reset! ext-value value)))
+      (when (not= value @prev-prop-value)
+        (reset! prev-prop-value value)
+        (reset! local-value value))
       (let [validate (idtv/input-date-time-validator
                        {:required? required?})]
         [:input (stylefy/use-style
                   (cond-> input-date-time-styles
-                          @invalid?
+                          (not (validate @local-value "datetime-local"))
                           (merge input-date-time-invalid-styles))
                   {:id        id
-                   :value     @int-value
+                   :value     @local-value
                    :type      "datetime-local"
                    :required  required?
                    :on-change (fn [event]
                                 (let [value' (.. event -target -value)
-                                      type   (.. event -target -type)
-                                      valid? (validate value' type)]
-                                  (reset! int-value value')
-                                  (reset! invalid? (not valid?))
-                                  (when valid?
+                                      type   (.. event -target -type)]
+                                  (reset! local-value value')
+                                  (when (validate value' type)
                                     (debounced on-change value'))))})]))))
 
 (def ^:private input-dropdown-styles
