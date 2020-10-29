@@ -332,10 +332,13 @@
     [:div
      (stylefy/use-style haun-asetukset-haun-tiedot-data-styles)
      (into [:ol
-            (merge (stylefy/use-style haun-asetukset-haun-tiedot-hakuajat-styles)
-                   {:aria-labelledby hakuajat-label-id})]
+            (let [cypressid (str "hakuajat-" haku-oid)]
+              (merge (stylefy/use-style haun-asetukset-haun-tiedot-hakuajat-styles)
+                     {:aria-labelledby hakuajat-label-id
+                      :cypressid cypressid}))]
            (map (fn [hakuaika]
-                  [:li (:alkaa hakuaika) " - " (:paattyy hakuaika)])
+                  [:li
+                   (:alkaa hakuaika) " - " (:paattyy hakuaika)])
                 hakuajat))]))
 
 (defn- haun-tiedot [haku-oid haku-name-id]

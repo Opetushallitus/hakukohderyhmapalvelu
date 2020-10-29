@@ -1,0 +1,39 @@
+{
+  "oid": "1.2.246.562.29.00000000000000000084",
+  "tila": "julkaistu",
+  "nimi": {
+    "fi": "Janin testihaku"
+  },
+  "hakutapaKoodiUri": "hakutapa_03#1",
+  "alkamiskausiKoodiUri": "kausi_s#1",
+  "kohdejoukkoKoodiUri": "haunkohdejoukko_23#1",
+  "hakulomaketyyppi": "ataru",
+  "hakulomakeAtaruId": "fc47234d-a2c6-4d1e-99f3-4c25f033b370",
+  "hakulomakeKuvaus": {},
+  "hakulomakeLinkki": {
+    "fi": "https://testiopintopolku.fi/hakemus/haku/1.2.246.562.29.00000000000000000084?lang=fi",
+    "sv": "https://testiopintopolku.fi/hakemus/haku/1.2.246.562.29.00000000000000000084?lang=sv",
+    "en": "https://testiopintopolku.fi/hakemus/haku/1.2.246.562.29.00000000000000000084?lang=en"
+  },
+  "metadata": {
+    "yhteyshenkilot": [],
+    "tulevaisuudenAikataulu": []
+  },
+  "organisaatioOid": "1.2.246.562.10.53642770753",
+  "hakuajat": [
+    {
+      "alkaa": "2020-09-14T00:00:00",
+      "paattyy": "2020-09-30T00:00:00"
+    },
+    {
+      "alkaa": "2020-10-14T00:00:00",
+      "paattyy": "2020-10-15T00:00:00"
+    }
+  ],
+  "valintakokeet": [],
+  "muokkaaja": "1.2.246.562.24.70961850507",
+  "kielivalinta": [
+    "fi"
+  ],
+  "modified": "2020-09-30T15:01:00"
+}

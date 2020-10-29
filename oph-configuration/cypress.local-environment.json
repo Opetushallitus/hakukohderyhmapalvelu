@@ -1,4 +1,6 @@
 {
   "baseUrl": "http://localhost:19030",
+  "chromeWebSecurity": false,
+  "experimentalNetworkStubbing": true,
   "fixturesFolder": "cypress/fixtures"
 }
