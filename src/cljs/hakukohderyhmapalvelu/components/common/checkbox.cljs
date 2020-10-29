@@ -62,7 +62,11 @@
            (and checked? disabled?)
            (update :style merge checkbox-checked-disabled-styles)
            (not disabled?)
-           (assoc :on-click on-change)
+           (assoc :on-click on-change
+                  :on-key-press (fn [e]
+                                  (when (= " " (.-key e))
+                                    (.preventDefault e)
+                                    (on-change))))
            disabled?
            (update :style merge checkbox-disabled-styles))
    (when checked?
@@ -108,13 +112,18 @@
    (cond-> (stylefy/use-style
              checkbox-slider-styles
              {:id              id
-              :on-click        on-change
               :role            "checkbox"
               :tabIndex        0
               :aria-checked    checked?
               :aria-labelledby aria-labelledby})
            (and checked? (not disabled?))
-           (merge {:style checkbox-slider-container-checked-styles}))
+           (merge {:style checkbox-slider-container-checked-styles})
+           (not disabled?)
+           (merge {:on-click     on-change
+                   :on-key-press (fn [e]
+                                   (when (= " " (.-key e))
+                                     (.preventDefault e)
+                                     (on-change)))}))
    [:div
     (cond-> (stylefy/use-sub-style
               checkbox-slider-styles
