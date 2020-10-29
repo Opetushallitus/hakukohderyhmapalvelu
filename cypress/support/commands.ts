@@ -9,16 +9,16 @@ Cypress.Commands.add(
 
 Cypress.Commands.add(
   'mockBackendRequest',
-  (opts: MockBackendRequestOpts): Cypress.Chainable<Cypress.Response> => {
-    return cy
+  (opts: MockBackendRequestOpts): Cypress.Chainable<Cypress.Response> =>
+    cy
       .fixture(opts.requestFixture)
       .then(request =>
         cy
           .fixture(opts.responseFixture)
           .then(response => ({ request, response })),
       )
-      .then(({ request, response }) => {
-        return cy.request(
+      .then(({ request, response }) =>
+        cy.request(
           'POST',
           '/hakukohderyhmapalvelu/api/mock/authenticating-client',
           {
@@ -28,9 +28,8 @@ Cypress.Commands.add(
             request,
             response,
           },
-        )
-      })
-  },
+        ),
+      ),
 )
 
 Cypress.Commands.add(
