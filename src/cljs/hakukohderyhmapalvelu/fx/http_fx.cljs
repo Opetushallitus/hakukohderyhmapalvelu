@@ -85,7 +85,7 @@
                                  (async/<! (do-request))
 
                                  (and cas
-                                      (= (:status response' 401)))
+                                      (= (:status response') 401))
                                  (do
                                    (async/<! (do-cas-authentication))
                                    (async/<! (do-request)))
