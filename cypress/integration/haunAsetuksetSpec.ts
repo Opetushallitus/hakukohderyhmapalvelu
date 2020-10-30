@@ -1,7 +1,3 @@
-import GetFormsResponse from '../fixtures/lomake-editori/GetFormsResponse'
-import GetKoutaInternalHakuResponse from '../fixtures/kouta-internal/GetKoutaInternalHaku'
-import GetParametriResponse from '../fixtures/ohjausparametrit-service/GetParametriResponse'
-
 import * as ha from '../selectors/haunAsetuksetPanelSelectors'
 
 describe('Haun asetukset', () => {
@@ -11,47 +7,28 @@ describe('Haun asetukset', () => {
     cy.resetMocks()
       .then(() => cy.login())
       .then(() =>
-        cy
-          .fixture<GetFormsResponse>('lomake-editori/get-forms-response.json')
-          .then(getFormsResponse =>
-            cy
-              .route2(
-                'GET',
-                'http://localhost/lomake-editori/api/forms',
-                getFormsResponse,
-              )
-              .as('lomake-editori-get-forms-response'),
-          ),
+        cy.mockBrowserRequest({
+          method: 'GET',
+          path: 'http://localhost/lomake-editori/api/forms',
+          fixturePath: 'lomake-editori/get-forms-response.json',
+          responseAlias: 'lomake-editori-get-forms-response',
+        }),
       )
       .then(() =>
-        cy
-          .fixture<GetKoutaInternalHakuResponse>(
-            'kouta-internal/get-haku-response',
-          )
-          .then(getHakuResponse =>
-            cy
-              .route2(
-                'GET',
-                `http://localhost/kouta-internal/haku/${hakuOid}`,
-                getHakuResponse,
-              )
-              .as('kouta-internal-get-haku-response'),
-          ),
+        cy.mockBrowserRequest({
+          method: 'GET',
+          path: `http://localhost/kouta-internal/haku/${hakuOid}`,
+          fixturePath: 'kouta-internal/get-haku-response.json',
+          responseAlias: 'kouta-internal-get-haku-response',
+        }),
       )
       .then(() =>
-        cy
-          .fixture<GetParametriResponse>(
-            'ohjausparametrit-service/get-parametri-response.json',
-          )
-          .then(getParametriResponse =>
-            cy
-              .route2(
-                'GET',
-                `http://localhost/ohjausparametrit-service/api/v1/rest/parametri/${hakuOid}`,
-                getParametriResponse,
-              )
-              .as('ohjausparametrit-service-get-parametri-response'),
-          ),
+        cy.mockBrowserRequest({
+          method: 'GET',
+          path: `http://localhost/ohjausparametrit-service/api/v1/rest/parametri/${hakuOid}`,
+          fixturePath: 'ohjausparametrit-service/get-parametri-response.json',
+          responseAlias: 'ohjausparametrit-service-get-parametri-response',
+        }),
       )
       .then(() =>
         cy.visit(`/hakukohderyhmapalvelu/haun-asetukset?hakuOid=${hakuOid}`),

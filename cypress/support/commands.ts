@@ -42,3 +42,12 @@ Cypress.Commands.add(
       )
       .then(() => cy.getCookie('ring-session').should('exist')),
 )
+
+Cypress.Commands.add(
+  'mockBrowserRequest',
+  (opts: MockBrowserRequestOpts): Cypress.Chainable<null> =>
+    cy
+      .fixture(opts.fixturePath)
+      .then(response => cy.route2(opts.method, opts.path, response))
+      .as(opts.responseAlias),
+)
