@@ -1,14 +1,13 @@
 (ns hakukohderyhmapalvelu.components.common.link
-  (:require [hakukohderyhmapalvelu.browser-events :as events]
-            [hakukohderyhmapalvelu.schemas.props-schemas :as ps]
+  (:require [hakukohderyhmapalvelu.schemas.props-schemas :as ps]
             [hakukohderyhmapalvelu.styles.styles-colors :as colors]
             [schema.core :as s]
             [schema-tools.core :as st]
             [stylefy.core :as stylefy]))
 
 (def ^:private link-styles
-  {:color           colors/blue-lighten-2
-   :text-decoration "none"})
+  {:color         colors/blue-lighten-2
+   ::stylefy/mode [[:hover {:text-decoration "none"}]]})
 
 (def ^:private link-left-margin-styles
   {:position      "relative"
@@ -21,10 +20,14 @@
                                 :top         "1px"}]]})
 
 (s/defschema LinkProps
-  {(s/optional-key :cypressid) s/Str
-   :href                       s/Str
-   :label                      s/Str
-   :on-click                   s/Any})
+  {(s/optional-key :cypressid)        s/Str
+   :href                              s/Str
+   :label                             s/Str
+   (s/optional-key :target)           s/Str
+   (s/optional-key :on-click)         s/Any
+   (s/optional-key :aria-describedby) s/Str
+   (s/optional-key :role)             s/Str
+   (s/optional-key :tabindex)         s/Int})
 
 (s/defschema LinkWithExtraStylesProps
   (st/merge LinkProps
@@ -34,15 +37,28 @@
   [{:keys [cypressid
            label
            href
+           target
            on-click
-           styles]} :- LinkWithExtraStylesProps]
+           styles
+           aria-describedby
+           role
+           tabindex]} :- LinkWithExtraStylesProps]
   [:a (stylefy/use-style
-        (merge link-styles styles)
-        {:cypressid cypressid
-         :href      href
-         :on-click  (fn prevent-default-and-click [event]
-                      (events/preventDefault event)
-                      (on-click event))})
+       (merge link-styles styles)
+       (merge {:cypressid cypressid
+               :href      href}
+              (when target
+                {:target target})
+              (when on-click
+                {:on-click (fn prevent-default-and-click [event]
+                             (.preventDefault event)
+                             (on-click event))})
+              (when aria-describedby
+                {:aria-describedby aria-describedby})
+              (when role
+                {:role role})
+              (when tabindex
+                {:tabIndex tabindex})))
    label])
 
 (s/defn link-with-left-separator :- s/Any

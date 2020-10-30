@@ -4,6 +4,22 @@
   {:display     "flex"
    :align-items "center"})
 
+(def horizontal-center-styles
+  {:display         "flex"
+   :justify-content "center"})
+
 (def horizontal-space-between-styles
   {:display         "flex"
    :justify-content "space-between"})
+
+(defn flex-column-styles [align-items justify-content]
+  {:display         "flex"
+   :flex-flow       "column nowrap"
+   :align-items     align-items
+   :justify-content justify-content})
+
+(defn flex-row-styles [align-items justify-content]
+  {:display         "flex"
+   :flex-flow       "row nowrap"
+   :align-items     align-items
+   :justify-content justify-content})

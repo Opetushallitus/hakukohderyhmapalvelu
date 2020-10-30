@@ -1,0 +1,18 @@
+{
+  "PH_OPVP": {
+    "date": 1603965660000
+  },
+  "PH_HPVOA": {
+    "value": 2345
+  },
+  "hakutoiveidenEnimmaismaara": 1,
+  "jarjestetytHakutoiveet": true,
+  "PH_VTSSV": {
+    "date": 1604070900000
+  },
+  "hakutoiveidenMaaraRajoitettu": true,
+  "useitaHakemuksia": false,
+  "__modifiedBy__": "1.2.246.562.24.91585743859",
+  "__modified__": 1603893494262,
+  "sijoittelu": true
+}

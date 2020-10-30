@@ -14,8 +14,10 @@ type MockBackendRequestOpts = {
 
 declare namespace Cypress {
   interface Chainable {
-    resetMocks(): Chainable<Element>
+    resetMocks(): Chainable<Response>
 
-    mockBackendRequest(opts: MockBackendRequestOpts): Chainable<Element>
+    mockBackendRequest(opts: MockBackendRequestOpts): Chainable<Response>
+
+    login(): Chainable<Cypress.Cookie | null>
   }
 }

@@ -5,25 +5,19 @@
 import * as hs from '../selectors/hakukohderyhmaPanelSelectors'
 import * as hh from '../selectors/hakukohderyhmanHakutoimintoSelectors'
 import * as hl from '../selectors/hakukohderyhmanLisaysSelectors'
-import { PostHakukohderyhmaRequestFixture } from '../fixtures/PostHakukohderyhmaRequestFixture'
-
-function login(): void {
-  cy.request(
-    'get',
-    `/hakukohderyhmapalvelu/auth/cas?ticket=any_unique_ticket_is_good_for_fake_authentication-${Math.random()}`,
-  )
-  cy.getCookie('ring-session').should('exist')
-}
+import { PostHakukohderyhmaRequestFixture } from '../fixtures/hakukohderyhmapalvelu/PostHakukohderyhmaRequestFixture'
 
 describe('Hakukohderyhmäpalvelu', () => {
   before(() => {
     cy.resetMocks()
-    login()
+    cy.login()
     cy.visit('/')
   })
-  it('Ohjaa käyttäjän polkuun /hakukohderyhmapalvelu', () => {
+  it('Ohjaa käyttäjän polkuun /hakukohderyhmapalvelu/hakukohderyhmien-hallinta', () => {
     cy.location().should(location => {
-      expect(location.pathname).to.equal('/hakukohderyhmapalvelu')
+      expect(location.pathname).to.equal(
+        '/hakukohderyhmapalvelu/hakukohderyhmien-hallinta',
+      )
     })
   })
   it('Näyttää päätason otsikon', () => {
@@ -37,7 +31,7 @@ describe('Hakukohderyhmäpalvelu', () => {
       cy.get(hh.haunHakutoimintoHeadingSelector).should('have.text', 'Haku')
       cy.get(hh.haunHakutoimintoNaytaMyosPaattyneetCheckboxSelector).should(
         'have.attr',
-        'type',
+        'role',
         'checkbox',
       )
       cy.get(hh.haunHakutoimintoNaytaMyosPaattyneetTextSelector).should(
@@ -94,7 +88,7 @@ describe('Hakukohderyhmäpalvelu', () => {
       describe('Uuden hakukohderyhmän nimen kirjoittaminen', () => {
         before(() => {
           cy.fixture<PostHakukohderyhmaRequestFixture>(
-            'post-hakukohderyhma-request.json',
+            'hakukohderyhmapalvelu/post-hakukohderyhma-request.json',
           )
             .as('post-hakukohderyhma-request')
             .then(hakukohderyhma =>
@@ -112,19 +106,21 @@ describe('Hakukohderyhmäpalvelu', () => {
         })
         describe('Hakukohderyhmän tallentaminen', () => {
           before(() => {
-            login()
-            cy.fixture('post-hakukohderyhma-request.json').as(
-              'post-hakukohderyhma-request',
-            )
-            cy.fixture('post-hakukohderyhma-response.json').as(
-              'post-hakukohderyhma-response',
-            )
+            cy.login()
+            cy.fixture(
+              'hakukohderyhmapalvelu/post-hakukohderyhma-request.json',
+            ).as('post-hakukohderyhma-request')
+            cy.fixture(
+              'hakukohderyhmapalvelu/post-hakukohderyhma-response.json',
+            ).as('post-hakukohderyhma-response')
             cy.mockBackendRequest({
               method: 'POST',
               path: '/organisaatio-service/rest/organisaatio/v4',
               service: 'organisaatio-service',
-              requestFixture: 'post-hakukohderyhma-request.json',
-              responseFixture: 'post-hakukohderyhma-response.json',
+              requestFixture:
+                'hakukohderyhmapalvelu/post-hakukohderyhma-request.json',
+              responseFixture:
+                'hakukohderyhmapalvelu/post-hakukohderyhma-response.json',
             })
             cy.server()
             cy.route('POST', '/hakukohderyhmapalvelu/api/hakukohderyhma').as(
@@ -138,7 +134,6 @@ describe('Hakukohderyhmäpalvelu', () => {
             cy.get(
               hl.hakukohderyhmanLisaysSaveNewHakukohderyhmaButtonSelector,
             ).should('be.disabled')
-            cy.wait('@post-hakukohderyhma')
             cy.get(
               hl.hakukohderyhmanLisaysSaveNewHakukohderyhmaButtonSelector,
             ).should('be.enabled')

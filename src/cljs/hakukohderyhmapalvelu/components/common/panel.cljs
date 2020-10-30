@@ -5,13 +5,13 @@
             [stylefy.core :as stylefy]))
 
 (def ^:private main-panel-style
-  {:filter       effects/drop-shadow-effect-black
-   :margin-left  "auto"
+  {:margin-left  "auto"
    :margin-right "auto"
    :width        "1150px"})
 
 (def ^:private panel-content-style
   {:background-color colors/white
+   :filter           effects/drop-shadow-effect-black
    :padding          "15px 25px"})
 
 (defn panel [{:keys [cypressid]} heading contents]

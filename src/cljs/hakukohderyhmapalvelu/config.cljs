@@ -3,11 +3,12 @@
             [hakukohderyhmapalvelu.public-config-schemas :as cs]
             [schema.core :as s]))
 
-(def ^:private keywordize-vals #{:environment})
+(def ^:private keywordize-vals #{:environment
+                                 :default-panel})
 
 (s/defn make-config :- cs/PublicConfig
   []
-  (let [parsed-object (-> js/config
+  (let [parsed-object (-> js/frontendConfig
                           (js->clj :keywordize-keys true))]
     (walk/prewalk
       (fn prewalk-config [x]

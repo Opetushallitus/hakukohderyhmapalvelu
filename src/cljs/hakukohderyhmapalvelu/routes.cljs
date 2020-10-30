@@ -1,23 +1,41 @@
 (ns hakukohderyhmapalvelu.routes
-  (:require-macros [secretary.core :refer [defroute]])
-  (:import [goog History]
-           [goog.history EventType])
-  (:require [secretary.core :as secretary]
-            [goog.events :as gevents]
+  (:require [camel-snake-kebab.core :as csk]
+            [camel-snake-kebab.extras :as cske]
+            [hakukohderyhmapalvelu.config :as c]
+            [reitit.coercion.spec :as rss]
+            [reitit.frontend :as rf]
+            [reitit.frontend.easy :as rfe]
             [re-frame.core :as re-frame]))
 
-(defn hook-browser-navigation! []
-  (doto (History.)
-    (gevents/listen
-      EventType/NAVIGATE
-      (fn [^js event]
-        (secretary/dispatch! (.-token event))))
-    (.setEnabled true)))
+(def default-panel (:default-panel c/config))
+
+(def routes
+  [["/"
+    {:redirect default-panel}]
+   ["/hakukohderyhmapalvelu"
+    {:redirect default-panel}]
+   ["/hakukohderyhmapalvelu/hakukohderyhmien-hallinta"
+    {:name default-panel}]
+   ["/hakukohderyhmapalvelu/haun-asetukset"
+    {:name       :panel/haun-asetukset
+     :parameters {:query {:hakuOid string?}}}]])
 
 (defn app-routes []
-  (secretary/set-config! :prefix "#")
-  (defroute "/" []
-            (secretary/dispatch! "/hakukohderyhmapalvelu"))
-  (defroute "/hakukohderyhmapalvelu" []
-            (re-frame/dispatch [:core/set-active-panel :hakukohderyhmapalvelu-panel]))
-  (hook-browser-navigation!))
+  (rfe/start!
+    (rf/router
+      routes
+      {:data {:coercion rss/coercion}})
+    (fn on-navigate [m]
+      (let [{{:keys [name redirect]}    :data
+             {:keys [path query]
+              :or   {path {} query {}}} :parameters}
+            m]
+        (cond redirect
+              (rfe/replace-state redirect)
+
+              name
+              (re-frame/dispatch [:panel/set-active-panel
+                                  {:panel      name
+                                   :parameters {:path  (cske/transform-keys csk/->kebab-case-keyword path)
+                                                :query (cske/transform-keys csk/->kebab-case-keyword query)}}]))))
+    {:use-fragment false}))

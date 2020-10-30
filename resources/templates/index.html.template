@@ -8,14 +8,11 @@
     <title>Hakukohderyhmäpalvelu</title>
     <script src="/hakukohderyhmapalvelu/js/vendor/oph_urls.js"></script>
     <script type="text/javascript">
-      const config = {{ config|safe }}
+      const frontendConfig = {{ frontend-config|safe }}
       window.urls.addProperties({{front-properties|safe}})
     </script>
   </head>
   <body>
-    <noscript>
-      Hakukohderyhmäpalvelu tarvitee JavaScriptiä tukevan selaimen toimiakseen.
-    </noscript>
     <div id="app"></div>
     {% if apply-raamit %}<script src="/virkailija-raamit/apply-raamit.js"></script>{% endif %}
     <script src="/hakukohderyhmapalvelu/js/compiled/hakukohderyhmapalvelu.js"></script>

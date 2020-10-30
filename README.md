@@ -4,6 +4,12 @@
 ![NPM Dependencies Status](https://david-dm.org/opetushallitus/hakukohderyhmapalvelu.svg)
 
 * [Palvelun ajaminen paikallisesti](#palvelun-ajaminen-paikallisesti)
+  * [Vain kerran tehtävät työvaiheet](#vain-kerran-tehtävät-työvaiheet)
+  * [Käyttö](#käyttö)
+    * [Palvelun käynnistäminen](#palvelun-käynnistäminen)
+    * [Palvelun pysäyttäminen](#palvelun-pysäyttäminen)
+    * [Palvelun logien tarkastelu](#palvelun-logien-tarkastelu)
+    * [Palvelun komponenttien tilan tarkastelu](#palvelun-komponenttien-tilan-tarkastelu)
 * [Testien ajaminen](#testien-ajaminen)
   * [Lint](#lint)
     * [Clojure(Script) -tiedostojen lint](#clojurescript--tiedostojen-lint)
@@ -21,16 +27,64 @@
 
 Kloonaa ja valmistele omien ohjeiden mukaan käyttökuntoon [local-environment](https://github.com/Opetushallitus/local-environment) -ympäristö.
 
-Käynnistä Hakukohderyhmäpalvelu sanomalla `local-environment` -repositoryn juuressa:
- 
-```sh
-make start-hakukohderyhmapalvelu
+### Vain kerran tehtävät työvaiheet
+
+1. Valmistele palvelun konfiguraatio
+   * Mene aiemmin kloonaamaasi [local-environment](https://github.com/Opetushallitus/local-environment) -repositoryyn.
+   * Mikäli et ole vielä kertaakaan valmistellut local-environment -ympäristöä, tee se repositoryn ohjeiden mukaan.
+   * Generoi konfiguraatiotiedosto palvelua varten. Generointi lataa S3:sta untuva-, hahtuva- ja pallero -ympäristöjen salaisuudet ja generoi jokaista ympäristöä vastaavan hakukohderyhmäpalvelun konfiguraation. Tee siis tämä local-environment -repoistoryssä.
+   ```bash
+   rm -f .opintopolku-local/.templates_compiled # Aja tämä komento, mikäli haluat pakottaa konfiguraation generoinnin
+   make compile-templates
+   ```
+   * Konfiguraatiotiedostot löytyvät nyt local-environment -repositoryn alta hakemistosta `oph-configurations/{hahtuva,pallero,untuva}/oph-configuration/hakukohderyhmapalvelu.config.edn`
+2. Valmistele nginx -containerin konfiguraatio
+   * Mikäli käytät Mac OS -käyttöjärjestelmää, sinun ei tarvitse tehdä mitään.
+   * Mikäli käytät Linuxia, etkä Mac OS -käyttöjärjestelmää, editoi tämän repositoryn `nginx/nginx.conf` -tiedostoa: korvaa kaikki `host.docker.internal` -osoitteet sillä IP-osoitteella, joka koneesi `docker0` -sovittimessa on käytössä. Tämän IP:n saat esimerkiksi komennolla `/sbin/ifconfig docker0` selville.
+3. Konfiguroi SSH-client
+   * Tarvitset SSH-tunnelia varten SSH-konfiguraatioosi tiedon useista porttiohjauksista.
+   * Kun olet ensin alustanut local-environment -ympäristön kohdan 1 mukaan, voit yksinkertaisimmillaan lisätä seuraavan rivin `~./ssh/config` -tiedostosi ensimmäiseksi riviksi:
+   ```
+   Include /polku/local-environment-repositoryysi/docker/ssh/config
+   ```
+   * Mikäli et halua määrittää kyseistä `Include` -direktiiviä, voit tarjota kyseiset porttiohjauskonfiguraatiot SSH-clientillesi jotenkin toisin.
+   
+
+### Käyttö
+
+Tämä on suositeltu tapa ajaa palvelua paikallisesti. Tässä ohjeessa oletetaan, että local-environment -repository löytyy hakukohderyhmäpalvelu -hakemiston vierestä, samasta hakemistosta.
+
+Käynnistetty palvelu on käytettävissä osoitteessa (http://localhost:9030/hakukohderyhmapalvelu).
+
+Kun ajat palvelua, käynnistä aina ensin SSH-yhteys käyttämääsi ympäristöön. Oletuksena se on `pallero`:
+
+```
+ssh bastion.pallero
 ```
 
-Muita tuettuja komentoja: 
+#### Palvelun käynnistäminen
 
-```sh
-make {restart,kill}-hakukohderyhmapalvelu
+```bash
+make start
+```
+
+#### Palvelun pysäyttäminen
+
+```bash
+make kill
+```
+
+#### Palvelun logien tarkastelu
+
+```bash
+make logs
+```
+
+
+#### Palvelun komponenttien tilan tarkastelu
+
+```bash
+make status
 ```
 
 ## Testien ajaminen
@@ -51,17 +105,20 @@ npm run lint:js
 
 ### E2E-testit
 
-Käynnistä `local-environment` -repositoryssä E2E:tä varten dedikoidut instanssit palvelusta:
+1. Mikäli et vielä ole kertaakaan valmistellut local-environment -ympäristöä, suorita ensin kohdan [vain kerran tehtävät työvaiheet](#vain-kerran-tehtävät-työvaiheet) mukaiset toimenpiteet.
 
-```sh
-make start-hakukohderyhmapalvelu-e2e
+Jotta voit ajaa testejä, käynnistä Cypress-testejä varten dedikoitu instanssi palvelusta. Instanssi tarvitsee käynnistää vain kerran, vaikka ajat testejä monta kertaa. HUOM: tämä komento uudelleenkäynnistää frontend-käännöksetn.
+
+```bash
+make start-cypress
 ```
 
-Jos haluat samalla komennolla käynnistää rinnakain toimivat instanssit palvelusta normaalia käyttöä ja E2E-testejä varten, tee se seuraavalla komennolla:
+Voit sammuttaa palvelun komennoilla:
 
-```sh
-make start-hakukohderyhmapalvelu-all
-``` 
+```
+make kill # Sammuttaa sekä Cypress -instanssit että normaalia kehitystä varten tarkoitetut instanssit palvelusta.
+make kill-cypress # Sammuttaa ainoastaan Cypress -instanssit palvelusta
+```
 
 #### Testien ajaminen Cypress-käyttöliittymän kautta
 

@@ -4,10 +4,11 @@
                   :exclusions [com.google.javascript/closure-compiler-unshaded
                                org.clojure/google-closure-library
                                org.clojure/google-closure-library-third-party]]
+                 [camel-snake-kebab "0.4.1"]
                  [cheshire "5.10.0"]
                  [clj-http "3.10.3"]
+                 [com.andrewmcveigh/cljs-time "0.5.2"]
                  [com.taoensso/timbre "5.1.0"]
-                 [cljs-http "0.1.46"]
                  [com.fzakaria/slf4j-timbre "0.3.20"]
                  [timbre-ns-pattern-level "0.1.2"]
                  [com.stuartsierra/component "1.0.0"]
@@ -21,6 +22,7 @@
                  [oph/clj-ring-db-cas-session "0.3.0-SNAPSHOT"]
                  [hikari-cp "2.13.0"]
                  [metosin/compojure-api "2.0.0-alpha31"]
+                 [metosin/reitit "0.5.6"]
                  [metosin/schema-tools "0.12.2"]
                  [org.clojure/core.async "1.3.610"]
                  [org.clojure/java.jdbc "0.7.11"]
@@ -33,7 +35,6 @@
                  [ring/ring-defaults "0.3.2"]
                  [ring/ring-json "0.5.0"]
                  [ring/ring-session-timeout "0.2.0"]
-                 [secretary "1.2.3"]
                  [selmer "1.12.31"]
                  [stylefy "2.2.1"
                   :exclusions [[org.clojure/core.async]]]

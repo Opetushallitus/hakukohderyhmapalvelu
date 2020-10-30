@@ -3,8 +3,8 @@
  :db                   {:username      "postgres_user"
                         :password      "postgres_password"
                         :database-name "hakukohderyhmapalvelu"
-                        :host          "hakukohderyhmapalvelu-e2e-db"
-                        :port          5432}
+                        :host          "localhost"
+                        :port          15432}
  :cas                  {:username "cas_username"
                         :password "cas_password"
                         :services {:organisaatio-service  {:service-url-property :cas.service.organisaatio-service
@@ -16,4 +16,6 @@
  :urls                 {:virkailija-baseurl        "http://localhost"
                         :hakukohderyhmapalvelu-url "http://localhost:19030/hakukohderyhmapalvelu"}
  :oph-organisaatio-oid "1.2.246.562.10.00000000001"
- :public-config        {:environment :it}}
+ :public-config        {:environment   :it
+                        :default-panel :panel/hakukohderyhmien-hallinta
+                        :caller-id     "1.2.246.562.10.00000000001.hakukohderyhmapalvelu.frontend"}}

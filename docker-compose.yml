@@ -1,0 +1,27 @@
+version: '3.7'
+services:
+  hakukohderyhmapalvelu-nginx-local:
+    image: nginx
+    container_name: hakukohderyhmapalvelu-nginx-local
+    networks:
+      hakukohderyhmapalvelu-local-network:
+    ports:
+      - "9030:9030"
+      - "19030:19030"
+    volumes:
+      - "./nginx:/etc/nginx"
+  hakukohderyhmapalvelu-e2e-db-local:
+    image: postgres:12-alpine
+    container_name: hakukohderyhmapalvelu-e2e-db-local
+    environment:
+      POSTGRES_PASSWORD: postgres_password
+      POSTGRES_USER: postgres_user
+      POSTGRES_DB: hakukohderyhmapalvelu
+    networks:
+      hakukohderyhmapalvelu-local-e2e-network:
+    ports:
+      - "15432:15432"
+    command: -p 15432
+networks:
+  hakukohderyhmapalvelu-local-network:
+  hakukohderyhmapalvelu-local-e2e-network:
