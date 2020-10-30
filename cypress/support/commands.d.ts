@@ -4,7 +4,7 @@ type Method = 'POST'
 
 type Service = 'organisaatio-service'
 
-type MockBackendRequestOpts = {
+interface MockBackendRequestOpts {
   method: Method
   path: string
   service: Service
