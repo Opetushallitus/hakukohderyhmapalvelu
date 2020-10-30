@@ -3,10 +3,10 @@
     "date": 1603965660000
   },
   "PH_HPVOA": {
-    "value": 2345
+    "value": 5
   },
   "hakutoiveidenEnimmaismaara": 1,
-  "jarjestetytHakutoiveet": true,
+  "jarjestetytHakutoiveet": false,
   "PH_VTSSV": {
     "date": 1604070900000
   },

@@ -103,11 +103,13 @@
            aria-labelledby
            checked?
            disabled?
-           on-change]} :- {:id                         s/Str
+           on-change
+           cypressid]} :- {:id                         s/Str
                            :aria-labelledby            s/Str
                            :checked?                   s/Bool
                            (s/optional-key :disabled?) s/Bool
-                           :on-change                  s/Any}]
+                           :on-change                  s/Any
+                           (s/optional-key :cypressid) s/Str}]
   [:div
    (cond-> (stylefy/use-style
              checkbox-slider-styles
@@ -115,7 +117,8 @@
               :role            "checkbox"
               :tabIndex        0
               :aria-checked    checked?
-              :aria-labelledby aria-labelledby})
+              :aria-labelledby aria-labelledby
+              :cypressid       cypressid})
            (and checked? (not disabled?))
            (merge {:style checkbox-slider-container-checked-styles})
            (not disabled?)

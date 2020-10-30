@@ -114,14 +114,16 @@
                placeholder
                aria-label
                min
-               disabled?]} :- {:input-id                     s/Str
+               disabled?
+               cypressid]} :- {:input-id                     s/Str
                                (s/optional-key :value)       s/Str
                                :required?                    s/Bool
                                :on-change                    s/Any
                                (s/optional-key :placeholder) s/Str
                                (s/optional-key :aria-label)  s/Str
                                :min                          s/Int
-                               (s/optional-key :disabled?)   s/Bool}]
+                               (s/optional-key :disabled?)   s/Bool
+                               (s/optional-key :cypressid)   s/Str}]
       (when (not= value @prev-prop-value)
         (reset! prev-prop-value value)
         (reset! local-value value))
@@ -142,7 +144,8 @@
                           :type      "number"
                           :min       min
                           :required  required?
-                          :disabled  disabled?}
+                          :disabled  disabled?
+                          :cypressid cypressid}
                          (when placeholder
                            {:placeholder placeholder})
                          (when aria-label

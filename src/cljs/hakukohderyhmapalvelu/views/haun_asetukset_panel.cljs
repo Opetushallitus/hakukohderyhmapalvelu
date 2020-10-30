@@ -127,7 +127,8 @@
                                                                  haku-oid
                                                                  haun-asetus-key
                                                                  (not checked?)]))
-                          :aria-labelledby label-id}]}]]))
+                          :aria-labelledby label-id
+                          :cypressid       checkbox-id}]}]]))
 
 (defn- hakukohteiden-maara-rajoitettu [{:keys [haku-oid]}]
   (let [checkbox-haun-asetus-key :haun-asetukset/hakukohteiden-maara-rajoitettu
@@ -162,7 +163,8 @@
                                                                       value]))
                                     :aria-label text-input-label
                                     :min        1
-                                    :disabled?  disabled?}
+                                    :disabled?  disabled?
+                                    :cypressid  (str id-prefix "-input")}
                                    (when value
                                      {:value value}))]}]])]))
 
@@ -297,7 +299,8 @@
                                                                   :haun-asetukset/hakijakohtainen-paikan-vastaanottoaika
                                                                   value]))
                                  :min       0
-                                 :disabled? disabled?}
+                                 :disabled? disabled?
+                                 :cypressid input-id}
                                 (when value
                                   {:value value}))]}]]))
 
@@ -335,7 +338,7 @@
             (let [cypressid (str "hakuajat-" haku-oid)]
               (merge (stylefy/use-style haun-asetukset-haun-tiedot-hakuajat-styles)
                      {:aria-labelledby hakuajat-label-id
-                      :cypressid cypressid}))]
+                      :cypressid       cypressid}))]
            (map (fn [hakuaika]
                   [:li
                    (:alkaa hakuaika) " - " (:paattyy hakuaika)])

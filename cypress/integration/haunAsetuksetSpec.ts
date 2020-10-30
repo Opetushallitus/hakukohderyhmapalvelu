@@ -1,4 +1,6 @@
 import * as ha from '../selectors/haunAsetuksetPanelSelectors'
+import * as checkbox from '../checkbox'
+import * as input from '../input'
 
 describe('Haun asetukset', () => {
   const hakuOid = '1.2.246.562.29.00000000000000000084'
@@ -42,5 +44,25 @@ describe('Haun asetukset', () => {
     cy.get(ha.hakuajatSelector(hakuOid))
       .find(`:contains('14.10.2020 klo 00.00.00 - 15.10.2020 klo 00.00.00')`)
       .should('exist')
+    checkbox
+      .getCheckbox('haun-asetukset-hakukohteiden-maara-rajoitettu-checkbox')
+      .should('exist')
+      .should(checkbox.beChecked)
+    input
+      .getInput('haun-asetukset-hakukohteiden-maara-rajoitettu-input')
+      .should('exist')
+      .should('have.value', '1')
+    checkbox
+      .getCheckbox('haun-asetukset-jarjestetyt-hakutoiveet-checkbox')
+      .should('exist')
+      .should(checkbox.notBeChecked)
+    checkbox
+      .getCheckbox('haun-asetukset-useita-hakemuksia-checkbox')
+      .should('exist')
+      .should(checkbox.beChecked)
+    input
+      .getInput('haun-asetukset-hakijakohtainen-paikan-vastaanottoaika-input')
+      .should('exist')
+      .should('have.value', '5')
   })
 })
