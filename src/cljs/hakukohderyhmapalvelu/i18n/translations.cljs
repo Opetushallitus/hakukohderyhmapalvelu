@@ -4,17 +4,17 @@
   {:haun-asetukset/title
    {:fi "Haun asetukset"}
    :haun-asetukset/hakukohteiden-maara-rajoitettu
-   {:fi "Hakukohteiden määrä -rajoitus"}
+   {:fi "Hakutoiveiden määrä rajoitettu"}
    :haun-asetukset/hakukohteiden-maara
-   {:fi "Hakukohteiden määrä"}
+   {:fi "Hakutoiveiden enimmäismäärä"}
    :haun-asetukset/jarjestetyt-hakutoiveet
-   {:fi "Hakukohteiden priorisointi"}
+   {:fi "Hakutoiveiden priorisointi"}
    :haun-asetukset/useita-hakemuksia
    {:fi "Vain yksi hakemus -rajoitus"}
    :haun-asetukset/hakijakohtainen-paikan-vastaanottoaika
    {:fi "Hakijakohtainen paikan vastaanottoaika (vrk)"}
    :haun-asetukset/paikan-vastaanotto-paattyy
-   {:fi "Opiskelijan paikan vastaanotto päättyy"}
+   {:fi "Hakijan paikan vastaanotto päättyy"}
    :haun-asetukset/hakukierros-paattyy
    {:fi "Hakukierros päättyy"}
    :haun-asetukset/sijoittelu
