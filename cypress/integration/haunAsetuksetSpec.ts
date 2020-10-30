@@ -35,7 +35,6 @@ describe('Haun asetukset', () => {
       )
   })
 
-  // eslint-disable-next-line @typescript-eslint/no-empty-function
   it('Näyttää haun asetukset', () => {
     cy.get(ha.hakuajatSelector(hakuOid))
       .find(`:contains('14.09.2020 klo 00.00.00 - 30.09.2020 klo 00.00.00')`)
