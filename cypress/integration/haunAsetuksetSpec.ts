@@ -16,6 +16,7 @@ describe('Haun asetukset', () => {
           .then(getFormsResponse =>
             cy
               .route2(
+                'GET',
                 'http://localhost/lomake-editori/api/forms',
                 getFormsResponse,
               )
@@ -30,6 +31,7 @@ describe('Haun asetukset', () => {
           .then(getHakuResponse =>
             cy
               .route2(
+                'GET',
                 `http://localhost/kouta-internal/haku/${hakuOid}`,
                 getHakuResponse,
               )
@@ -44,6 +46,7 @@ describe('Haun asetukset', () => {
           .then(getParametriResponse =>
             cy
               .route2(
+                'GET',
                 `http://localhost/ohjausparametrit-service/api/v1/rest/parametri/${hakuOid}`,
                 getParametriResponse,
               )
