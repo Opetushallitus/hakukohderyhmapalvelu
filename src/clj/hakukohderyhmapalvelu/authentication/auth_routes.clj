@@ -1,8 +1,5 @@
 (ns hakukohderyhmapalvelu.authentication.auth-routes
   (:require [clj-ring-db-session.authentication.login :as crdsa-login]
-            [clj-ring-db-session.session.session-client :as session-client]
-            [compojure.api.core :as compojure-core]
-            [compojure.api.sweet :as api]
             [com.stuartsierra.component :as component]
             [hakukohderyhmapalvelu.audit-logger-protocol :as audit]
             [hakukohderyhmapalvelu.authentication.schema :as schema]
@@ -19,7 +16,9 @@
   (:import javax.sql.DataSource))
 
 (defprotocol AuthRoutesSource
-  (create-auth-routes [this]))
+  (login [this ticket request])
+  (cas-logout [this request])
+  (logout [this session]))
 
 (def kirjautuminen (audit/->operation "kirjautuminen"))
 
@@ -29,7 +28,7 @@
 
 (defn- login-succeeded [organisaatio-service audit-logger request response virkailija henkilo username ticket]
   (log/info "user" username "logged in")
-  (let [session     (add-request-session-data-to (:session response) request)
+  (let [session (add-request-session-data-to (:session response) request)
         henkilo-oid (:oidHenkilo henkilo)]
     (s/validate (p/extends-class-pred organisaatio-protocol/OrganisaatioServiceProtocol) organisaatio-service)
     (s/validate (p/extends-class-pred audit/AuditLoggerProtocol) audit-logger)
@@ -86,28 +85,27 @@
       :login-failure-url nil))
 
   AuthRoutesSource
-  (create-auth-routes [this]
-    (api/context "/auth" []
-      (compojure-core/route-middleware [session-client/wrap-session-client-headers]
-                                       (api/undocumented
-                                         (api/GET "/cas" [ticket :as request]
-                                           (try
-                                             (if-let [[username _] (cas-ticket-client-protocol/validate-service-ticket cas-ticket-validator ticket)]
-                                               (let [redirect-url (or (get-in request [:session :original-url])
-                                                                      (:hakukohderyhmapalvelu-url this))
-                                                     virkailija   (kayttooikeus-protocol/virkailija-by-username kayttooikeus-service username)
-                                                     henkilo      (onr-protocol/get-person person-service (:oidHenkilo virkailija))
-                                                     response     (crdsa-login/login
-                                                                    {:username             username
-                                                                     :henkilo              henkilo
-                                                                     :ticket               ticket
-                                                                     :success-redirect-url redirect-url
-                                                                     :datasource           (:datasource db)})]
-                                                 (login-succeeded organisaatio-service audit-logger request response virkailija henkilo username ticket))
-                                               (login-failed (:login-failure-url this)))
-                                             (catch Exception e
-                                               (login-failed (:login-failure-url this) e))))
-                                         (api/POST "/cas" [logout-request]
-                                           (cas-initiated-logout logout-request))
-                                         (api/GET "/logout" {session :session}
-                                           (crdsa-login/logout session (url/resolve-url :cas.logout config))))))))
+
+  (login [this ticket request]
+    (try
+      (if-let [[username _] (cas-ticket-client-protocol/validate-service-ticket cas-ticket-validator ticket)]
+        (let [redirect-url (or (get-in request [:session :original-url])
+                               (:hakukohderyhmapalvelu-url this))
+              virkailija (kayttooikeus-protocol/virkailija-by-username kayttooikeus-service username)
+              henkilo (onr-protocol/get-person person-service (:oidHenkilo virkailija))
+              response (crdsa-login/login
+                         {:username             username
+                          :henkilo              henkilo
+                          :ticket               ticket
+                          :success-redirect-url redirect-url
+                          :datasource           (:datasource db)})]
+          (login-succeeded organisaatio-service audit-logger request response virkailija henkilo username ticket))
+        (login-failed (:login-failure-url this)))
+      (catch Exception e
+        (login-failed (:login-failure-url this) e))))
+
+  (cas-logout [_ request]
+    (cas-initiated-logout request))
+
+  (logout [_ session]
+    (crdsa-login/logout session (url/resolve-url :cas.logout config))))
