@@ -3,9 +3,15 @@
             [clj-ring-db-session.authentication.auth-middleware :as auth-middleware]
             [clj-ring-db-session.session.session-client :as session-client]
             [clj-ring-db-session.session.session-store :refer [create-session-store]]
-            [compojure.api.core :as compojure-core]
-            [compojure.api.sweet :as api]
-            [compojure.route :as route]
+            [reitit.swagger :as swagger]
+            [reitit.swagger-ui :as swagger-ui]
+            [reitit.coercion.schema]
+            [reitit.dev.pretty :as pretty]
+            [reitit.ring.middleware.muuntaja :as muuntaja-middleware]
+            [reitit.ring.middleware.exception :as exception-middleware]
+            [reitit.ring.middleware.parameters :as parameters-middleware]
+            [reitit.ring.coercion :as coercion]
+            [reitit.ring :as ring]
             [environ.core :refer [env]]
             [hakukohderyhmapalvelu.api-schemas :as schema]
             [hakukohderyhmapalvelu.authentication.auth-routes :as auth-routes]
@@ -27,75 +33,34 @@
             [ring.util.http-response :as response]
             [schema.core :as s]
             [selmer.parser :as selmer]
-            [taoensso.timbre :as log])
+            [taoensso.timbre :as log]
+            [muuntaja.core :as m])
   (:import [javax.sql DataSource]))
 
-(defn- redirect-routes []
-  (api/undocumented
-    (api/GET "/" []
-      (response/permanent-redirect "/hakukohderyhmapalvelu"))))
 
 (defn- production-environment? [config]
-  (-> config :public-config :environment (= :production)))
+  (= :production (get-in config [:public-config :environment])))
 
-(defn- index-route [config]
-  (let [public-config  (-> config :public-config json/generate-string)
-        rendered-page  (selmer/render-file
-                         "templates/index.html.template"
-                         {:frontend-config  public-config
-                          :front-properties (oph-urls/front-json config)
-                          :apply-raamit     (production-environment? config)})
-        index-response (fn []
-                         (-> (response/ok rendered-page)
-                             (response/content-type "text/html")
-                             (response/charset "utf-8")))]
-    (api/undocumented
-      (api/GET "/" []
-        (index-response))
-      (api/GET "/hakukohderyhmien-hallinta" []
-        (index-response))
-      (api/GET "/haun-asetukset" []
-        (index-response)))))
+(defn- integration-environment? [config]
+  (= :it (get-in config [:public-config :environment])))
 
-(defn- health-check-route [health-checker]
-  (s/validate (p/extends-class-pred health-check/HealthChecker) health-checker)
-  (api/undocumented
-    (api/GET "/api/health" []
-      (health-check/check-health health-checker))))
 
-(defn- resource-route []
-  (api/undocumented
-    (route/resources "/" {:root "public/hakukohderyhmapalvelu"})))
-
-(defn- error-routes []
-  (api/undocumented
-    (api/GET "/login-error" []
-      (do
-        (log/warn "Kirjautuminen epäonnistui ja käyttäjä ohjattiin virhesivulle.")
-        (-> (response/internal-server-error "<h1>Virhe sisäänkirjautumisessa.</h1>")
-            (response/content-type "text/html"))))))
-
-(defn- not-found-route []
-  (api/undocumented
-    (route/not-found "<h1>Not found</h1>")))
-
-(defn- integration-test-routes [mock-dispatcher]
-  (api/context "/api/mock" []
-    (api/POST "/authenticating-client" []
-      :summary "Mockaa yhden CAS-autentikoituvalla clientilla tehdyn HTTP-kutsun"
-      :body [spec mock-cas/MockCasAuthenticatingClientRequest]
-      (.dispatch-mock mock-dispatcher spec)
-      (response/ok {}))
-
-    (api/POST "/reset" []
-      :summary "Resetoi mockatut HTTP-kutsumääritykset"
-      (.reset-mocks mock-dispatcher)
-      (response/ok {}))))
+(defn- create-index-handler [config]
+  (let [public-config (-> config :public-config json/generate-string)
+        rendered-page (selmer/render-file
+                        "templates/index.html.template"
+                        {:frontend-config  public-config
+                         :front-properties (oph-urls/front-json config)
+                         :apply-raamit     (production-environment? config)})]
+    (fn [_]
+      (-> (response/ok rendered-page)
+          (response/content-type "text/html")
+          (response/charset "utf-8")))))
 
 (defn- create-wrap-database-backed-session [config datasource]
   (fn [handler] (ring-session/wrap-session handler
                                            {:root         "/hakukohderyhmapalvelu"
-                                            :cookie-attrs {:secure (= :production (-> config :public-config :environment))}
+                                            :cookie-attrs {:secure (production-environment? config)}
                                             :store        (create-session-store datasource)})))
 
 (s/defschema MakeHandlerArgs
@@ -107,57 +72,122 @@
    :hakukohderyhma-service           s/Any
    (s/optional-key :mock-dispatcher) (p/extends-class-pred mock-dispatcher-protocol/MockDispatcherProtocol)})
 
-(s/defn ^:private make-authenticated-routes [hakukohderyhma-service
-                                             config]
-  (api/routes
-    (index-route config)
-    (api/context "/api" []
-      :tags ["api"]
-      (api/POST "/hakukohderyhma" {session :session}
-        :summary "Tallentaa uuden hakukohderyhmän"
-        :body [hakukohderyhma schema/HakukohderyhmaRequest]
-        :return schema/HakukohderyhmaResponse
-        (response/ok (hakukohderyhma/create hakukohderyhma-service session hakukohderyhma))))))
+(defn auth-middleware [config db]
+  [(create-wrap-database-backed-session config (:datasource db))
+   clj-access-logging/wrap-session-access-logging
+   #(auth-middleware/with-authentication % (oph-urls/resolve-url :cas.login config))
+   session-client/wrap-session-client-headers
+   (session-timeout/create-wrap-idle-session-timeout config)])
 
-(s/defn make-routes
-  [{:keys [config
-           db
-           health-checker
-           auth-routes-source
-           hakukohderyhma-service
-           mock-dispatcher]} :- MakeHandlerArgs]
-  (api/api
-    {:swagger
-     {:ui   "/hakukohderyhmapalvelu/api-docs"
-      :spec "/hakukohderyhmapalvelu/swagger.json"
-      :data {:info     {:title       "Hakukohderyhmäpalvelu"
-                        :description "Hakukohderyhmäpalvelu"}
-             :tags     [{:name "api" :description "Hakukohderyhmäpalvelu API"}]
-             :consumes ["application/json"]
-             :produces ["application/json"]}}}
-    (redirect-routes)
-    (api/context "/hakukohderyhmapalvelu" []
-      (compojure-core/route-middleware [(create-wrap-database-backed-session config (:datasource db))
-                                        clj-access-logging/wrap-session-access-logging
-                                        #(auth-middleware/with-authentication % (oph-urls/resolve-url :cas.login config))
-                                        session-client/wrap-session-client-headers
-                                        (session-timeout/create-wrap-idle-session-timeout config)]
-                                       (-> (make-authenticated-routes hakukohderyhma-service config)
-                                           wrap-json/wrap-json-response
-                                           api/undocumented)
-                                       (auth-routes/create-auth-routes auth-routes-source))
-      (when (-> config :public-config :environment (= :it))
-        (integration-test-routes mock-dispatcher))
-      (health-check-route health-checker)
-      (error-routes)
-      (resource-route))
-    (not-found-route)))
+(defn- integration-test-routes [{:keys [mock-dispatcher config]}]
+  (when (integration-environment? config)
+    ["/mock"
+     ["/authenticating-client"
+      {:post {:summary    "Mockaa yhden CAS-autentikoituvalla clientilla tehdyn HTTP-kutsun"
+              :parameters {:body mock-cas/MockCasAuthenticatingClientRequest}
+              :handler    (fn [{{spec :body} :parameters}]
+                            (.dispatch-mock mock-dispatcher spec)
+                            (response/ok {}))}}]
+     ["/reset"
+      {:post {:summary "Resetoi mockatut HTTP-kutsumääritykset"
+              :handler (fn [_]
+                         (.reset-mocks mock-dispatcher)
+                         (response/ok {}))}}]]))
+
+(defn- routes [{:keys [health-checker config db auth-routes-source hakukohderyhma-service] :as args}]
+  (let [auth (auth-middleware config db)]
+    [["/"
+      {:get {:no-doc  true
+             :handler (fn [_] (response/permanent-redirect "/hakukohderyhmapalvelu/"))}}]
+     ["/hakukohderyhmapalvelu"
+      ["/login-error"
+       {:get {:no-doc  true
+              :handler (fn [_]
+                         (log/warn "Kirjautuminen epäonnistui ja käyttäjä ohjattiin virhesivulle.")
+                         (-> (response/internal-server-error "<h1>Virhe sisäänkirjautumisessa.</h1>")
+                             (response/content-type "text/html")))}}]
+      [""
+       {:get {:middleware auth
+              :no-doc     true
+              :handler    (fn [_] (response/permanent-redirect "/hakukohderyhmapalvelu/"))}}]
+      ["/"
+       {:get {:middleware auth
+              :no-doc     true
+              :handler    (create-index-handler config)}}]
+      ["/hakukohderyhmien-hallinta"
+       {:get {:middleware auth
+              :no-doc     true
+              :handler    (create-index-handler config)}}]
+      ["/haun-asetukset"
+       {:get {:middleware auth
+              :no-doc     true
+              :handler    (create-index-handler config)}}]
+      ["/swagger.json"
+       {:get {:no-doc  true
+              :swagger {:info {:title       "Hakukohderyhmäpalvelu"
+                               :description "Hakukohderyhmäpalvelu"}}
+              :handler (swagger/create-swagger-handler)}}]
+      ["/api"
+       ["/health"
+        {:get {:summary "Terveystarkastus"
+               :handler (fn [_]
+                          (s/validate (p/extends-class-pred health-check/HealthChecker) health-checker)
+                          (-> (health-check/check-health health-checker)
+                              response/ok
+                              (response/content-type "text/html")))}}]
+       ["/hakukohderyhma"
+        {:post {:middleware auth
+                :summary    "Tallentaa uuden hakukohderyhmän"
+                :responses  {200 {:body schema/HakukohderyhmaResponse}}
+                :parameters {:body schema/HakukohderyhmaRequest}
+                :handler    (fn [{session :session {hakukohderyhma :body} :parameters}]
+                              (response/ok (hakukohderyhma/create hakukohderyhma-service session hakukohderyhma)))}}]
+       (integration-test-routes args)]
+      ["/auth"
+       {:middleware (conj auth session-client/wrap-session-client-headers)}
+       ["/cas"
+        {:get  {:no-doc     true
+                :parameters {:query {:ticket s/Str}}
+                :handler    (fn [{{{:keys [ticket]} :query} :parameters :as request}]
+                              (auth-routes/login auth-routes-source ticket request))}
+         :post {:no-doc     true
+                :handler    (fn [request] (auth-routes/cas-logout auth-routes-source request))}}]
+       ["/logout"
+        {:get {:no-doc     true
+               :handler    (fn [{:keys [session]}] (auth-routes/logout auth-routes-source session))}}]]]]))
+
+(defn router [args]
+  (ring/router
+    (routes args)
+    {:exception pretty/exception
+     :data      {:coercion   reitit.coercion.schema/coercion
+                 :muuntaja   m/instance
+                 :middleware [swagger/swagger-feature
+                              parameters-middleware/parameters-middleware
+                              muuntaja-middleware/format-negotiate-middleware
+                              muuntaja-middleware/format-response-middleware
+                              exception-middleware/exception-middleware
+                              muuntaja-middleware/format-request-middleware
+                              coercion/coerce-response-middleware
+                              coercion/coerce-request-middleware]}}))
+
+(s/defn create-handler [args :- MakeHandlerArgs]
+  (ring/ring-handler
+    (router args)
+    (ring/routes
+      (swagger-ui/create-swagger-ui-handler
+        {:config {:validatorUrl     nil
+                  :operationsSorter "alpha"}
+         :path   "/hakukohderyhmapalvelu/swagger/index.html"
+         :url    "/hakukohderyhmapalvelu/swagger.json"})
+      (ring/create-resource-handler {:path "/hakukohderyhmapalvelu" :root "public/hakukohderyhmapalvelu"})
+      (ring/create-default-handler {:not-found (constantly {:status 404, :body "<h1>Not found</h1>"})}))))
 
 (def reloader #'reload/reloader)
 
 (s/defn make-production-handler
   [args :- MakeHandlerArgs]
-  (-> (make-routes args)
+  (-> (create-handler args)
       (clj-access-logging/wrap-access-logging)
       (clj-stdout-access-logging/wrap-stdout-access-logging)
       (clj-timbre-access-logging/wrap-timbre-access-logging

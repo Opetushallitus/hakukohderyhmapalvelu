@@ -14,6 +14,8 @@
     {:redirect default-panel}]
    ["/hakukohderyhmapalvelu"
     {:redirect default-panel}]
+   ["/hakukohderyhmapalvelu/"
+    {:redirect default-panel}]
    ["/hakukohderyhmapalvelu/hakukohderyhmien-hallinta"
     {:name default-panel}]
    ["/hakukohderyhmapalvelu/haun-asetukset"
