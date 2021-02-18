@@ -49,3 +49,9 @@
       (slurp)
       (parse-edn)
       (validate-config)))
+
+(s/defn production-environment? [config :- HakukohderyhmaConfig]
+  (= :production (get-in config [:public-config :environment])))
+
+(s/defn integration-environment? [config :- HakukohderyhmaConfig]
+  (= :it (get-in config [:public-config :environment])))

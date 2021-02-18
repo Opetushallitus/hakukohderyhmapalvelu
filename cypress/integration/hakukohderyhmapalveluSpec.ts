@@ -133,9 +133,6 @@ describe('Hakukohderyhmäpalvelu', () => {
             ).click({ force: true })
             cy.get(
               hl.hakukohderyhmanLisaysSaveNewHakukohderyhmaButtonSelector,
-            ).should('be.disabled')
-            cy.get(
-              hl.hakukohderyhmanLisaysSaveNewHakukohderyhmaButtonSelector,
             ).should('be.enabled')
             cy.get<PostHakukohderyhmaRequestFixture>(
               '@post-hakukohderyhma-request',

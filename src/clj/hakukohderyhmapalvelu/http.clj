@@ -18,10 +18,10 @@
 (s/defn parse-and-validate
   [response :- (st/open-schema {:body s/Str})
    response-schema]
-  (as-> response response'
-        (:body response')
-        (json/parse-string response' true)
-        (s/validate response-schema response')))
+  (-> response
+      :body
+      (json/parse-string true)
+      (st/select-schema response-schema)))
 
 (s/defn do-request
   [{:keys [body] :as opts} :- (st/open-schema
