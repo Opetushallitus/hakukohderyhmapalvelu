@@ -38,20 +38,13 @@
   (:import [javax.sql DataSource]))
 
 
-(defn- production-environment? [config]
-  (= :production (get-in config [:public-config :environment])))
-
-(defn- integration-environment? [config]
-  (= :it (get-in config [:public-config :environment])))
-
-
 (defn- create-index-handler [config]
   (let [public-config (-> config :public-config json/generate-string)
         rendered-page (selmer/render-file
                         "templates/index.html.template"
                         {:frontend-config  public-config
                          :front-properties (oph-urls/front-json config)
-                         :apply-raamit     (production-environment? config)})]
+                         :apply-raamit     (c/production-environment? config)})]
     (fn [_]
       (-> (response/ok rendered-page)
           (response/content-type "text/html")
@@ -60,7 +53,7 @@
 (defn- create-wrap-database-backed-session [config datasource]
   (fn [handler] (ring-session/wrap-session handler
                                            {:root         "/hakukohderyhmapalvelu"
-                                            :cookie-attrs {:secure (production-environment? config)}
+                                            :cookie-attrs {:secure (c/production-environment? config)}
                                             :store        (create-session-store datasource)})))
 
 (s/defschema MakeHandlerArgs
@@ -80,7 +73,7 @@
    (session-timeout/create-wrap-idle-session-timeout config)])
 
 (defn- integration-test-routes [{:keys [mock-dispatcher config]}]
-  (when (integration-environment? config)
+  (when (c/integration-environment? config)
     ["/mock"
      ["/authenticating-client"
       {:post {:summary    "Mockaa yhden CAS-autentikoituvalla clientilla tehdyn HTTP-kutsun"
@@ -209,6 +202,6 @@
 
 (s/defn make-handler
   [{config :config :as args} :- MakeHandlerArgs]
-  (if (production-environment? config)
+  (if (c/production-environment? config)
     (make-production-handler args)
     (make-reloading-handler args)))
