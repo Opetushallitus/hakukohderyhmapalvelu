@@ -8,3 +8,10 @@
 (s/defschema HakukohderyhmaResponse
   {:oid  s/Str
    :nimi c/Nimi})
+
+(s/defschema HaunTiedot
+  {:oid  s/Str
+   :nimi c/Nimi})
+
+(s/defschema HaunTiedotListResponse
+  [HaunTiedot])
