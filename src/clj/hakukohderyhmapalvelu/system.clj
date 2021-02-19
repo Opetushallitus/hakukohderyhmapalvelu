@@ -15,6 +15,7 @@
             [hakukohderyhmapalvelu.migrations :as migrations]
             [hakukohderyhmapalvelu.onr.onr-service :as onr-service]
             [hakukohderyhmapalvelu.organisaatio.organisaatio-service :as organisaatio-service]
+            [hakukohderyhmapalvelu.kouta.kouta-service :as kouta-service]
             [hakukohderyhmapalvelu.server :as http]))
 
 (defn hakukohderyhmapalvelu-system [config]
@@ -31,9 +32,13 @@
                                                    (organisaatio-service/map->OrganisaatioService {:config config})
                                                    [:organisaatio-service-authenticating-client])
 
+                           :kouta-service (component/using
+                                            (kouta-service/map->KoutaService {:config config})
+                                            [:kouta-authenticating-client])
+
                            :hakukohderyhma-service (component/using
                                                     (hakukohderyhma-service/map->HakukohderyhmaService {})
-                                                    [:audit-logger :organisaatio-service])
+                                                    [:audit-logger :organisaatio-service :kouta-service])
 
                            :health-checker (component/using
                                              (health-check/map->DbHealthChecker {})
@@ -60,6 +65,9 @@
         production-system [:organisaatio-service-authenticating-client (authenticating-client/map->CasAuthenticatingClient {:service :organisaatio-service
                                                                                                                             :config  config})
 
+                           :kouta-authenticating-client (authenticating-client/map->CasAuthenticatingClient {:service :kouta-internal
+                                                                                                             :config  config})
+
                            :kayttooikeus-authenticating-client (authenticating-client/map->CasAuthenticatingClient {:service :kayttooikeus
                                                                                                                     :config  config})
 
@@ -81,6 +89,12 @@
                                                                          (mock-authenticating-client/map->MockedCasClient {})
                                                                          {:chan :mock-organisaatio-service-cas-chan})
 
+                           :mock-kouta-cas-chan (async/chan)
+
+                           :kouta-authenticating-client (component/using
+                                                          (mock-authenticating-client/map->MockedCasClient {})
+                                                          {:chan :mock-kouta-cas-chan})
+
                            :kayttooikeus-service (kayttooikeus-service/->FakeKayttooikeusService)
 
                            :person-service (onr-service/->FakePersonService)
@@ -89,7 +103,8 @@
 
                            :mock-dispatcher (component/using
                                               (mock-dispatcher/map->MockDispatcher {})
-                                              {:organisaatio-service-chan :mock-organisaatio-service-cas-chan})]
+                                              {:organisaatio-service-chan :mock-organisaatio-service-cas-chan
+                                               :kouta-service-chan :mock-kouta-cas-chan})]
         system            (into base-system
                                 (if it-profile?
                                   mock-system

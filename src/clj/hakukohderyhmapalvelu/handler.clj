@@ -135,6 +135,14 @@
                 :parameters {:body schema/HakukohderyhmaRequest}
                 :handler    (fn [{session :session {hakukohderyhma :body} :parameters}]
                               (response/ok (hakukohderyhma/create hakukohderyhma-service session hakukohderyhma)))}}]
+       ["/haku"
+        {:get {:middleware auth
+               :summary "Hakee listauksen käyttäjän organisaation hauista"
+               :responses {200 {:body schema/HaunTiedotListResponse}}
+               :parameters {:query {(s/optional-key :all) s/Bool}}
+               :handler (fn [{session :session {{is-all :all} :query} :parameters}]
+                          (response/ok
+                            (hakukohderyhma/list-haun-tiedot hakukohderyhma-service session (boolean is-all))))}}]
        (integration-test-routes args)]
       ["/auth"
        {:middleware (conj auth session-client/wrap-session-client-headers)}
