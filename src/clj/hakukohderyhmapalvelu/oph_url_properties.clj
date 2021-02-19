@@ -1,7 +1,8 @@
 (ns hakukohderyhmapalvelu.oph-url-properties
   (:require [clojure.string :as string]
             [hakukohderyhmapalvelu.config :as c]
-            [schema.core :as s])
+            [schema.core :as s]
+            [clojure.walk :as walk])
   (:import [fi.vm.sade.properties OphProperties]))
 
 (def ^OphProperties url-properties (atom nil))
@@ -30,4 +31,5 @@
    & params]
   (when (nil? @url-properties)
     (load-config config))
-  (.url @url-properties (name key) (to-array (or params []))))
+  (let [params (walk/stringify-keys (or params {}))]
+    (.url @url-properties (name key) (to-array params))))

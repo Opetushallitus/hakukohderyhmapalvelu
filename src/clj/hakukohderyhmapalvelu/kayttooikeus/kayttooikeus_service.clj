@@ -8,7 +8,7 @@
 
   kayttooikeus-protocol/KayttooikeusService
   (virkailija-by-username [_ username]
-    (let [url      (url/resolve-url :kayttooikeus-service.kayttooikeus.kayttaja config {"username" username})
+    (let [url      (url/resolve-url :kayttooikeus-service.kayttooikeus.kayttaja config {:username username})
           response (authenticating-client/get kayttooikeus-authenticating-client url [kayttooikeus-protocol/Virkailija])
           {:keys [status body]} response]
       (if (= 200 status)

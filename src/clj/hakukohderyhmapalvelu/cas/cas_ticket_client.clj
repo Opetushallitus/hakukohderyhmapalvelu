@@ -47,8 +47,8 @@
   cas-ticket-client-protocol/CasTicketClientProtocol
   (validate-service-ticket [this ticket]
     [(-> (http/do-request {:method :get
-                           :url    (url/resolve-url :cas.validate-service-ticket config {"ticket"  ticket
-                                                                                         "service" (:service-parameter this)})
+                           :url    (url/resolve-url :cas.validate-service-ticket config {:ticket  ticket
+                                                                                         :service (:service-parameter this)})
                            :body   {}}
                           {:request-schema  {}
                            :response-schema {}}
