@@ -9,9 +9,11 @@ Cypress.Commands.add(
 
 Cypress.Commands.add(
   'mockBackendRequest',
-  (opts: MockBackendRequestOpts): Cypress.Chainable<Cypress.Response> =>
-    cy
-      .fixture(opts.requestFixture)
+  (opts: MockBackendRequestOpts): Cypress.Chainable<Cypress.Response> => {
+    const req = opts.requestFixture
+      ? cy.fixture(opts.requestFixture)
+      : cy.wrap(null)
+    return req
       .then(request =>
         cy
           .fixture(opts.responseFixture)
@@ -29,7 +31,8 @@ Cypress.Commands.add(
             response,
           },
         ),
-      ),
+      )
+  },
 )
 
 Cypress.Commands.add(

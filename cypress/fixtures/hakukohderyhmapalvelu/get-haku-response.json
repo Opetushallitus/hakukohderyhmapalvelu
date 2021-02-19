@@ -1,0 +1,157 @@
+[
+  {
+    "oid": "1.2.3.4.5.1",
+    "tila": "julkaistu",
+    "nimi": {
+      "en": "Test application",
+      "fi": "Testihaku",
+      "sv": "Testansökan"
+    },
+    "hakutapaKoodiUri": "hakutapa_01#1",
+    "kohdejoukkoKoodiUri": "haunkohdejoukko_23#1",
+    "hakulomaketyyppi": "muu",
+    "hakulomakeKuvaus": {},
+    "hakulomakeLinkki": {
+      "en": "http://www.example.com",
+      "fi": "http://www.example.com",
+      "sv": "http://www.example.com"
+    },
+    "metadata": {
+      "yhteyshenkilot": [
+        {
+          "nimi": {
+            "en": "Testi Nimi",
+            "fi": "Testi Nimi",
+            "sv": "Testi Nimi"
+          },
+          "titteli": {
+            "en": "Testaaja",
+            "fi": "Testaaja",
+            "sv": "Testaaja"
+          },
+          "sahkoposti": {
+            "en": "test@example.com",
+            "fi": "test@example.com",
+            "sv": "test@example.com"
+          },
+          "puhelinnumero": {
+            "en": "04040404040",
+            "fi": "04040404040",
+            "sv": "04040404040"
+          },
+          "wwwSivu": {}
+        }
+      ],
+      "tulevaisuudenAikataulu": []
+    },
+    "organisaatioOid": "1.2.3.4.6.1",
+    "hakuajat": [
+      {
+        "alkaa": "2020-10-01T09:00:00",
+        "paattyy": "2020-12-01T09:00:00"
+      }
+    ],
+    "valintakokeet": [],
+    "muokkaaja": "1.2.3.4.7.1",
+    "kielivalinta": [
+      "fi",
+      "sv",
+      "en"
+    ],
+    "modified": "2021-02-19T12:00:00"
+  },
+  {
+    "oid": "1.2.3.4.5.2",
+    "tila": "julkaistu",
+    "nimi": {
+      "fi": "Testihaku vain suomeksi"
+    },
+    "hakutapaKoodiUri": "hakutapa_03#1",
+    "kohdejoukkoKoodiUri": "haunkohdejoukko_23#1",
+    "hakulomaketyyppi": "ataru",
+    "hakulomakeAtaruId": "c6037287-eee5-46ee-8e17-d120e492966c",
+    "hakulomakeKuvaus": {
+    },
+    "hakulomakeLinkki": {
+      "fi": "http://www.example.com/"
+    },
+    "metadata": {
+      "yhteyshenkilot": [
+        {
+          "nimi": {
+            "fi": "Testaaja Nimellä"
+          },
+          "titteli": {
+            "fi": "Testaaja"
+          },
+          "sahkoposti": {
+            "fi": "test@example.com"
+          },
+          "puhelinnumero": {
+            "fi": "04040404040"
+          },
+          "wwwSivu": {}
+        }
+      ],
+      "tulevaisuudenAikataulu": []
+    },
+    "organisaatioOid": "1.2.3.4.6.1",
+    "hakuajat": [
+      {
+        "alkaa": "2050-10-01T09:00:00",
+        "paattyy": "2060-10-01T09:00:00"
+      }
+    ],
+    "valintakokeet": [],
+    "muokkaaja": "1.2.3.4.7.2",
+    "kielivalinta": [
+      "fi"
+    ],
+    "modified": "2021-02-18T12:00:00"
+  },
+  {
+    "oid": "1.2.3.4.5.3",
+    "tila": "julkaistu",
+    "nimi": {
+      "fi": "Testihaku 3"
+    },
+    "hakutapaKoodiUri": "hakutapa_01#1",
+    "kohdejoukkoKoodiUri": "haunkohdejoukko_23#1",
+    "hakulomaketyyppi": "muu",
+    "hakulomakeKuvaus": {},
+    "hakulomakeLinkki": {
+      "fi": "http://www.example.com"
+    },
+    "metadata": {
+      "yhteyshenkilot": [
+        {
+          "nimi": {
+            "fi": "Testi Nimi"
+          },
+          "titteli": {
+            "fi": "Testaaja"
+          },
+          "sahkoposti": {
+            "fi": "test@example.com"
+          },
+          "puhelinnumero": {
+            "fi": "04040404040"
+          },
+          "wwwSivu": {}
+        }
+      ],
+      "tulevaisuudenAikataulu": []
+    },
+    "organisaatioOid": "1.2.3.4.6.1",
+    "hakuajat": [
+      {
+        "alkaa": "2021-01-01T09:00:00",
+        "paattyy": "2050-12-01T09:00:00"
+      }
+    ],
+    "valintakokeet": [],
+    "muokkaaja": "1.2.3.4.7.3",
+    "kielivalinta": ["fi"],
+    "modified": "2021-02-19T12:00:00"
+  }
+]
