@@ -1,5 +1,6 @@
 (ns hakukohderyhmapalvelu.schemas.organisaatio-service-schemas
   (:require [hakukohderyhmapalvelu.api-schemas :as api-schemas]
+            [hakukohderyhmapalvelu.common-schemas :as c]
             [schema.core :as s]
             [schema-tools.core :as st]))
 
@@ -17,7 +18,7 @@
    :parentOid    s/Str
    :ryhmatyypit  OrganisaatioRyhmatyypit
    :tyypit       OrganisaatioTyypit
-   :nimi         api-schemas/HakukohderyhmaNimi})
+   :nimi         c/Nimi})
 
 (s/defschema PostNewOrganisaatioResponse
   {:organisaatio (st/merge
@@ -41,5 +42,3 @@
                     :yhteystiedot             []
                     :yhteystietoArvos         []})
    :status       s/Str})
-
-
