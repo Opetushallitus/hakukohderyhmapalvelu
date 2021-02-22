@@ -83,9 +83,9 @@
                 input-dropdown-container-styles
                 {:on-click #(when (seq dereffed-items) (swap! is-active not))})
          (dropdown-main-body {:cypressid           cypressid
-                           :selected-dropdown-item selected-dropdown-item
-                           :unselected-label       unselected-label
-                           :is-dropped-down        is-dropped-down})
+                              :selected-dropdown-item selected-dropdown-item
+                              :unselected-label       unselected-label
+                              :is-dropped-down        is-dropped-down})
          (when is-dropped-down
            (dropdown-item-container {:dropdown-items dereffed-items
-                                      :selection-fn  selection-fn}))]))))
+                                     :selection-fn  selection-fn}))]))))
