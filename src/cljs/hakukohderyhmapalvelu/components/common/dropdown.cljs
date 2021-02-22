@@ -51,7 +51,7 @@
   [{:keys [dropdown-items
            selection-fn]}]
   [:div (stylefy/use-style input-dropdown-item-container-styles)
-   (for [item dropdown-items]
+   (for [item @dropdown-items]
      ^{:key item} (dropdown-option
                     {:item-str item
                      :selection-fn (fn [_]

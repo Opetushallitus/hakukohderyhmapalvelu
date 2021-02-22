@@ -7,7 +7,8 @@
                                                     :query {}}}
    :requests                          #{}
    :lang                              :fi
-   :create-hakukohderyhma             {:visible? false}
+   :create-hakukohderyhma             {:visible? false
+                                       :already-created #{}}
    :haku                              {:haut         []}
    :haut                              {}
    :forms                             {}

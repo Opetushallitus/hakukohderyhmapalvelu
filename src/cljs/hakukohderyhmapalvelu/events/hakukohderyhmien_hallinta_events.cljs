@@ -12,7 +12,7 @@
   :hakukohderyhmien-hallinta/handle-save-hakukohderyhma
   (fn-traced [db [hakukohderyhma response]]
     (println (str "DEBUG :hakukohderyhmien-hallinta/handle-save-hakukohderyhma: " {:hakukohderyhma hakukohderyhma :response response}))
-    db))
+    (update-in db [:create-hakukohderyhma :already-created] #(conj % (:nimi hakukohderyhma)))))
 
 (events/reg-event-fx-validating
   :hakukohderyhmien-hallinta/save-hakukohderyhma

@@ -15,3 +15,10 @@
     [(re-frame/subscribe [:state-query [:requests :hakukohderyhmien-hallinta/save-hakukohderyhma]])])
   (fn [[ongoing-request?]]
     (some? ongoing-request?)))
+
+(re-frame/reg-sub
+  :hakukohderyhmien-hallinta/get-currently-saved-hakukohderyhmas
+  (fn []
+    [(re-frame/subscribe [:state-query [:create-hakukohderyhma :already-created]])])
+  (fn [[_]]
+    _))

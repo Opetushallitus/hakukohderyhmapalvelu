@@ -26,7 +26,8 @@
 
 (s/defschema CreateHakukohderyhmapalvelu
   {:create-hakukohderyhma
-   {:visible? s/Bool}})
+   {:visible? s/Bool
+    :already-created #{s/Str}}})
 
 (s/defschema Requests
   {:requests #{s/Keyword}})

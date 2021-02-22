@@ -1,6 +1,8 @@
 (ns hakukohderyhmapalvelu.views.hakukohderyhmien-hallinta-panel
   (:require [goog.string :as gstring]
             [hakukohderyhmapalvelu.components.common.button :as b]
+            [hakukohderyhmapalvelu.components.common.checkbox :as c]
+            [hakukohderyhmapalvelu.components.common.dropdown :as dropdown]
             [hakukohderyhmapalvelu.components.common.input :as input]
             [hakukohderyhmapalvelu.components.common.panel :as p]
             [hakukohderyhmapalvelu.styles.layout-styles :as layout]
@@ -109,7 +111,7 @@
                                {:cypressid    (str cypressid "-button")
                                 :disabled?    button-disabled?
                                 :label        "Tallenna"
-                                :on-click     (partial on-save-button-click @input-value)
+                                :on-click     #(on-save-button-click @input-value)
                                 :style-prefix (str style-prefix "-button")}]
             :input-component  [hakukohderyhmien-hallinta-input
                                {:cypressid    (str cypressid "-input")
@@ -149,7 +151,7 @@
     [:div
      (stylefy/use-style
        hakukohderyhmien-hallinta-input-dropdown-styles)
-     [input/input-dropdown props']]))
+     [dropdown/input-dropdown props']]))
 
 (defn- hakukohderyhma-select []
   (let [cypressid    "hakukohderyhma-select"
@@ -162,7 +164,9 @@
       :input-component   [hakukohderyhmien-hallinta-input-dropdown
                           {:cypressid        (str cypressid "-dropdown")
                            :style-prefix     (str style-prefix "-input")
-                           :unselected-label "Hakukohderyhmä"}]
+                           :unselected-label "Hakukohderyhmä"
+                           :dropdown-items (re-frame/subscribe [:hakukohderyhmien-hallinta/get-currently-saved-hakukohderyhmas])
+                           :selected-dropdown-item (reagent/atom nil)}]
       :input-id          input-id
       :style-prefix      style-prefix
       :label             "Hakukohderyhmät"}]))
