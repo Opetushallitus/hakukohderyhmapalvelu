@@ -40,6 +40,18 @@
    :selected-dropdown-item s/Any
    :selection-fn s/Any})
 
+(defn dropdown-main-body
+  [{:keys [cypressid
+           selected-dropdown-item
+           unselected-label
+           is-dropped-down]}]
+  [:div (stylefy/use-style
+          input-dropdown-selector-styles)
+   [:span
+    {:cypressid (str cypressid "-unselected-label")};TODO: cypressid should be (str cypressid "-label"), make sure tests are okay first
+    (or @selected-dropdown-item unselected-label)]
+   [(if is-dropped-down icon/arrow-drop-up icon/arrow-drop-down)]])
+
 (defn dropdown-option
   [{:keys [item-str selection-fn]}]
   [:div (stylefy/use-style
@@ -65,17 +77,15 @@
            selection-fn]} :- InputDropdownProps]
   (let [is-active (reagent/atom false)]
     (fn []
-      (let [arrow-icon (if @is-active icon/arrow-drop-up icon/arrow-drop-down)
-            dereffed-items @dropdown-items]
+      (let [dereffed-items @dropdown-items
+            is-dropped-down @is-active]
         [:div (stylefy/use-style
                 input-dropdown-container-styles
                 {:on-click #(when (seq dereffed-items) (swap! is-active not))})
-         [:div (stylefy/use-style
-                 input-dropdown-selector-styles)
-          [:span
-           {:cypressid (str cypressid "-unselected-label")};TODO: cypressid should be (str cypressid "-label"), make sure tests are okay first
-           (or @selected-dropdown-item unselected-label)]
-          [arrow-icon]]
-         (when @is-active
+         (dropdown-main-body {:cypressid           cypressid
+                           :selected-dropdown-item selected-dropdown-item
+                           :unselected-label       unselected-label
+                           :is-dropped-down        is-dropped-down})
+         (when is-dropped-down
            (dropdown-item-container {:dropdown-items dereffed-items
                                       :selection-fn  selection-fn}))]))))
