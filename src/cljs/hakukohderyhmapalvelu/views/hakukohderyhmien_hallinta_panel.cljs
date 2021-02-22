@@ -166,7 +166,8 @@
                            :style-prefix     (str style-prefix "-input")
                            :unselected-label "Hakukohderyhmä"
                            :dropdown-items (re-frame/subscribe [:hakukohderyhmien-hallinta/get-currently-saved-hakukohderyhmas])
-                           :selected-dropdown-item (reagent/atom nil)}]
+                           :selected-dropdown-item (re-frame/subscribe [:hakukohderyhmien-hallinta/get-currently-selected-hakukohderyhma])
+                           :selection-fn #(re-frame/dispatch [:hakukohderyhmien-hallinta/select-hakukohderyhma %])}]
       :input-id          input-id
       :style-prefix      style-prefix
       :label             "Hakukohderyhmät"}]))

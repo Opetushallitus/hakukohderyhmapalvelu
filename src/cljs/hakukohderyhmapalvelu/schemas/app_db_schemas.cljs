@@ -24,10 +24,11 @@
 (s/defschema Lang
   {:lang (s/enum :fi)})
 
-(s/defschema CreateHakukohderyhmapalvelu
-  {:create-hakukohderyhma
-   {:visible? s/Bool
-    :already-created #{s/Str}}})
+(s/defschema HakukohderyhmaPalvelu
+  {:hakukohderyhma
+   {:persisted #{s/Str}
+    :selected-hakukohderyhma s/Any
+    :create-hakukohderyhma-visible? s/Bool}})
 
 (s/defschema Requests
   {:requests #{s/Keyword}})
@@ -108,7 +109,7 @@
   (st/merge ActivePanel
             Lang
             Requests
-            CreateHakukohderyhmapalvelu
+            HakukohderyhmaPalvelu
             Haku
             Haut
             Forms
