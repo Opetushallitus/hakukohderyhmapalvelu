@@ -14,7 +14,7 @@
             [schema.core :as s]
             [stylefy.core :as stylefy]))
 
-(def ^:private input-row-height "40px")
+(def input-row-height "40px")
 
 (def ^:private input-container-styles
   (let [input-left-right-padding "10px"]
@@ -282,24 +282,3 @@
                                   (reset! local-value value')
                                   (when (validate value' type)
                                     (debounced on-change value'))))})]))))
-
-(def ^:private input-dropdown-styles
-  (merge
-    layout/vertical-align-center-styles
-    layout/horizontal-space-between-styles
-    input-container-styles))
-
-
-(s/defschema InputDropdownProps
-  {:cypressid        s/Str
-   :unselected-label s/Str})
-
-(s/defn input-dropdown :- s/Any
-  [{:keys [cypressid
-           unselected-label]} :- InputDropdownProps]
-  [:div (stylefy/use-style
-          input-dropdown-styles)
-   [:span
-    {:cypressid (str cypressid "-unselected-label")}
-    unselected-label]
-   [icon/arrow-drop-down]])
