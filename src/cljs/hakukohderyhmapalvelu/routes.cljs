@@ -22,6 +22,8 @@
     {:name       :panel/haun-asetukset
      :parameters {:query {:hakuOid string?}}}]])
 
+(def keys->kebab-case (partial cske/transform-keys csk/->kebab-case-keyword))
+
 (defn app-routes []
   (rfe/start!
     (rf/router
@@ -38,6 +40,6 @@
               name
               (re-frame/dispatch [:panel/set-active-panel
                                   {:panel      name
-                                   :parameters {:path  (cske/transform-keys csk/->kebab-case-keyword path)
-                                                :query (cske/transform-keys csk/->kebab-case-keyword query)}}]))))
+                                   :parameters {:path  (keys->kebab-case path)
+                                                :query (keys->kebab-case query)}}]))))
     {:use-fragment false}))
