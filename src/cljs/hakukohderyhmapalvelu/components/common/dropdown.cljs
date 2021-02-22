@@ -37,7 +37,8 @@
   {:cypressid        s/Str
    :unselected-label s/Str
    :dropdown-items s/Any
-   :selected-dropdown-item s/Any})
+   :selected-dropdown-item s/Any
+   :selection-fn s/Any})
 
 (defn dropdown-option
   [{:keys [item-str selection-fn]}]
@@ -51,25 +52,24 @@
   [{:keys [dropdown-items
            selection-fn]}]
   [:div (stylefy/use-style input-dropdown-item-container-styles)
-   (for [item @dropdown-items]
+   (for [item dropdown-items]
      ^{:key item} (dropdown-option
                     {:item-str item
-                     :selection-fn (fn [_]
-                                     (println "wtf123")
-                                     (selection-fn item))}))])
+                     :selection-fn #(selection-fn item)}))])
 
 (s/defn input-dropdown :- s/Any
   [{:keys [cypressid
            unselected-label
            dropdown-items
-           selected-dropdown-item]} :- InputDropdownProps]
+           selected-dropdown-item
+           selection-fn]} :- InputDropdownProps]
   (let [is-active (reagent/atom false)]
     (fn []
-      (let [arrow-icon (if @is-active icon/arrow-drop-up icon/arrow-drop-down)]
-
+      (let [arrow-icon (if @is-active icon/arrow-drop-up icon/arrow-drop-down)
+            dereffed-items @dropdown-items]
         [:div (stylefy/use-style
                 input-dropdown-container-styles
-                {:on-click #(swap! is-active not)})
+                {:on-click #(when (seq dereffed-items) (swap! is-active not))})
          [:div (stylefy/use-style
                  input-dropdown-selector-styles)
           [:span
@@ -77,5 +77,5 @@
            (or @selected-dropdown-item unselected-label)]
           [arrow-icon]]
          (when @is-active
-           (dropdown-item-container {:dropdown-items dropdown-items
-                                      :selection-fn  (partial reset! selected-dropdown-item)}))]))))
+           (dropdown-item-container {:dropdown-items dereffed-items
+                                      :selection-fn  selection-fn}))]))))
