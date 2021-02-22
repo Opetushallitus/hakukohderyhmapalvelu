@@ -20,6 +20,18 @@
     layout/horizontal-space-between-styles
     input-container-styles))
 
+(def ^:private input-dropdown-item-container-styles
+  {:display "flex"
+   :flex-direction "column"
+   :position "absolute"
+   :background-color "white"
+   :width "540px"
+   :margin-top input-row-height
+   :border-style "solid"
+   :border-width "1px"
+   :border-color colors/gray-lighten-3
+   :border-radius "3px"})
+
 
 (s/defschema InputDropdownProps
   {:cypressid        s/Str
@@ -35,19 +47,10 @@
           {:on-click #(selection-fn)})
    item-str])
 
-(defn dropdown-items-container
+(defn dropdown-item-container
   [{:keys [dropdown-items
            selection-fn]}]
-  [:div (stylefy/use-style {:display "flex"
-                            :flex-direction "column"
-                            :position "absolute"
-                            :background-color "white"
-                            :width "540px"
-                            :margin-top input-row-height
-                            :border-style "solid"
-                            :border-width "1px"
-                            :border-color colors/gray-lighten-3
-                            :border-radius "3px"})
+  [:div (stylefy/use-style input-dropdown-item-container-styles)
    (for [item dropdown-items]
      ^{:key item} (dropdown-option
                     {:item-str item
@@ -74,5 +77,5 @@
            (or @selected-dropdown-item unselected-label)]
           [arrow-icon]]
          (when @is-active
-           (dropdown-items-container {:dropdown-items dropdown-items
-                                      :selection-fn (partial reset! selected-dropdown-item)}))]))))
+           (dropdown-item-container {:dropdown-items dropdown-items
+                                      :selection-fn  (partial reset! selected-dropdown-item)}))]))))
