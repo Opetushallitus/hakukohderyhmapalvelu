@@ -1,10 +1,8 @@
 (ns hakukohderyhmapalvelu.components.common.input
-  (:require [hakukohderyhmapalvelu.components.common.material-icons :as icon]
-            [hakukohderyhmapalvelu.debounce :as d]
+  (:require [hakukohderyhmapalvelu.debounce :as d]
             [hakukohderyhmapalvelu.styles.styles-colors :as colors]
             [hakukohderyhmapalvelu.styles.styles-effects :as effects]
             [hakukohderyhmapalvelu.styles.styles-fonts :as fonts]
-            [hakukohderyhmapalvelu.styles.layout-styles :as layout]
             [hakukohderyhmapalvelu.validators.input-date-validator :as idv]
             [hakukohderyhmapalvelu.validators.input-date-time-validator :as idtv]
             [hakukohderyhmapalvelu.validators.input-number-validator :as inv]
