@@ -19,6 +19,8 @@
                                      :kayttooikeus          {:service-url-property s/Keyword
                                                              :session-cookie-name  s/Str}
                                      :oppijanumerorekisteri {:service-url-property s/Keyword
+                                                             :session-cookie-name  s/Str}
+                                     :kouta-internal        {:service-url-property s/Keyword
                                                              :session-cookie-name  s/Str}}}
    :urls                 {:virkailija-baseurl        s/Str
                           :hakukohderyhmapalvelu-url s/Str}
@@ -32,9 +34,9 @@
 
 (defn- parse-edn [source-string]
   (try
-       (edn/read-string source-string)
-       (catch Exception e
-         (report-error e "Ei saatu jäsennettyä EDN:ää syötteestä."))))
+    (edn/read-string source-string)
+    (catch Exception e
+      (report-error e "Ei saatu jäsennettyä EDN:ää syötteestä."))))
 
 (defn- validate-config [config-edn]
   (let [validation-result (s/check HakukohderyhmaConfig config-edn)]

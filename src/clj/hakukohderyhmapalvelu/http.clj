@@ -3,6 +3,7 @@
             [clj-http.client :as http]
             [hakukohderyhmapalvelu.caller-id :as caller-id]
             [hakukohderyhmapalvelu.config :as c]
+            [hakukohderyhmapalvelu.schemas.schema-util :as schema-util]
             [schema.core :as s]
             [schema-tools.core :as st]))
 
@@ -21,7 +22,7 @@
   (-> response
       :body
       (json/parse-string true)
-      (st/select-schema response-schema)))
+      (st/select-schema response-schema schema-util/extended-json-coercion-matcher)))
 
 (s/defn do-request
   [{:keys [body] :as opts} :- (st/open-schema

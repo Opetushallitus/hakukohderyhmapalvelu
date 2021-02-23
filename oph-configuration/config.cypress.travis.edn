@@ -12,7 +12,9 @@
                                    :kayttooikeus          {:service-url-property :cas.service.kayttooikeus-service
                                                            :session-cookie-name  "JSESSIONID"}
                                    :oppijanumerorekisteri {:service-url-property :cas.service.oppijanumerorekisteri
-                                                           :session-cookie-name  "JSESSIONID"}}}
+                                                           :session-cookie-name  "JSESSIONID"}
+                                   :kouta-internal        {:service-url-property :cas.service.kouta-internal
+                                                           :session-cookie-name  "session"}}}
  :urls                 {:virkailija-baseurl        "http://localhost"
                         :hakukohderyhmapalvelu-url "http://localhost:19033/hakukohderyhmapalvelu/"}
  :oph-organisaatio-oid "1.2.246.562.10.00000000001"

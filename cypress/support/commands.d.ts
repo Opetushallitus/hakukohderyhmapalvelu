@@ -2,13 +2,13 @@
 
 type Method = 'GET' | 'POST'
 
-type Service = 'organisaatio-service'
+type Service = 'organisaatio-service' | 'kouta-service'
 
 interface MockBackendRequestOpts {
   method: Method
   path: string
   service: Service
-  requestFixture: string
+  requestFixture?: string
   responseFixture: string
 }
 

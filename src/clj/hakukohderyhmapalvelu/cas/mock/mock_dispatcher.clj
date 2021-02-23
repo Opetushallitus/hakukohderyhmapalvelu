@@ -4,13 +4,14 @@
             [hakukohderyhmapalvelu.cas.mock.mock-dispatcher-protocol :as mock-dispatcher-protocol]
             [schema.core :as s]))
 
-(defrecord MockDispatcher [organisaatio-service-chan]
+(defrecord MockDispatcher [organisaatio-service-chan kouta-service-chan]
   mock-dispatcher-protocol/MockDispatcherProtocol
 
   (dispatch-mock [this {:keys [service] :as spec}]
     (s/validate schema/MockCasAuthenticatingClientRequest spec)
     (let [chan (case service
-                 :organisaatio-service organisaatio-service-chan)]
+                 :organisaatio-service organisaatio-service-chan
+                 :kouta-service kouta-service-chan)]
       (async/put! chan spec)))
 
   (reset-mocks [this]
