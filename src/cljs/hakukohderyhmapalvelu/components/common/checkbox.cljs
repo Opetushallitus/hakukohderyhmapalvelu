@@ -3,7 +3,8 @@
             [hakukohderyhmapalvelu.styles.styles-colors :as colors]
             [schema.core :as s]
             [stylefy.core :as stylefy]
-            [hakukohderyhmapalvelu.styles.layout-styles :as layout]))
+            [hakukohderyhmapalvelu.styles.layout-styles :as layout]
+            [hakukohderyhmapalvelu.components.common.label :as label-component]))
 
 (def ^:private checkbox-styles
   (merge
@@ -32,6 +33,14 @@
    :border-color     colors/gray-lighten-3
    :cursor           "default"
    :pointer-events   "none"})
+
+(def ^:private checkbox-with-label-styles
+  (merge
+    layout/vertical-align-center-styles
+    {:cursor          "pointer"
+     :justify-self    "end"
+     ::stylefy/manual [["div + label"
+                        {:margin-left "10px"}]]}))
 
 (s/defn checkbox
   [{:keys [id
@@ -135,3 +144,29 @@
             (merge {:style checkbox-slider-checkbox-checked-styles})
             disabled?
             (update :style merge checkbox-slider-checkbox-disabled-styles))]])
+
+(s/defn checkbox-with-label
+  [{:keys [checked?
+           cypressid
+           disabled?
+           id
+           label
+           on-change]} :- {:id        s/Str
+                           :checked?  s/Bool
+                           :cypressid s/Str
+                           :disabled? s/Bool
+                           :label     s/Str
+                           :on-change s/Any}]
+  (let [label-id (str id "-label")]
+    [:div (stylefy/use-style checkbox-with-label-styles)
+     [checkbox
+      {:aria-labelledby label-id
+       :checked?        checked?
+       :cypressid       (str cypressid "-input")
+       :disabled?       disabled?
+       :id              id
+       :on-change       on-change}]
+     [label-component/label
+      {:cypressid (str cypressid "-label")
+       :id        label-id
+       :label     label}]]))
