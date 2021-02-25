@@ -129,12 +129,19 @@
                           (-> (health-check/check-health health-checker)
                               response/ok
                               (response/content-type "text/html")))}}]
+       ["/hakukohderyhma-all"
+        {:get {:middleware auth
+               :summary    "Hakee kaikki talletetut hakukohderyhmät"
+               :responses  {200 {:body schema/HakukohderyhmaPostResponse}}
+               :parameters {:body schema/HakukohderyhmaPostRequest}
+               :handler    (fn [{session :session {hakukohderyhma :body} :parameters}]
+                             (response/ok (hakukohderyhma/get-all hakukohderyhma-service)))}}]
        ["/hakukohderyhma"
         {:post {:middleware auth
                 :tags       ["Hakukohderyhmä"]
                 :summary    "Tallentaa uuden hakukohderyhmän"
-                :responses  {200 {:body schema/HakukohderyhmaResponse}}
-                :parameters {:body schema/HakukohderyhmaRequest}
+                :responses  {200 {:body schema/HakukohderyhmaPostResponse}}
+                :parameters {:body schema/HakukohderyhmaPostRequest}
                 :handler    (fn [{session :session {hakukohderyhma :body} :parameters}]
                               (response/ok (hakukohderyhma/create hakukohderyhma-service session hakukohderyhma)))}}]
        ["/haku"

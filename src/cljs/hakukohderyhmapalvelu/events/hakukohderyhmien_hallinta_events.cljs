@@ -44,3 +44,19 @@
               :response-schema  schemas/HakukohderyhmaResponse
               :response-handler [:hakukohderyhmien-hallinta/handle-save-hakukohderyhma]
               :body             body}})))
+
+(events/reg-event-db-validating
+  :hakukohderyhmien-hallinta/handle-get-all-hakukohderyhma
+  (fn-traced [db [response]]
+    (println (str "DEBUG :hakukohderyhmien-hallinta/handle-get-all-hakukohderyhma: " {:response response}))))
+
+(events/reg-event-fx-validating
+  :hakukohderyhmien-hallinta/get-all-hakukohderyhma
+  (fn-traced [{db :db} [hakukohderyhma-name]]
+    (let [http-request-id :hakukohderyhmien-hallinta/get-all-hakukohderyhma]
+      {:db   (update db :requests (fnil conj #{}) http-request-id)
+       :http {:method           :get
+              :http-request-id  http-request-id
+              :path             "/hakukohderyhmapalvelu/api/hakukohderyhma-all"
+              :response-handler [:hakukohderyhmien-hallinta/handle-get-all-hakukohderyhma]
+              :body             {}}})))

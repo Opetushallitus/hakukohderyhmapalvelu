@@ -2,12 +2,15 @@
   (:require [schema.core :as s]
             [hakukohderyhmapalvelu.common-schemas :as c]))
 
-(s/defschema HakukohderyhmaRequest
+(s/defschema HakukohderyhmaPostRequest
   {:nimi c/Nimi})
 
-(s/defschema HakukohderyhmaResponse
+(s/defschema HakukohderyhmaPostResponse
   {:oid  s/Str
    :nimi c/Nimi})
+
+(s/defschema HakukohderyhmaGetResponse
+  s/Any)
 
 (s/defschema HaunTiedot
   {:oid  s/Str

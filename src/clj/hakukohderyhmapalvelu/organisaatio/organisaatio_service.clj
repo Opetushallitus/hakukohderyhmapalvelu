@@ -10,6 +10,10 @@
             [hakukohderyhmapalvelu.config :as c]
             [schema-tools.core :as st]))
 
+(def debug-hakukohderyhmat-delete-this-later ["r1" "r2" "r3"])
+
+(defn- parse-and-validate [response]
+  (http/parse-and-validate response schemas/PostNewOrganisaatioResponse))
 
 (defrecord OrganisaatioService [organisaatio-service-authenticating-client config]
   component/Lifecycle
@@ -22,6 +26,9 @@
     this)
 
   organisaatio-service-protocol/OrganisaatioServiceProtocol
+
+  (get-all-hakukohderyhmas [_]
+    debug-hakukohderyhmat-delete-this-later)
 
   (find-by-oids [_ oid-list]
     (if (not-empty oid-list)
@@ -36,7 +43,7 @@
       []))
 
   (post-new-organisaatio [_ hakukohderyhma]
-    (s/validate api-schemas/HakukohderyhmaRequest hakukohderyhma)
+    (s/validate api-schemas/HakukohderyhmaPostRequest hakukohderyhma)
     (let [url           (url/resolve-url :organisaatio-service.organisaatio.v4 config)
           parent-oid    (-> config :oph-organisaatio-oid)
           body          (merge hakukohderyhma
