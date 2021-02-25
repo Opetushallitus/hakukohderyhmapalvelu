@@ -1,6 +1,6 @@
 (ns hakukohderyhmapalvelu.i18n.translations)
 
-(def translations
+(def haun-asetukset-translations
   {:haun-asetukset/title
    {:fi "Haun asetukset"}
    :haun-asetukset/hakukohteiden-maara-rajoitettu
@@ -28,8 +28,10 @@
    :haun-asetukset/input-date-describedby
    {:fi "Syötä tähän kenttään päivämäärästä ja kellonajasta muodostuvan arvon päivämäärä"}
    :haun-asetukset/input-time-describedby
-   {:fi "Syötä tähän kenttään päivämäärästä ja kellonajasta muodostuvan arvon kellonaika"}
-   :application-periods
+   {:fi "Syötä tähän kenttään päivämäärästä ja kellonajasta muodostuvan arvon kellonaika"}})
+
+(def common-translations
+  {:application-periods
    {:fi "Hakuajat"}
    :application-form
    {:fi "Hakulomake"}
@@ -38,4 +40,20 @@
    :modify-haku
    {:fi "muokkaa hakua"}
    :required-legend
-   {:fi "* merkityt kentät ovat pakollisia"}})
+   {:fi "* merkityt kentät ovat pakollisia"}
+   :no-selectable-items
+   {:fi "Valittavia kohteita ei löytynyt"}})
+
+(def hakukohderyhma-translations
+  {:haku/haku
+   {:fi "Haku"}
+   :haku/haku-search-placeholder
+   {:fi "Haun nimi"}
+   :haku/show-all-haut
+   {:fi "Näytä myös päättyneet"}})
+
+(def translations
+  (merge
+    hakukohderyhma-translations
+    haun-asetukset-translations
+    common-translations))
