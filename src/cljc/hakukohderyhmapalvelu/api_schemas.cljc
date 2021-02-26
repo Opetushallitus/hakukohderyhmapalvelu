@@ -15,3 +15,10 @@
 
 (s/defschema HaunTiedotListResponse
   [HaunTiedot])
+
+(s/defschema Hakukohde
+  {:oid  s/Str
+   :nimi c/Nimi})
+
+(s/defschema HakukohdeListResponse
+  [Hakukohde])
