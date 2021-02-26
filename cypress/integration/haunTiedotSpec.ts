@@ -54,4 +54,24 @@ describe('Hakukohderyhmäpalvelu - haun tiedot', () => {
       )
     })
   })
+  describe('Hakukohteiden hakeminen haulle', () => {
+    beforeEach(() => {
+      cy.login()
+      cy.mockBackendRequest({
+        method: 'GET',
+        path: '/kouta-internal/hakukohde/search?haku=1.2.4.1.1.1',
+        service: 'kouta-service',
+        responseFixture: 'hakukohderyhmapalvelu/get-hakukohde-response.json',
+      })
+    })
+    it('Hakee listauksen haun hakukohteista', () => {
+      cy.request('/hakukohderyhmapalvelu/api/haku/1.2.4.1.1.1/hakukohde').then(
+        ({ body }) =>
+          expect(body).to.deep.equal([
+            { oid: '1.2.4.2.1.1', nimi: { fi: 'Testi-perustutkinto' } },
+            { oid: '1.2.4.2.1.2', nimi: { fi: 'Testi-jatkotutkinto' } },
+          ]),
+      )
+    })
+  })
 })
