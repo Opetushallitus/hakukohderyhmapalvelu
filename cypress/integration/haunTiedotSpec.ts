@@ -6,7 +6,6 @@ describe('Hakukohderyhmäpalvelu - haun tiedot', () => {
   before(() => {
     cy.resetMocks()
     cy.login()
-    cy.visit('/')
   })
   describe('Haun tietojen hakeminen', () => {
     beforeEach(() => {
