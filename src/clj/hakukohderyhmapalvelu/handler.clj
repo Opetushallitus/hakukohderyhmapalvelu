@@ -118,11 +118,12 @@
       ["/swagger.json"
        {:get {:no-doc  true
               :swagger {:info {:title       "Hakukohderyhmäpalvelu"
-                               :description "Hakukohderyhmäpalvelu"}}
+                               :description "Hakukohderyhmäpalvelun ulkoinen rajapinta."}}
               :handler (swagger/create-swagger-handler)}}]
       ["/api"
        ["/health"
         {:get {:summary "Terveystarkastus"
+               :tags    ["Admin"]
                :handler (fn [_]
                           (s/validate (p/extends-class-pred health-check/HealthChecker) health-checker)
                           (-> (health-check/check-health health-checker)
@@ -130,6 +131,7 @@
                               (response/content-type "text/html")))}}]
        ["/hakukohderyhma"
         {:post {:middleware auth
+                :tags       ["Hakukohderyhmä"]
                 :summary    "Tallentaa uuden hakukohderyhmän"
                 :responses  {200 {:body schema/HakukohderyhmaResponse}}
                 :parameters {:body schema/HakukohderyhmaRequest}
@@ -138,20 +140,22 @@
        ["/haku"
         [""
          {:get {:middleware auth
-                :summary "Hakee listauksen käyttäjän organisaation hauista"
-                :responses {200 {:body schema/HaunTiedotListResponse}}
+                :tags       ["Haku"]
+                :summary    "Hakee listauksen käyttäjän organisaation hauista"
+                :responses  {200 {:body schema/HaunTiedotListResponse}}
                 :parameters {:query {(s/optional-key :all) s/Bool}}
-                :handler (fn [{session :session {{is-all :all} :query} :parameters}]
-                           (response/ok
-                             (hakukohderyhma/list-haun-tiedot hakukohderyhma-service session (boolean is-all))))}}]
+                :handler    (fn [{session :session {{is-all :all} :query} :parameters}]
+                              (response/ok
+                                (hakukohderyhma/list-haun-tiedot hakukohderyhma-service session (boolean is-all))))}}]
         ["/:oid/hakukohde"
          {:get {:middleware auth
-                :summary "Hakee listauksen haun hakukohteista"
-                :responses {200 {:body s/Any}}
+                :tags       ["Haku"]
+                :summary    "Hakee listauksen haun hakukohteista"
+                :responses  {200 {:body schema/HakukohdeListResponse}}
                 :parameters {:path {:oid s/Str}}
-                :handler (fn [{session :session {{haku-oid :oid} :path} :parameters}]
-                           (response/ok
-                             (hakukohderyhma/list-haun-hakukohteet hakukohderyhma-service session haku-oid)))}}]]
+                :handler    (fn [{session :session {{haku-oid :oid} :path} :parameters}]
+                              (response/ok
+                                (hakukohderyhma/list-haun-hakukohteet hakukohderyhma-service session haku-oid)))}}]]
        (integration-test-routes args)]
       ["/auth"
        {:middleware (conj auth session-client/wrap-session-client-headers)}
