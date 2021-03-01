@@ -45,10 +45,14 @@
               :response-handler [:hakukohderyhmien-hallinta/handle-save-hakukohderyhma]
               :body             body}})))
 
+(def get-all-hakukohderyhma :hakukohderyhmien-hallinta/get-all-hakukohderyhma)
+(def handle-get-all-hakukohderyhma :hakukohderyhmien-hallinta/handle-get-all-hakukohderyhma)
+
 (events/reg-event-db-validating
   :hakukohderyhmien-hallinta/handle-get-all-hakukohderyhma
   (fn-traced [db [response]]
-    (println (str "DEBUG :hakukohderyhmien-hallinta/handle-get-all-hakukohderyhma: " {:response response}))))
+             (println (str "DEBUG :hakukohderyhmien-hallinta/handle-get-all-hakukohderyhma: " {:response response}))
+             (assoc-in db persisted-hakukohderyhmas (set response))))
 
 (events/reg-event-fx-validating
   :hakukohderyhmien-hallinta/get-all-hakukohderyhma
@@ -58,5 +62,5 @@
        :http {:method           :get
               :http-request-id  http-request-id
               :path             "/hakukohderyhmapalvelu/api/hakukohderyhma-all"
-              :response-handler [:hakukohderyhmien-hallinta/handle-get-all-hakukohderyhma]
+              :response-handler [handle-get-all-hakukohderyhma]
               :body             {}}})))
