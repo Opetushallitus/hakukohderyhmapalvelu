@@ -38,3 +38,9 @@
 (s/defschema PostNewOrganisaatioResponse
   {:organisaatio Organisaatio
    :status       s/Str})
+
+(s/defschema GetOrganisaatioChildrenSchema
+  (st/merge
+    api-schemas/HakukohderyhmaGetResponse
+    s/Any))
+
