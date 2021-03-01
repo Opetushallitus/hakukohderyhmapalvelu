@@ -38,7 +38,7 @@ start-cypress: start-docker-cypress
 	@$(PM2) start pm2.config.js --only hakukohderyhmapalvelu-frontend
 	@$(PM2) start pm2.config.js --only hakukohderyhmapalvelu-backend-cypress
 
-stop-cypress: kill-docker-cypress
+kill-cypress: kill-docker-cypress
 	@$(PM2) stop pm2.config.js --only hakukohderyhmapalvelu-backend-cypress
 
 restart: kill start
