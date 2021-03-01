@@ -14,7 +14,7 @@
 
 (def input-row-height "40px")
 
-(def ^:private input-container-styles
+(def input-container-styles
   (let [input-left-right-padding "10px"]
     {:border-width  "2px"
      :border-style  "solid"

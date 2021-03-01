@@ -1,7 +1,6 @@
 (ns hakukohderyhmapalvelu.views.hakukohderyhmien-hallinta-panel
   (:require [goog.string :as gstring]
             [hakukohderyhmapalvelu.components.common.button :as b]
-            [hakukohderyhmapalvelu.components.common.checkbox :as c]
             [hakukohderyhmapalvelu.components.common.dropdown :as dropdown]
             [hakukohderyhmapalvelu.components.common.input :as input]
             [hakukohderyhmapalvelu.components.common.panel :as p]
