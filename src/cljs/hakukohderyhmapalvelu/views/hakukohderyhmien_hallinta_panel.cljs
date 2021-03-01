@@ -1,12 +1,11 @@
 (ns hakukohderyhmapalvelu.views.hakukohderyhmien-hallinta-panel
   (:require [goog.string :as gstring]
             [hakukohderyhmapalvelu.components.common.button :as b]
-            [hakukohderyhmapalvelu.components.common.checkbox :as c]
             [hakukohderyhmapalvelu.components.common.input :as input]
-            [hakukohderyhmapalvelu.components.common.label :as label-component]
             [hakukohderyhmapalvelu.components.common.link :as l]
             [hakukohderyhmapalvelu.components.common.panel :as p]
             [hakukohderyhmapalvelu.styles.layout-styles :as layout]
+            [hakukohderyhmapalvelu.views.haku-view :as haun-tiedot-panel]
             [re-frame.core :as re-frame]
             [reagent.core :as reagent]
             [stylefy.core :as stylefy]
@@ -18,33 +17,6 @@
                   "[hakukohderyhma-row-start] \". hakukohderyhma-select\" 1fr [hakukohderyhma-row-end]"
                   "/ 1fr 1fr")
    :grid-gap "15px"})
-
-(defn- make-search-control-styles [style-prefix]
-  (merge layout/vertical-align-center-styles
-         {:cursor          "pointer"
-          :grid-area       style-prefix
-          :justify-self    "end"
-          ::stylefy/manual [["div + label"
-                             {:margin-left "10px"}]]}))
-
-(defn- checkbox-with-label
-  [{:keys [checkbox-id
-           cypressid
-           label
-           style-prefix]}]
-  (let [search-control-styles (make-search-control-styles style-prefix)
-        label-id              (str cypressid "-label")]
-    [:div (stylefy/use-style search-control-styles)
-     [c/checkbox
-      {:id              checkbox-id
-       :checked?        true
-       :cypressid       (str cypressid "-input")
-       :on-change       (fn [])
-       :aria-labelledby label-id}]
-     [label-component/label
-      {:cypressid (str cypressid "-label")
-       :label     label
-       :id        label-id}]]))
 
 (def ^:private grid-gap "10px")
 
@@ -100,27 +72,6 @@
     [:div
      (stylefy/use-style hakukohderyhmien-hallinta-input-styles)
      [input/input-text props']]))
-
-(defn- haku-search []
-  (let [input-id         "haku-search-input"
-        style-prefix     "haku-search"
-        text-input-label "Haun nimi"]
-    [input-with-label-and-control
-     {:control-component [checkbox-with-label {:checkbox-id  "haku-search-checkbox"
-                                               :cypressid    "haku-search-checkbox"
-                                               :label        "Näytä myös päättyneet"
-                                               :style-prefix (str style-prefix "-control")}]
-      :cypressid         "haku-search"
-      :input-component   [hakukohderyhmien-hallinta-input
-                          {:cypressid    "haku-search-input"
-                           :input-id     input-id
-                           :on-change    (fn [])
-                           :placeholder  text-input-label
-                           :aria-label   text-input-label
-                           :style-prefix (str style-prefix "-input")}]
-      :input-id          input-id
-      :style-prefix      style-prefix
-      :label             "Haku"}]))
 
 (defn on-save-button-click [hakukohderyhma-name]
   (re-frame/dispatch [:hakukohderyhmien-hallinta/save-hakukohderyhma hakukohderyhma-name]))
@@ -221,6 +172,6 @@
    {:cypressid "hakukohderyhmapalvelu-panel"}
    "Hakukohderyhmien hallinta"
    [:div (stylefy/use-style hakukohderyhmapalvelu-grid-styles)
-    [haku-search]
+    [haun-tiedot-panel/haku-search]
     [hakukohderyhma-create]
     [hakukohderyhma-select]]])

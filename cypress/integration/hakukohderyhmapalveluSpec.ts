@@ -8,9 +8,20 @@ import * as hl from '../selectors/hakukohderyhmanLisaysSelectors'
 import { PostHakukohderyhmaRequestFixture } from '../fixtures/hakukohderyhmapalvelu/PostHakukohderyhmaRequestFixture'
 
 describe('Hakukohderyhmäpalvelu', () => {
+  const mockHaut = () => {
+    cy.login()
+    cy.mockBackendRequest({
+      method: 'GET',
+      path: '/kouta-internal/haku/search?tarjoaja=1.2.246.562.10.00000000001',
+      service: 'kouta-service',
+      responseFixture: 'hakukohderyhmapalvelu/get-haku-response.json',
+    })
+    cy.login()
+  }
+
   before(() => {
     cy.resetMocks()
-    cy.login()
+    mockHaut()
     cy.visit('/')
   })
   it('Ohjaa käyttäjän polkuun /hakukohderyhmapalvelu/hakukohderyhmien-hallinta', () => {
@@ -28,25 +39,17 @@ describe('Hakukohderyhmäpalvelu', () => {
   })
   describe('Haun hakutoiminto', () => {
     it('Näyttää haun hakutoiminnon', () => {
-      cy.get(hh.haunHakutoimintoHeadingSelector).should('have.text', 'Haku')
-      cy.get(hh.haunHakutoimintoNaytaMyosPaattyneetCheckboxSelector).should(
-        'have.attr',
-        'role',
-        'checkbox',
-      )
+      cy.get(hh.haunHakutoimintoDivSelector).should('exist')
+      mockHaut()
+      cy.get(hh.haunHakutoimintoNaytaMyosPaattyneetCheckboxSelector)
+        .should('have.attr', 'aria-checked', 'false')
+        .should('have.attr', 'aria-disabled', 'false')
+        .click({ force: true })
+        .should('have.attr', 'aria-checked', 'true')
+        .should('have.attr', 'aria-disabled', 'false')
       cy.get(hh.haunHakutoimintoNaytaMyosPaattyneetTextSelector).should(
         'have.text',
         'Näytä myös päättyneet',
-      )
-      cy.get(hh.haunHakutoimintoTextInputSelector).should(
-        'have.attr',
-        'type',
-        'text',
-      )
-      cy.get(hh.haunHakutoimintoTextInputPlaceholderSelector).should(
-        'have.attr',
-        'placeholder',
-        'Haun nimi',
       )
     })
   })

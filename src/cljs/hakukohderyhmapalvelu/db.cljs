@@ -8,6 +8,7 @@
    :requests                          #{}
    :lang                              :fi
    :create-hakukohderyhma             {:visible? false}
+   :haku                              {:haut         []}
    :haut                              {}
    :forms                             {}
    :ohjausparametrit                  {}

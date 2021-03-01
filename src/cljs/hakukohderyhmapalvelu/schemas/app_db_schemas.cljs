@@ -43,14 +43,21 @@
   {:alkaa                    s/Str
    (s/optional-key :paattyy) s/Str})
 
-(s/defschema Haku
+(s/defschema HaunAsetukset
   {:nimi                               LocalizedString
    (s/optional-key :hakulomakeAtaruId) s/Str
    :kohdejoukkoKoodiUri                KoodiUri
    :hakuajat                           [Hakuaika]})
 
+(s/defschema HaunTiedot
+  {:oid  s/Str
+   :nimi LocalizedString})
+
 (s/defschema Haut
-  {:haut {s/Str Haku}})
+  {:haut {s/Str HaunAsetukset}})
+
+(s/defschema Haku
+  {:haku {:haut [HaunTiedot]}})
 
 (s/defschema Form
   {:key  s/Str
@@ -101,6 +108,7 @@
             Lang
             Requests
             CreateHakukohderyhmapalvelu
+            Haku
             Haut
             Forms
             HakujenOhjausparametrit))
