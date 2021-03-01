@@ -73,6 +73,11 @@ describe('Hakukohderyhmäpalvelu', () => {
       cy.get(
         hl.hakukohderyhmanLisaysSaveNewHakukohderyhmaButtonSelector,
       ).should('not.exist')
+      cy.get(hl.hakukohderyhmanLisaysDropdownSelectorDropped).should('not.exist')
+    })
+    it('Tyhjä hakukohderyhmä-dropdown ei reagoi painallukseen', () => {
+      cy.get(hl.hakukohderyhmanLisaysDropdownSelector).click({force: true})
+      cy.get(hl.hakukohderyhmanLisaysDropdownSelectorDropped).should('not.exist')
     })
     describe('Uuden hakukohderyhmän lisäys', () => {
       before('"Lisää hakukohderyhmä" -linkin klikkaus', () => {
@@ -146,6 +151,10 @@ describe('Hakukohderyhmäpalvelu', () => {
                 )
                 .should('have.value', hakukohderyhma.nimi.fi),
             )
+          })
+          it('Hakukohderyhmä dropdown reagoi painallukseen tallennuksen jälkeen', () => {
+            cy.get(hl.hakukohderyhmanLisaysDropdownSelector).click({force: true})
+            cy.get(hl.hakukohderyhmanLisaysDropdownSelectorDropped).should('exist')
           })
         })
       })
