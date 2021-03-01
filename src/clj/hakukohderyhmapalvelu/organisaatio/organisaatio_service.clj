@@ -28,7 +28,14 @@
   organisaatio-service-protocol/OrganisaatioServiceProtocol
 
   (get-all-hakukohderyhmas [_]
-    debug-hakukohderyhmat-delete-this-later)
+    (let [url           "https://virkailija.testiopintopolku.fi/organisaatio-service/rest/organisaatio/1.2.246.562.24.00000000001/ryhmat?includeImage=fals"
+          parent-oid    (-> config :oph-organisaatio-oid)
+          ;response-body (-> (authenticating-client-protocol/get organisaatio-service-authenticating-client
+          ;                                                      url
+          ;                                                      nil)
+          ;                  parse-and-validate)
+          ]
+      debug-hakukohderyhmat-delete-this-later))
 
   (find-by-oids [_ oid-list]
     (if (not-empty oid-list)

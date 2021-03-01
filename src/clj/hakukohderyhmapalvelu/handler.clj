@@ -132,8 +132,8 @@
        ["/hakukohderyhma-all"
         {:get {:middleware auth
                :summary    "Hakee kaikki talletetut hakukohderyhmät"
-               :responses  {200 {:body schema/HakukohderyhmaPostResponse}}
-               :parameters {:body schema/HakukohderyhmaPostRequest}
+               :responses  {200 {:body schema/HakukohderyhmaGetResponse}}
+               :parameters {:query {(s/optional-key :all) s/Bool}}
                :handler    (fn [{session :session {hakukohderyhma :body} :parameters}]
                              (response/ok (hakukohderyhma/get-all hakukohderyhma-service)))}}]
        ["/hakukohderyhma"
