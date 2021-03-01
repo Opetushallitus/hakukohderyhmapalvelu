@@ -10,7 +10,7 @@
   hakukohderyhma-service-protocol/HakukohderyhmaServiceProtocol
 
   (get-all [_]
-    (organisaatio/get-all-hakukohderyhmas organisaatio-service))
+    (organisaatio/get-organisaatio-children organisaatio-service))
 
   (create [_ session hakukohderyhma]
     (let [r (organisaatio/post-new-organisaatio organisaatio-service hakukohderyhma)]

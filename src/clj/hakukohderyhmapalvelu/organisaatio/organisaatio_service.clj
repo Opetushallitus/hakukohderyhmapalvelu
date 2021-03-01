@@ -3,17 +3,12 @@
             [hakukohderyhmapalvelu.api-schemas :as api-schemas]
             [hakukohderyhmapalvelu.cas.cas-authenticating-client-protocol :as authenticating-client-protocol]
             [hakukohderyhmapalvelu.http :as http]
-            [hakukohderyhmapalvelu.oph-url-properties :as url]
+            [hakukohderyhmapalvelu.oph-url-properties :as oph-url]
             [hakukohderyhmapalvelu.organisaatio.organisaatio-protocol :as organisaatio-service-protocol]
             [hakukohderyhmapalvelu.schemas.organisaatio-service-schemas :as schemas]
             [schema.core :as s]
             [hakukohderyhmapalvelu.config :as c]
             [schema-tools.core :as st]))
-
-(def debug-hakukohderyhmat-delete-this-later ["r1" "r2" "r3"])
-
-(defn- parse-and-validate [response]
-  (http/parse-and-validate response schemas/PostNewOrganisaatioResponse))
 
 (defrecord OrganisaatioService [organisaatio-service-authenticating-client config]
   component/Lifecycle
@@ -27,19 +22,25 @@
 
   organisaatio-service-protocol/OrganisaatioServiceProtocol
 
-  (get-all-hakukohderyhmas [_]
-    (let [url           "https://virkailija.testiopintopolku.fi/organisaatio-service/rest/organisaatio/1.2.246.562.24.00000000001/ryhmat?includeImage=fals"
-          parent-oid    (-> config :oph-organisaatio-oid)
-          ;response-body (-> (authenticating-client-protocol/get organisaatio-service-authenticating-client
-          ;                                                      url
-          ;                                                      nil)
-          ;                  parse-and-validate)
-          ]
-      debug-hakukohderyhmat-delete-this-later))
+  (get-organisaatio-children [_]
+    (let [locator (str "/" (-> config :oph-organisaatio-oid ) "/children")
+          base-url (oph-url/resolve-url :organisaatio-service.organisaatio.v4 config)
+          url (str base-url locator)                              ;https://virkailija.testiopintopolku.fi/organisaatio-service/rest/organisaatio/v4
+          _ (println "GETTING")
+          _ (println "GETTING")
+          _ (println "GETTING")
+          response-body (-> (authenticating-client-protocol/get organisaatio-service-authenticating-client
+                                                                url
+                                                                nil)
+                            (http/parse-and-validate schemas/GetOrganisaatioChildrenSchema))]
+      (println "GOT")
+      (println "GOT")
+      (println "GOT")
+      response-body))
 
   (find-by-oids [_ oid-list]
     (if (not-empty oid-list)
-      (let [url (url/resolve-url :organisaatio-service.organisaatio.v4.findbyoids config)
+      (let [url (oph-url/resolve-url :organisaatio-service.organisaatio.v4.findbyoids config)
             response-body (-> (authenticating-client-protocol/post organisaatio-service-authenticating-client
                                                                    {:url  url
                                                                     :body oid-list}
