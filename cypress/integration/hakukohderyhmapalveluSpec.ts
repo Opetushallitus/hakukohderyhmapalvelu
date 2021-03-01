@@ -59,7 +59,7 @@ describe('Hakukohderyhmäpalvelu', () => {
         'have.text',
         'Hakukohderyhmät',
       )
-      cy.get(hl.hakukohderyhmanLisaysClosedDropdownSelector).should(
+      cy.get(hl.hakukohderyhmanLisaysDropdownSelector).should(
         'have.text',
         'Hakukohderyhmä',
       )

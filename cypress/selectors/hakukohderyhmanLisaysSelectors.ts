@@ -1,8 +1,8 @@
 export const hakukohderyhmanLisaysHeadingSelector =
   'label[cypressid=hakukohderyhma-select-label]:visible'
 
-export const hakukohderyhmanLisaysClosedDropdownSelector =
-  'span[cypressid=hakukohderyhma-select-dropdown-unselected-label]:visible'
+export const hakukohderyhmanLisaysDropdownSelector =
+  'span[cypressid=hakukohderyhma-select-dropdown-label]:visible'
 
 export const hakukohderyhmanLisaysLisaaUusiRyhmaLinkSelector =
   'button[cypressid=hakukohderyhma-select-add-new-hakukohderyhma]:visible'
