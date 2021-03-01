@@ -19,4 +19,7 @@
       r))
 
   (list-haun-tiedot [_ session is-all]
-    (kouta/list-haun-tiedot kouta-service is-all)))
+    (kouta/list-haun-tiedot kouta-service is-all))
+
+  (list-haun-hakukohteet [_ session haku-oid]
+    (kouta/list-haun-hakukohteet kouta-service haku-oid)))

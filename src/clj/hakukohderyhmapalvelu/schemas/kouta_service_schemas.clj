@@ -4,7 +4,7 @@
   (:import (java.time LocalDateTime)))
 
 (s/defschema Hakuaika
-  {:alkaa LocalDateTime
+  {:alkaa                    LocalDateTime
    (s/optional-key :paattyy) LocalDateTime})
 
 (s/defschema HaunTiedot
@@ -15,3 +15,11 @@
 
 (s/defschema HaunTiedotListResponse
   [HaunTiedot])
+
+(s/defschema Hakukohde
+  {:oid  s/Str
+   :nimi c/Nimi
+   s/Any s/Any})
+
+(s/defschema HakukohdeListResponse
+  [Hakukohde])

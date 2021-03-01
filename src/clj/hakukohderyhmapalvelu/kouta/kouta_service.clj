@@ -2,7 +2,7 @@
   (:require [com.stuartsierra.component :as component]
             [hakukohderyhmapalvelu.cas.cas-authenticating-client-protocol :as authenticating-client-protocol]
             [hakukohderyhmapalvelu.http :as http]
-            [hakukohderyhmapalvelu.oph-url-properties :as url]
+            [hakukohderyhmapalvelu.oph-url-properties :as oph-url]
             [hakukohderyhmapalvelu.kouta.kouta-protocol :as kouta-service-protocol]
             [hakukohderyhmapalvelu.schemas.kouta-service-schemas :as schemas]
             [hakukohderyhmapalvelu.api-schemas :as api-schemas]
@@ -44,10 +44,17 @@
   (list-haun-tiedot [_ is-all]
     (let [now (LocalDateTime/now)
           organisaatio-oid (:oph-organisaatio-oid config)
-          url (url/resolve-url :kouta-internal.haku.search config {:tarjoaja organisaatio-oid})
+          url (oph-url/resolve-url :kouta-internal.haku.search config {:tarjoaja organisaatio-oid})
           filter-fn (if is-all identity (partial not-over? now))]
       (as-> url res'
             (authenticating-client-protocol/get kouta-authenticating-client res' schemas/HaunTiedotListResponse)
             (http/parse-and-validate res' schemas/HaunTiedotListResponse)
             (filter filter-fn res')
-            (st/select-schema res' api-schemas/HaunTiedotListResponse)))))
+            (st/select-schema res' api-schemas/HaunTiedotListResponse))))
+
+  (list-haun-hakukohteet [_ haku-oid]
+    (let [url (oph-url/resolve-url :kouta-internal.hakukohde.search config {:haku haku-oid})]
+      (as-> url res'
+            (authenticating-client-protocol/get kouta-authenticating-client res' schemas/HakukohdeListResponse)
+            (http/parse-and-validate res' schemas/HaunTiedotListResponse)
+            (st/select-schema res' api-schemas/HakukohdeListResponse)))))
