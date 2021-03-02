@@ -26,8 +26,8 @@
 
 (s/defschema HakukohderyhmaPalvelu
   {:hakukohderyhma
-   {:persisted #{s/Str}
-    :selected-hakukohderyhma s/Any
+   {:persisted                      #{s/Str}
+    :selected-hakukohderyhma        s/Any
     :create-hakukohderyhma-visible? s/Bool}})
 
 (s/defschema Requests

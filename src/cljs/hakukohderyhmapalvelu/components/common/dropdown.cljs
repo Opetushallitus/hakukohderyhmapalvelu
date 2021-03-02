@@ -11,8 +11,8 @@
   (merge
     layout/vertical-align-center-styles
     {:flex-direction "column"
-     :width "100%"
-     ::stylefy/mode {:hover {:cursor "pointer"}}}))
+     :width          "100%"
+     ::stylefy/mode  {:hover {:cursor "pointer"}}}))
 
 (def ^:private input-dropdown-selector-styles
   (merge
@@ -21,24 +21,24 @@
     input-container-styles))
 
 (def ^:private input-dropdown-item-container-styles
-  {:display "flex"
-   :flex-direction "column"
-   :position "absolute"
+  {:display          "flex"
+   :flex-direction   "column"
+   :position         "absolute"
    :background-color "white"
-   :width "540px"
-   :margin-top input-row-height
-   :border-style "solid"
-   :border-width "1px"
-   :border-color colors/gray-lighten-3
-   :border-radius "3px"})
+   :width            "540px"
+   :margin-top       input-row-height
+   :border-style     "solid"
+   :border-width     "1px"
+   :border-color     colors/gray-lighten-3
+   :border-radius    "3px"})
 
 
 (s/defschema InputDropdownProps
-  {:cypressid        s/Str
-   :unselected-label s/Str
-   :dropdown-items s/Any
+  {:cypressid              s/Str
+   :unselected-label       s/Str
+   :dropdown-items         s/Any
    :selected-dropdown-item s/Any
-   :selection-fn s/Any})
+   :selection-fn           s/Any})
 
 (defn dropdown-main-body
   [{:keys [cypressid
@@ -55,7 +55,7 @@
 (defn dropdown-option
   [{:keys [item-str selection-fn]}]
   [:div (stylefy/use-style
-          {:padding "6px 9px"
+          {:padding       "6px 9px"
            ::stylefy/mode {:hover {:background-color colors/blue-lighten-3}}}
           {:on-click #(selection-fn)})
    item-str])
@@ -66,7 +66,7 @@
   [:div (stylefy/use-style input-dropdown-item-container-styles)
    (for [item dropdown-items]
      ^{:key item} (dropdown-option
-                    {:item-str item
+                    {:item-str     item
                      :selection-fn #(selection-fn item)}))])
 
 (s/defn input-dropdown :- s/Any
@@ -82,10 +82,10 @@
         [:div (stylefy/use-style
                 input-dropdown-container-styles
                 {:on-click #(when (seq dereffed-items) (swap! is-active not))})
-         (dropdown-main-body {:cypressid           cypressid
+         (dropdown-main-body {:cypressid              cypressid
                               :selected-dropdown-item selected-dropdown-item
                               :unselected-label       unselected-label
                               :is-dropped-down        is-dropped-down})
          (when is-dropped-down
            (dropdown-item-container {:dropdown-items dereffed-items
-                                     :selection-fn  selection-fn}))]))))
+                                     :selection-fn   selection-fn}))]))))

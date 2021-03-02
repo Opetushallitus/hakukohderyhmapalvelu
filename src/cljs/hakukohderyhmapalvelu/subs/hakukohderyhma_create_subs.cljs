@@ -23,12 +23,12 @@
   :hakukohderyhmien-hallinta/get-currently-saved-hakukohderyhmas
   (fn []
     [(re-frame/subscribe [:state-query persisted-hakukohderyhmas])])
-  (fn [[_]]
-    _))
+  (fn [[saved-ryhmat]]
+    saved-ryhmat))
 
 (re-frame/reg-sub
   :hakukohderyhmien-hallinta/get-currently-selected-hakukohderyhma
   (fn []
     [(re-frame/subscribe [:state-query selected-hakukohderyhma])])
-  (fn [[_]]
-    _))
+  (fn [[selected-ryhma]]
+    selected-ryhma))
