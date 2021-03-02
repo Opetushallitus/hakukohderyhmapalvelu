@@ -135,7 +135,7 @@ describe('Hakukohderyhmäpalvelu', () => {
               'post-hakukohderyhma',
             )
           })
-          it('Tallentaa hakukohderyhmän', () => {
+          it('Tallentaa hakukohderyhmän, jonka jälkeen ryhmän nimi näkyy dropdown valinnoissa', () => {
             cy.get(
               hl.hakukohderyhmanLisaysSaveNewHakukohderyhmaButtonSelector,
             ).click({ force: true })
@@ -144,17 +144,13 @@ describe('Hakukohderyhmäpalvelu', () => {
             ).should('be.enabled')
             cy.get<PostHakukohderyhmaRequestFixture>(
               '@post-hakukohderyhma-request',
-            ).then(hakukohderyhma =>
-              cy
-                .get(
-                  hl.hakukohderyhmanLisaysNewHakukohderyhmaNameTextInputSelector,
-                )
-                .should('have.value', hakukohderyhma.nimi.fi),
+            ).then(hakukohderyhma => {
+                cy.get(hl.hakukohderyhmanLisaysNewHakukohderyhmaNameTextInputSelector).should('have.value', hakukohderyhma.nimi.fi)
+                cy.get(hl.hakukohderyhmanLisaysDropdownSelector).click({force: true})
+                cy.get(hl.hakukohderyhmanLisaysDropdownSelectorDropped).should('exist')
+                cy.get(hl.hakukohderyhmanLisaysDropdownSelectorItem(hakukohderyhma.nimi.fi)).should('exist')
+            }
             )
-          })
-          it('Hakukohderyhmä dropdown reagoi painallukseen tallennuksen jälkeen', () => {
-            cy.get(hl.hakukohderyhmanLisaysDropdownSelector).click({force: true})
-            cy.get(hl.hakukohderyhmanLisaysDropdownSelectorDropped).should('exist')
           })
         })
       })

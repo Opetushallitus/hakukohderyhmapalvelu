@@ -52,12 +52,13 @@
     (or @selected-dropdown-item unselected-label)]
    [(if is-dropped-down icon/arrow-drop-up icon/arrow-drop-down)]])
 
-(defn dropdown-option
+(defn dropdown-item
   [{:keys [item-str selection-fn]}]
   [:div (stylefy/use-style
           {:padding       "6px 9px"
            ::stylefy/mode {:hover {:background-color colors/blue-lighten-3}}}
-          {:on-click #(selection-fn)})
+          {:cypressid (str "dropdown-selector--" item-str)
+           :on-click  #(selection-fn)})
    item-str])
 
 (defn dropdown-item-container
@@ -65,7 +66,7 @@
            selection-fn]}]
   [:div (stylefy/use-style input-dropdown-item-container-styles)
    (for [item dropdown-items]
-     ^{:key item} (dropdown-option
+     ^{:key item} (dropdown-item
                     {:item-str     item
                      :selection-fn #(selection-fn item)}))])
 
