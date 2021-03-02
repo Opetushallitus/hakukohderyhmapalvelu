@@ -2,7 +2,6 @@
   (:require [goog.string :as gstring]
             [hakukohderyhmapalvelu.components.common.button :as b]
             [hakukohderyhmapalvelu.components.common.input :as input]
-            [hakukohderyhmapalvelu.components.common.link :as l]
             [hakukohderyhmapalvelu.components.common.panel :as p]
             [hakukohderyhmapalvelu.styles.layout-styles :as layout]
             [hakukohderyhmapalvelu.views.haku-view :as haun-tiedot-panel]
@@ -128,11 +127,12 @@
 
 (defn- add-new-hakukohderyhma-link [{:keys [cypressid]}]
   [:div (stylefy/use-style add-new-hakukohderyhma-link-styles)
-   [l/link-with-left-separator {:cypressid cypressid
-                                :href      ""
-                                :label     "Luo uusi ryhmä"
-                                :on-click  (fn [_]
-                                             (re-frame/dispatch [:hakukohderyhmien-hallinta/toggle-grid-visibility]))}]])
+   [b/text-button {:cypressid    cypressid
+                   :disabled?    false
+                   :style-prefix "new-hakukohderyhma-btn"
+                   :label        "Luo uusi ryhmä"
+                   :on-click     (fn [_]
+                                   (re-frame/dispatch [:hakukohderyhmien-hallinta/toggle-grid-visibility]))}]])
 
 (defn- make-hakukohderyhmien-hallinta-input-dropdown-styles
   [style-prefix]

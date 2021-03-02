@@ -36,6 +36,27 @@
                           [:focus (merge hover-styles
                                          {:filter effects/drop-shadow-effect-blue})]]}))
 
+(defn- make-text-button-styles [style-prefix]
+  {:background      "none"
+   :border          "none"
+   :color           colors/blue
+   :cursor          "pointer"
+   :font-size       "1rem"
+   :grid-area       style-prefix
+   :margin          0
+   :padding         0
+   :text-decoration "underline"
+   ::stylefy/mode   [[":hover:not(:disabled)" {:color colors/blue-lighten-1}]]})
+
+(defn- create-button [{:keys [cypressid disabled? label on-click style]}]
+  [:button (stylefy/use-style
+             style
+             {:cypressid cypressid
+              :disabled  disabled?
+              :on-click  (fn []
+                           (on-click))})
+   label])
+
 (s/defn button :- s/Any
   [{:keys [cypressid
            disabled?
@@ -43,11 +64,21 @@
            on-click
            style-prefix]} :- ButtonProps]
   (let [button-styles (make-button-styles style-prefix)]
-    [:button (stylefy/use-style
-               button-styles
-               {:cypressid cypressid
-                :disabled  disabled?
-                :on-click  (fn []
-                             (on-click))})
+    (create-button {:cypressid cypressid
+                    :disabled? disabled?
+                    :label     label
+                    :on-click  on-click
+                    :style     button-styles})))
 
-     label]))
+(s/defn text-button
+  [{:keys [cypressid
+           disabled?
+           label
+           on-click
+           style-prefix]} :- ButtonProps]
+  (let [button-styles (make-text-button-styles style-prefix)]
+    (create-button {:cypressid cypressid
+                    :disabled? disabled?
+                    :label     label
+                    :on-click  on-click
+                    :style     button-styles})))
