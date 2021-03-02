@@ -7,7 +7,9 @@ export const hakukohderyhmanLisaysDropdownSelector =
 export const hakukohderyhmanLisaysDropdownSelectorDropped =
   'span[cypressid=hakukohderyhma-select-dropdown-label--dropped]:visible'
 
-export const hakukohderyhmanLisaysDropdownSelectorItem = (itemName: String) => `div[cypressid=dropdown-selector--${itemName}]:visible`
+export const hakukohderyhmanLisaysDropdownSelectorItem = (
+  itemName: string,
+): string => `div[cypressid=dropdown-selector--${itemName}]:visible`
 
 export const hakukohderyhmanLisaysLisaaUusiRyhmaLinkSelector =
   'button[cypressid=hakukohderyhma-select-add-new-hakukohderyhma]:visible'

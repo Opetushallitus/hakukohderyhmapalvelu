@@ -73,11 +73,15 @@ describe('Hakukohderyhmäpalvelu', () => {
       cy.get(
         hl.hakukohderyhmanLisaysSaveNewHakukohderyhmaButtonSelector,
       ).should('not.exist')
-      cy.get(hl.hakukohderyhmanLisaysDropdownSelectorDropped).should('not.exist')
+      cy.get(hl.hakukohderyhmanLisaysDropdownSelectorDropped).should(
+        'not.exist',
+      )
     })
     it('Tyhjä hakukohderyhmä-dropdown ei reagoi painallukseen', () => {
-      cy.get(hl.hakukohderyhmanLisaysDropdownSelector).click({force: true})
-      cy.get(hl.hakukohderyhmanLisaysDropdownSelectorDropped).should('not.exist')
+      cy.get(hl.hakukohderyhmanLisaysDropdownSelector).click({ force: true })
+      cy.get(hl.hakukohderyhmanLisaysDropdownSelectorDropped).should(
+        'not.exist',
+      )
     })
     describe('Uuden hakukohderyhmän lisäys', () => {
       before('"Lisää hakukohderyhmä" -linkin klikkaus', () => {
@@ -145,12 +149,22 @@ describe('Hakukohderyhmäpalvelu', () => {
             cy.get<PostHakukohderyhmaRequestFixture>(
               '@post-hakukohderyhma-request',
             ).then(hakukohderyhma => {
-                cy.get(hl.hakukohderyhmanLisaysNewHakukohderyhmaNameTextInputSelector).should('have.value', hakukohderyhma.nimi.fi)
-                cy.get(hl.hakukohderyhmanLisaysDropdownSelector).click({force: true})
-                cy.get(hl.hakukohderyhmanLisaysDropdownSelectorDropped).should('exist')
-                cy.get(hl.hakukohderyhmanLisaysDropdownSelectorItem(hakukohderyhma.nimi.fi)).should('exist')
-            }
-            )
+              cy.get(
+                hl.hakukohderyhmanLisaysNewHakukohderyhmaNameTextInputSelector,
+              ).should('have.value', hakukohderyhma.nimi.fi)
+              cy.get(hl.hakukohderyhmanLisaysDropdownSelector).click({
+                force: true,
+              })
+              cy.get(hl.hakukohderyhmanLisaysDropdownSelectorDropped).should(
+                'exist',
+              )
+
+              cy.get(
+                hl.hakukohderyhmanLisaysDropdownSelectorItem(
+                  hakukohderyhma.nimi.fi,
+                ),)// eslint-disable-line prettier/prettier
+                .should('exist')
+            })
           })
         })
       })
