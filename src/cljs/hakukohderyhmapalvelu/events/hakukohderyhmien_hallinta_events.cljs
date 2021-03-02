@@ -20,7 +20,7 @@
 
 (events/reg-event-db-validating
   :hakukohderyhmien-hallinta/handle-save-hakukohderyhma
-  (fn-traced [db [hakukohderyhma response]]
+  (fn-traced [db [hakukohderyhma _]]
     (update-in db persisted-hakukohderyhmas #(conj % (:nimi hakukohderyhma)))))
 
 (events/reg-event-fx-validating
