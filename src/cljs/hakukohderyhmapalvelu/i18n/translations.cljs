@@ -50,7 +50,9 @@
    :haku/haku-search-placeholder
    {:fi "Haun nimi"}
    :haku/show-all-haut
-   {:fi "Näytä myös päättyneet"}})
+   {:fi "Näytä myös päättyneet"}
+   :haku/hakukohteet
+   {:fi "Hakukohteet"}})
 
 (def translations
   (merge
