@@ -24,19 +24,31 @@
 (s/defschema Lang
   {:lang (s/enum :fi)})
 
-(s/defschema HakukohderyhmaPalvelu
-  {:hakukohderyhma
-   {:persisted                      #{s/Str}
-    :selected-hakukohderyhma        s/Any
-    :create-hakukohderyhma-visible? s/Bool}})
-
-(s/defschema Requests
-  {:requests #{s/Keyword}})
-
 (s/defschema LocalizedString
   {(s/optional-key :fi) s/Str
    (s/optional-key :sv) s/Str
    (s/optional-key :en) s/Str})
+
+(s/defschema Hakukohde
+  {:oid         s/Str
+   :nimi        LocalizedString
+   :is-selected s/Bool})
+
+(s/defschema HaunTiedot
+  {:oid         s/Str
+   :nimi        LocalizedString
+   :is-selected s/Bool
+   :hakukohteet [Hakukohde]})
+
+(s/defschema HakukohderyhmaPalvelu
+  {:hakukohderyhma
+   {:persisted                      #{s/Str}
+    :selected-hakukohderyhma        s/Any
+    :create-hakukohderyhma-visible? s/Bool
+    :haut                           [HaunTiedot]}})
+
+(s/defschema Requests
+  {:requests #{s/Keyword}})
 
 (s/defschema KoodiUri
   (s/constrained s/Str #(clojure.string/includes? % "#")))
@@ -51,15 +63,8 @@
    :kohdejoukkoKoodiUri                KoodiUri
    :hakuajat                           [Hakuaika]})
 
-(s/defschema HaunTiedot
-  {:oid  s/Str
-   :nimi LocalizedString})
-
 (s/defschema Haut
-  {:haut {s/Str HaunAsetukset}})
-
-(s/defschema Haku
-  {:haku {:haut [HaunTiedot]}})
+  {:haun-asetukset {:haut {s/Str HaunAsetukset}}})
 
 (s/defschema Form
   {:key  s/Str
@@ -110,7 +115,6 @@
             Lang
             Requests
             HakukohderyhmaPalvelu
-            Haku
             Haut
             Forms
             HakujenOhjausparametrit))
