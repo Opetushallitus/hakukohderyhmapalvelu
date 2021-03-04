@@ -11,6 +11,7 @@
 (def gray-lighten-1 "#666666")
 (def gray-lighten-3 "#CCCCCC")
 (def gray-lighten-5 "#F5F5F5")
+(def gray-lighten-6 "#FAFAFA")
 
 (def white "#FFFFFF")
 
