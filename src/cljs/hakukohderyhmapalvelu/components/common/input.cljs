@@ -16,12 +16,11 @@
 
 (def input-container-styles
   (let [input-left-right-padding "10px"]
-    {:border-width  "2px"
+    {:border-width  "1px"
      :border-style  "solid"
      :border-color  colors/gray-lighten-3
-     :border-radius "3px"
+     :border-radius "4px"
      :box-sizing    "border-box"
-     :box-shadow    effects/inset-box-shadow-effect-black
      :color         colors/black
      :font-size     "16px"
      :font-weight   fonts/font-weight-regular
