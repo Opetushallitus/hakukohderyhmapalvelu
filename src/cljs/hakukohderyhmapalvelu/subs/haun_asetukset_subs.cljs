@@ -23,7 +23,7 @@
 (re-frame/reg-sub
   :haun-asetukset/haku
   (fn [[_ haku-oid]]
-    [(re-frame/subscribe [:state-query [:haut haku-oid]])])
+    [(re-frame/subscribe [:state-query [:haun-asetukset :haut haku-oid]])])
   (fn [[haku]]
     haku))
 

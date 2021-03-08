@@ -46,7 +46,7 @@
                   :kohdejoukkoKoodiUri
                   :hakuajat])]
       (assoc-in db
-                [:haut haku-oid]
+                [:haun-asetukset :haut haku-oid]
                 haku))))
 
 (events/reg-event-fx-validating

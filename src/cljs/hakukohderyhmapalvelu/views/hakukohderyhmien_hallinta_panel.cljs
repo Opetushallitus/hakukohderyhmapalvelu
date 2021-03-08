@@ -13,8 +13,8 @@
 
 (def ^:private hakukohderyhmapalvelu-grid-styles
   {:display  "grid"
-   :grid     (str "[haku-row-start] \"haku-search hakukohderyhma-create\" 1fr [haku-row-end]"
-                  "[hakukohderyhma-row-start] \". hakukohderyhma-select\" 1fr [hakukohderyhma-row-end]"
+   :grid     (str "[haku-row-start] \"haku-search hakukohderyhma-create\" [haku-row-end]"
+                  "[hakukohderyhma-row-start] \"hakukohde-search hakukohderyhma-select\" 1fr [hakukohderyhma-row-end]"
                   "/ 1fr 1fr")
    :grid-gap "15px"})
 
@@ -178,4 +178,5 @@
    [:div (stylefy/use-style hakukohderyhmapalvelu-grid-styles)
     [haun-tiedot-panel/haku-search]
     [hakukohderyhma-create]
+    [haun-tiedot-panel/hakukohteet-container]
     [hakukohderyhma-select]]])

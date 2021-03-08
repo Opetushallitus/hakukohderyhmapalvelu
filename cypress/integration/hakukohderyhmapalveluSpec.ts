@@ -19,6 +19,17 @@ describe('Hakukohderyhmäpalvelu', () => {
     cy.login()
   }
 
+  const mockHakukohteet = () => {
+    cy.login()
+    cy.mockBackendRequest({
+      method: 'GET',
+      path: '/kouta-internal/hakukohde/search?haku=1.2.3.4.5.3',
+      service: 'kouta-service',
+      responseFixture: 'hakukohderyhmapalvelu/get-hakukohde-response.json',
+    })
+    cy.login()
+  }
+
   before(() => {
     cy.resetMocks()
     mockHaut()
@@ -51,6 +62,27 @@ describe('Hakukohderyhmäpalvelu', () => {
         'have.text',
         'Näytä myös päättyneet',
       )
+    })
+
+    it('Haun valinta - näyttää hakukohteen', () => {
+      cy.get(hh.hakukohteetContainerSelector)
+        .children()
+        .should('have.length', 0)
+
+      mockHakukohteet()
+      cy.get(hh.haunHakutoimintoDivSelectorChildDivs)
+        .eq(1)
+        .type('Testihaku 3{enter}')
+        .get(hh.hakukohteetContainerSelector)
+        .children()
+        .should('have.length', 1)
+
+      cy.get(hh.hakukohteetContainerSelector)
+        .children()
+        .eq(0)
+        .should($el => {
+          expect($el.text()).to.equal('Testi-perustutkinto')
+        })
     })
   })
   describe('Hakukohderyhmän lisäystoiminto', () => {
