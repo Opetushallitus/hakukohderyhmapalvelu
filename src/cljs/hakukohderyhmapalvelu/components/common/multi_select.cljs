@@ -33,7 +33,7 @@
    :label       s/Str
    :value       s/Any})
 
-(defn- create-multi-select-option [select-fn {:keys [value label is-selected]}]
+(defn- multi-select-option [select-fn {:keys [value label is-selected]}]
   (let [style (if is-selected option-style-selected option-style)
         on-click #(select-fn value)]
     (fn []
@@ -50,4 +50,4 @@
         container-style (if is-empty multi-select-style-empty multi-select-style)]
     [:div (stylefy/use-style container-style {:cypressid cypressid})
      (when-not is-empty
-       (mapv (partial create-multi-select-option select-fn) options))]))
+       (mapv #(multi-select-option select-fn %) options))]))
