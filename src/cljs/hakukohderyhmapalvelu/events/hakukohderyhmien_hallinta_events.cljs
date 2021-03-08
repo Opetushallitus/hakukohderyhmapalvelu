@@ -21,7 +21,10 @@
 (events/reg-event-db-validating
   :hakukohderyhmien-hallinta/handle-save-hakukohderyhma
   (fn-traced [db [hakukohderyhma _]]
-    (update-in db persisted-hakukohderyhmas #(conj % (:nimi hakukohderyhma)))))
+    (-> db
+        (update-in persisted-hakukohderyhmas #(conj % (:nimi hakukohderyhma)))
+        (assoc-in selected-hakukohderyhma (:nimi hakukohderyhma))
+        (assoc-in create-hakukohderyhma-is-visible false))))
 
 (events/reg-event-fx-validating
   :hakukohderyhmien-hallinta/save-hakukohderyhma
