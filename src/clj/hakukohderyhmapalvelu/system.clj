@@ -34,7 +34,7 @@
 
                            :kouta-service (component/using
                                             (kouta-service/map->KoutaService {:config config})
-                                            [:kouta-authenticating-client])
+                                            [:kouta-authenticating-client :organisaatio-service])
 
                            :hakukohderyhma-service (component/using
                                                     (hakukohderyhma-service/map->HakukohderyhmaService {})

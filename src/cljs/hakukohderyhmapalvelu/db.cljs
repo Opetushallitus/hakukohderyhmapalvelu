@@ -10,7 +10,8 @@
    :hakukohderyhma                    {:persisted                      #{}
                                        :selected-hakukohderyhma        nil
                                        :create-hakukohderyhma-visible? false
-                                       :haut                           []}
+                                       :haut                           []
+                                       :hakukohteet-filter             ""}
    :haun-asetukset                    {:haut {}}
    :forms                             {}
    :ohjausparametrit                  {}

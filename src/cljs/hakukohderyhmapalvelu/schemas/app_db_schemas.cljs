@@ -1,7 +1,8 @@
 (ns hakukohderyhmapalvelu.schemas.app-db-schemas
   (:require [clojure.string]
             [schema.core :as s]
-            [schema-tools.core :as st]))
+            [schema-tools.core :as st]
+            [hakukohderyhmapalvelu.api-schemas :as api-schemas]))
 
 (s/defschema HakukohderyhmienHallintaPanel
   {:panel      (s/eq :panel/hakukohderyhmien-hallinta)
@@ -30,9 +31,10 @@
    (s/optional-key :en) s/Str})
 
 (s/defschema Hakukohde
-  {:oid         s/Str
-   :nimi        LocalizedString
-   :is-selected s/Bool})
+  {:oid          s/Str
+   :nimi         LocalizedString
+   :organisaatio api-schemas/Organisaatio
+   :is-selected  s/Bool})
 
 (s/defschema HaunTiedot
   {:oid         s/Str
@@ -49,7 +51,8 @@
    {:persisted                      #{HakukohdeRyhma}
     :selected-hakukohderyhma        (s/maybe HakukohdeRyhma)
     :create-hakukohderyhma-visible? s/Bool
-    :haut                           [HaunTiedot]}})
+    :haut                           [HaunTiedot]
+    :hakukohteet-filter             s/Str}})
 
 (s/defschema Requests
   {:requests #{s/Keyword}})

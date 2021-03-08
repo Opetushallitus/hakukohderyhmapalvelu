@@ -3,6 +3,7 @@
             [hakukohderyhmapalvelu.cas.cas-authenticating-client-protocol :as authenticating-client-protocol]
             [hakukohderyhmapalvelu.http :as http]
             [hakukohderyhmapalvelu.oph-url-properties :as oph-url]
+            [hakukohderyhmapalvelu.organisaatio.organisaatio-protocol :as organisaatio]
             [hakukohderyhmapalvelu.kouta.kouta-protocol :as kouta-service-protocol]
             [hakukohderyhmapalvelu.schemas.kouta-service-schemas :as schemas]
             [hakukohderyhmapalvelu.api-schemas :as api-schemas]
@@ -29,7 +30,14 @@
        (map (partial hakuaika-not-over? now))
        (some true?)))
 
-(defrecord KoutaService [kouta-authenticating-client config]
+(defn- enrich-with-organisaatio [hakukohde organisaatiot]
+  (->> hakukohde
+       :organisaatioOid
+       (get organisaatiot)
+       first
+       (assoc hakukohde :organisaatio)))
+
+(defrecord KoutaService [kouta-authenticating-client organisaatio-service config]
   component/Lifecycle
 
   (start [this]
@@ -53,8 +61,14 @@
             (st/select-schema res' api-schemas/HaunTiedotListResponse))))
 
   (list-haun-hakukohteet [_ haku-oid]
-    (let [url (oph-url/resolve-url :kouta-internal.hakukohde.search config {:haku haku-oid})]
-      (as-> url res'
-            (authenticating-client-protocol/get kouta-authenticating-client res' schemas/HakukohdeListResponse)
-            (http/parse-and-validate res' schemas/HaunTiedotListResponse)
-            (st/select-schema res' api-schemas/HakukohdeListResponse)))))
+    (let [url (oph-url/resolve-url :kouta-internal.hakukohde.search config {:haku haku-oid})
+          hakukohteet (as-> url res'
+                            (authenticating-client-protocol/get kouta-authenticating-client res' schemas/HakukohdeListResponse)
+                            (http/parse-and-validate res' schemas/HakukohdeListResponse))
+          organisaatiot (->> (map :organisaatioOid hakukohteet)
+                             (organisaatio/find-by-oids organisaatio-service)
+                             (group-by :oid))]
+
+      (as-> hakukohteet hakukohteet'
+            (map #(enrich-with-organisaatio % organisaatiot) hakukohteet')
+            (st/select-schema hakukohteet' api-schemas/HakukohdeListResponse)))))
