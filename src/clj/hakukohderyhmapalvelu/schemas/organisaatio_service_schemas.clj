@@ -1,6 +1,5 @@
 (ns hakukohderyhmapalvelu.schemas.organisaatio-service-schemas
-  (:require [hakukohderyhmapalvelu.api-schemas :as api-schemas]
-            [hakukohderyhmapalvelu.common-schemas :as c]
+  (:require [hakukohderyhmapalvelu.common-schemas :as c]
             [schema.core :as s]
             [schema-tools.core :as st]))
 
@@ -13,32 +12,29 @@
 (s/defschema OrganisaatioKayttoryhmat
   [s/Str])
 
-(s/defschema PostNewOrganisaatioRequest
-  {:kayttoryhmat OrganisaatioKayttoryhmat
+(s/defschema Organisaatio
+  {:oid          s/Str
+   :kayttoryhmat OrganisaatioKayttoryhmat
    :parentOid    s/Str
    :ryhmatyypit  OrganisaatioRyhmatyypit
    :tyypit       OrganisaatioTyypit
-   :nimi         c/Nimi})
+   :nimi         c/Nimi
+   s/Any         s/Any})
+
+(s/defschema FindByOidsRequest
+  [s/Str])
+
+(s/defschema FindByOidsResponse
+  [Organisaatio])
+
+(s/defschema PostNewOrganisaatioRequest
+  (st/select-keys Organisaatio
+                  [:kayttoryhmat
+                   :parentOid
+                   :ryhmatyypit
+                   :tyypit
+                   :nimi]))
 
 (s/defschema PostNewOrganisaatioResponse
-  {:organisaatio (st/merge
-                   api-schemas/HakukohderyhmaResponse
-                   PostNewOrganisaatioRequest
-                   {:kayntiosoite             {}
-                    :kieletUris               []
-                    :kuvaus2                  {}
-                    :lisatiedot               []
-                    :muutKotipaikatUris       []
-                    :muutOppilaitosTyyppiUris []
-                    :nimet                    []
-                    :oid                      s/Str
-                    :parentOidPath            s/Str
-                    :piilotettu               s/Bool
-                    :postiosoite              {}
-                    :status                   s/Str
-                    :toimipistekoodi          s/Str
-                    :version                  s/Int
-                    :vuosiluokat              []
-                    :yhteystiedot             []
-                    :yhteystietoArvos         []})
+  {:organisaatio Organisaatio
    :status       s/Str})
