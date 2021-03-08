@@ -40,9 +40,13 @@
    :is-selected s/Bool
    :hakukohteet [Hakukohde]})
 
+(s/defschema HakukohdeRyhma
+  {:oid  s/Str
+   :name s/Str})
+
 (s/defschema HakukohderyhmaPalvelu
   {:hakukohderyhma
-   {:persisted                      #{s/Str}
+   {:persisted                      #{HakukohdeRyhma}
     :selected-hakukohderyhma        s/Any
     :create-hakukohderyhma-visible? s/Bool
     :haut                           [HaunTiedot]}})

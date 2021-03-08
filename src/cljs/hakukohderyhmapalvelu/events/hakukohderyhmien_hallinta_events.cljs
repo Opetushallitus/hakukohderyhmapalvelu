@@ -5,13 +5,13 @@
 
 (def root-path [:hakukohderyhma])
 (def persisted-hakukohderyhmas (conj root-path :persisted))
-(def selected-hakukohderyhma (conj root-path :selected-hakukohderyhma))
+(def selected-hakukohderyhma-name (conj root-path :selected-hakukohderyhma))
 (def create-hakukohderyhma-is-visible (conj root-path :create-hakukohderyhma-visible?))
 
 (events/reg-event-db-validating
   :hakukohderyhmien-hallinta/select-hakukohderyhma
   (fn-traced [db [hakukohderyhma]]
-             (assoc-in db selected-hakukohderyhma hakukohderyhma)))
+             (assoc-in db selected-hakukohderyhma-name hakukohderyhma)))
 
 (events/reg-event-db-validating
   :hakukohderyhmien-hallinta/toggle-grid-visibility
@@ -20,11 +20,13 @@
 
 (events/reg-event-db-validating
   :hakukohderyhmien-hallinta/handle-save-hakukohderyhma
-  (fn-traced [db [hakukohderyhma _]]
-    (-> db
-        (update-in persisted-hakukohderyhmas #(conj % (:nimi hakukohderyhma)))
-        (assoc-in selected-hakukohderyhma (:nimi hakukohderyhma))
-        (assoc-in create-hakukohderyhma-is-visible false))))
+  (fn-traced [db [response-hakukohderyhma _]]
+    (let [{oid :oid {name :fi} :nimi} response-hakukohderyhma
+          saved-hakukohderyhma {:name name :oid oid}]
+      (-> db
+          (update-in persisted-hakukohderyhmas #(conj % saved-hakukohderyhma))
+          (assoc-in selected-hakukohderyhma-name (:name saved-hakukohderyhma))
+          (assoc-in create-hakukohderyhma-is-visible false)))))
 
 (events/reg-event-fx-validating
   :hakukohderyhmien-hallinta/save-hakukohderyhma
@@ -37,5 +39,5 @@
               :path             "/hakukohderyhmapalvelu/api/hakukohderyhma"
               :request-schema   schemas/HakukohderyhmaRequest
               :response-schema  schemas/HakukohderyhmaResponse
-              :response-handler [:hakukohderyhmien-hallinta/handle-save-hakukohderyhma {:nimi hakukohderyhma-name}]
+              :response-handler [:hakukohderyhmien-hallinta/handle-save-hakukohderyhma]
               :body             body}})))

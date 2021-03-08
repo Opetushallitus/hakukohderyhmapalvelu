@@ -5,6 +5,8 @@
             [hakukohderyhmapalvelu.components.common.input :as input]
             [hakukohderyhmapalvelu.components.common.panel :as p]
             [hakukohderyhmapalvelu.styles.layout-styles :as layout]
+            [hakukohderyhmapalvelu.subs.hakukohderyhma-create-subs :refer [get-saved-hakukohderyhma-names
+                                                                           get-currently-selected-hakukohderyhma-name]]
             [hakukohderyhmapalvelu.views.haku-view :as haun-tiedot-panel]
             [re-frame.core :as re-frame]
             [reagent.core :as reagent]
@@ -164,8 +166,8 @@
                           {:cypressid        (str cypressid "-dropdown")
                            :style-prefix     (str style-prefix "-input")
                            :unselected-label "Hakukohderyhmä"
-                           :dropdown-items (re-frame/subscribe [:hakukohderyhmien-hallinta/get-currently-saved-hakukohderyhmas])
-                           :selected-dropdown-item (re-frame/subscribe [:hakukohderyhmien-hallinta/get-currently-selected-hakukohderyhma])
+                           :dropdown-items (re-frame/subscribe [get-saved-hakukohderyhma-names])
+                           :selected-dropdown-item (re-frame/subscribe [get-currently-selected-hakukohderyhma-name])
                            :selection-fn #(re-frame/dispatch [:hakukohderyhmien-hallinta/select-hakukohderyhma %])}]
       :input-id          input-id
       :style-prefix      style-prefix
