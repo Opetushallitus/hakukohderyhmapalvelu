@@ -58,7 +58,8 @@
           {:padding       "6px 9px"
            ::stylefy/mode {:hover {:background-color colors/blue-lighten-3}}}
           {:cypressid (str "dropdown-selector--" item-str)
-           :on-click  #(selection-fn)})
+           :on-click  #(selection-fn)
+           :key       item-str})
    item-str])
 
 (defn dropdown-item-container
@@ -66,9 +67,9 @@
            selection-fn]}]
   [:div (stylefy/use-style input-dropdown-item-container-styles)
    (for [item dropdown-items]
-     ^{:key item} (dropdown-item
-                    {:item-str     item
-                     :selection-fn #(selection-fn item)}))])
+     (dropdown-item
+       {:item-str     item
+        :selection-fn #(selection-fn item)}))])
 
 (s/defn input-dropdown :- s/Any
   [{:keys [cypressid
