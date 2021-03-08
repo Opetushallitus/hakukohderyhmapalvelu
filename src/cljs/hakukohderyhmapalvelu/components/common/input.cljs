@@ -70,12 +70,16 @@
                on-change
                placeholder
                aria-label
-               aria-describedby]} :- {(s/optional-key :cypressid)        s/Str
-                                      :input-id                          s/Str
-                                      :on-change                         s/Any
-                                      :placeholder                       s/Str
-                                      :aria-label                        s/Str
-                                      (s/optional-key :aria-describedby) s/Str}]
+               aria-describedby
+               is-disabled
+               is-required]} :- {(s/optional-key :cypressid)        s/Str
+                               :input-id                          s/Str
+                               :on-change                         s/Any
+                               :placeholder                       s/Str
+                               :aria-label                        s/Str
+                               (s/optional-key :aria-describedby) s/Str
+                               (s/optional-key :is-disabled)        s/Bool
+                               (s/optional-key :is-required)        s/Bool}]
       (let [validate (itv/input-text-validator)]
         [:input (stylefy/use-style
                   (cond-> input-text-styles
@@ -85,10 +89,11 @@
                    :id               input-id
                    :on-change        (fn [event]
                                        (let [value  (.. event -target -value)
-                                             valid? (validate value)]
+                                             valid? (or (not is-required) (validate value))]
                                          (reset! invalid? (not valid?))
                                          (when valid?
                                            (on-change-debounced on-change value))))
+                   :disabled         (boolean is-disabled)
                    :placeholder      placeholder
                    :type             "text"
                    :aria-label       aria-label
