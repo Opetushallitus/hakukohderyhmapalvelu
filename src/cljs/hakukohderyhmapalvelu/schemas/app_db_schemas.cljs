@@ -47,7 +47,7 @@
 (s/defschema HakukohderyhmaPalvelu
   {:hakukohderyhma
    {:persisted                      #{HakukohdeRyhma}
-    :selected-hakukohderyhma        s/Any
+    :selected-hakukohderyhma        (s/maybe HakukohdeRyhma)
     :create-hakukohderyhma-visible? s/Bool
     :haut                           [HaunTiedot]}})
 

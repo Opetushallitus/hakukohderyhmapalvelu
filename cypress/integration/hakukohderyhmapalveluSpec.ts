@@ -177,13 +177,13 @@ describe('Hakukohderyhmäpalvelu', () => {
             ).click({ force: true })
             cy.get(
               hl.hakukohderyhmanLisaysSaveNewHakukohderyhmaButtonSelector,
-            ).should('be.enabled')
+            ).should('not.exist')
             cy.get<PostHakukohderyhmaRequestFixture>(
               '@post-hakukohderyhma-request',
             ).then(hakukohderyhma => {
               cy.get(
                 hl.hakukohderyhmanLisaysNewHakukohderyhmaNameTextInputSelector,
-              ).should('have.value', hakukohderyhma.nimi.fi)
+              ).should('not.exist')
               cy.get(hl.hakukohderyhmanLisaysDropdownSelector).click({
                 force: true,
               })
