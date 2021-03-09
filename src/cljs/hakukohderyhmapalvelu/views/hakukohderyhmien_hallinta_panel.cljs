@@ -5,8 +5,8 @@
             [hakukohderyhmapalvelu.components.common.input :as input]
             [hakukohderyhmapalvelu.components.common.panel :as p]
             [hakukohderyhmapalvelu.styles.layout-styles :as layout]
-            [hakukohderyhmapalvelu.subs.hakukohderyhma-create-subs :refer [get-saved-hakukohderyhma-names
-                                                                           get-currently-selected-hakukohderyhma-name]]
+            [hakukohderyhmapalvelu.subs.hakukohderyhma-create-subs :refer [get-saved-hakukohderyhmas-as-options
+                                                                           get-currently-selected-hakukohderyhma]]
             [hakukohderyhmapalvelu.views.haku-view :as haun-tiedot-panel]
             [re-frame.core :as re-frame]
             [reagent.core :as reagent]
@@ -70,7 +70,7 @@
   [{:keys [style-prefix] :as props}]
   (let [hakukohderyhmien-hallinta-input-styles (make-hakukohderyhmien-hallinta-input-styles
                                                  style-prefix)
-        props'                                 (dissoc props :style-prefix)]
+        props' (dissoc props :style-prefix)]
     [:div
      (stylefy/use-style hakukohderyhmien-hallinta-input-styles)
      [input/input-text props']]))
@@ -96,13 +96,13 @@
      button-component]))
 
 (defn- hakukohderyhma-create []
-  (let [input-value      (reagent/atom "")
+  (let [input-value (reagent/atom "")
         text-input-label "Ryhmän nimi"]
     (fn []
-      (let [cypressid        "hakukohderyhma-create"
-            input-id         "hakukohderyhma-create-input"
-            style-prefix     "hakukohderyhma-create"
-            visible?         @(re-frame/subscribe [:hakukohderyhmien-hallinta/create-grid-visible?])
+      (let [cypressid "hakukohderyhma-create"
+            input-id "hakukohderyhma-create-input"
+            style-prefix "hakukohderyhma-create"
+            visible? @(re-frame/subscribe [:hakukohderyhmien-hallinta/create-grid-visible?])
             ongoing-request? @(re-frame/subscribe [:hakukohderyhmien-hallinta/ongoing-request?])
             button-disabled? (or ongoing-request?
                                  (-> @input-value seq nil?))]
@@ -148,27 +148,27 @@
   [{:keys [style-prefix] :as props}]
   (let [hakukohderyhmien-hallinta-input-dropdown-styles (make-hakukohderyhmien-hallinta-input-dropdown-styles
                                                           style-prefix)
-        props'                                          (dissoc props :style-prefix)]
+        props' (dissoc props :style-prefix)]
     [:div
      (stylefy/use-style
        hakukohderyhmien-hallinta-input-dropdown-styles)
      [dropdown/input-dropdown props']]))
 
 (defn- hakukohderyhma-select []
-  (let [cypressid    "hakukohderyhma-select"
-        input-id     "hakukohderyhma-select-input"
+  (let [cypressid "hakukohderyhma-select"
+        input-id "hakukohderyhma-select-input"
         style-prefix "hakukohderyhma-select"]
     [input-with-label-and-control
      {:control-component [add-new-hakukohderyhma-link
                           {:cypressid (str cypressid "-add-new-hakukohderyhma")}]
       :cypressid         cypressid
       :input-component   [hakukohderyhmien-hallinta-input-dropdown
-                          {:cypressid        (str cypressid "-dropdown")
-                           :style-prefix     (str style-prefix "-input")
-                           :unselected-label "Hakukohderyhmä"
-                           :dropdown-items (re-frame/subscribe [get-saved-hakukohderyhma-names])
-                           :selected-dropdown-item (re-frame/subscribe [get-currently-selected-hakukohderyhma-name])
-                           :selection-fn #(re-frame/dispatch [:hakukohderyhmien-hallinta/select-hakukohderyhma %])}]
+                          {:cypressid              (str cypressid "-dropdown")
+                           :style-prefix           (str style-prefix "-input")
+                           :unselected-label       "Hakukohderyhmä"
+                           :dropdown-items         (re-frame/subscribe [get-saved-hakukohderyhmas-as-options])
+                           :selected-dropdown-item (re-frame/subscribe [get-currently-selected-hakukohderyhma])
+                           :selection-fn           #(re-frame/dispatch [:hakukohderyhmien-hallinta/select-hakukohderyhma %])}]
       :input-id          input-id
       :style-prefix      style-prefix
       :label             "Hakukohderyhmät"}]))

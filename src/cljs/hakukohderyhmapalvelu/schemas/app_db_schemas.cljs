@@ -42,7 +42,7 @@
 
 (s/defschema HakukohdeRyhma
   {:oid  s/Str
-   :name s/Str})
+   :nimi LocalizedString})
 
 (s/defschema HakukohderyhmaPalvelu
   {:hakukohderyhma

@@ -45,22 +45,24 @@
            selected-dropdown-item
            unselected-label
            is-dropped-down]}]
-  [:div (stylefy/use-style
-          input-dropdown-selector-styles)
-   [:span
-    {:cypressid (str cypressid "-label" (when is-dropped-down "--dropped"))}
-    (or @selected-dropdown-item unselected-label)]
-   [(if is-dropped-down icon/arrow-drop-up icon/arrow-drop-down)]])
+  (let [{selected-item-label :label :as dereffed-selected-item} @selected-dropdown-item]
+    [:div (stylefy/use-style
+            input-dropdown-selector-styles)
+     [:span
+      {:cypressid (str cypressid "-label" (when is-dropped-down "--dropped"))}
+      (if dereffed-selected-item selected-item-label unselected-label)]
+     [(if is-dropped-down icon/arrow-drop-up icon/arrow-drop-down)]]))
 
 (defn dropdown-item
-  [{:keys [item-str selection-fn]}]
-  [:div (stylefy/use-style
-          {:padding       "6px 9px"
-           ::stylefy/mode {:hover {:background-color colors/blue-lighten-3}}}
-          {:cypressid (str "dropdown-selector--" item-str)
-           :on-click  #(selection-fn)
-           :key       item-str})
-   item-str])
+  [{:keys [item selection-fn]}]
+  (let [{:keys [label value]} item]
+    [:div (stylefy/use-style
+            {:padding       "6px 9px"
+             ::stylefy/mode {:hover {:background-color colors/blue-lighten-3}}}
+            {:cypressid (str "dropdown-selector--" value)
+             :on-click  #(selection-fn)
+             :key       value})
+     label]))
 
 (defn dropdown-item-container
   [{:keys [dropdown-items
@@ -68,7 +70,7 @@
   [:div (stylefy/use-style input-dropdown-item-container-styles)
    (for [item dropdown-items]
      (dropdown-item
-       {:item-str     item
+       {:item         item
         :selection-fn #(selection-fn item)}))])
 
 (s/defn input-dropdown :- s/Any
