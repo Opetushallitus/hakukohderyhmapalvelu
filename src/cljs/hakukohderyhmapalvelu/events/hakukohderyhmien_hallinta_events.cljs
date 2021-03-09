@@ -11,7 +11,12 @@
 (events/reg-event-db-validating
   :hakukohderyhmien-hallinta/select-hakukohderyhma
   (fn-traced [db [hakukohderyhma]]
-             (assoc-in db selected-hakukohderyhma hakukohderyhma)))
+             (let [persisted-hakukohderyhmas (get-in db persisted-hakukohderyhmas)
+                   selected-oid (:value hakukohderyhma)
+                   hakukohderyhma-to-be-selected (->> persisted-hakukohderyhmas
+                                                      (filter #(= selected-oid (:oid %)))
+                                                      first)]
+               (assoc-in db selected-hakukohderyhma hakukohderyhma-to-be-selected))))
 
 (events/reg-event-db-validating
   :hakukohderyhmien-hallinta/toggle-grid-visibility
@@ -21,7 +26,10 @@
 (events/reg-event-db-validating
   :hakukohderyhmien-hallinta/handle-save-hakukohderyhma
   (fn-traced [db [hakukohderyhma _]]
-    (update-in db persisted-hakukohderyhmas #(conj % (:nimi hakukohderyhma)))))
+             (-> db
+                 (update-in persisted-hakukohderyhmas #(conj % hakukohderyhma))
+                 (assoc-in selected-hakukohderyhma hakukohderyhma)
+                 (assoc-in create-hakukohderyhma-is-visible false))))
 
 (events/reg-event-fx-validating
   :hakukohderyhmien-hallinta/save-hakukohderyhma
@@ -34,5 +42,5 @@
               :path             "/hakukohderyhmapalvelu/api/hakukohderyhma"
               :request-schema   schemas/HakukohderyhmaRequest
               :response-schema  schemas/HakukohderyhmaResponse
-              :response-handler [:hakukohderyhmien-hallinta/handle-save-hakukohderyhma {:nimi hakukohderyhma-name}]
+              :response-handler [:hakukohderyhmien-hallinta/handle-save-hakukohderyhma]
               :body             body}})))
