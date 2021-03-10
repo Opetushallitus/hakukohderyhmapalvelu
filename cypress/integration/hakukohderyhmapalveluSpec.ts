@@ -28,6 +28,16 @@ describe('Hakukohderyhmäpalvelu', () => {
       responseFixture: 'hakukohderyhmapalvelu/get-hakukohde-response.json',
     })
     cy.login()
+    cy.mockBackendRequest({
+      method: 'POST',
+      path: '/organisaatio-service/rest/organisaatio/v4/findbyoids',
+      service: 'organisaatio-service',
+      requestFixture:
+        'hakukohderyhmapalvelu/post-find-organisaatiot-request.json',
+      responseFixture:
+        'hakukohderyhmapalvelu/post-find-organisaatiot-response.json',
+    })
+    cy.login()
   }
 
   before(() => {
@@ -75,9 +85,36 @@ describe('Hakukohderyhmäpalvelu', () => {
         .type('Testihaku 3{enter}')
         .get(hh.hakukohteetContainerSelector)
         .children()
-        .should('have.length', 1)
+        .should('have.length', 2)
 
       cy.get(hh.hakukohteetContainerSelector)
+        .children()
+        .eq(0)
+        .should($el => {
+          expect($el.text()).to.equal('Testi-perustutkinto')
+        })
+
+      cy.get(hh.hakukohteidenSuodatusInputSelector)
+        .clear()
+        .type('Ei pitäisi löytyä mitään')
+        .get(hh.hakukohteetContainerSelector)
+        .children()
+        .should('have.length', 0)
+
+      cy.get(hh.hakukohteidenSuodatusInputSelector)
+        .clear()
+        .type('Organisaatio 1')
+        .get(hh.hakukohteetContainerSelector)
+        .children()
+        .eq(0)
+        .should($el => {
+          expect($el.text()).to.equal('Testi-perustutkinto')
+        })
+
+      cy.get(hh.hakukohteidenSuodatusInputSelector)
+        .clear()
+        .type('Perustutkinto')
+        .get(hh.hakukohteetContainerSelector)
         .children()
         .eq(0)
         .should($el => {

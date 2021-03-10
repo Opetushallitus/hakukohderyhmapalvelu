@@ -1,0 +1,26 @@
+[
+  {
+    "ryhmatyypit": [],
+    "kayttoryhmat": [],
+    "tyypit": [
+      "organisaatiotyyppi_01"
+    ],
+    "oid": "1.2.10.1.2.1",
+    "nimi": {
+      "fi": "Organisaatio 1"
+    },
+    "parentOid": "1.2.0.0.0.0.1"
+  },
+  {
+    "ryhmatyypit": [],
+    "kayttoryhmat": [],
+    "tyypit": [
+      "organisaatiotyyppi_02"
+    ],
+    "oid": "1.2.10.1.2.2",
+    "nimi": {
+      "fi": "Organisaatio 2"
+    },
+    "parentOid": "1.2.0.0.0.0.1"
+  }
+]

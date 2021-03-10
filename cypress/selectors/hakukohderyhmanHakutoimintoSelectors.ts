@@ -4,6 +4,9 @@ export const haunHakutoimintoDivSelector =
 export const haunHakutoimintoDivSelectorChildDivs =
   'div[cypressid=haku-search-cypress]:visible > div'
 
+export const hakukohteidenSuodatusInputSelector =
+  'input[cypressid=hakukohteet-text-filter]'
+
 export const haunHakutoimintoNaytaMyosPaattyneetCheckboxSelector =
   'div[cypressid=haku-search-checkbox-cypress-input]:visible'
 
