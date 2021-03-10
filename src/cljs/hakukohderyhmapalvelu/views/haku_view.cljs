@@ -7,7 +7,8 @@
     [hakukohderyhmapalvelu.events.haku-events :as haku-events]
     [hakukohderyhmapalvelu.components.common.react-select :as react-select]
     [hakukohderyhmapalvelu.components.common.checkbox :as checkbox]
-    [hakukohderyhmapalvelu.components.common.multi-select :as multi-select]))
+    [hakukohderyhmapalvelu.components.common.multi-select :as multi-select]
+    [hakukohderyhmapalvelu.components.common.input :as input]))
 
 
 (defn haku-search []
@@ -52,11 +53,20 @@
 
 (defn hakukohteet-container []
   (let [hakukohteet (subscribe [haku-subs/haku-hakukohteet-as-options])
-        hakukohteet-label (subscribe [:translation :haku/hakukohteet])]
+        hakukohteet-is-empty (subscribe [haku-subs/haku-hakukohteet-is-empty])
+        hakukohteet-label (subscribe [:translation :haku/hakukohteet])
+        hakukohteet-search-placeholder (subscribe [:translation :haku/hakukohteet-search-placeholder])]
     (fn []
       [:div (stylefy/use-style hakukohteet-container-style)
        [:span (stylefy/use-style {:grid-row 1 :grid-column "1 / 3"}) @hakukohteet-label]
        [:div (stylefy/use-style {:grid-row 2 :grid-column "1 / 4"})
-        [multi-select/multi-select {:options @hakukohteet
+        [input/input-text {:cypressid   "hakukohteet-text-filter"
+                           :input-id    "hakukohteet-text-filter"
+                           :on-change   #(dispatch [haku-events/set-hakukohteet-filter %])
+                           :placeholder @hakukohteet-search-placeholder
+                           :aria-label  @hakukohteet-search-placeholder
+                           :is-disabled @hakukohteet-is-empty}]]
+       [:div (stylefy/use-style {:grid-row 3 :grid-column "1 / 4"})
+        [multi-select/multi-select {:options   @hakukohteet
                                     :select-fn #(dispatch [haku-events/toggle-hakukohde-selection %])
                                     :cypressid "hakukohteet-container"}]]])))

@@ -1,38 +1,19 @@
 (ns hakukohderyhmapalvelu.subs.haku-subs
   (:require [re-frame.core :as re-frame]
-            [hakukohderyhmapalvelu.events.haku-events :as haku-events]))
+            [hakukohderyhmapalvelu.i18n.utils :as i18n-utils]
+            [hakukohderyhmapalvelu.events.haku-events :as haku-events]
+            [clojure.string :as str]))
 
-;; Oletusjärjestys, jolla haetaan kielistettyä arvoa eri kielillä
-(def fi-order [:fi :sv :en])
-(def sv-order [:sv :fi :en])
-(def en-order [:en :fi :sv])
 
-(defn- get-with-fallback [m order]
-  (->> (map #(get m %) order)
-       (remove nil?)
-       first))
+(defn- includes-string? [m string lang]
+  (-> (i18n-utils/get_with_fallback m lang)
+      str/lower-case
+      (str/includes? string)))
 
-(defn- item->option [order label-field value-field item]
-  (let [localized (get item label-field)
-        value (get item value-field)
-        is-selected (get item :is-selected)]
-    {:label (get-with-fallback localized order)
-     :value value
-     :is-selected is-selected}))
-
-(defn- order-for-lang [lang]
-  (case lang
-    :fi fi-order
-    :sv sv-order
-    :en en-order
-    :default fi-order))
-
-(defn- create-item->option-transformer [lang label-field value-field]
-  (partial
-    item->option
-    (order-for-lang lang)
-    label-field
-    value-field))
+(defn- hakukohde-includes-string? [hakukohde string lang]
+  (let [search-paths [[:organisaatio :nimi] [:nimi]]
+        lower-str (str/lower-case string)]
+    (some #(includes-string? (get-in hakukohde %) lower-str lang) search-paths)))
 
 ;; Tilaukset
 (def haku-haut :haku/haut)
@@ -41,6 +22,8 @@
 (def haku-selected-haku :haku/selected-haku)
 (def haku-selected-haku-as-option :haku-selected-haku-as-option)
 (def haku-hakukohteet :haku/hakukohteet)
+(def haku-hakukohteet-filter :haku/hakukohteet-filter)
+(def haku-hakukohteet-is-empty :haku/hakukohteet-is-empty)
 (def haku-hakukohteet-as-options :haku/hakukohteet-as-options)
 
 (re-frame/reg-sub
@@ -54,7 +37,7 @@
     [(re-frame/subscribe [:lang])
      (re-frame/subscribe [haku-haut])])
   (fn [[lang haut] _]
-    (let [transform-fn (create-item->option-transformer lang :nimi :oid)]
+    (let [transform-fn (i18n-utils/create-item->option-transformer lang :nimi :oid)]
       (map transform-fn haut))))
 
 (re-frame/reg-sub
@@ -70,7 +53,7 @@
     [(re-frame/subscribe [:lang])
      (re-frame/subscribe [haku-selected-haku])])
   (fn [[lang selected-haku] _]
-    (let [transform-fn (create-item->option-transformer lang :nimi :oid)]
+    (let [transform-fn (i18n-utils/create-item->option-transformer lang :nimi :oid)]
       (transform-fn selected-haku))))
 
 (re-frame/reg-sub
@@ -87,10 +70,24 @@
     (:hakukohteet selected-haku)))
 
 (re-frame/reg-sub
+  haku-hakukohteet-is-empty
+  (fn []
+    [(re-frame/subscribe [haku-hakukohteet])])
+  (fn [[hakukohteet] _]
+    (empty? hakukohteet)))
+
+(re-frame/reg-sub
+  haku-hakukohteet-filter
+  (fn [db _]
+    (get-in db haku-events/haku-hakukohteet-filter)))
+
+(re-frame/reg-sub
   haku-hakukohteet-as-options
   (fn []
     [(re-frame/subscribe [:lang])
-     (re-frame/subscribe [haku-hakukohteet])])
-  (fn [[lang hakukohteet] _]
-    (let [transform-fn (create-item->option-transformer lang :nimi :oid)]
-      (map transform-fn hakukohteet))))
+     (re-frame/subscribe [haku-hakukohteet])
+     (re-frame/subscribe [haku-hakukohteet-filter])])
+  (fn [[lang hakukohteet filter-text] _]
+    (let [filtered-hakukohteet (filter #(hakukohde-includes-string? % filter-text lang) hakukohteet)
+          transform-fn (i18n-utils/create-item->option-transformer lang :nimi :oid)]
+      (map transform-fn filtered-hakukohteet))))
