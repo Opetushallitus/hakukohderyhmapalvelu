@@ -52,6 +52,7 @@
   :main hakukohderyhmapalvelu.core
 
   :source-paths ["src/clj" "src/cljs" "src/cljc"]
+  :test-paths ["test/clj"]
 
   :clean-targets ^{:protect false} ["resources/public/hakukohderyhmapalvelu/js/compiled"
                                     "target"
