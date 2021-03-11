@@ -56,7 +56,7 @@
 
 (events/reg-event-fx-validating
   :hakukohderyhmien-hallinta/get-all-hakukohderyhma
-  (fn-traced [{db :db} [hakukohderyhma-name]]
+  (fn-traced [{db :db} [_]]
     (let [http-request-id :hakukohderyhmien-hallinta/get-all-hakukohderyhma]
       {:db   (update db :requests (fnil conj #{}) http-request-id)
        :http {:method           :get

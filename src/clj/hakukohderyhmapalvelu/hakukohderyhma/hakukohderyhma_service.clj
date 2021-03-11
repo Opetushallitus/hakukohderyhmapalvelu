@@ -9,7 +9,7 @@
 (defrecord HakukohderyhmaService [audit-logger organisaatio-service kouta-service]
   hakukohderyhma-service-protocol/HakukohderyhmaServiceProtocol
 
-  (get-all [_]
+  (get-all [_ session]
     (organisaatio/get-organisaatio-children organisaatio-service))
 
   (create [_ session hakukohderyhma]
