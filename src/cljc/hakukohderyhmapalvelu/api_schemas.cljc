@@ -16,9 +16,14 @@
 (s/defschema HaunTiedotListResponse
   [HaunTiedot])
 
-(s/defschema Hakukohde
+(s/defschema Organisaatio
   {:oid  s/Str
    :nimi c/Nimi})
+
+(s/defschema Hakukohde
+  {:oid  s/Str
+   :nimi c/Nimi
+   :organisaatio Organisaatio})
 
 (s/defschema HakukohdeListResponse
   [Hakukohde])

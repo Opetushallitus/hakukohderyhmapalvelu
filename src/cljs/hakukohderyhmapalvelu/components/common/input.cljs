@@ -6,9 +6,9 @@
             [hakukohderyhmapalvelu.validators.input-date-validator :as idv]
             [hakukohderyhmapalvelu.validators.input-date-time-validator :as idtv]
             [hakukohderyhmapalvelu.validators.input-number-validator :as inv]
-            [hakukohderyhmapalvelu.validators.input-text-validator :as itv]
             [hakukohderyhmapalvelu.validators.input-time-validator :as itiv]
             [reagent.core :as reagent]
+            [clojure.string :as string]
             [schema.core :as s]
             [stylefy.core :as stylefy]))
 
@@ -70,29 +70,35 @@
                on-change
                placeholder
                aria-label
-               aria-describedby]} :- {(s/optional-key :cypressid)        s/Str
-                                      :input-id                          s/Str
-                                      :on-change                         s/Any
-                                      :placeholder                       s/Str
-                                      :aria-label                        s/Str
-                                      (s/optional-key :aria-describedby) s/Str}]
-      (let [validate (itv/input-text-validator)]
-        [:input (stylefy/use-style
-                  (cond-> input-text-styles
-                          @invalid?
-                          (merge input-text-invalid-styles))
-                  {:cypressid        cypressid
-                   :id               input-id
-                   :on-change        (fn [event]
-                                       (let [value  (.. event -target -value)
-                                             valid? (validate value)]
-                                         (reset! invalid? (not valid?))
-                                         (when valid?
-                                           (on-change-debounced on-change value))))
-                   :placeholder      placeholder
-                   :type             "text"
-                   :aria-label       aria-label
-                   :aria-describedby aria-describedby})]))))
+               aria-describedby
+               is-disabled
+               is-required]} :- {(s/optional-key :cypressid)        s/Str
+                               :input-id                          s/Str
+                               :on-change                         s/Any
+                               :placeholder                       s/Str
+                               :aria-label                        s/Str
+                               (s/optional-key :aria-describedby) s/Str
+                               (s/optional-key :is-disabled)        s/Bool
+                               (s/optional-key :is-required)        s/Bool}]
+      [:input (stylefy/use-style
+                (cond-> input-text-styles
+                        @invalid?
+                        (merge input-text-invalid-styles))
+                {:cypressid        cypressid
+                 :id               input-id
+                 :on-change        (fn [event]
+                                     (let [value (.. event -target -value)
+                                           valid? (if is-required
+                                                    (not (string/blank? value))
+                                                    true)]
+                                       (reset! invalid? (not valid?))
+                                       (when valid?
+                                         (on-change-debounced on-change value))))
+                 :disabled         (boolean is-disabled)
+                 :placeholder      placeholder
+                 :type             "text"
+                 :aria-label       aria-label
+                 :aria-describedby aria-describedby})])))
 
 (s/defn input-number :- s/Any
   [{:keys [value]} :- {(s/optional-key :value) s/Str

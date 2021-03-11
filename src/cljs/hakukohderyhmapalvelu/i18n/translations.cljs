@@ -52,7 +52,9 @@
    :haku/show-all-haut
    {:fi "Näytä myös päättyneet"}
    :haku/hakukohteet
-   {:fi "Hakukohteet"}})
+   {:fi "Hakukohteet"}
+   :haku/hakukohteet-search-placeholder
+   {:fi "Nimi tai organisaatio"}})
 
 (def translations
   (merge

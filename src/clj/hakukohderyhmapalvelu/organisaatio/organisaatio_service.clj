@@ -1,16 +1,15 @@
 (ns hakukohderyhmapalvelu.organisaatio.organisaatio-service
   (:require [com.stuartsierra.component :as component]
-            [hakukohderyhmapalvelu.api-schemas :as api-schema]
+            [hakukohderyhmapalvelu.api-schemas :as api-schemas]
             [hakukohderyhmapalvelu.cas.cas-authenticating-client-protocol :as authenticating-client-protocol]
             [hakukohderyhmapalvelu.http :as http]
             [hakukohderyhmapalvelu.oph-url-properties :as url]
             [hakukohderyhmapalvelu.organisaatio.organisaatio-protocol :as organisaatio-service-protocol]
             [hakukohderyhmapalvelu.schemas.organisaatio-service-schemas :as schemas]
             [schema.core :as s]
-            [hakukohderyhmapalvelu.config :as c]))
+            [hakukohderyhmapalvelu.config :as c]
+            [schema-tools.core :as st]))
 
-(defn- parse-and-validate [response]
-  (http/parse-and-validate response schemas/PostNewOrganisaatioResponse))
 
 (defrecord OrganisaatioService [organisaatio-service-authenticating-client config]
   component/Lifecycle
@@ -24,8 +23,20 @@
 
   organisaatio-service-protocol/OrganisaatioServiceProtocol
 
+  (find-by-oids [_ oid-list]
+    (if (not-empty oid-list)
+      (let [url (url/resolve-url :organisaatio-service.organisaatio.v4.findbyoids config)
+            response-body (-> (authenticating-client-protocol/post organisaatio-service-authenticating-client
+                                                                   {:url  url
+                                                                    :body oid-list}
+                                                                   {:request-schema  schemas/FindByOidsRequest
+                                                                    :response-schema schemas/FindByOidsResponse})
+                              (http/parse-and-validate schemas/FindByOidsResponse))]
+        (map #(st/select-schema % api-schemas/Organisaatio) response-body))
+      []))
+
   (post-new-organisaatio [_ hakukohderyhma]
-    (s/validate api-schema/HakukohderyhmaRequest hakukohderyhma)
+    (s/validate api-schemas/HakukohderyhmaRequest hakukohderyhma)
     (let [url           (url/resolve-url :organisaatio-service.organisaatio.v4 config)
           parent-oid    (-> config :oph-organisaatio-oid)
           body          (merge hakukohderyhma
@@ -38,7 +49,7 @@
                                                                   :body body}
                                                                  {:request-schema  schemas/PostNewOrganisaatioRequest
                                                                   :response-schema schemas/PostNewOrganisaatioResponse})
-                            parse-and-validate)]
+                            (http/parse-and-validate schemas/PostNewOrganisaatioResponse))]
       (-> response-body
           :organisaatio
           (select-keys [:oid :nimi])))))

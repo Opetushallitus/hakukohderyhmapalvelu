@@ -19,6 +19,7 @@
 (s/defschema Hakukohde
   {:oid  s/Str
    :nimi c/Nimi
+   :organisaatioOid s/Str
    s/Any s/Any})
 
 (s/defschema HakukohdeListResponse

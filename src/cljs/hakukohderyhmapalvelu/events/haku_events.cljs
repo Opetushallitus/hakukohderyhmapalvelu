@@ -7,6 +7,7 @@
 ;; Polut
 (def root-path [:hakukohderyhma])
 (def haku-haut (conj root-path :haut))
+(def haku-hakukohteet-filter (conj root-path :hakukohteet-filter))
 
 ;; Tapahtumat
 (def get-haut :haku/get-haut)
@@ -16,6 +17,7 @@
 (def get-haun-hakukohteet :haku/get-haun-hakukohteet)
 (def handle-get-hakukohteet-response :haku/handle-get-hakukohteet-response)
 (def toggle-hakukohde-selection :haku/toggle-hakukohde-selection)
+(def set-hakukohteet-filter :haku/set-hakukohteet-filter)
 
 ;; Apufunktiot
 (defn- deselect-all [items]
@@ -97,3 +99,8 @@
   toggle-hakukohde-selection
   (fn-traced [db [hakukohde-oid]]
              (update-in db haku-haut (partial toggle-selection-of-hakukohde hakukohde-oid))))
+
+(events/reg-event-db-validating
+  set-hakukohteet-filter
+  (fn-traced [db [filter-text]]
+             (assoc-in db haku-hakukohteet-filter filter-text)))

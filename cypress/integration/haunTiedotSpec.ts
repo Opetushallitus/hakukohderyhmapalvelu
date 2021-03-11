@@ -62,13 +62,36 @@ describe('Hakukohderyhmäpalvelu - haun tiedot', () => {
         service: 'kouta-service',
         responseFixture: 'hakukohderyhmapalvelu/get-hakukohde-response.json',
       })
+      cy.mockBackendRequest({
+        method: 'POST',
+        path: '/organisaatio-service/rest/organisaatio/v4/findbyoids',
+        service: 'organisaatio-service',
+        requestFixture:
+          'hakukohderyhmapalvelu/post-find-organisaatiot-request.json',
+        responseFixture:
+          'hakukohderyhmapalvelu/post-find-organisaatiot-response.json',
+      })
     })
     it('Hakee listauksen haun hakukohteista', () => {
       cy.request('/hakukohderyhmapalvelu/api/haku/1.2.4.1.1.1/hakukohde').then(
         ({ body }) =>
           expect(body).to.deep.equal([
-            { oid: '1.2.4.2.1.1', nimi: { fi: 'Testi-perustutkinto' } },
-            { oid: '1.2.4.2.1.2', nimi: { fi: 'Testi-jatkotutkinto' } },
+            {
+              oid: '1.2.4.2.1.1',
+              nimi: { fi: 'Testi-perustutkinto' },
+              organisaatio: {
+                oid: '1.2.10.1.2.1',
+                nimi: { fi: 'Organisaatio 1' },
+              },
+            },
+            {
+              oid: '1.2.4.2.1.2',
+              nimi: { fi: 'Testi-jatkotutkinto' },
+              organisaatio: {
+                oid: '1.2.10.1.2.2',
+                nimi: { fi: 'Organisaatio 2' },
+              },
+            },
           ]),
       )
     })
