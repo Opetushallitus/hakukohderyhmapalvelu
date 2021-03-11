@@ -6,7 +6,7 @@
             [hakukohderyhmapalvelu.test-fixtures :as test-fixtures :refer [dispatch-mock test-system]]))
 
 
-(use-fixtures :once test-fixtures/fixtures)
+(use-fixtures :once test-fixtures/with-mock-system)
 
 (deftest kouta-service-test
   (testing "List haut, no results"

@@ -6,7 +6,7 @@
 
 
 (defn- includes-string? [m string lang]
-  (-> (i18n-utils/get_with_fallback m lang)
+  (-> (i18n-utils/get-with-fallback m lang)
       str/lower-case
       (str/includes? string)))
 

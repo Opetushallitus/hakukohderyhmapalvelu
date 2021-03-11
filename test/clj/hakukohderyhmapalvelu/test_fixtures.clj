@@ -26,7 +26,7 @@
   (let [mock-dispatcher (:mock-dispatcher @test-system)]
     (mock-dispatcher-protocol/dispatch-mock mock-dispatcher spec)))
 
-(defn fixtures [f]
+(defn with-mock-system [f]
   (start-system)
   (f)
   (stop-system))
