@@ -54,7 +54,7 @@
    :haku/hakukohteet
    {:fi "Hakukohteet"}
    :haku/hakukohteet-search-placeholder
-   {:fi "Nimi, organisaatio tai tutkinto"}})
+   {:fi "Nimi tai organisaatio"}})
 
 (def translations
   (merge
