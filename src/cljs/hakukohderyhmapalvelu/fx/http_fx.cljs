@@ -4,10 +4,14 @@
             [hakukohderyhmapalvelu.config :as c]
             [hakukohderyhmapalvelu.urls :as urls]
             [re-frame.core :as re-frame]
-            [schema.core :as s])
+            [schema.core :as s]
+            [goog.net.cookies])
   (:require-macros [cljs.core.async.macros :refer [go]]
                    [cljs.core.async.interop :refer [<p!]])
   (:import [goog.net.XhrIo]))
+
+(defn- get-cookie-value [name]
+  (.get goog.net.cookies name))
 
 (defn- fetch [{:keys [url
                       method
@@ -17,6 +21,10 @@
                     :get "GET"
                     :post "POST")
         caller-id (:caller-id c/config)
+        csrf (get-cookie-value "CSRF")
+        headers (cond-> {"caller-id"    caller-id
+                         "content-type" "application/json"}
+                        (#{:post :put :delete} method) (assoc "CSRF" csrf))
         redirect  (if redirect?
                     "follow"
                     "error")]
@@ -24,8 +32,7 @@
       (let [response        (<p! (js/fetch
                                    url
                                    (clj->js (cond-> {:method   method'
-                                                     :headers  {"caller-id"    caller-id
-                                                                "content-type" "application/json"}
+                                                     :headers  headers
                                                      :redirect redirect}
                                                     (seq body)
                                                     (assoc
