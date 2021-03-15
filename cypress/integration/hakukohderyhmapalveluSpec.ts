@@ -237,7 +237,7 @@ describe('Hakukohderyhmäpalvelu', () => {
               'post-hakukohderyhma',
             )
           })
-          it('Tallentaa hakukohderyhmän, jonka jälkeen tallennus-input katoaa näkymästä ja ryhmän nimi näkyy dropdown valinnoissa', () => {
+          it('Ryhmän voi tallentaa, tallennus-input katoaa näkymästä ja uusi ryhmä on valittu automaattisesti', () => {
             cy.get(
               hl.hakukohderyhmanLisaysSaveNewHakukohderyhmaButtonSelector,
             ).click({ force: true })
@@ -250,23 +250,10 @@ describe('Hakukohderyhmäpalvelu', () => {
               cy.get(
                 hl.hakukohderyhmanLisaysNewHakukohderyhmaNameTextInputSelector,
               ).should('not.exist')
-              cy.get(hl.hakukohderyhmanLisaysDropdownSelectorUndropped).click({
-                force: true,
-              })
-              cy.get(hl.hakukohderyhmanLisaysDropdownSelectorDropped).should(
-                'exist',
-              )
-              cy.get(
-                hl.hakukohderyhmanLisaysDropdownSelectorItem(
-                  hakukohderyhma.nimi.fi,
-                ),)// eslint-disable-line prettier/prettier
-                .should('exist')
-              cy.get(
-                hl.hakukohderyhmanLisaysNewHakukohderyhmaNameTextInputSelector,
-              ).should('not.exist')
               cy.get(
                 hl.hakukohderyhmanLisaysSaveNewHakukohderyhmaButtonSelector,
               ).should('not.exist')
+              cy.get(hl.hakukohderyhmanLisaysDropdownSelectorUndropped).should('have.text', hakukohderyhma.nimi.fi)
             })
           })
         })
