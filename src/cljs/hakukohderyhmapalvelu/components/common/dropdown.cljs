@@ -51,7 +51,7 @@
     [:div (stylefy/use-style
             input-dropdown-selector-styles)
      [:span
-      {:cypressid (str cypressid "-label" (when is-dropped-down "--dropped"))}
+      {:cypressid (str cypressid "-label--" (if is-dropped-down "dropped" "undropped"))}
       (if selected-item-label selected-item-label unselected-label)]
      [(if is-dropped-down icon/arrow-drop-up icon/arrow-drop-down)]]))
 

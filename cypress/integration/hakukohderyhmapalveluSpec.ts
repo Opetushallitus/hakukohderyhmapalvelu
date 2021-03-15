@@ -5,7 +5,7 @@
 import * as hs from '../selectors/hakukohderyhmaPanelSelectors'
 import * as hh from '../selectors/hakukohderyhmanHakutoimintoSelectors'
 import * as hl from '../selectors/hakukohderyhmanLisaysSelectors'
-import { PostHakukohderyhmaRequestFixture } from '../fixtures/hakukohderyhmapalvelu/PostHakukohderyhmaRequestFixture'
+import { HakukohderyhmaFixture } from '../fixtures/hakukohderyhmapalvelu/HakukohderyhmaFixture'
 
 describe('Hakukohderyhmäpalvelu', () => {
   const mockHakukohderyhmat = () => {
@@ -140,7 +140,7 @@ describe('Hakukohderyhmäpalvelu', () => {
         'have.text',
         'Hakukohderyhmät',
       )
-      cy.get(hl.hakukohderyhmanLisaysDropdownSelector).should(
+      cy.get(hl.hakukohderyhmanLisaysDropdownSelectorUndropped).should(
         'have.text',
         'Hakukohderyhmä',
       )
@@ -158,20 +158,28 @@ describe('Hakukohderyhmäpalvelu', () => {
         'not.exist',
       )
     })
-    it('Hakukohderyhmä-dropdownissa on olemassa olevat ryhmät', () => {
-      cy.get(hl.hakukohderyhmanLisaysDropdownSelector).click({ force: true })
+    let preExeistingRyhmaNimi: string
+    it('Hakukohderyhmä-dropdownissa näkyy valmiiksi olemassa olevat ryhmät', async () => {
+        cy.fixture('hakukohderyhmapalvelu/get-organisaatio-ryhmat-response.json').then(ryhmat => {
+            preExeistingRyhmaNimi = ryhmat[0].nimi.fi
+        })
+      cy.get(hl.hakukohderyhmanLisaysDropdownSelectorUndropped).click({ force: true })
       cy.get(hl.hakukohderyhmanLisaysDropdownSelectorDropped).should(
         'exist',
       )
       cy.get(
           hl.hakukohderyhmanLisaysDropdownSelectorItem(
-              "Suklaaryhmä",
+              preExeistingRyhmaNimi,
           ),)// eslint-disable-line prettier/prettier
           .should('exist')
     })
-    it('Ryhmän voi valita', () => {
-      //valitse ja assertoi ryhmä sulkien dropdown
-        cy.get(hl.hakukohderyhmanLisaysDropdownSelectorDropped).click({ force: true })
+    it('Hakukohderyhmän voi valita', () => {
+        cy.get(
+            hl.hakukohderyhmanLisaysDropdownSelectorItem(
+                preExeistingRyhmaNimi
+            ),)// eslint-disable-line prettier/prettier
+            .click({ force: true })
+        cy.get(hl.hakukohderyhmanLisaysDropdownSelectorUndropped).should('have.text', preExeistingRyhmaNimi)
     })
     describe('Uuden hakukohderyhmän lisäys', () => {
       before('"Lisää hakukohderyhmä" -linkin klikkaus', () => {
@@ -189,7 +197,7 @@ describe('Hakukohderyhmäpalvelu', () => {
       })
       describe('Uuden hakukohderyhmän nimen kirjoittaminen', () => {
         before(() => {
-          cy.fixture<PostHakukohderyhmaRequestFixture>(
+          cy.fixture<HakukohderyhmaFixture>(
             'hakukohderyhmapalvelu/post-hakukohderyhma-request.json',
           )
             .as('post-hakukohderyhma-request')
@@ -236,13 +244,13 @@ describe('Hakukohderyhmäpalvelu', () => {
             cy.get(
               hl.hakukohderyhmanLisaysSaveNewHakukohderyhmaButtonSelector,
             ).should('not.exist')
-            cy.get<PostHakukohderyhmaRequestFixture>(
+            cy.get<HakukohderyhmaFixture>(
               '@post-hakukohderyhma-request',
             ).then(hakukohderyhma => {
               cy.get(
                 hl.hakukohderyhmanLisaysNewHakukohderyhmaNameTextInputSelector,
               ).should('not.exist')
-              cy.get(hl.hakukohderyhmanLisaysDropdownSelector).click({
+              cy.get(hl.hakukohderyhmanLisaysDropdownSelectorUndropped).click({
                 force: true,
               })
               cy.get(hl.hakukohderyhmanLisaysDropdownSelectorDropped).should(
