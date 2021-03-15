@@ -30,7 +30,9 @@
    :border-style     "solid"
    :border-width     "1px"
    :border-color     colors/gray-lighten-3
-   :border-radius    "3px"})
+   :border-radius    "3px"
+   :max-height       "400px"
+   :overflow-y       "scroll"})
 
 
 (s/defschema InputDropdownProps
