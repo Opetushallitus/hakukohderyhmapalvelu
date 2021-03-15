@@ -49,7 +49,7 @@
 
   (post-new-organisaatio [_ hakukohderyhma]
     (s/validate api-schemas/HakukohderyhmaRequest hakukohderyhma)
-    (let [url           (url/resolve-url :organisaatio-service.organisaatio.v4 config)
+    (let [url           (oph-url/resolve-url :organisaatio-service.organisaatio.v4 config)
           parent-oid    (-> config :oph-organisaatio-oid)
           body          (merge hakukohderyhma
                                {:parentOid    parent-oid
