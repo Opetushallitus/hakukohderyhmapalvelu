@@ -34,33 +34,34 @@
 (events/reg-event-fx-validating
   :hakukohderyhmien-hallinta/save-hakukohderyhma
   (fn-traced [{db :db} [hakukohderyhma-name]]
-    (let [http-request-id :hakukohderyhmien-hallinta/save-hakukohderyhma
-          body            {:nimi {:fi hakukohderyhma-name}}]
-      {:db   (update db :requests (fnil conj #{}) http-request-id)
-       :http {:method           :post
-              :http-request-id  http-request-id
-              :path             "/hakukohderyhmapalvelu/api/hakukohderyhma"
-              :request-schema   schemas/HakukohderyhmaRequest
-              :response-schema  schemas/HakukohderyhmaResponse
-              :response-handler [:hakukohderyhmien-hallinta/handle-save-hakukohderyhma]
-              :body             body}})))
+             (let [http-request-id :hakukohderyhmien-hallinta/save-hakukohderyhma
+                   body {:nimi {:fi hakukohderyhma-name}}]
+               {:db   (update db :requests (fnil conj #{}) http-request-id)
+                :http {:method           :post
+                       :http-request-id  http-request-id
+                       :path             "/hakukohderyhmapalvelu/api/hakukohderyhma"
+                       :request-schema   schemas/HakukohderyhmaRequest
+                       :response-schema  schemas/HakukohderyhmaResponse
+                       :response-handler [:hakukohderyhmien-hallinta/handle-save-hakukohderyhma]
+                       :body             body}})))
 
 (def get-all-hakukohderyhma :hakukohderyhmien-hallinta/get-all-hakukohderyhma)
 (def handle-get-all-hakukohderyhma :hakukohderyhmien-hallinta/handle-get-all-hakukohderyhma)
 
 (events/reg-event-db-validating
-  :hakukohderyhmien-hallinta/handle-get-all-hakukohderyhma
+  handle-get-all-hakukohderyhma
   (fn-traced [db [response]]
              (println (str "DEBUG :hakukohderyhmien-hallinta/handle-get-all-hakukohderyhma: " {:response response}))
              (assoc-in db persisted-hakukohderyhmas (set response))))
 
 (events/reg-event-fx-validating
-  :hakukohderyhmien-hallinta/get-all-hakukohderyhma
+  get-all-hakukohderyhma
   (fn-traced [{db :db} [_]]
-    (let [http-request-id :hakukohderyhmien-hallinta/get-all-hakukohderyhma]
-      {:db   (update db :requests (fnil conj #{}) http-request-id)
-       :http {:method           :get
-              :http-request-id  http-request-id
-              :path             "/hakukohderyhmapalvelu/api/hakukohderyhma-all"
-              :response-handler [handle-get-all-hakukohderyhma]
-              :body             {}}})))
+             (let [http-request-id :hakukohderyhmien-hallinta/get-all-hakukohderyhma]
+               {:db   (update db :requests (fnil conj #{}) http-request-id)
+                :http {:method           :get
+                       :http-request-id  http-request-id
+                       :path             "/hakukohderyhmapalvelu/api/hakukohderyhma-all"
+                       :response-schema  schemas/HakukohderyhmaListResponse
+                       :response-handler [handle-get-all-hakukohderyhma]
+                       :body             {}}})))

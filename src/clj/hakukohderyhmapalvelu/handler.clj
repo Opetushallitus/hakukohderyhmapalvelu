@@ -132,7 +132,7 @@
        ["/hakukohderyhma-all"
         {:get {:middleware auth
                :summary    "Hakee kaikki talletetut hakukohderyhmät"
-               :responses  {200 {:body schema/HakukohderyhmaGetResponse}}
+               :responses  {200 {:body schema/HakukohderyhmaListResponse}}
                :parameters {:query {(s/optional-key :all) s/Bool}}
                :handler    (fn [{session :session}]
                              (response/ok (hakukohderyhma/get-all hakukohderyhma-service session)))}}]
@@ -140,8 +140,8 @@
         {:post {:middleware auth
                 :tags       ["Hakukohderyhmä"]
                 :summary    "Tallentaa uuden hakukohderyhmän"
-                :responses  {200 {:body schema/HakukohderyhmaPostResponse}}
-                :parameters {:body schema/HakukohderyhmaPostRequest}
+                :responses  {200 {:body schema/HakukohderyhmaResponse}}
+                :parameters {:body schema/HakukohderyhmaRequest}
                 :handler    (fn [{session :session {hakukohderyhma :body} :parameters}]
                               (response/ok (hakukohderyhma/create hakukohderyhma-service session hakukohderyhma)))}}]
        ["/haku"
@@ -171,11 +171,11 @@
                 :parameters {:query {:ticket s/Str}}
                 :handler    (fn [{{{:keys [ticket]} :query} :parameters :as request}]
                               (auth-routes/login auth-routes-source ticket request))}
-         :post {:no-doc     true
-                :handler    (fn [request] (auth-routes/cas-logout auth-routes-source request))}}]
+         :post {:no-doc  true
+                :handler (fn [request] (auth-routes/cas-logout auth-routes-source request))}}]
        ["/logout"
-        {:get {:no-doc     true
-               :handler    (fn [{:keys [session]}] (auth-routes/logout auth-routes-source session))}}]]]]))
+        {:get {:no-doc  true
+               :handler (fn [{:keys [session]}] (auth-routes/logout auth-routes-source session))}}]]]]))
 
 (defn router [args]
   (ring/router

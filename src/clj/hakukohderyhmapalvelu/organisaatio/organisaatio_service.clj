@@ -10,6 +10,8 @@
             [hakukohderyhmapalvelu.config :as c]
             [schema-tools.core :as st]))
 
+(def hakukohderyhma-keys [:oid :nimi])
+
 (defrecord OrganisaatioService [organisaatio-service-authenticating-client config]
   component/Lifecycle
 
@@ -23,20 +25,15 @@
   organisaatio-service-protocol/OrganisaatioServiceProtocol
 
   (get-organisaatio-children [_]
-    (let [locator (str "/" (-> config :oph-organisaatio-oid ) "/children")
-          base-url (oph-url/resolve-url :organisaatio-service.organisaatio.v4 config)
-          url (str base-url locator)                              ;https://virkailija.testiopintopolku.fi/organisaatio-service/rest/organisaatio/v4
-          _ (println "GETTING")
-          _ (println "GETTING")
-          _ (println "GETTING")
-          response-body (-> (authenticating-client-protocol/get organisaatio-service-authenticating-client
-                                                                url
-                                                                nil)
-                            (http/parse-and-validate schemas/GetOrganisaatioChildrenSchema))]
-      (println "GOT")
-      (println "GOT")
-      (println "GOT")
-      response-body))
+    (let [base-url (oph-url/resolve-url :organisaatio-service.organisaatio.v3 config)
+          url (str base-url "/ryhmat")
+          response-body (as-> url res'
+                              (authenticating-client-protocol/get organisaatio-service-authenticating-client
+                                                                  res'
+                                                                  s/Any)
+                              (http/parse-and-validate res' schemas/GetRyhmatResponse))]
+      (map #(select-keys % hakukohderyhma-keys)
+           response-body)))
 
   (find-by-oids [_ oid-list]
     (if (not-empty oid-list)
@@ -51,7 +48,7 @@
       []))
 
   (post-new-organisaatio [_ hakukohderyhma]
-    (s/validate api-schemas/HakukohderyhmaPostRequest hakukohderyhma)
+    (s/validate api-schemas/HakukohderyhmaRequest hakukohderyhma)
     (let [url           (url/resolve-url :organisaatio-service.organisaatio.v4 config)
           parent-oid    (-> config :oph-organisaatio-oid)
           body          (merge hakukohderyhma
@@ -67,4 +64,4 @@
                             (http/parse-and-validate schemas/PostNewOrganisaatioResponse))]
       (-> response-body
           :organisaatio
-          (select-keys [:oid :nimi])))))
+          (select-keys hakukohderyhma-keys)))))

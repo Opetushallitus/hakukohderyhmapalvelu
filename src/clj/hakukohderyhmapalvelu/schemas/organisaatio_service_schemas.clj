@@ -39,8 +39,11 @@
   {:organisaatio Organisaatio
    :status       s/Str})
 
-(s/defschema GetOrganisaatioChildrenSchema
-  (st/merge
-    api-schemas/HakukohderyhmaGetResponse
-    s/Any))
+(s/defschema Hakukohderyhma
+  {:oid  s/Str
+   :nimi c/Nimi
+   s/Any s/Any})
+
+(s/defschema GetRyhmatResponse
+  [Hakukohderyhma])
 
