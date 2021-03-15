@@ -25,12 +25,14 @@
   organisaatio-service-protocol/OrganisaatioServiceProtocol
 
   (get-organisaatio-children [_]
+    (prn "SHIT1")
     (let [url (oph-url/resolve-url :organisaatio-service.organisaatio.v3.ryhmat config)
           response-body (as-> url res'
                               (authenticating-client-protocol/get organisaatio-service-authenticating-client
                                                                   res'
                                                                   s/Any)
                               (http/parse-and-validate res' schemas/GetRyhmatResponse))]
+      (prn "SHIT2" response-body)
       (map #(select-keys % hakukohderyhma-keys)
            response-body)))
 

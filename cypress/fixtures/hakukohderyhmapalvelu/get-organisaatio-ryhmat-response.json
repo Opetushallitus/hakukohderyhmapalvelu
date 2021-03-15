@@ -1,0 +1,50 @@
+[
+  {
+    "oid": "1.1.2.5.2.9",
+    "nimi": {
+      "fi": "Kinuskiryhmä",
+      "en": "Caramel group",
+      "sv": "Karamellgrupp"
+    },
+    "status": "AKTIIVINEN",
+    "version": 0,
+    "parentOid": "1.2.2.5.1.0",
+    "parentOidPath": "|1.2.2.5.1.0|",
+    "kuvaus": {
+      "kieli_fi#1": "Kinuskin yhteisvalinta"
+    },
+    "ryhmatyypit": [
+      "ryhmatyypit_2#1"
+    ],
+    "kayttoryhmat": [
+      "kayttoryhmat_1#1"
+    ],
+    "tyypit": [
+      "Ryhma"
+    ]
+  },
+  {
+    "oid": "1.2.2.5.2.9",
+    "nimi": {
+      "fi": "Suklaaryhmä",
+      "en": "Chocolate group",
+      "sv": "Chokladgrupp"
+    },
+    "status": "AKTIIVINEN",
+    "version": 0,
+    "parentOid": "1.2.2.5.1.0",
+    "parentOidPath": "|1.2.2.5.1.0|",
+    "kuvaus": {
+      "kieli_fi#1": "Suklaalla täytetty valinta"
+    },
+    "ryhmatyypit": [
+      "ryhmatyypit_2#1"
+    ],
+    "kayttoryhmat": [
+      "kayttoryhmat_1#1"
+    ],
+    "tyypit": [
+      "Ryhma"
+    ]
+  }
+]

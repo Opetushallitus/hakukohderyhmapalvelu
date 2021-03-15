@@ -8,6 +8,17 @@ import * as hl from '../selectors/hakukohderyhmanLisaysSelectors'
 import { PostHakukohderyhmaRequestFixture } from '../fixtures/hakukohderyhmapalvelu/PostHakukohderyhmaRequestFixture'
 
 describe('Hakukohderyhmäpalvelu', () => {
+  const mockHakukohderyhmat = () => {
+      cy.login()
+      cy.mockBackendRequest({
+          method: 'GET',
+          path: '/organisaatio-service/rest/organisaatio/v3/ryhmat',
+          service: 'organisaatio-service',
+          responseFixture: 'hakukohderyhmapalvelu/get-organisaatio-ryhmat-response.json',
+      })
+      cy.login()
+  }
+
   const mockHaut = () => {
     cy.login()
     cy.mockBackendRequest({
@@ -42,6 +53,7 @@ describe('Hakukohderyhmäpalvelu', () => {
 
   before(() => {
     cy.resetMocks()
+    mockHakukohderyhmat()
     mockHaut()
     cy.visit('/')
   })
@@ -122,7 +134,7 @@ describe('Hakukohderyhmäpalvelu', () => {
         })
     })
   })
-  describe('Hakukohderyhmän lisäystoiminto', () => {
+  describe('Hakukohderyhmän lisääminen', () => {
     it('Näyttää hakukohderyhmän lisäysnäkymän', () => {
       cy.get(hl.hakukohderyhmanLisaysHeadingSelector).should(
         'have.text',
@@ -146,11 +158,20 @@ describe('Hakukohderyhmäpalvelu', () => {
         'not.exist',
       )
     })
-    it('Tyhjä hakukohderyhmä-dropdown ei reagoi painallukseen', () => {
+    it('Hakukohderyhmä-dropdownissa on olemassa olevat ryhmät', () => {
       cy.get(hl.hakukohderyhmanLisaysDropdownSelector).click({ force: true })
       cy.get(hl.hakukohderyhmanLisaysDropdownSelectorDropped).should(
-        'not.exist',
+        'exist',
       )
+      cy.get(
+          hl.hakukohderyhmanLisaysDropdownSelectorItem(
+              "Suklaaryhmä",
+          ),)// eslint-disable-line prettier/prettier
+          .should('exist')
+    })
+    it('Ryhmän voi valita', () => {
+      //valitse ja assertoi ryhmä sulkien dropdown
+        cy.get(hl.hakukohderyhmanLisaysDropdownSelectorDropped).click({ force: true })
     })
     describe('Uuden hakukohderyhmän lisäys', () => {
       before('"Lisää hakukohderyhmä" -linkin klikkaus', () => {
@@ -208,7 +229,7 @@ describe('Hakukohderyhmäpalvelu', () => {
               'post-hakukohderyhma',
             )
           })
-          it('Tallentaa hakukohderyhmän, jonka jälkeen ryhmän nimi näkyy dropdown valinnoissa ja tallennus-input katoaa näkymästä', () => {
+          it('Tallentaa hakukohderyhmän, jonka jälkeen tallennus-input katoaa näkymästä ja ryhmän nimi näkyy dropdown valinnoissa', () => {
             cy.get(
               hl.hakukohderyhmanLisaysSaveNewHakukohderyhmaButtonSelector,
             ).click({ force: true })
@@ -227,7 +248,6 @@ describe('Hakukohderyhmäpalvelu', () => {
               cy.get(hl.hakukohderyhmanLisaysDropdownSelectorDropped).should(
                 'exist',
               )
-
               cy.get(
                 hl.hakukohderyhmanLisaysDropdownSelectorItem(
                   hakukohderyhma.nimi.fi,
