@@ -9,6 +9,9 @@
   {:oid  s/Str
    :nimi c/Nimi})
 
+(s/defschema HakukohderyhmaSearchRequest
+  [s/Str])
+
 (s/defschema HakukohderyhmaListResponse
   [HakukohderyhmaResponse])
 

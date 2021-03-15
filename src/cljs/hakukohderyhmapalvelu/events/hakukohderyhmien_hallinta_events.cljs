@@ -48,6 +48,14 @@
 (def get-all-hakukohderyhma :hakukohderyhmien-hallinta/get-all-hakukohderyhma)
 (def handle-get-all-hakukohderyhma :hakukohderyhmien-hallinta/handle-get-all-hakukohderyhma)
 
+(defn- create-hakukohderyhma-search-request [{:keys [http-request-id haku-oids response-handler]}]
+  {:method           :post
+   :http-request-id  http-request-id
+   :path             "/hakukohderyhmapalvelu/api/hakukohderyhma/list-by-haku-oids"
+   :response-schema  schemas/HakukohderyhmaListResponse
+   :response-handler [response-handler]
+   :body             haku-oids})
+
 (events/reg-event-db-validating
   handle-get-all-hakukohderyhma
   (fn-traced [db [response]]
@@ -59,9 +67,7 @@
   (fn-traced [{db :db} [_]]
              (let [http-request-id :hakukohderyhmien-hallinta/get-all-hakukohderyhma]
                {:db   (update db :requests (fnil conj #{}) http-request-id)
-                :http {:method           :get
-                       :http-request-id  http-request-id
-                       :path             "/hakukohderyhmapalvelu/api/hakukohderyhma-all"
-                       :response-schema  schemas/HakukohderyhmaListResponse
-                       :response-handler [handle-get-all-hakukohderyhma]
-                       :body             {}}})))
+                :http (create-hakukohderyhma-search-request
+                        {:http-request-id  http-request-id
+                         :haku-oids        []
+                         :response-handler handle-get-all-hakukohderyhma})})))

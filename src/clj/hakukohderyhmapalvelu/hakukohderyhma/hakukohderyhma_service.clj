@@ -9,8 +9,10 @@
 (defrecord HakukohderyhmaService [audit-logger organisaatio-service kouta-service]
   hakukohderyhma-service-protocol/HakukohderyhmaServiceProtocol
 
-  (get-all [_ session]
-    (organisaatio/get-organisaatio-children organisaatio-service))
+  (get-by-haku-oids [_ session haku-oids]
+    (if (empty? haku-oids)
+      (organisaatio/get-organisaatio-children organisaatio-service)
+      nil))
 
   (create [_ session hakukohderyhma]
     (let [r (organisaatio/post-new-organisaatio organisaatio-service hakukohderyhma)]
