@@ -25,8 +25,7 @@
   organisaatio-service-protocol/OrganisaatioServiceProtocol
 
   (get-organisaatio-children [_]
-    (let [base-url (oph-url/resolve-url :organisaatio-service.organisaatio.v3 config)
-          url (str base-url "/ryhmat")
+    (let [url (oph-url/resolve-url :organisaatio-service.organisaatio.v3.ryhmat config)
           response-body (as-> url res'
                               (authenticating-client-protocol/get organisaatio-service-authenticating-client
                                                                   res'
