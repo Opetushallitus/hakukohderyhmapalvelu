@@ -10,7 +10,7 @@
    :nimi c/Nimi})
 
 (s/defschema HakukohderyhmaSearchRequest
-  [s/Str])
+  {:oids [s/Str]})
 
 (s/defschema HakukohderyhmaListResponse
   [HakukohderyhmaResponse])

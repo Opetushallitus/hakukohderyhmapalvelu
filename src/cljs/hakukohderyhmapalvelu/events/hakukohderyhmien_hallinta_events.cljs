@@ -54,7 +54,7 @@
    :path             "/hakukohderyhmapalvelu/api/hakukohderyhma/list-by-haku-oids"
    :response-schema  schemas/HakukohderyhmaListResponse
    :response-handler [response-handler]
-   :body             haku-oids})
+   :body             {:oids haku-oids}})
 
 (events/reg-event-db-validating
   handle-get-all-hakukohderyhma
