@@ -159,27 +159,31 @@ describe('Hakukohderyhmäpalvelu', () => {
         'not.exist',
       )
     })
-    let preExistingRyhmaNimi: string
     it('Hakukohderyhmä-dropdownissa näkyy valmiiksi olemassa olevat ryhmät', () => {
       cy.fixture(
         'hakukohderyhmapalvelu/get-organisaatio-ryhmat-response.json',
       ).then(ryhmat => {
-        preExistingRyhmaNimi = ryhmat[0].nimi.fi
+        const preExistingRyhmaNimi = ryhmat[0].nimi.fi
+        cy.get(hl.hakukohderyhmanLisaysDropdownSelectorUndropped).click({
+          force: true,
+        })
+        cy.get(hl.hakukohderyhmanLisaysDropdownSelectorDropped).should('exist')
+          cy.get(hl.hakukohderyhmanLisaysDropdownSelectorItem(preExistingRyhmaNimi)) // eslint-disable-line prettier/prettier
+          .should('exist')
       })
-      cy.get(hl.hakukohderyhmanLisaysDropdownSelectorUndropped).click({
-        force: true,
-      })
-      cy.get(hl.hakukohderyhmanLisaysDropdownSelectorDropped).should('exist')
-      cy.get(hl.hakukohderyhmanLisaysDropdownSelectorItem(preExistingRyhmaNimi)) // eslint-disable-line prettier/prettier
-        .should('exist')
     })
     it('Hakukohderyhmän voi valita', () => {
-      cy.get(hl.hakukohderyhmanLisaysDropdownSelectorItem(preExistingRyhmaNimi)) // eslint-disable-line prettier/prettier
-        .click({ force: true })
-      cy.get(hl.hakukohderyhmanLisaysDropdownSelectorUndropped).should(
-        'have.text',
-        preExistingRyhmaNimi,
-      )
+      cy.fixture(
+        'hakukohderyhmapalvelu/get-organisaatio-ryhmat-response.json',
+      ).then(ryhmat => {
+        const preExistingRyhmaNimi = ryhmat[0].nimi.fi
+            cy.get(hl.hakukohderyhmanLisaysDropdownSelectorItem(preExistingRyhmaNimi)) // eslint-disable-line prettier/prettier
+          .click({ force: true })
+        cy.get(hl.hakukohderyhmanLisaysDropdownSelectorUndropped).should(
+          'have.text',
+          preExistingRyhmaNimi,
+        )
+      })
     })
     describe('Uuden hakukohderyhmän lisäys', () => {
       before('"Lisää hakukohderyhmä" -linkin klikkaus', () => {
