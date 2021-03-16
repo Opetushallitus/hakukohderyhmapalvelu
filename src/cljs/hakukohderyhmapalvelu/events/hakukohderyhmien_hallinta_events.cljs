@@ -48,18 +48,17 @@
 (def get-all-hakukohderyhma :hakukohderyhmien-hallinta/get-all-hakukohderyhma)
 (def handle-get-all-hakukohderyhma :hakukohderyhmien-hallinta/handle-get-all-hakukohderyhma)
 
-(defn- create-hakukohderyhma-search-request [{:keys [http-request-id haku-oids response-handler]}]
+(defn- create-hakukohderyhma-search-request [{:keys [http-request-id hakukohde-oids response-handler]}]
   {:method           :post
    :http-request-id  http-request-id
-   :path             "/hakukohderyhmapalvelu/api/hakukohderyhma/list-by-haku-oids"
+   :path             "/hakukohderyhmapalvelu/api/hakukohderyhma/find-by-hakukohde-oids"
    :response-schema  schemas/HakukohderyhmaListResponse
    :response-handler [response-handler]
-   :body             {:oids haku-oids}})
+   :body             {:oids hakukohde-oids}})
 
 (events/reg-event-db-validating
   handle-get-all-hakukohderyhma
   (fn-traced [db [response]]
-             (println (str "DEBUG :hakukohderyhmien-hallinta/handle-get-all-hakukohderyhma: " {:response response}))
              (assoc-in db persisted-hakukohderyhmas (set response))))
 
 (events/reg-event-fx-validating
@@ -69,5 +68,5 @@
                {:db   (update db :requests (fnil conj #{}) http-request-id)
                 :http (create-hakukohderyhma-search-request
                         {:http-request-id  http-request-id
-                         :haku-oids        []
+                         :hakukohde-oids   []
                          :response-handler handle-get-all-hakukohderyhma})})))
