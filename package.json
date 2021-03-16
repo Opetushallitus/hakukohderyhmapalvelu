@@ -7,6 +7,7 @@
     "lint:clj": "clj-kondo --config oph-configuration/clj-kondo.config.edn --lint src",
     "lint:clj:lint-staged": "clj-kondo --config oph-configuration/clj-kondo.config.edn --lint",
     "lint:js": "eslint --ignore-path \".eslintignore\" --ext .js,.ts \"cypress\"",
+    "format:js": "eslint --fix --ignore-path \".eslintignore\" --ext .js,.ts \"cypress\"", 
     "tsc:type-check": "tsc -p cypress/tsconfig.json"
   },
   "engines": {

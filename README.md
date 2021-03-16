@@ -103,6 +103,11 @@ npm run lint:clj
 npm run lint:js
 ```
 
+#### JavaScript -tiedostojen formatointi
+```
+npm run format:js
+```
+
 ### E2E-testit
 
 1. Mikäli et vielä ole kertaakaan valmistellut local-environment -ympäristöä, suorita ensin kohdan [vain kerran tehtävät työvaiheet](#vain-kerran-tehtävät-työvaiheet) mukaiset toimenpiteet.
