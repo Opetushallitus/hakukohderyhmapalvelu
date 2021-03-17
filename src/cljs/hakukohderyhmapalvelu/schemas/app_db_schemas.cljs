@@ -42,14 +42,11 @@
    :is-selected s/Bool
    :hakukohteet [Hakukohde]})
 
-(s/defschema HakukohdeRyhma
-  {:oid  s/Str
-   :nimi LocalizedString})
 
 (s/defschema HakukohderyhmaPalvelu
   {:hakukohderyhma
-   {:persisted                      #{HakukohdeRyhma}
-    :selected-hakukohderyhma        (s/maybe HakukohdeRyhma)
+   {:persisted                      #{api-schemas/Hakukohderyhma}
+    :selected-hakukohderyhma        (s/maybe api-schemas/Hakukohderyhma)
     :create-hakukohderyhma-visible? s/Bool
     :haut                           [HaunTiedot]
     :hakukohteet-filter             s/Str}})

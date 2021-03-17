@@ -134,7 +134,7 @@
          {:post {:middleware auth
                  :tags       ["Hakukohderyhmä"]
                  :summary    "Tallentaa uuden hakukohderyhmän"
-                 :responses  {200 {:body schema/HakukohderyhmaResponse}}
+                 :responses  {200 {:body schema/Hakukohderyhma}}
                  :parameters {:body schema/HakukohderyhmaRequest}
                  :handler    (fn [{session :session {hakukohderyhma :body} :parameters}]
                                (response/ok (hakukohderyhma/create hakukohderyhma-service session hakukohderyhma)))}}]

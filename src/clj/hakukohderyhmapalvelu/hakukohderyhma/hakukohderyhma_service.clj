@@ -11,7 +11,8 @@
 
   (find-hakukohderyhmat-by-hakukohteet-oids [_ session hakukohde-oids]
     (if (empty? hakukohde-oids)
-      (organisaatio/get-organisaatio-children organisaatio-service)
+      (let [orgs (organisaatio/get-organisaatio-children organisaatio-service)]
+        (map #(assoc % :hakukohteet []) orgs))
       []))
 
   (create [_ session hakukohderyhma]
@@ -21,7 +22,7 @@
                  hakukohderyhma-luonti
                  (audit/->target {:oid (:oid r)})
                  (audit/->changes {} r))
-      r))
+      (assoc r :hakukohteet [])))
 
   (list-haun-tiedot [_ session is-all]
     (kouta/list-haun-tiedot kouta-service is-all))

@@ -41,7 +41,7 @@
                        :http-request-id  http-request-id
                        :path             "/hakukohderyhmapalvelu/api/hakukohderyhma"
                        :request-schema   schemas/HakukohderyhmaRequest
-                       :response-schema  schemas/HakukohderyhmaResponse
+                       :response-schema  schemas/Hakukohderyhma
                        :response-handler [:hakukohderyhmien-hallinta/handle-save-hakukohderyhma]
                        :body             body}})))
 
