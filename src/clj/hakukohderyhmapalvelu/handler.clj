@@ -129,21 +129,24 @@
                           (-> (health-check/check-health health-checker)
                               response/ok
                               (response/content-type "text/html")))}}]
-       ["/hakukohderyhma/find-by-hakukohde-oids"
-        {:post {:middleware auth
-                :summary    "Hakee kaikki talletetut hakukohderyhmät"
-                :responses  {200 {:body schema/HakukohderyhmaListResponse}}
-                :parameters {:body schema/HakukohderyhmaSearchRequest}
-                :handler    (fn [{session :session {{hakukohde-oids :oids} :body} :parameters}]
-                              (response/ok (hakukohderyhma/get-by-haku-oids hakukohderyhma-service session hakukohde-oids)))}}]
        ["/hakukohderyhma"
-        {:post {:middleware auth
-                :tags       ["Hakukohderyhmä"]
-                :summary    "Tallentaa uuden hakukohderyhmän"
-                :responses  {200 {:body schema/HakukohderyhmaResponse}}
-                :parameters {:body schema/HakukohderyhmaRequest}
-                :handler    (fn [{session :session {hakukohderyhma :body} :parameters}]
-                              (response/ok (hakukohderyhma/create hakukohderyhma-service session hakukohderyhma)))}}]
+        [""
+         {:post {:middleware auth
+                 :tags       ["Hakukohderyhmä"]
+                 :summary    "Tallentaa uuden hakukohderyhmän"
+                 :responses  {200 {:body schema/HakukohderyhmaResponse}}
+                 :parameters {:body schema/HakukohderyhmaRequest}
+                 :handler    (fn [{session :session {hakukohderyhma :body} :parameters}]
+                               (response/ok (hakukohderyhma/create hakukohderyhma-service session hakukohderyhma)))}}]
+         ["/find-by-hakukohde-oids"
+          {:post {:middleware auth
+                  :summary    "Hakee kaikki talletetut hakukohderyhmät"
+                  :responses  {200 {:body schema/HakukohderyhmaListResponse}}
+                  :parameters {:body schema/HakukohderyhmaSearchRequest}
+                  :handler    (fn [{session :session {{hakukohde-oids :oids} :body} :parameters}]
+                                (response/ok
+                                  (hakukohderyhma/find-hakukohderyhmat-by-hakukohteet-oids
+                                    hakukohderyhma-service session hakukohde-oids)))}}]]
        ["/haku"
         [""
          {:get {:middleware auth
