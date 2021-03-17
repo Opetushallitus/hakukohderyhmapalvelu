@@ -7,11 +7,12 @@
                                                     :query {}}}
    :requests                          #{}
    :lang                              :fi
-   :hakukohderyhma                    {:persisted                      #{}
-                                       :selected-hakukohderyhma        nil
-                                       :create-hakukohderyhma-visible? false
-                                       :haut                           []
-                                       :hakukohteet-filter             ""}
+   :hakukohderyhma                    {:persisted               #{}
+                                       :selected-hakukohderyhma nil
+                                       :input-visibility        {:create-visible? false
+                                                                 :rename-visible? false}
+                                       :haut                    []
+                                       :hakukohteet-filter      ""}
    :haun-asetukset                    {:haut {}}
    :forms                             {}
    :ohjausparametrit                  {}

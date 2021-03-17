@@ -48,11 +48,12 @@
 
 (s/defschema HakukohderyhmaPalvelu
   {:hakukohderyhma
-   {:persisted                      #{HakukohdeRyhma}
-    :selected-hakukohderyhma        (s/maybe HakukohdeRyhma)
-    :create-hakukohderyhma-visible? s/Bool
-    :haut                           [HaunTiedot]
-    :hakukohteet-filter             s/Str}})
+   {:persisted               #{HakukohdeRyhma}
+    :selected-hakukohderyhma (s/maybe HakukohdeRyhma)
+    :input-visibility        {:create-visible? s/Bool
+                              :rename-visible? s/Bool}
+    :haut                    [HaunTiedot]
+    :hakukohteet-filter      s/Str}})
 
 (s/defschema Requests
   {:requests #{s/Keyword}})
