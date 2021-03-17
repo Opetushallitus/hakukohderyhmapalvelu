@@ -46,11 +46,12 @@
 
 (s/defschema HakukohderyhmaPalvelu
   {:hakukohderyhma
-   {:persisted                      #{api-schemas/Hakukohderyhma}
-    :selected-hakukohderyhma        (s/maybe api-schemas/Hakukohderyhma)
-    :create-hakukohderyhma-visible? s/Bool
-    :haut                           [HaunTiedot]
-    :hakukohteet-filter             s/Str}})
+   {:persisted               #{api-schemas/Hakukohderyhma}
+    :selected-hakukohderyhma (s/maybe api-schemas/Hakukohderyhma)
+    :input-visibility        {:create-visible? s/Bool
+                              :rename-visible? s/Bool}
+    :haut                    [HaunTiedot]
+    :hakukohteet-filter      s/Str}})
 
 (s/defschema Requests
   {:requests #{s/Keyword}})

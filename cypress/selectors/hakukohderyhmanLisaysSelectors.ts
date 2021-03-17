@@ -12,7 +12,7 @@ export const hakukohderyhmanLisaysDropdownSelectorItem = (
 ): string => `div[cypressid=dropdown-selector--${itemName}]:visible`
 
 export const hakukohderyhmanLisaysLisaaUusiRyhmaLinkSelector =
-  'button[cypressid=hakukohderyhma-select-add-new-hakukohderyhma]:visible'
+  'button[cypressid=hakukohderyhma-select-control--add-new-hakukohderyhma]:visible'
 
 export const hakukohderyhmanLisaysNewHakukohderyhmaNameTextInputSelector =
   'input[cypressid=hakukohderyhma-create-input]:visible'
