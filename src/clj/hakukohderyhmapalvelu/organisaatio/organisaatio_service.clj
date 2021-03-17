@@ -34,6 +34,15 @@
       (map #(select-keys % hakukohderyhma-keys)
            response-body)))
 
+  (get-organisaatio [_ oid]
+    (let [url (oph-url/resolve-url :organisaatio-service.organisaatio.v4.get config oid)
+          organisaatio (-> (authenticating-client-protocol/get organisaatio-service-authenticating-client
+                                                               url
+                                                               {:response-schema schemas/Organisaatio})
+                           (http/parse-and-validate schemas/Organisaatio))]
+      (st/select-schema organisaatio api-schemas/Organisaatio)))
+
+
   (find-by-oids [_ oid-list]
     (if (not-empty oid-list)
       (let [url (oph-url/resolve-url :organisaatio-service.organisaatio.v4.findbyoids config)
