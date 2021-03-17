@@ -138,8 +138,18 @@
                  :parameters {:body schema/HakukohderyhmaRequest}
                  :handler    (fn [{session :session {hakukohderyhma :body} :parameters}]
                                (response/ok (hakukohderyhma/create hakukohderyhma-service session hakukohderyhma)))}}]
+        ["/:oid/hakukohteet"
+         {:put {:middleware auth
+                :tags       ["Hakukohderyhmä"]
+                :summary    "Päivittää hakukohderyhmän ja hakukohteiden liitoksen"
+                :responses  {200 {:body schema/Hakukohderyhma}}
+                :parameters {:path {:oid s/Str} :body [schema/Hakukohde]}
+                :handler    (fn [{session :session {hakukohteet :body {oid :oid} :path} :parameters}]
+                              (response/ok (hakukohderyhma/update-hakukohderyhma-hakukohteet
+                                             hakukohderyhma-service session oid hakukohteet)))}}]
          ["/find-by-hakukohde-oids"
           {:post {:middleware auth
+                  :tags       ["Hakukohderyhmä"]
                   :summary    "Hakee kaikki talletetut hakukohderyhmät"
                   :responses  {200 {:body schema/HakukohderyhmaListResponse}}
                   :parameters {:body schema/HakukohderyhmaSearchRequest}

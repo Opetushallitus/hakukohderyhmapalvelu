@@ -38,7 +38,7 @@
 
                            :hakukohderyhma-service (component/using
                                                     (hakukohderyhma-service/map->HakukohderyhmaService {})
-                                                    [:audit-logger :organisaatio-service :kouta-service])
+                                                    [:audit-logger :organisaatio-service :kouta-service :db])
 
                            :health-checker (component/using
                                              (health-check/map->DbHealthChecker {})

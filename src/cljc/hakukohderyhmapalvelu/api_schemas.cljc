@@ -22,6 +22,7 @@
 (s/defschema Hakukohde
   {:oid  s/Str
    :nimi c/Nimi
+   (s/optional-key :hakuOid) s/Str
    :organisaatio Organisaatio})
 
 (s/defschema HakukohdeListResponse

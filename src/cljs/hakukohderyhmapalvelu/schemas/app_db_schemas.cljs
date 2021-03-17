@@ -33,6 +33,7 @@
 (s/defschema Hakukohde
   {:oid          s/Str
    :nimi         LocalizedString
+   (s/optional-key :hakuOid) s/Str
    :organisaatio api-schemas/Organisaatio
    :is-selected  s/Bool})
 
