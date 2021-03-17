@@ -133,39 +133,38 @@
                                 :style-prefix (str style-prefix "-input")}]
             :style-prefix     style-prefix}])))))
 
-(def ^:private rename-hakukohderyhma-link-styles
-  (merge layout/vertical-align-center-styles
-         {:justify-self "start"}))
-
-(def ^:private add-new-hakukohderyhma-link-styles
-  (merge layout/vertical-align-center-styles
-         {:justify-self "end"}))
-
 (def ^:private hakukohderyhma-selection-controls-styles
   (merge layout/vertical-align-center-styles
          {:grid-area    "hakukohderyhma-select-control"
           :justify-self "end"}))
 
-(defn- add-new-hakukohderyhma-link [{:keys [cypressid]}]
-  [:span (stylefy/use-style add-new-hakukohderyhma-link-styles)
-   [b/text-button {:cypressid    (str cypressid "--add-new-hakukohderyhma")
+(defn- hakukohderyhma-link [{:keys [cypressid
+                                    style-prefix
+                                    label
+                                    on-click]}]
+  [:span
+   [b/text-button {:cypressid    cypressid
                    :disabled?    false
-                   :style-prefix "new-hakukohderyhma-btn"
-                   :label        "Luo uusi ryhmä"
-                   :on-click     (fn [_]
-                                   (re-frame/dispatch [add-new-hakukohderyhma-link-clicked]))}]])
+                   :style-prefix style-prefix
+                   :label        label
+                   :on-click     on-click}]])
+
+(defn- add-new-hakukohderyhma-link [{:keys [cypressid]}]
+  [hakukohderyhma-link {:cypressid    (str cypressid "--add-new-hakukohderyhma")
+                        :style-prefix "new-hakukohderyhma-btn"
+                        :label        "Luo uusi ryhmä"
+                        :on-click     (fn [_]
+                                        (re-frame/dispatch [add-new-hakukohderyhma-link-clicked]))}])
 
 (defn- edit-hakukohderyhma-link [{:keys [cypressid]}]
   (let [selected-ryhma @(re-frame/subscribe [get-selected-hakukohderyhma])
         is-visible (some? selected-ryhma)]
     (when is-visible
-      [:span (stylefy/use-style rename-hakukohderyhma-link-styles)
-       [b/text-button {:cypressid    (str cypressid "--rename-hakukohderyhma")
-                       :disabled?    false
-                       :style-prefix "rename-hakukohderyhma-btn"
-                       :label        "Muokkaa ryhmää"
-                       :on-click     (fn [_]
-                                       (re-frame/dispatch [edit-hakukohderyhma-link-clicked]))}]])))
+      [hakukohderyhma-link {:cypressid    (str cypressid "--rename-hakukohderyhma")
+                            :style-prefix "rename-hakukohderyhma-btn"
+                            :label        "Muokkaa ryhmää"
+                            :on-click     (fn [_]
+                                            (re-frame/dispatch [edit-hakukohderyhma-link-clicked]))}])))
 
 (defn- hakukohdryhma-selection-controls [props]
   (let [separator [:span (stylefy/use-style {:margin "6px"})
