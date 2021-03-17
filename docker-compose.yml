@@ -22,6 +22,18 @@ services:
     ports:
       - "15432:15432"
     command: -p 15432
+  hakukohderyhmapalvelu-db-local:
+    image: postgres:12-alpine
+    container_name: hakukohderyhmapalvelu-db-local
+    environment:
+      POSTGRES_PASSWORD: postgres_password
+      POSTGRES_USER: postgres_user
+      POSTGRES_DB: hakukohderyhmapalvelu
+    networks:
+      hakukohderyhmapalvelu-local-network:
+    ports:
+      - "15432:15432"
+    command: -p 15432
 networks:
   hakukohderyhmapalvelu-local-network:
   hakukohderyhmapalvelu-local-e2e-network:
