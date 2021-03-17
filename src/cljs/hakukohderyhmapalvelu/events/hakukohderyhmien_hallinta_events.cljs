@@ -8,6 +8,8 @@
 (def selected-hakukohderyhma (conj root-path :selected-hakukohderyhma))
 (def create-hakukohderyhma-is-visible (conj root-path :create-hakukohderyhma-visible?))
 
+(def add-new-hakukohderyhma-link-clicked :hakukohderyhmien-hallinta/add-new-hakukohderyhma-link-clicked)
+
 (events/reg-event-db-validating
   :hakukohderyhmien-hallinta/select-hakukohderyhma
   (fn-traced [db [hakukohderyhma]]
@@ -19,7 +21,7 @@
                (assoc-in db selected-hakukohderyhma hakukohderyhma-to-be-selected))))
 
 (events/reg-event-db-validating
-  :hakukohderyhmien-hallinta/toggle-grid-visibility
+  add-new-hakukohderyhma-link-clicked
   (fn-traced [db]
              (update-in db create-hakukohderyhma-is-visible not)))
 

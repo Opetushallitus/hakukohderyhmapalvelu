@@ -6,7 +6,9 @@
             [hakukohderyhmapalvelu.components.common.panel :as p]
             [hakukohderyhmapalvelu.styles.layout-styles :as layout]
             [hakukohderyhmapalvelu.subs.hakukohderyhma-create-subs :refer [get-saved-hakukohderyhmas-as-options
-                                                                           get-currently-selected-hakukohderyhma]]
+                                                                           get-selected-hakukohderyhma
+                                                                           get-selected-hakukohderyhma-as-option]]
+            [hakukohderyhmapalvelu.events.hakukohderyhmien-hallinta-events :refer [add-new-hakukohderyhma-link-clicked]]
             [hakukohderyhmapalvelu.views.haku-view :as haun-tiedot-panel]
             [re-frame.core :as re-frame]
             [reagent.core :as reagent]
@@ -102,11 +104,11 @@
       (let [cypressid "hakukohderyhma-create"
             input-id "hakukohderyhma-create-input"
             style-prefix "hakukohderyhma-create"
-            visible? @(re-frame/subscribe [:hakukohderyhmien-hallinta/create-grid-visible?])
+            is-visible @(re-frame/subscribe [:hakukohderyhmien-hallinta/create-grid-visible?])
             ongoing-request? @(re-frame/subscribe [:hakukohderyhmien-hallinta/ongoing-request?])
             button-disabled? (or ongoing-request?
                                  (-> @input-value seq nil?))]
-        (when visible?
+        (when is-visible
           [input-and-button-without-top-row
            {:button-component [b/button
                                {:cypressid    (str cypressid "-button")
@@ -123,19 +125,47 @@
                                 :style-prefix (str style-prefix "-input")}]
             :style-prefix     style-prefix}])))))
 
+(def ^:private rename-hakukohderyhma-link-styles
+  (merge layout/vertical-align-center-styles
+         {:justify-self "start"}))
+
 (def ^:private add-new-hakukohderyhma-link-styles
+  (merge layout/vertical-align-center-styles
+         {:justify-self "end"}))
+
+(def ^:private hakukohderyhma-selection-controls-styles
   (merge layout/vertical-align-center-styles
          {:grid-area    "hakukohderyhma-select-control"
           :justify-self "end"}))
 
+(defn- rename-hakukohderyhma-link [{:keys [cypressid]}]
+  (let [selected-ryhma @(re-frame/subscribe [get-selected-hakukohderyhma])
+        is-visible (some? selected-ryhma)]
+    (when is-visible
+      [:span (stylefy/use-style rename-hakukohderyhma-link-styles)
+       [b/text-button {:cypressid    cypressid
+                       :disabled?    false
+                       :style-prefix "rename-hakukohderyhma-btn"
+                       :label        "Muokkaa ryhmää"
+                       :on-click     (fn [_]
+                                       ;(re-frame/dispatch [:hakukohderyhmien-hallinta/toggle-grid-visibility])
+                                       )}]
+       [:span (stylefy/use-style {:margin "6px"})
+          " | "]])))
+
 (defn- add-new-hakukohderyhma-link [{:keys [cypressid]}]
-  [:div (stylefy/use-style add-new-hakukohderyhma-link-styles)
+  [:span (stylefy/use-style add-new-hakukohderyhma-link-styles)
    [b/text-button {:cypressid    cypressid
                    :disabled?    false
                    :style-prefix "new-hakukohderyhma-btn"
                    :label        "Luo uusi ryhmä"
                    :on-click     (fn [_]
-                                   (re-frame/dispatch [:hakukohderyhmien-hallinta/toggle-grid-visibility]))}]])
+                                   (re-frame/dispatch [add-new-hakukohderyhma-link-clicked]))}]])
+
+(defn- hakukohdryhma-selection-controls [props]
+  [:div (stylefy/use-style hakukohderyhma-selection-controls-styles)
+   [rename-hakukohderyhma-link props]
+   [add-new-hakukohderyhma-link props]])
 
 (defn- make-hakukohderyhmien-hallinta-input-dropdown-styles
   [style-prefix]
@@ -144,7 +174,7 @@
     {:grid-area style-prefix
      :width     "100%"}))
 
-(defn- hakukohderyhmien-hallinta-input-dropdown
+(defn- hakukohderyhmien-hallinta-dropdown
   [{:keys [style-prefix] :as props}]
   (let [hakukohderyhmien-hallinta-input-dropdown-styles (make-hakukohderyhmien-hallinta-input-dropdown-styles
                                                           style-prefix)
@@ -159,15 +189,15 @@
         input-id "hakukohderyhma-select-input"
         style-prefix "hakukohderyhma-select"]
     [input-with-label-and-control
-     {:control-component [add-new-hakukohderyhma-link
+     {:control-component [hakukohdryhma-selection-controls
                           {:cypressid (str cypressid "-add-new-hakukohderyhma")}]
       :cypressid         cypressid
-      :input-component   [hakukohderyhmien-hallinta-input-dropdown
+      :input-component   [hakukohderyhmien-hallinta-dropdown
                           {:cypressid              (str cypressid "-dropdown")
                            :style-prefix           (str style-prefix "-input")
                            :unselected-label       "Hakukohderyhmä"
                            :dropdown-items         (re-frame/subscribe [get-saved-hakukohderyhmas-as-options])
-                           :selected-dropdown-item (re-frame/subscribe [get-currently-selected-hakukohderyhma])
+                           :selected-dropdown-item (re-frame/subscribe [get-selected-hakukohderyhma-as-option])
                            :selection-fn           #(re-frame/dispatch [:hakukohderyhmien-hallinta/select-hakukohderyhma %])}]
       :input-id          input-id
       :style-prefix      style-prefix

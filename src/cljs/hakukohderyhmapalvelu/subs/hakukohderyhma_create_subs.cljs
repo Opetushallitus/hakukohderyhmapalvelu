@@ -7,7 +7,8 @@
 
 
 (def get-saved-hakukohderyhmas-as-options :hakukohderyhmien-hallinta/get-saved-hakukohderyhma-names)
-(def get-currently-selected-hakukohderyhma :hakukohderyhmien-hallinta/get-currently-selected-hakukohderyhma-name)
+(def get-selected-hakukohderyhma :hakukohderyhmien-hallinta/get-currently-selected-hakukohderyhma)
+(def get-selected-hakukohderyhma-as-option :hakukohderyhmien-hallinta/get-currently-selected-hakukohderyhma-as-option)
 
 (re-frame/reg-sub
   :hakukohderyhmien-hallinta/create-grid-visible?
@@ -33,7 +34,14 @@
       (map transform-fn saved-ryhmat))))
 
 (re-frame/reg-sub
-  get-currently-selected-hakukohderyhma
+  get-selected-hakukohderyhma
+  (fn []
+    [(re-frame/subscribe [:state-query selected-hakukohderyhma])])
+  (fn [[selected-ryhma]]
+    selected-ryhma))
+
+(re-frame/reg-sub
+  get-selected-hakukohderyhma-as-option
   (fn []
     [(re-frame/subscribe [:lang])
      (re-frame/subscribe [:state-query selected-hakukohderyhma])])
