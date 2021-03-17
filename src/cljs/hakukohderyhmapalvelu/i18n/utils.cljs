@@ -19,12 +19,13 @@
        first))
 
 (defn- item->option [lang label-field value-field item]
-  (let [localized (get item label-field)
-        value (get item value-field)
-        is-selected (get item :is-selected)]
-    {:label       (get-with-fallback localized lang)
-     :value       value
-     :is-selected is-selected}))
+  (when (some? item)
+    (let [localized (get item label-field)
+          value (get item value-field)
+          is-selected (get item :is-selected)]
+      {:label       (get-with-fallback localized lang)
+       :value       value
+       :is-selected is-selected})))
 
 (defn create-item->option-transformer [lang label-field value-field]
   (partial
