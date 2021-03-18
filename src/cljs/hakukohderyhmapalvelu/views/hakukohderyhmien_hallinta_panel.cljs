@@ -9,8 +9,9 @@
                                                                            get-selected-hakukohderyhma
                                                                            get-selected-hakukohderyhma-as-option]]
             [hakukohderyhmapalvelu.events.hakukohderyhmien-hallinta-events :refer [add-new-hakukohderyhma-link-clicked
-                                                                                   edit-hakukohderyhma-link-clicked
                                                                                    create-input-is-active
+                                                                                   edit-hakukohderyhma-link-clicked
+                                                                                   hakukohderyhma-selected
                                                                                    rename-input-is-active]]
             [hakukohderyhmapalvelu.views.haku-view :as haun-tiedot-panel]
             [re-frame.core :as re-frame]
@@ -207,7 +208,7 @@
                            :unselected-label       "Hakukohderyhmä"
                            :dropdown-items         (re-frame/subscribe [get-saved-hakukohderyhmas-as-options])
                            :selected-dropdown-item (re-frame/subscribe [get-selected-hakukohderyhma-as-option])
-                           :selection-fn           #(re-frame/dispatch [:hakukohderyhmien-hallinta/select-hakukohderyhma %])}]
+                           :selection-fn           #(re-frame/dispatch [hakukohderyhma-selected %])}]
       :input-id          input-id
       :style-prefix      style-prefix
       :label             "Hakukohderyhmät"}]))

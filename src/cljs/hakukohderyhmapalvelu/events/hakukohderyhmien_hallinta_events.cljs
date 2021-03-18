@@ -13,9 +13,10 @@
 
 (def add-new-hakukohderyhma-link-clicked :hakukohderyhmien-hallinta/add-new-hakukohderyhma-link-clicked)
 (def edit-hakukohderyhma-link-clicked :hakukohderyhmien-hallinta/rename-hakukohderyhma-link-clicked)
+(def hakukohderyhma-selected :hakukohderyhmien-hallinta/hakukohderyhma-selected)
 
 (events/reg-event-db-validating
-  :hakukohderyhmien-hallinta/select-hakukohderyhma
+  hakukohderyhma-selected
   (fn-traced [db [hakukohderyhma]]
              (let [persisted-hakukohderyhmas (get-in db persisted-hakukohderyhmas)
                    selected-oid (:value hakukohderyhma)
