@@ -2,12 +2,15 @@
   (:require [schema.core :as s]
             [hakukohderyhmapalvelu.common-schemas :as c]))
 
+(s/defschema CommonOrganisaatioEntityPayload
+  {:oid  s/Str
+   :nimi c/Nimi})
+
 (s/defschema HakukohderyhmaRequest
   {:nimi c/Nimi})
 
 (s/defschema HakukohderyhmaResponse
-  {:oid  s/Str
-   :nimi c/Nimi})
+  CommonOrganisaatioEntityPayload)
 
 (s/defschema HakukohderyhmaSearchRequest
   {:oids [s/Str]})
@@ -16,20 +19,18 @@
   [HakukohderyhmaResponse])
 
 (s/defschema HaunTiedot
-  {:oid  s/Str
-   :nimi c/Nimi})
+  CommonOrganisaatioEntityPayload)
 
 (s/defschema HaunTiedotListResponse
   [HaunTiedot])
 
 (s/defschema Organisaatio
-  {:oid  s/Str
-   :nimi c/Nimi})
+  CommonOrganisaatioEntityPayload)
 
 (s/defschema Hakukohde
-  {:oid  s/Str
-   :nimi c/Nimi
-   :organisaatio Organisaatio})
+  (merge
+    CommonOrganisaatioEntityPayload
+    {:organisaatio Organisaatio}))
 
 (s/defschema HakukohdeListResponse
   [Hakukohde])
