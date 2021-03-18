@@ -48,8 +48,8 @@
   {:hakukohderyhma
    {:persisted               #{api-schemas/Hakukohderyhma}
     :selected-hakukohderyhma (s/maybe api-schemas/Hakukohderyhma)
-    :input-visibility        {:create-visible? s/Bool
-                              :rename-visible? s/Bool}
+    :input-visibility        {:create-active? s/Bool
+                              :rename-active? s/Bool}
     :haut                    [HaunTiedot]
     :hakukohteet-filter      s/Str}})
 

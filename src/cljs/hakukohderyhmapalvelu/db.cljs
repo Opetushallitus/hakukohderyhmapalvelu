@@ -9,8 +9,8 @@
    :lang                              :fi
    :hakukohderyhma                    {:persisted               #{}
                                        :selected-hakukohderyhma nil
-                                       :input-visibility        {:create-visible? false
-                                                                 :rename-visible? false}
+                                       :input-visibility        {:create-active? false
+                                                                 :rename-active? false}
                                        :haut                    []
                                        :hakukohteet-filter      ""}
    :haun-asetukset                    {:haut {}}

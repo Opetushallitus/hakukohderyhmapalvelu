@@ -9,9 +9,10 @@
                                                                            get-selected-hakukohderyhma
                                                                            get-selected-hakukohderyhma-as-option]]
             [hakukohderyhmapalvelu.events.hakukohderyhmien-hallinta-events :refer [add-new-hakukohderyhma-link-clicked
+                                                                                   create-input-is-active
                                                                                    edit-hakukohderyhma-link-clicked
-                                                                                   create-input-is-visible
-                                                                                   rename-input-is-visible]]
+                                                                                   hakukohderyhma-selected
+                                                                                   rename-input-is-active]]
             [hakukohderyhmapalvelu.views.haku-view :as haun-tiedot-panel]
             [re-frame.core :as re-frame]
             [reagent.core :as reagent]
@@ -109,20 +110,21 @@
       (let [cypressid "hakukohderyhma-create"
             input-id "hakukohderyhma-create-input"
             style-prefix "hakukohderyhma-create"
-            create-is-visible @(re-frame/subscribe [:state-query create-input-is-visible false])
-            rename-is-visible @(re-frame/subscribe [:state-query rename-input-is-visible false])
+            create-is-active @(re-frame/subscribe [:state-query create-input-is-active false])
+            rename-is-active @(re-frame/subscribe [:state-query rename-input-is-active false])
             ongoing-request? @(re-frame/subscribe [:hakukohderyhmien-hallinta/ongoing-request?])
+            is-visible (or create-is-active rename-is-active)
             button-disabled? (or ongoing-request?
                                  (-> @input-value seq nil?))]
-        (when (or create-is-visible rename-is-visible)
+        (when is-visible
           [input-and-button-without-top-row
            {:button-component [b/button
                                {:cypressid    (str cypressid "-button")
                                 :disabled?    button-disabled?
                                 :label        "Tallenna"
                                 :on-click     #(on-save-button-click @input-value (cond
-                                                                                    create-is-visible :create
-                                                                                    rename-is-visible :rename))
+                                                                                    create-is-active :create
+                                                                                    rename-is-active :rename))
                                 :style-prefix (str style-prefix "-button")}]
             :input-component  [hakukohderyhmien-hallinta-input
                                {:cypressid    (str cypressid "-input")
@@ -158,7 +160,8 @@
 
 (defn- edit-hakukohderyhma-link [{:keys [cypressid]}]
   (let [selected-ryhma @(re-frame/subscribe [get-selected-hakukohderyhma])
-        is-visible (some? selected-ryhma)]
+        rename-is-active @(re-frame/subscribe [:state-query rename-input-is-active false])
+        is-visible (and (some? selected-ryhma) (not rename-is-active))]
     (when is-visible
       [hakukohderyhma-link {:cypressid    (str cypressid "--rename-hakukohderyhma")
                             :style-prefix "rename-hakukohderyhma-btn"
@@ -205,7 +208,7 @@
                            :unselected-label       "Hakukohderyhmä"
                            :dropdown-items         (re-frame/subscribe [get-saved-hakukohderyhmas-as-options])
                            :selected-dropdown-item (re-frame/subscribe [get-selected-hakukohderyhma-as-option])
-                           :selection-fn           #(re-frame/dispatch [:hakukohderyhmien-hallinta/select-hakukohderyhma %])}]
+                           :selection-fn           #(re-frame/dispatch [hakukohderyhma-selected %])}]
       :input-id          input-id
       :style-prefix      style-prefix
       :label             "Hakukohderyhmät"}]))
