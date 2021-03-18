@@ -8,8 +8,8 @@
 (def selected-hakukohderyhma (conj root-path :selected-hakukohderyhma))
 
 (def ^:private input-visibility (conj root-path :input-visibility))
-(def create-input-is-visible (conj input-visibility :create-visible?))
-(def rename-input-is-visible (conj input-visibility :rename-visible?))
+(def create-input-is-active (conj input-visibility :create-active?))
+(def rename-input-is-active (conj input-visibility :rename-active?))
 
 (def add-new-hakukohderyhma-link-clicked :hakukohderyhmien-hallinta/add-new-hakukohderyhma-link-clicked)
 (def edit-hakukohderyhma-link-clicked :hakukohderyhmien-hallinta/rename-hakukohderyhma-link-clicked)
@@ -28,15 +28,15 @@
   add-new-hakukohderyhma-link-clicked
   (fn-traced [db]
              (-> db
-                 (assoc-in rename-input-is-visible false)
-                 (update-in create-input-is-visible not))))
+                 (assoc-in rename-input-is-active false)
+                 (update-in create-input-is-active not))))
 
 (events/reg-event-db-validating
   edit-hakukohderyhma-link-clicked
   (fn-traced [db]
              (-> db
-                 (assoc-in create-input-is-visible false)
-                 (update-in rename-input-is-visible not))))
+                 (assoc-in create-input-is-active false)
+                 (update-in rename-input-is-active not))))
 
 (events/reg-event-db-validating
   :hakukohderyhmien-hallinta/handle-save-hakukohderyhma
@@ -44,7 +44,7 @@
              (-> db
                  (update-in persisted-hakukohderyhmas #(conj % hakukohderyhma))
                  (assoc-in selected-hakukohderyhma hakukohderyhma)
-                 (assoc-in create-input-is-visible false))))
+                 (assoc-in create-input-is-active false))))
 
 (events/reg-event-fx-validating
   :hakukohderyhmien-hallinta/save-hakukohderyhma

@@ -3,7 +3,7 @@
             [hakukohderyhmapalvelu.i18n.utils :as i18n-utils]
             [hakukohderyhmapalvelu.events.hakukohderyhmien-hallinta-events :refer [persisted-hakukohderyhmas
                                                                                    selected-hakukohderyhma
-                                                                                   create-input-is-visible]]))
+                                                                                   create-input-is-active]]))
 
 
 (def get-saved-hakukohderyhmas-as-options :hakukohderyhmien-hallinta/get-saved-hakukohderyhma-names)
@@ -13,7 +13,7 @@
 (re-frame/reg-sub
   :hakukohderyhmien-hallinta/create-grid-visible?
   (fn []
-    [(re-frame/subscribe [:state-query create-input-is-visible false])])
+    [(re-frame/subscribe [:state-query create-input-is-active false])])
   (fn [[visible?]]
     visible?))
 
