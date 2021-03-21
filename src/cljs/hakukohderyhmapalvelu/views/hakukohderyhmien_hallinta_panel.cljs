@@ -84,7 +84,6 @@
      [input/input-text props']]))
 
 (defn on-save-button-click [hakukohderyhma-name saved-operation-type] ;TODO saved-operation-type - add schema for possible vals, [:create :rename]
-  (println "save button clicked" saved-operation-type)
   (case saved-operation-type
     :create (re-frame/dispatch [hakukohderyhma-persisted hakukohderyhma-name])
     :rename (re-frame/dispatch [hakukohderyhma-renamed hakukohderyhma-name])))
@@ -107,8 +106,7 @@
      button-component]))
 
 (defn- hakukohderyhma-create-and-rename-input []
-  (let [input-value (reagent/atom "")
-        text-input-label "Ryhmän nimi"]
+  (let [input-value (reagent/atom "")]
     (fn []
       (let [cypressid "hakukohderyhma-create"
             input-id "hakukohderyhma-create-input"
@@ -116,6 +114,9 @@
             create-is-active @(re-frame/subscribe [:state-query create-input-is-active false])
             rename-is-active @(re-frame/subscribe [:state-query rename-input-is-active false])
             ongoing-request? @(re-frame/subscribe [:hakukohderyhmien-hallinta/ongoing-request?])
+            selected-ryhma @(re-frame/subscribe [get-selected-hakukohderyhma])
+            selected-ryhma-name (-> selected-ryhma :nimi :fi)
+            text-input-label (if rename-is-active selected-ryhma-name "Uuden ryhmän nimi")
             is-visible (or create-is-active rename-is-active)
             button-disabled? (or ongoing-request?
                                  (-> @input-value seq nil?))]
