@@ -73,7 +73,7 @@
                                             (filter #(not= oid (:oid %)) persisted-hakukohderyhmas')
                                             (conj persisted-hakukohderyhmas' hakukohderyhma))]
                (-> db
-                   (assoc-in persisted-hakukohderyhmas ryhmat-with-rename)
+                   (assoc-in persisted-hakukohderyhmas (set ryhmat-with-rename))
                    (assoc-in selected-hakukohderyhma hakukohderyhma)
                    (assoc-in rename-input-is-active false)))))
 
