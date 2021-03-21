@@ -67,8 +67,15 @@
 
 (events/reg-event-db-validating
   hakukohderyhma-renaming-confirmed
-  (fn-traced [db [_]]
-             db))
+  (fn-traced [db [{:keys [oid nimi] :as hakukohderyhma} _]]
+             (let [db-ryhmat (get-in db persisted-hakukohderyhmas)
+                   ryhmat-with-rename (as-> db-ryhmat persisted-hakukohderyhmas'
+                                            (filter #(not= oid (:oid %)) persisted-hakukohderyhmas')
+                                            (conj persisted-hakukohderyhmas' hakukohderyhma))]
+               (-> db
+                   (assoc-in persisted-hakukohderyhmas ryhmat-with-rename)
+                   (assoc-in selected-hakukohderyhma hakukohderyhma)
+                   (assoc-in rename-input-is-active false)))))
 
 (events/reg-event-fx-validating
   hakukohderyhma-renamed
@@ -78,7 +85,6 @@
                             (get-in db)
                             :oid)
                    body {:oid oid :nimi {:fi hakukohderyhma-name}}]
-               (prn body)
                {:db   (update db :requests (fnil conj #{}) http-request-id)
                 :http {:method           :post              ;TODO, should bet PUT-request?
                        :http-request-id  http-request-id
