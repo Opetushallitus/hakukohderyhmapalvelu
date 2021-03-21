@@ -191,7 +191,7 @@ describe('Hakukohderyhmäpalvelu', () => {
       it('Näyttää hakukohderyhmän luonnin tekstikentän ja sen ohjetekstin', () => {
         cy.get(
           hl.hakukohderyhmanLisaysNewHakukohderyhmaNameTextInputSelector,
-        ).should('have.attr', 'placeholder', 'Ryhmän nimi')
+        ).should('have.attr', 'placeholder', 'Uuden ryhmän nimi')
         cy.get(
           hl.hakukohderyhmanLisaysSaveNewHakukohderyhmaButtonSelector,
         ).should('be.disabled')
