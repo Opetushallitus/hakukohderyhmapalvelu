@@ -141,9 +141,20 @@
                 :tags       ["Hakukohderyhmä"]
                 :summary    "Tallentaa uuden hakukohderyhmän"
                 :responses  {200 {:body schema/HakukohderyhmaResponse}}
-                :parameters {:body schema/HakukohderyhmaRequest}
+                :parameters {:body schema/HakukohderyhmaPostRequest}
                 :handler    (fn [{session :session {hakukohderyhma :body} :parameters}]
                               (response/ok (hakukohderyhma/create hakukohderyhma-service session hakukohderyhma)))}}]
+       ["/hakukohderyhma/rename"
+        {:post  {:middleware auth
+                :tags       ["Hakukohderyhmä"]
+                :summary    "Uudelleennimeää hakukohderyhmän"
+                :responses  {200 {:body s/Any}}
+                :parameters {:body schema/HakukohderyhmaPutRequest}
+                :handler    (fn [{session :session {hakukohderyhma :body} :parameters}]
+                              (prn "PUTTED ryhmä" hakukohderyhma)
+                              (prn "PUTTED ryhmä")
+                              (prn "PUTTED ryhmä")
+                              (response/ok hakukohderyhma))}}]
        ["/haku"
         [""
          {:get {:middleware auth

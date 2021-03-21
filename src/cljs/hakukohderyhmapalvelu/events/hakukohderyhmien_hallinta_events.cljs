@@ -14,6 +14,10 @@
 (def add-new-hakukohderyhma-link-clicked :hakukohderyhmien-hallinta/add-new-hakukohderyhma-link-clicked)
 (def edit-hakukohderyhma-link-clicked :hakukohderyhmien-hallinta/rename-hakukohderyhma-link-clicked)
 (def hakukohderyhma-selected :hakukohderyhmien-hallinta/hakukohderyhma-selected)
+(def hakukohderyhma-persisted :hakukohderyhmien-hallinta/hakukohderyhma-persisted)
+(def hakukohderyhma-persisting-confirmed :hakukohderyhmien-hallinta/hakukohderyhma-persist-confirmed)
+(def hakukohderyhma-renamed :hakukohderyhmien-hallinta/hakukohderyhma-renamed)
+(def hakukohderyhma-renaming-confirmed :hakukohderyhmien-hallinta/hakukohderyhma-rename-confirmed)
 
 (events/reg-event-db-validating
   hakukohderyhma-selected
@@ -40,7 +44,7 @@
                  (update-in rename-input-is-active not))))
 
 (events/reg-event-db-validating
-  :hakukohderyhmien-hallinta/handle-save-hakukohderyhma
+  hakukohderyhma-persisting-confirmed
   (fn-traced [db [hakukohderyhma _]]
              (-> db
                  (update-in persisted-hakukohderyhmas #(conj % hakukohderyhma))
@@ -48,17 +52,40 @@
                  (assoc-in create-input-is-active false))))
 
 (events/reg-event-fx-validating
-  :hakukohderyhmien-hallinta/save-hakukohderyhma
+  hakukohderyhma-persisted
   (fn-traced [{db :db} [hakukohderyhma-name]]
-             (let [http-request-id :hakukohderyhmien-hallinta/save-hakukohderyhma
+             (let [http-request-id hakukohderyhma-persisted
                    body {:nimi {:fi hakukohderyhma-name}}]
                {:db   (update db :requests (fnil conj #{}) http-request-id)
                 :http {:method           :post
                        :http-request-id  http-request-id
                        :path             "/hakukohderyhmapalvelu/api/hakukohderyhma"
-                       :request-schema   schemas/HakukohderyhmaRequest
+                       :request-schema   schemas/HakukohderyhmaPostRequest
                        :response-schema  schemas/HakukohderyhmaResponse
-                       :response-handler [:hakukohderyhmien-hallinta/handle-save-hakukohderyhma]
+                       :response-handler [hakukohderyhma-persisting-confirmed]
+                       :body             body}})))
+
+(events/reg-event-db-validating
+  hakukohderyhma-renaming-confirmed
+  (fn-traced [db [_]]
+             db))
+
+(events/reg-event-fx-validating
+  hakukohderyhma-renamed
+  (fn-traced [{db :db} [hakukohderyhma-name]]
+             (let [http-request-id hakukohderyhma-renamed
+                   oid (->> selected-hakukohderyhma
+                            (get-in db)
+                            :oid)
+                   body {:oid oid :nimi {:fi hakukohderyhma-name}}]
+               (prn body)
+               {:db   (update db :requests (fnil conj #{}) http-request-id)
+                :http {:method           :post              ;TODO, should bet PUT-request?
+                       :http-request-id  http-request-id
+                       :path             "/hakukohderyhmapalvelu/api/hakukohderyhma/rename"
+                       :request-schema   schemas/HakukohderyhmaPutRequest
+                       :response-schema  schemas/HakukohderyhmaResponse
+                       :response-handler [hakukohderyhma-renaming-confirmed]
                        :body             body}})))
 
 (def get-all-hakukohderyhma :hakukohderyhmien-hallinta/get-all-hakukohderyhma)

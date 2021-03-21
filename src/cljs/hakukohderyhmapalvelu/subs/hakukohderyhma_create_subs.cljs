@@ -1,9 +1,10 @@
 (ns hakukohderyhmapalvelu.subs.hakukohderyhma-create-subs
   (:require [re-frame.core :as re-frame]
             [hakukohderyhmapalvelu.i18n.utils :as i18n-utils]
-            [hakukohderyhmapalvelu.events.hakukohderyhmien-hallinta-events :refer [persisted-hakukohderyhmas
-                                                                                   selected-hakukohderyhma
-                                                                                   create-input-is-active]]))
+            [hakukohderyhmapalvelu.events.hakukohderyhmien-hallinta-events :refer [create-input-is-active
+                                                                                   hakukohderyhma-persisted
+                                                                                   persisted-hakukohderyhmas
+                                                                                   selected-hakukohderyhma]]))
 
 
 (def get-saved-hakukohderyhmas-as-options :hakukohderyhmien-hallinta/get-saved-hakukohderyhma-names)
@@ -20,7 +21,7 @@
 (re-frame/reg-sub
   :hakukohderyhmien-hallinta/ongoing-request?
   (fn []
-    [(re-frame/subscribe [:state-query [:requests :hakukohderyhmien-hallinta/save-hakukohderyhma]])])
+    [(re-frame/subscribe [:state-query [:requests hakukohderyhma-persisted]])])
   (fn [[ongoing-request?]]
     (some? ongoing-request?)))
 
