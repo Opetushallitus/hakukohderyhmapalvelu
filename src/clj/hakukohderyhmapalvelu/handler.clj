@@ -156,7 +156,18 @@
                   :handler    (fn [{session :session {{hakukohde-oids :oids} :body} :parameters}]
                                 (response/ok
                                   (hakukohderyhma/find-hakukohderyhmat-by-hakukohteet-oids
-                                    hakukohderyhma-service session hakukohde-oids)))}}]]
+                                    hakukohderyhma-service session hakukohde-oids)))}}]
+        ["/rename"
+         {:post  {:middleware auth
+                  :tags       ["Hakukohderyhmä"]
+                  :summary    "Uudelleennimeää hakukohderyhmän"
+                  :responses  {200 {:body s/Any}}
+                  :parameters {:body schema/HakukohderyhmaPutRequest}
+                  :handler    (fn [{session :session {hakukohderyhma :body} :parameters}]
+                                (prn "PUTTED ryhmä" hakukohderyhma)
+                                (prn "PUTTED ryhmä")
+                                (prn "PUTTED ryhmä")
+                                (response/ok hakukohderyhma))}}]]
        ["/haku"
         [""
          {:get {:middleware auth

@@ -11,6 +11,8 @@
             [hakukohderyhmapalvelu.events.hakukohderyhmien-hallinta-events :refer [add-new-hakukohderyhma-link-clicked
                                                                                    create-input-is-active
                                                                                    edit-hakukohderyhma-link-clicked
+                                                                                   hakukohderyhma-persisted
+                                                                                   hakukohderyhma-renamed
                                                                                    hakukohderyhma-selected
                                                                                    rename-input-is-active]]
             [hakukohderyhmapalvelu.views.haku-view :as haun-tiedot-panel]
@@ -82,9 +84,10 @@
      [input/input-text props']]))
 
 (defn on-save-button-click [hakukohderyhma-name saved-operation-type] ;TODO saved-operation-type - add schema for possible vals, [:create :rename]
+  (println "save button clicked" saved-operation-type)
   (case saved-operation-type
-    :create (re-frame/dispatch [:hakukohderyhmien-hallinta/save-hakukohderyhma hakukohderyhma-name])
-    :rename (println "DEBUG - invoke rename of current ryhma to" hakukohderyhma-name)))
+    :create (re-frame/dispatch [hakukohderyhma-persisted hakukohderyhma-name])
+    :rename (re-frame/dispatch [hakukohderyhma-renamed hakukohderyhma-name])))
 
 (defn- make-input-without-top-row-styles [style-prefix]
   (let [grid (str (format-grid-row "[%s-top-row-start] \". .\" %s [%s-top-row-end]" 1 style-prefix)

@@ -6,8 +6,14 @@
   {:oid  s/Str
    :nimi c/Nimi})
 
-(s/defschema HakukohderyhmaRequest
+(s/defschema HakukohderyhmaPostRequest
   {:nimi c/Nimi})
+
+(s/defschema HakukohderyhmaPutRequest
+  CommonOrganisaatioEntityPayload)
+
+(s/defschema HakukohderyhmaResponse
+  CommonOrganisaatioEntityPayload)
 
 (s/defschema HakukohderyhmaSearchRequest
   {:oids [s/Str]})
