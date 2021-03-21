@@ -151,9 +151,6 @@
                 :responses  {200 {:body s/Any}}
                 :parameters {:body schema/HakukohderyhmaPutRequest}
                 :handler    (fn [{session :session {hakukohderyhma :body} :parameters}]
-                              (prn "PUTTED ryhmä" hakukohderyhma)
-                              (prn "PUTTED ryhmä")
-                              (prn "PUTTED ryhmä")
                               (response/ok hakukohderyhma))}}]
        ["/haku"
         [""
