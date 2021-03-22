@@ -1,6 +1,5 @@
 (ns hakukohderyhmapalvelu.cas.mock.mock-authenticating-client
   (:require [cheshire.core :as json]
-            [clojure.core.async :as async]
             [clojure.string :as string]
             [hakukohderyhmapalvelu.cas.cas-authenticating-client-protocol :as cas-protocol]))
 

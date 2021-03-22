@@ -79,6 +79,7 @@ describe('Hakukohderyhmäpalvelu - haun tiedot', () => {
             {
               oid: '1.2.4.2.1.1',
               nimi: { fi: 'Testi-perustutkinto' },
+              hakuOid: '1.2.4.1.1.1',
               organisaatio: {
                 oid: '1.2.10.1.2.1',
                 nimi: { fi: 'Organisaatio 1' },
@@ -87,12 +88,112 @@ describe('Hakukohderyhmäpalvelu - haun tiedot', () => {
             {
               oid: '1.2.4.2.1.2',
               nimi: { fi: 'Testi-jatkotutkinto' },
+              hakuOid: '1.2.4.1.1.1',
               organisaatio: {
                 oid: '1.2.10.1.2.2',
                 nimi: { fi: 'Organisaatio 2' },
               },
             },
           ]),
+      )
+    })
+  })
+  describe('Hakukohderyhmän liitoksien tallentaminen', () => {
+    beforeEach(() => {
+      cy.login()
+      cy.mockBackendRequest({
+        method: 'GET',
+        path: '/organisaatio-service/rest/organisaatio/v4/1.2.246.562.28.4',
+        service: 'organisaatio-service',
+        responseFixture:
+          'hakukohderyhmapalvelu/get-hakukohderyhma-response.json',
+      })
+      cy.login()
+      cy.mockBackendRequest({
+        method: 'POST',
+        path: '/kouta-internal/hakukohde/findbyoids',
+        service: 'kouta-service',
+        responseFixture: 'hakukohderyhmapalvelu/empty-array.json',
+        requestFixture: 'hakukohderyhmapalvelu/empty-array.json',
+      })
+      cy.login()
+      cy.mockBackendRequest({
+        method: 'POST',
+        path: '/kouta-internal/hakukohde/findbyoids',
+        service: 'kouta-service',
+        responseFixture: 'hakukohderyhmapalvelu/empty-array.json',
+        requestFixture: 'hakukohderyhmapalvelu/empty-array.json',
+      })
+      cy.login()
+      cy.mockBackendRequest({
+        method: 'POST',
+        path: '/kouta-internal/hakukohde/findbyoids',
+        service: 'kouta-service',
+        requestFixture:
+          'hakukohderyhmapalvelu/post-find-hakukohteet-by-oids.json',
+        responseFixture: 'hakukohderyhmapalvelu/get-hakukohde-response.json',
+      })
+      cy.login()
+      cy.mockBackendRequest({
+        method: 'POST',
+        path: '/organisaatio-service/rest/organisaatio/v4/findbyoids',
+        service: 'organisaatio-service',
+        requestFixture:
+          'hakukohderyhmapalvelu/post-find-organisaatiot-request.json',
+        responseFixture:
+          'hakukohderyhmapalvelu/post-find-organisaatiot-response.json',
+      })
+    })
+
+    it('Päivittää hakukohderyhmän hakukohteet', () => {
+      cy.request(
+        'PUT',
+        '/hakukohderyhmapalvelu/api/hakukohderyhma/1.2.246.562.28.4/hakukohteet',
+        [
+          {
+            oid: '1.2.4.2.1.1',
+            nimi: { fi: 'Testi-perustutkinto' },
+            hakuOid: '1.2.4.1.1.1',
+            organisaatio: {
+              oid: '1.2.10.1.2.1',
+              nimi: { fi: 'Organisaatio 1' },
+            },
+          },
+          {
+            oid: '1.2.4.2.1.2',
+            nimi: { fi: 'Testi-jatkotutkinto' },
+            hakuOid: '1.2.4.1.1.1',
+            organisaatio: {
+              oid: '1.2.10.1.2.2',
+              nimi: { fi: 'Organisaatio 2' },
+            },
+          },
+        ],
+      ).then(({ body }) =>
+        expect(body).to.deep.equal({
+          oid: '1.2.246.562.28.4',
+          nimi: { fi: 'Hakukohderyhmä 1' },
+          hakukohteet: [
+            {
+              oid: '1.2.4.2.1.1',
+              nimi: { fi: 'Testi-perustutkinto' },
+              hakuOid: '1.2.4.1.1.1',
+              organisaatio: {
+                oid: '1.2.10.1.2.1',
+                nimi: { fi: 'Organisaatio 1' },
+              },
+            },
+            {
+              oid: '1.2.4.2.1.2',
+              nimi: { fi: 'Testi-jatkotutkinto' },
+              hakuOid: '1.2.4.1.1.1',
+              organisaatio: {
+                oid: '1.2.10.1.2.2',
+                nimi: { fi: 'Organisaatio 2' },
+              },
+            },
+          ],
+        }),
       )
     })
   })

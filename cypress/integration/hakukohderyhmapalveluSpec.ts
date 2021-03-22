@@ -8,7 +8,7 @@ import * as hl from '../selectors/hakukohderyhmanLisaysSelectors'
 import { PostHakukohderyhmaRequestFixture } from '../fixtures/hakukohderyhmapalvelu/PostHakukohderyhmaRequestFixture'
 
 describe('Hakukohderyhmäpalvelu', () => {
-  const mockHakukohderyhmat = () => {
+  before(() => {
     cy.login()
     cy.mockBackendRequest({
       method: 'GET',
@@ -18,10 +18,6 @@ describe('Hakukohderyhmäpalvelu', () => {
         'hakukohderyhmapalvelu/get-organisaatio-ryhmat-response.json',
     })
     cy.login()
-  }
-
-  const mockHaut = () => {
-    cy.login()
     cy.mockBackendRequest({
       method: 'GET',
       path: '/kouta-internal/haku/search?tarjoaja=1.2.246.562.10.00000000001',
@@ -29,16 +25,23 @@ describe('Hakukohderyhmäpalvelu', () => {
       responseFixture: 'hakukohderyhmapalvelu/get-haku-response.json',
     })
     cy.login()
-  }
-
-  const mockHakukohteet = () => {
-    cy.login()
     cy.mockBackendRequest({
       method: 'GET',
       path: '/kouta-internal/hakukohde/search?haku=1.2.3.4.5.3',
       service: 'kouta-service',
       responseFixture: 'hakukohderyhmapalvelu/get-hakukohde-response.json',
     })
+
+    cy.login()
+    cy.mockBackendRequest({
+      method: 'POST',
+      path: '/kouta-internal/hakukohde/findbyoids',
+      service: 'kouta-service',
+      requestFixture:
+        'hakukohderyhmapalvelu/post-find-hakukohteet-by-oids.json',
+      responseFixture: 'hakukohderyhmapalvelu/get-hakukohde-response.json',
+    })
+
     cy.login()
     cy.mockBackendRequest({
       method: 'POST',
@@ -50,12 +53,7 @@ describe('Hakukohderyhmäpalvelu', () => {
         'hakukohderyhmapalvelu/post-find-organisaatiot-response.json',
     })
     cy.login()
-  }
 
-  before(() => {
-    cy.resetMocks()
-    mockHakukohderyhmat()
-    mockHaut()
     cy.visit('/')
   })
   it('Ohjaa käyttäjän polkuun /hakukohderyhmapalvelu/hakukohderyhmien-hallinta', () => {
@@ -73,8 +71,8 @@ describe('Hakukohderyhmäpalvelu', () => {
   })
   describe('Haun hakutoiminto', () => {
     it('Näyttää haun hakutoiminnon', () => {
+      cy.login()
       cy.get(hh.haunHakutoimintoDivSelector).should('exist')
-      mockHaut()
       cy.get(hh.haunHakutoimintoNaytaMyosPaattyneetCheckboxSelector)
         .should('have.attr', 'aria-checked', 'false')
         .should('have.attr', 'aria-disabled', 'false')
@@ -88,11 +86,10 @@ describe('Hakukohderyhmäpalvelu', () => {
     })
 
     it('Haun valinta - näyttää hakukohteen', () => {
+      cy.login()
       cy.get(hh.hakukohteetContainerSelector)
         .children()
         .should('have.length', 0)
-
-      mockHakukohteet()
       cy.get(hh.haunHakutoimintoDivSelectorChildDivs)
         .eq(1)
         .type('Testihaku 3{enter}')

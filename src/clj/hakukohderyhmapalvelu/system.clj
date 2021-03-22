@@ -1,6 +1,5 @@
 (ns hakukohderyhmapalvelu.system
-  (:require [clojure.core.async :as async]
-            [com.stuartsierra.component :as component]
+  (:require [com.stuartsierra.component :as component]
             [hakukohderyhmapalvelu.audit-logger :as audit-logger]
             [hakukohderyhmapalvelu.authentication.auth-routes :as auth-routes]
             [hakukohderyhmapalvelu.cas.cas-authenticating-client :as authenticating-client]

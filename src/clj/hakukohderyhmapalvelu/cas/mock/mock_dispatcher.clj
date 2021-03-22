@@ -1,6 +1,5 @@
 (ns hakukohderyhmapalvelu.cas.mock.mock-dispatcher
-  (:require [clojure.core.async :as async]
-            [hakukohderyhmapalvelu.cas.mock.mock-authenticating-client-schemas :as schema]
+  (:require [hakukohderyhmapalvelu.cas.mock.mock-authenticating-client-schemas :as schema]
             [hakukohderyhmapalvelu.cas.mock.mock-dispatcher-protocol :as mock-dispatcher-protocol]
             [schema.core :as s]))
 
