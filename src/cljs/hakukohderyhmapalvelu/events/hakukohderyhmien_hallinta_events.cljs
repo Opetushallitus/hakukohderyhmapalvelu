@@ -86,7 +86,7 @@
                           selected-ryhma
                           {:nimi {:fi hakukohderyhma-name}})]
                {:db   (update db :requests (fnil conj #{}) http-request-id)
-                :http {:method           :post              ;TODO, should bet PUT-request?
+                :http {:method           :post
                        :http-request-id  http-request-id
                        :path             "/hakukohderyhmapalvelu/api/hakukohderyhma/rename"
                        :request-schema   schemas/HakukohderyhmaPutRequest

@@ -40,6 +40,10 @@
   {:organisaatio Organisaatio
    :status       s/Str})
 
+(s/defschema PutNewOrganisaatioResponse
+  {:organisaatio Organisaatio
+   :status       s/Str})
+
 (s/defschema Hakukohderyhma
   {:oid  s/Str
    :nimi c/Nimi
