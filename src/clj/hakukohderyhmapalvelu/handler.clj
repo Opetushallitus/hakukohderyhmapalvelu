@@ -151,7 +151,7 @@
                 :responses  {200 {:body s/Any}}
                 :parameters {:body schema/HakukohderyhmaPutRequest}
                 :handler    (fn [{session :session {hakukohderyhma :body} :parameters}]
-                              (response/ok hakukohderyhma))}}]
+                              (response/ok (hakukohderyhma/rename hakukohderyhma-service session hakukohderyhma)))}}]
        ["/haku"
         [""
          {:get {:middleware auth

@@ -75,12 +75,12 @@
                        :tyypit       ["Ryhma"]
                        :ryhmatyypit  ["ryhmatyypit_2#1"]
                        :kayttoryhmat ["kayttoryhmat_1#1"]})
-          response-body (-> (authenticating-client-protocol/post organisaatio-service-authenticating-client
-                                                                 {:url  url
-                                                                  :body body}
-                                                                 {:request-schema  schemas/Organisaatio
-                                                                  :response-schema schemas/Organisaatio})
-                            (http/parse-and-validate schemas/PostNewOrganisaatioResponse))]                                  ;authenticating-client-protocol/put]
+          response-unparsed (authenticating-client-protocol/http-put organisaatio-service-authenticating-client
+                                                                          {:url  url
+                                                                           :body body}
+                                                                          {:request-schema  schemas/Organisaatio
+                                                                           :response-schema schemas/PutNewOrganisaatioResponse})
+          response-body (http/parse-and-validate response-unparsed s/Any)]
       (-> response-body
           :organisaatio
           (select-keys hakukohderyhma-keys)))))
