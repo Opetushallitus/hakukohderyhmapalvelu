@@ -46,6 +46,9 @@
                  (audit/->changes {} r))
       (assoc r :hakukohteet [])))
 
+  (rename [this session hakukohderyhma]
+    (organisaatio/put-organisaatio organisaatio-service hakukohderyhma))
+
   (list-haun-tiedot [_ session is-all]
     (kouta/list-haun-tiedot kouta-service is-all))
 

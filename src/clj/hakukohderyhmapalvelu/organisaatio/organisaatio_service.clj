@@ -72,4 +72,19 @@
                             (http/parse-and-validate schemas/PostNewOrganisaatioResponse))]
       (-> response-body
           :organisaatio
+          (select-keys hakukohderyhma-keys))))
+
+  (put-organisaatio [_ hakukohderyhma]
+    (s/validate api-schemas/HakukohderyhmaPutRequest hakukohderyhma)
+    (let [base-url (oph-url/resolve-url :organisaatio-service.organisaatio.v4 config)
+          url (str base-url "/" (:oid hakukohderyhma))
+          parent-oid (-> config :oph-organisaatio-oid)
+          body (merge hakukohderyhma
+                      {:parentOid    parent-oid
+                       :tyypit       ["Ryhma"]
+                       :ryhmatyypit  ["ryhmatyypit_2#1"]
+                       :kayttoryhmat ["kayttoryhmat_1#1"]})
+          response-body {}]                                  ;authenticating-client-protocol/put]
+      (-> response-body
+          :organisaatio
           (select-keys hakukohderyhma-keys)))))
