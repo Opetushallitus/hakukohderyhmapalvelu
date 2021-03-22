@@ -21,7 +21,7 @@
       .getSessionToken
       .get))
 
-(s/defschema PostOpts
+(s/defschema PostOrPutOpts
   {:url  s/Str
    :body s/Any})
 
@@ -121,13 +121,24 @@
   (post [this
            {:keys [url body] :as opts}
            schemas]
-      (s/validate PostOpts opts)
+      (s/validate PostOrPutOpts opts)
       (do-cas-authenticated-request {:application-session (:application-session this)
                                      :method              :post
                                      :url                 url
                                      :body                body}
                                     schemas
                                     config))
+
+  (http-put [this
+        {:keys [url body] :as opts}
+        schemas]
+    (s/validate PostOrPutOpts opts)
+    (do-cas-authenticated-request {:application-session (:application-session this)
+                                   :method              :put
+                                   :url                 url
+                                   :body                body}
+                                  schemas
+                                  config))
 
   (get [this url response-schema]
     (do-cas-authenticated-request {:application-session (:application-session this)
