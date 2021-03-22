@@ -1,6 +1,7 @@
 (ns hakukohderyhmapalvelu.events.haku-events
   (:require [hakukohderyhmapalvelu.macros.event-macros :as events]
             [hakukohderyhmapalvelu.api-schemas :as schemas]
+            [hakukohderyhmapalvelu.events.hakukohderyhmien-hallinta-events :as hakukohderyhma-events]
             [day8.re-frame.tracing :refer-macros [fn-traced]]))
 
 
@@ -67,11 +68,13 @@
                        :response-schema  schemas/HaunTiedotListResponse
                        :response-handler [handle-get-haut-response]}})))
 
-(events/reg-event-db-validating
+(events/reg-event-fx-validating
   handle-get-hakukohteet-response
-  (fn-traced [db [haku-oid response]]
-             (let [hakukohteet (map #(assoc % :is-selected false) response)]
-               (update-in db haku-haut (partial add-hakukohteet-for-haku haku-oid hakukohteet)))))
+  (fn-traced [{db :db} [haku-oid response]]
+             (let [hakukohteet (map #(assoc % :is-selected false) response)
+                   hakukohde-oids (map :oid hakukohteet)]
+               {:db (update-in db haku-haut (partial add-hakukohteet-for-haku haku-oid hakukohteet))
+                :dispatch [hakukohderyhma-events/get-hakukohderyhmat-for-hakukohteet hakukohde-oids]})))
 
 (events/reg-event-db-validating
   clear-selected-haku

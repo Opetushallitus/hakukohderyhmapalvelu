@@ -45,7 +45,7 @@
                        :response-handler [:hakukohderyhmien-hallinta/handle-save-hakukohderyhma]
                        :body             body}})))
 
-(def get-all-hakukohderyhma :hakukohderyhmien-hallinta/get-all-hakukohderyhma)
+(def get-hakukohderyhmat-for-hakukohteet :hakukohderyhmien-hallinta/get-all-hakukohderyhma)
 (def handle-get-all-hakukohderyhma :hakukohderyhmien-hallinta/handle-get-all-hakukohderyhma)
 
 (defn- create-hakukohderyhma-search-request [{:keys [http-request-id hakukohde-oids response-handler]}]
@@ -62,11 +62,11 @@
              (assoc-in db persisted-hakukohderyhmas (set response))))
 
 (events/reg-event-fx-validating
-  get-all-hakukohderyhma
-  (fn-traced [{db :db} [_]]
+  get-hakukohderyhmat-for-hakukohteet
+  (fn-traced [{db :db} [hakukohde-oids]]
              (let [http-request-id :hakukohderyhmien-hallinta/get-all-hakukohderyhma]
                {:db   (update db :requests (fnil conj #{}) http-request-id)
                 :http (create-hakukohderyhma-search-request
                         {:http-request-id  http-request-id
-                         :hakukohde-oids   []
+                         :hakukohde-oids   hakukohde-oids
                          :response-handler handle-get-all-hakukohderyhma})})))
