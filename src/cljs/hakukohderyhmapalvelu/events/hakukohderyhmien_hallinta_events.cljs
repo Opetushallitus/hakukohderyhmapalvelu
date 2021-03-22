@@ -81,10 +81,10 @@
   hakukohderyhma-renamed
   (fn-traced [{db :db} [hakukohderyhma-name]]
              (let [http-request-id hakukohderyhma-renamed
-                   oid (->> selected-hakukohderyhma
-                            (get-in db)
-                            :oid)
-                   body {:oid oid :nimi {:fi hakukohderyhma-name}}]
+                   selected-ryhma (get-in db selected-hakukohderyhma)
+                   body (merge
+                          selected-ryhma
+                          {:nimi {:fi hakukohderyhma-name}})]
                {:db   (update db :requests (fnil conj #{}) http-request-id)
                 :http {:method           :post              ;TODO, should bet PUT-request?
                        :http-request-id  http-request-id

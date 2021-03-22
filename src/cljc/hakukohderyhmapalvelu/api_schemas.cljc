@@ -6,17 +6,25 @@
   {:oid  s/Str
    :nimi c/Nimi})
 
+(s/defschema HakukohderyhmaPayload
+  (merge
+    CommonOrganisaatioEntityPayload
+    {:version s/Int}))
+
 (s/defschema HakukohderyhmaPostRequest
   {:nimi c/Nimi})
 
 (s/defschema HakukohderyhmaPutRequest
-  CommonOrganisaatioEntityPayload)
+  HakukohderyhmaPayload)
 
 (s/defschema HakukohderyhmaResponse
-  CommonOrganisaatioEntityPayload)
+  HakukohderyhmaPayload)
 
 (s/defschema HakukohderyhmaSearchRequest
   {:oids [s/Str]})
+
+(s/defschema HakukohderyhmaListResponse
+  [HakukohderyhmaPayload])
 
 (s/defschema HaunTiedot
   CommonOrganisaatioEntityPayload)
@@ -39,6 +47,7 @@
 (s/defschema Hakukohderyhma
   {:oid  s/Str
    :nimi c/Nimi
+   :version s/Int
    :hakukohteet [Hakukohde]})
 
 (s/defschema HakukohderyhmaListResponse

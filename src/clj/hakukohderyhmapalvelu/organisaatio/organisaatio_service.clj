@@ -10,7 +10,7 @@
             [hakukohderyhmapalvelu.config :as c]
             [schema-tools.core :as st]))
 
-(def hakukohderyhma-keys [:oid :nimi])
+(def hakukohderyhma-keys [:oid :nimi :version])
 
 (defrecord OrganisaatioService [organisaatio-service-authenticating-client config]
   component/Lifecycle
@@ -84,7 +84,12 @@
                        :tyypit       ["Ryhma"]
                        :ryhmatyypit  ["ryhmatyypit_2#1"]
                        :kayttoryhmat ["kayttoryhmat_1#1"]})
-          response-body {}]                                  ;authenticating-client-protocol/put]
+          response-body (-> (authenticating-client-protocol/post organisaatio-service-authenticating-client
+                                                                 {:url  url
+                                                                  :body body}
+                                                                 {:request-schema  schemas/Organisaatio
+                                                                  :response-schema schemas/Organisaatio})
+                            (http/parse-and-validate schemas/PostNewOrganisaatioResponse))]                                  ;authenticating-client-protocol/put]
       (-> response-body
           :organisaatio
           (select-keys hakukohderyhma-keys)))))
