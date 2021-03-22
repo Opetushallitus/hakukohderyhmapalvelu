@@ -67,7 +67,7 @@
 
 (events/reg-event-db-validating
   hakukohderyhma-renaming-confirmed
-  (fn-traced [db [{:keys [oid nimi] :as hakukohderyhma} _]]
+  (fn-traced [db [{:keys [oid] :as hakukohderyhma} _]]
              (let [db-ryhmat (get-in db persisted-hakukohderyhmas)
                    ryhmat-with-rename (as-> db-ryhmat persisted-hakukohderyhmas'
                                             (filter #(not= oid (:oid %)) persisted-hakukohderyhmas')
