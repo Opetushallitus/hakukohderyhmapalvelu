@@ -13,13 +13,14 @@
   [s/Str])
 
 (s/defschema Organisaatio
-  {:oid          s/Str
-   :kayttoryhmat OrganisaatioKayttoryhmat
-   :parentOid    s/Str
-   :ryhmatyypit  OrganisaatioRyhmatyypit
-   :tyypit       OrganisaatioTyypit
-   :nimi         c/Nimi
-   s/Any         s/Any})
+  {:oid                      s/Str
+   :kayttoryhmat             OrganisaatioKayttoryhmat
+   :parentOid                s/Str
+   :ryhmatyypit              OrganisaatioRyhmatyypit
+   :tyypit                   OrganisaatioTyypit
+   :nimi                     c/Nimi
+   (s/optional-key :version) s/Int
+   s/Any                     s/Any})
 
 (s/defschema FindByOidsRequest
   [s/Str])

@@ -44,7 +44,8 @@
 
 (s/defschema HakukohdeRyhma
   {:oid  s/Str
-   :nimi LocalizedString})
+   :nimi LocalizedString
+   :version s/Int})
 
 (s/defschema HakukohderyhmaPalvelu
   {:hakukohderyhma
