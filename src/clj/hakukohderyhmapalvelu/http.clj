@@ -9,6 +9,7 @@
 
 (s/defschema HttpMethod
   (s/enum :post
+          :put
           :get))
 
 (s/defschema HttpValidation
