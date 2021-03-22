@@ -83,17 +83,17 @@
                            :person-service (component/using
                                              (onr-service/map->HttpPersonService {:config config})
                                              [:onr-authenticating-client])]
-        mock-system       [:mock-organisaatio-service-cas-chan (async/chan)
+        mock-system       [:mock-organisaatio-service-cas-request-map (atom {})
 
                            :organisaatio-service-authenticating-client (component/using
                                                                          (mock-authenticating-client/map->MockedCasClient {})
-                                                                         {:chan :mock-organisaatio-service-cas-chan})
+                                                                         {:request-map :mock-organisaatio-service-cas-request-map})
 
-                           :mock-kouta-cas-chan (async/chan)
+                           :mock-kouta-cas-request-map (atom {})
 
                            :kouta-authenticating-client (component/using
                                                           (mock-authenticating-client/map->MockedCasClient {})
-                                                          {:chan :mock-kouta-cas-chan})
+                                                          {:request-map :mock-kouta-cas-request-map})
 
                            :kayttooikeus-service (kayttooikeus-service/->FakeKayttooikeusService)
 
@@ -102,9 +102,9 @@
                            :cas-ticket-validator (cas-ticket-validator/map->FakeCasTicketClient {})
 
                            :mock-dispatcher (component/using
-                                              (mock-dispatcher/map->MockDispatcher {})
-                                              {:organisaatio-service-chan :mock-organisaatio-service-cas-chan
-                                               :kouta-service-chan :mock-kouta-cas-chan})]
+                                              (mock-dispatcher/map->MockDispatcher {:config config})
+                                              {:organisaatio-service-request-map :mock-organisaatio-service-cas-request-map
+                                               :kouta-service-request-map        :mock-kouta-cas-request-map})]
         system            (into base-system
                                 (if it-profile?
                                   mock-system
