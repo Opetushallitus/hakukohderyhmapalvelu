@@ -51,6 +51,7 @@ kill-cypress: kill-docker-cypress
 
 restart: kill start
 restart-local: kill start-local
+restart-cypress: kill-cypress start-cypress
 
 reload:
 	@$(PM2) kill
