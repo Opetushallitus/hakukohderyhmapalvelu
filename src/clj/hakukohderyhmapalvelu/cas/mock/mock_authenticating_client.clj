@@ -1,6 +1,5 @@
 (ns hakukohderyhmapalvelu.cas.mock.mock-authenticating-client
   (:require [cheshire.core :as json]
-            [clojure.core.async :as async]
             [clojure.string :as string]
             [hakukohderyhmapalvelu.cas.cas-authenticating-client-protocol :as cas-protocol]))
 
@@ -33,13 +32,13 @@
      (throw (Exception. (format "Hakukohderyhmäpalvelun taustajärjestelmä yritti lähettää määrittämättömän HTTP-kutsun osoitteeseen %s datalla %s" url body))))))
 
 
-(defrecord MockedCasClient [chan]
+(defrecord MockedCasClient [request-map]
   cas-protocol/CasAuthenticatingClientProtocol
 
   (get [_ url _]
-    (-> (async/poll! chan)
+    (-> (get-in @request-map [:get url])
         (validate url :get)))
 
   (post [_ {:keys [url body]} _]
-    (-> (async/poll! chan)
+    (-> (get-in @request-map [:post url (hash body)])
         (validate url :post body))))

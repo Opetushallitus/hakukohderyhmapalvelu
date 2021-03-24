@@ -27,7 +27,7 @@
                  [org.clojure/java.jdbc "0.7.11"]
                  [org.clojure/core.match "1.0.0"]
                  [org.postgresql/postgresql "42.2.17"]
-                 [yesql "0.5.3"]
+                 [com.layerware/hugsql "0.5.1"]
                  [re-frame "1.1.1"]
                  [reagent "0.10.0"]
                  [com.fasterxml.jackson.core/jackson-core "2.12.1"]
@@ -92,7 +92,7 @@
 
    :uberjar {:source-paths ["env/prod/clj"]
              :dependencies [[day8.re-frame/tracing-stubs "0.6.0"]]
-             :omit-source  true
+             :omit-source  false
              :aot          [hakukohderyhmapalvelu.core]
              :uberjar-name "hakukohderyhmapalvelu.jar"
              :prep-tasks   ["compile" ["frontend:prod"]]}}

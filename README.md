@@ -87,6 +87,16 @@ make logs
 make status
 ```
 
+#### Palvelun ajaminen lokaalisti lokaalia kantaa käyttäen
+Esimerkiksi hyödyllinen tehtäessä tietokantaan kohdistuvaa kehitystä. Ei vaadi SSH-yhteyttä. 
+
+```bash
+export CONFIG='../local-environment/oph-configurations/local/hakukohderyhmapalvelu.config.edn'
+make start-local    # Palvelun käynnistäminen
+make reload         # Palvelun uudelleenlataaminen, ei uudellenkäynnistä docker-kontteja
+make restart-local  # Palvelun uudelleenkäynnistys, uudelleenkäynnistää docker-kontit
+```
+
 ## Testien ajaminen
 
 ### Lint

@@ -65,6 +65,7 @@
                           (contains? new-fields field))
                      (.added builder field (get new-fields field))
                      (not= (get old-fields field) (get new-fields field))
-                     (.updated builder field (get old-fields field) (get new-fields field))))
+                       (.updated builder field (get old-fields field) (get new-fields field))
+                     :else builder))
              (new Changes$Builder)
              (distinct (concat (keys old-fields) (keys new-fields)))))))

@@ -9,6 +9,10 @@ $(NODE_MODULES): package.json package-lock.json
 start-docker:
 	@$(DOCKER_COMPOSE) up -d hakukohderyhmapalvelu-nginx-local
 
+start-docker-local:
+	@$(DOCKER_COMPOSE) up -d hakukohderyhmapalvelu-nginx-local
+	@$(DOCKER_COMPOSE) up -d hakukohderyhmapalvelu-db-local
+
 start-docker-cypress:
 	@$(DOCKER_COMPOSE) up -d hakukohderyhmapalvelu-nginx-local
 	@$(DOCKER_COMPOSE) up -d hakukohderyhmapalvelu-e2e-db-local
@@ -20,6 +24,10 @@ kill-docker-cypress:
 	@$(DOCKER_COMPOSE) kill hakukohderyhmapalvelu-e2e-db-local
 
 start: $(NODE_MODULES) start-docker
+	@$(PM2) start pm2.config.js --only hakukohderyhmapalvelu-frontend
+	@$(PM2) start pm2.config.js --only hakukohderyhmapalvelu-backend
+
+start-local: $(NODE_MODULES) start-docker-local
 	@$(PM2) start pm2.config.js --only hakukohderyhmapalvelu-frontend
 	@$(PM2) start pm2.config.js --only hakukohderyhmapalvelu-backend
 
@@ -42,3 +50,9 @@ kill-cypress: kill-docker-cypress
 	@$(PM2) stop pm2.config.js --only hakukohderyhmapalvelu-backend-cypress
 
 restart: kill start
+restart-local: kill start-local
+
+reload:
+	@$(PM2) kill
+	@$(PM2) start pm2.config.js --only hakukohderyhmapalvelu-frontend
+	@$(PM2) start pm2.config.js --only hakukohderyhmapalvelu-backend

@@ -2,7 +2,8 @@
   (:require [hakukohderyhmapalvelu.cas.mock.mock-dispatcher-protocol :as mock-dispatcher-protocol]
             [hakukohderyhmapalvelu.config :as c]
             [com.stuartsierra.component :as component]
-            [hakukohderyhmapalvelu.system :as system]))
+            [hakukohderyhmapalvelu.system :as system]
+            [clojure.java.jdbc :as jdbc]))
 
 
 (def test-system (atom nil))
@@ -11,7 +12,6 @@
   (let [config (c/make-config)
         sys (-> (system/hakukohderyhmapalvelu-system config)
                 (dissoc :auth-routes-source
-                        :db
                         :health-checker
                         :http-server
                         :migrations))]
@@ -30,3 +30,11 @@
   (start-system)
   (f)
   (stop-system))
+
+(defn- truncate-database [db]
+  (jdbc/execute! db ["TRUNCATE hakukohderyhma"]))
+
+(defn with-empty-database [f]
+  (truncate-database (:db @test-system))
+  (f)
+  (truncate-database (:db @test-system)))

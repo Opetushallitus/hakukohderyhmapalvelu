@@ -5,15 +5,8 @@
 (s/defschema HakukohderyhmaRequest
   {:nimi c/Nimi})
 
-(s/defschema HakukohderyhmaResponse
-  {:oid  s/Str
-   :nimi c/Nimi})
-
 (s/defschema HakukohderyhmaSearchRequest
   {:oids [s/Str]})
-
-(s/defschema HakukohderyhmaListResponse
-  [HakukohderyhmaResponse])
 
 (s/defschema HaunTiedot
   {:oid  s/Str
@@ -29,7 +22,16 @@
 (s/defschema Hakukohde
   {:oid  s/Str
    :nimi c/Nimi
+   (s/optional-key :hakuOid) s/Str
    :organisaatio Organisaatio})
 
 (s/defschema HakukohdeListResponse
   [Hakukohde])
+
+(s/defschema Hakukohderyhma
+  {:oid  s/Str
+   :nimi c/Nimi
+   :hakukohteet [Hakukohde]})
+
+(s/defschema HakukohderyhmaListResponse
+  [Hakukohderyhma])

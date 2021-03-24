@@ -11,55 +11,89 @@
 (deftest kouta-service-test
   (testing "List haut, no results"
     (dispatch-mock {:method   :get
-                    :path     "http://localhost/kouta-internal/haku/search?tarjoaja=1.2.246.562.10.00000000001"
+                    :path     "/kouta-internal/haku/search?tarjoaja=1.2.246.562.10.00000000001"
                     :service  :kouta-service
                     :request  nil
                     :response []})
     (is (empty? (kouta-service-protocol/list-haun-tiedot (:kouta-service @test-system) false)) "Kutsun ei pitäisi palauttaa hakuja"))
   (testing "List haut, active"
-    (let [expected [{:oid  "1.2.1.2"
+    (let [expected [{:oid  "1.2.246.562.29.2"
                      :nimi {:fi "Tulevaisuuden haku"}}
-                    {:oid  "1.2.1.3"
+                    {:oid  "1.2.246.562.29.3"
                      :nimi {:fi "Nykyhetkellä voimassa"}}]]
       (dispatch-mock {:method   :get
-                      :path     "http://localhost/kouta-internal/haku/search?tarjoaja=1.2.246.562.10.00000000001"
+                      :path     "/kouta-internal/haku/search?tarjoaja=1.2.246.562.10.00000000001"
                       :service  :kouta-service
                       :response kouta-test-fixtures/kouta-haun-tiedot-response})
       (is (= expected (kouta-service-protocol/list-haun-tiedot (:kouta-service @test-system) false)) "Kutsu ei vastaa oletettua")))
   (testing "List haut, all"
-    (let [expected [{:oid  "1.2.1.1"
+    (let [expected [{:oid  "1.2.246.562.29.1"
                      :nimi {:fi "Päättynyt haku"}}
-                    {:oid  "1.2.1.2"
+                    {:oid  "1.2.246.562.29.2"
                      :nimi {:fi "Tulevaisuuden haku"}}
-                    {:oid  "1.2.1.3"
+                    {:oid  "1.2.246.562.29.3"
                      :nimi {:fi "Nykyhetkellä voimassa"}}]]
       (dispatch-mock {:method   :get
-                      :path     "http://localhost/kouta-internal/haku/search?tarjoaja=1.2.246.562.10.00000000001"
+                      :path     "/kouta-internal/haku/search?tarjoaja=1.2.246.562.10.00000000001"
                       :service  :kouta-service
                       :response kouta-test-fixtures/kouta-haun-tiedot-response})
       (is (= expected (kouta-service-protocol/list-haun-tiedot (:kouta-service @test-system) true)) "Kutsu ei vastaa oletettua")))
   (testing "List hakukohteet for haku, no results"
     (dispatch-mock {:method   :get
-                    :path     "http://localhost/kouta-internal/hakukohde/search?haku=1.2.4.1.1.1"
+                    :path     "/kouta-internal/hakukohde/search?haku=1.2.246.562.29.1"
                     :service  :kouta-service
                     :response []})
-    (is (empty? (kouta-service-protocol/list-haun-hakukohteet (:kouta-service @test-system) "1.2.4.1.1.1"))))
+    (is (empty? (kouta-service-protocol/list-haun-hakukohteet (:kouta-service @test-system) "1.2.246.562.29.1"))))
   (testing "List hakukohteet for haku"
-    (let [expected [{:oid          "1.3.1.1"
+    (let [expected [{:oid          "1.2.246.562.20.1"
                      :nimi         {:fi "Hakukohde 1"}
-                     :organisaatio {:oid  "1.4.1.1"
+                     :hakuOid      "1.2.246.562.29.1"
+                     :organisaatio {:oid  "1.2.246.562.28.1"
                                     :nimi {:fi "Organisaatio 1"}}}
-                    {:oid          "1.3.1.2"
+                    {:oid          "1.2.246.562.20.2"
                      :nimi         {:fi "Hakukohde 2"}
-                     :organisaatio {:oid  "1.4.1.2"
+                     :hakuOid      "1.2.246.562.29.1"
+                     :organisaatio {:oid  "1.2.246.562.28.2"
                                     :nimi {:fi "Organisaatio 2"}}}]]
       (dispatch-mock {:method   :get
-                      :path     "http://localhost/kouta-internal/hakukohde/search?haku=1.2.4.1.1.1"
+                      :path     "/kouta-internal/hakukohde/search?haku=1.2.246.562.29.1"
                       :service  :kouta-service
                       :response kouta-test-fixtures/kouta-hakukohteet-response})
       (dispatch-mock {:method   :post
-                      :path     "http://localhost/organisaatio-service/rest/organisaatio/v4/findbyoids"
+                      :path     "/organisaatio-service/rest/organisaatio/v4/findbyoids"
                       :service  :organisaatio-service
-                      :request  ["1.4.1.1" "1.4.1.2"]
+                      :request  ["1.2.246.562.28.1" "1.2.246.562.28.2"]
                       :response organisaatio-test-fixtures/organisaatiot-response})
-      (is (= expected (kouta-service-protocol/list-haun-hakukohteet (:kouta-service @test-system) "1.2.4.1.1.1"))))))
+      (is (= expected (kouta-service-protocol/list-haun-hakukohteet (:kouta-service @test-system) "1.2.246.562.29.1")))))
+  (testing "Find hakukohteet by oids"
+    (let [expected [{:oid          "1.2.246.562.20.1"
+                     :nimi         {:fi "Hakukohde 1"}
+                     :hakuOid      "1.2.246.562.29.1"
+                     :organisaatio {:oid  "1.2.246.562.28.1"
+                                    :nimi {:fi "Organisaatio 1"}}}
+                    {:oid          "1.2.246.562.20.2"
+                     :nimi         {:fi "Hakukohde 2"}
+                     :hakuOid      "1.2.246.562.29.1"
+                     :organisaatio {:oid  "1.2.246.562.28.2"
+                                    :nimi {:fi "Organisaatio 2"}}}]]
+      (dispatch-mock {:method   :post
+                      :path     "/kouta-internal/hakukohde/findbyoids"
+                      :service  :kouta-service
+                      :request  ["1.2.246.562.20.1" "1.2.246.562.20.2"]
+                      :response kouta-test-fixtures/kouta-hakukohteet-response})
+      (dispatch-mock {:method   :post
+                      :path     "/organisaatio-service/rest/organisaatio/v4/findbyoids"
+                      :service  :organisaatio-service
+                      :request  ["1.2.246.562.28.1" "1.2.246.562.28.2"]
+                      :response organisaatio-test-fixtures/organisaatiot-response})
+      (is (= expected (kouta-service-protocol/find-hakukohteet-by-oids
+                        (:kouta-service @test-system)
+                        ["1.2.246.562.20.1" "1.2.246.562.20.2"])))))
+  (testing "Find hakukohteet by empty oids"
+    (let [expected []]
+      (dispatch-mock {:method   :post
+                      :path     "/kouta-internal/hakukohde/findbyoids"
+                      :service  :kouta-service
+                      :request  []
+                      :response []})
+      (is (= expected (kouta-service-protocol/find-hakukohteet-by-oids (:kouta-service @test-system) []))))))

@@ -2,8 +2,7 @@
   (:require
     [hakukohderyhmapalvelu.macros.event-macros :as events]
     [day8.re-frame.tracing :refer-macros [fn-traced]]
-    [hakukohderyhmapalvelu.events.haku-events :as haku-events]
-    [hakukohderyhmapalvelu.events.hakukohderyhmien-hallinta-events :as hakukohderyhma-events]))
+    [hakukohderyhmapalvelu.events.haku-events :as haku-events]))
 
 (defn- make-haun-asetukset-dispatches [{:keys [query]}]
   (let [haku-oid (:haku-oid query)]
@@ -12,8 +11,7 @@
      [:haun-asetukset/get-ohjausparametrit haku-oid]]))
 
 (defn- make-hakukohderyhmien-hallinta-dispatches [_]
-  [[hakukohderyhma-events/get-all-hakukohderyhma]
-   [haku-events/get-haut]])
+  [[haku-events/get-haut]])
 
 (defn- make-dispatches [{:keys [panel parameters]}]
   (when-let [make-fn (case panel

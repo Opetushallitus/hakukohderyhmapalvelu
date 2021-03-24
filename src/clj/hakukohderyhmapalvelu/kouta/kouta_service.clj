@@ -37,6 +37,11 @@
        first
        (assoc hakukohde :organisaatio)))
 
+(defn- enrich-hakukohteet-with-organisaatio [hakukohteet organisaatiot]
+  (as-> hakukohteet hakukohteet'
+        (map #(enrich-with-organisaatio % organisaatiot) hakukohteet')
+        (st/select-schema hakukohteet' api-schemas/HakukohdeListResponse)))
+
 (defrecord KoutaService [kouta-authenticating-client organisaatio-service config]
   component/Lifecycle
 
@@ -69,6 +74,18 @@
                              (organisaatio/find-by-oids organisaatio-service)
                              (group-by :oid))]
 
-      (as-> hakukohteet hakukohteet'
-            (map #(enrich-with-organisaatio % organisaatiot) hakukohteet')
-            (st/select-schema hakukohteet' api-schemas/HakukohdeListResponse)))))
+      (enrich-hakukohteet-with-organisaatio hakukohteet organisaatiot)))
+
+  (find-hakukohteet-by-oids [_ oids]
+    (let [url (oph-url/resolve-url :kouta-internal.hakukohde.findbyoids config)
+          hakukohteet (as-> url res'
+                            (authenticating-client-protocol/post kouta-authenticating-client
+                                                                 {:url res'
+                                                                  :body oids}
+                                                                 {:request-schema [s/Str]
+                                                                  :response-schema schemas/HakukohdeListResponse})
+                            (http/parse-and-validate res' schemas/HakukohdeListResponse))
+          organisaatiot (->> (map :organisaatioOid hakukohteet)
+                             (organisaatio/find-by-oids organisaatio-service)
+                             (group-by :oid))]
+      (enrich-hakukohteet-with-organisaatio hakukohteet organisaatiot))))
