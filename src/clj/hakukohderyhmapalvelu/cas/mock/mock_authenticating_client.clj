@@ -41,4 +41,8 @@
 
   (post [_ {:keys [url body]} _]
     (-> (get-in @request-map [:post url (hash body)])
-        (validate url :post body))))
+        (validate url :post body)))
+
+  (http-put [_ {:keys [url body]} _]
+    (-> (get-in @request-map [:put url (hash body)])
+        (validate url :put body))))
