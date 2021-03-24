@@ -42,3 +42,4 @@ kill-cypress: kill-docker-cypress
 	@$(PM2) stop pm2.config.js --only hakukohderyhmapalvelu-backend-cypress
 
 restart: kill start
+restart-cypress: kill-cypress start-cypress
