@@ -83,10 +83,12 @@
      (stylefy/use-style hakukohderyhmien-hallinta-input-styles)
      [input/input-text props']]))
 
-(defn on-save-button-click [hakukohderyhma-name saved-operation-type] ;TODO saved-operation-type - add schema for possible vals, [:create :rename]
-  (case saved-operation-type
-    :create (re-frame/dispatch [hakukohderyhma-persisted hakukohderyhma-name])
-    :rename (re-frame/dispatch [hakukohderyhma-renamed hakukohderyhma-name])))
+(defn on-save-button-click [input-value saved-operation-type] ;TODO saved-operation-type - add schema for possible vals, [:create :rename]
+  (let [hakukohderyhma-name @input-value]
+    (case saved-operation-type
+      :create (re-frame/dispatch [hakukohderyhma-persisted hakukohderyhma-name])
+      :rename (re-frame/dispatch [hakukohderyhma-renamed hakukohderyhma-name])))
+  (reset! input-value ""))
 
 (defn- make-input-without-top-row-styles [style-prefix]
   (let [grid (str (format-grid-row "[%s-top-row-start] \". .\" %s [%s-top-row-end]" 1 style-prefix)
@@ -108,10 +110,7 @@
 (defn- hakukohderyhma-create-and-rename-input []
   (let [input-value (reagent/atom "")]
     (fn []
-      (let [cypressid "hakukohderyhma-create"
-            input-id "hakukohderyhma-create-input"
-            style-prefix "hakukohderyhma-create"
-            create-is-active @(re-frame/subscribe [:state-query create-input-is-active false])
+      (let [create-is-active @(re-frame/subscribe [:state-query create-input-is-active false])
             rename-is-active @(re-frame/subscribe [:state-query rename-input-is-active false])
             ongoing-request? @(re-frame/subscribe [:hakukohderyhmien-hallinta/ongoing-request?])
             selected-ryhma @(re-frame/subscribe [get-selected-hakukohderyhma])
@@ -119,16 +118,18 @@
             text-input-label (if rename-is-active selected-ryhma-name "Uuden ryhmän nimi")
             is-visible (or create-is-active rename-is-active)
             button-disabled? (or ongoing-request?
-                                 (-> @input-value seq nil?))]
+                                 (-> @input-value seq nil?))
+            operation-type (if rename-is-active "rename" "create")
+            cypressid (str "hakukohderyhma-" operation-type)
+            input-id (str "hakukohderyhma-" operation-type "-input")
+            style-prefix (str "hakukohderyhma-" operation-type)]
         (when is-visible
           [input-and-button-without-top-row
            {:button-component [b/button
                                {:cypressid    (str cypressid "-button")
                                 :disabled?    button-disabled?
                                 :label        "Tallenna"
-                                :on-click     #(on-save-button-click @input-value (cond
-                                                                                    create-is-active :create
-                                                                                    rename-is-active :rename))
+                                :on-click     #(on-save-button-click input-value (keyword operation-type))
                                 :style-prefix (str style-prefix "-button")}]
             :input-component  [hakukohderyhmien-hallinta-input
                                {:cypressid    (str cypressid "-input")

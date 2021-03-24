@@ -42,4 +42,8 @@
 
   (post [_ {:keys [url body]} _]
     (-> (async/poll! chan)
-        (validate url :post body))))
+        (validate url :post body)))
+
+  (http-put [_ {:keys [url body]} _]
+    (-> (async/poll! chan)
+        (validate url :put body))))

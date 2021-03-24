@@ -6,6 +6,7 @@ import * as hs from '../selectors/hakukohderyhmaPanelSelectors'
 import * as hh from '../selectors/hakukohderyhmanHakutoimintoSelectors'
 import * as hl from '../selectors/hakukohderyhmanLisaysSelectors'
 import { PostHakukohderyhmaRequestFixture } from '../fixtures/hakukohderyhmapalvelu/PostHakukohderyhmaRequestFixture'
+import { PutHakukohderyhmaRequestFixture } from '../fixtures/hakukohderyhmapalvelu/PutHakukohderyhmaRequestFixture'
 
 describe('Hakukohderyhmäpalvelu', () => {
   const mockHakukohderyhmat = () => {
@@ -135,7 +136,7 @@ describe('Hakukohderyhmäpalvelu', () => {
         })
     })
   })
-  describe('Hakukohderyhmän lisääminen', () => {
+  describe('Hakukohderyhmän hallinnointi', () => {
     it('Näyttää hakukohderyhmän lisäysnäkymän', () => {
       cy.get(hl.hakukohderyhmanLisaysHeadingSelector).should(
         'have.text',
@@ -184,6 +185,12 @@ describe('Hakukohderyhmäpalvelu', () => {
           preExistingRyhmaNimi,
         )
       })
+    })
+    it('Muokkauslinkki tulee näkyviin, kun ryhmä on valittu', () => {
+      cy.get(hl.hakukohderyhmanLisaysMuokkaaRyhmaaLinkSelector).should(
+        'have.text',
+        'Muokkaa ryhmää',
+      )
     })
     describe('Uuden hakukohderyhmän lisäys', () => {
       before('"Lisää hakukohderyhmä" -linkin klikkaus', () => {
@@ -262,6 +269,86 @@ describe('Hakukohderyhmäpalvelu', () => {
                 hakukohderyhma.nimi.fi,
               )
             })
+          })
+        })
+      })
+    })
+    describe('Hakukohderyhmän nimen muuttaminen', () => {
+      it('Näyttää hakukohderyhmän muokkauksen tekstikentän ja muokattavan ryhmän nimen placeholderissa', () => {
+        cy.get(hl.hakukohderyhmanLisaysMuokkaaRyhmaaLinkSelector).click({
+          force: true,
+        })
+        cy.get(hl.hakukohderyhmanLisaysRenameHakukohderyhmaTextInputSelector)
+          .should('have.attr', 'placeholder', 'Testihakukohderyhmä')
+          .should('have.text', '')
+        cy.get(
+          hl.hakukohderyhmanLisaysSaveRenameHakukohderyhmaButtonSelector,
+        ).should('be.disabled')
+      })
+      it('Muokkauslinkki on pois näkymästä muokkauksen aikana', () => {
+        cy.get(hl.hakukohderyhmanLisaysMuokkaaRyhmaaLinkSelector).should(
+          'not.exist',
+        )
+      })
+      it('Uuden nimen kirjoittaminen', () => {
+        cy.fixture<PutHakukohderyhmaRequestFixture>(
+          'hakukohderyhmapalvelu/put-hakukohderyhma-request.json',
+        )
+          .as('put-hakukohderyhma-request')
+          .then(renamedHakukohderyhma => {
+            cy.get(
+              hl.hakukohderyhmanLisaysRenameHakukohderyhmaTextInputSelector,
+            ).type(renamedHakukohderyhma.nimi.fi, { force: true })
+          })
+      })
+      it('Uuden nimen tallennuspainiketta voi klikata', () => {
+        cy.get(
+          hl.hakukohderyhmanLisaysSaveRenameHakukohderyhmaButtonSelector,
+        ).should('be.not.disabled')
+      })
+      describe('Uuden nimen tallentaminen', () => {
+        before(() => {
+          cy.resetMocks()
+          cy.login()
+          cy.fixture(
+            'hakukohderyhmapalvelu/put-hakukohderyhma-request.json',
+          ).as('put-hakukohderyhma-request')
+          cy.fixture(
+            'hakukohderyhmapalvelu/post-hakukohderyhma-response.json',
+          ).as('put-hakukohderyhma-response')
+          cy.mockBackendRequest({
+            method: 'PUT',
+            path:
+              '/organisaatio-service/rest/organisaatio/v4/1.2.246.562.28.47149607930',
+            service: 'organisaatio-service',
+            requestFixture:
+              'hakukohderyhmapalvelu/put-hakukohderyhma-request.json',
+            responseFixture:
+              'hakukohderyhmapalvelu/put-hakukohderyhma-response.json',
+          })
+          cy.server()
+          cy.route(
+            'POST',
+            '/hakukohderyhmapalvelu/api/hakukohderyhma/rename',
+          ).as('post-hakukohderyhma-rename')
+        })
+        it('Uuden nimen voi tallentaa, tallennus-input katoaa näkymästä ja uusi ryhmä on valittu automaattisesti', () => {
+          cy.get(
+            hl.hakukohderyhmanLisaysSaveRenameHakukohderyhmaButtonSelector,
+          ).click({ force: true })
+          cy.get<PutHakukohderyhmaRequestFixture>(
+            '@put-hakukohderyhma-request',
+          ).then(renamedHakukohderyhma => {
+            cy.get(
+              hl.hakukohderyhmanLisaysRenameHakukohderyhmaTextInputSelector,
+            ).should('not.exist')
+            cy.get(
+              hl.hakukohderyhmanLisaysSaveRenameHakukohderyhmaButtonSelector,
+            ).should('not.exist')
+            cy.get(hl.hakukohderyhmanLisaysDropdownSelectorUndropped).should(
+              'have.text',
+              renamedHakukohderyhma.nimi.fi,
+            )
           })
         })
       })
