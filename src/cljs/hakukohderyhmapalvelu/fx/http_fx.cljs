@@ -19,7 +19,8 @@
                       body]}]
   (let [method'   (case method
                     :get "GET"
-                    :post "POST")
+                    :post "POST"
+                    :put "PUT")
         caller-id (:caller-id c/config)
         csrf (get-cookie-value "CSRF")
         headers (cond-> {"caller-id"    caller-id
@@ -54,7 +55,7 @@
 
 (s/defschema HttpSpec
   {:http-request-id                  s/Keyword
-   :method                           (s/enum :get :post)
+   :method                           (s/enum :get :post :put)
    :path                             s/Str
    (s/optional-key :request-schema)  s/Any
    (s/optional-key :response-schema) s/Any
