@@ -69,11 +69,9 @@
   hakukohderyhma-renaming-confirmed
   (fn-traced [db [{:keys [oid] :as hakukohderyhma} _]]
              (let [db-ryhmat (get-in db persisted-hakukohderyhmas)
-                   merge-rename-data #(merge % (select-keys hakukohderyhma [:nimi :version]))
+                   merge-rename-data #(merge % hakukohderyhma)
                    ryhmat-with-rename (map
-                                        (fn [ryhma] (if (= oid (:oid ryhma))
-                                                      (merge-rename-data ryhma)
-                                                      ryhma))
+                                        #(cond-> % (= oid (:oid %)) merge-rename-data)
                                         db-ryhmat)]
                (-> db
                    (assoc-in persisted-hakukohderyhmas (set ryhmat-with-rename))
