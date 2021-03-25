@@ -83,7 +83,7 @@
              (let [http-request-id hakukohderyhma-renamed
                    selected-ryhma (get-in db selected-hakukohderyhma)
                    body (merge
-                          selected-ryhma
+                          (select-keys selected-ryhma [:oid :version])
                           {:nimi {:fi hakukohderyhma-name}})]
                {:db   (update db :requests (fnil conj #{}) http-request-id)
                 :http {:method           :post

@@ -23,9 +23,6 @@
 (s/defschema HakukohderyhmaSearchRequest
   {:oids [s/Str]})
 
-(s/defschema HakukohderyhmaListResponse
-  [HakukohderyhmaPayload])
-
 (s/defschema HaunTiedot
   CommonOrganisaatioEntityPayload)
 
