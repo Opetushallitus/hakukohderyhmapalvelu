@@ -83,13 +83,14 @@
   (fn-traced [{db :db} [hakukohderyhma-name]]
              (let [http-request-id hakukohderyhma-renamed
                    selected-ryhma (get-in db selected-hakukohderyhma)
-                   body (merge
-                          (select-keys selected-ryhma [:oid :version])
-                          {:nimi {:fi hakukohderyhma-name}})]
+                   language (:lang db)
+                   body (-> selected-ryhma
+                            (dissoc :hakukohteet)
+                            (assoc-in [:nimi (keyword language)] hakukohderyhma-name))]
                {:db   (update db :requests (fnil conj #{}) http-request-id)
                 :http {:method           :post
                        :http-request-id  http-request-id
-                       :path             "/hakukohderyhmapalvelu/api/hakukohderyhma/rename"
+                       :path             (str "/hakukohderyhmapalvelu/api/hakukohderyhma/" (:oid selected-ryhma) "/rename")
                        :request-schema   schemas/HakukohderyhmaPutRequest
                        :response-schema  schemas/HakukohderyhmaResponse
                        :response-handler [hakukohderyhma-renaming-confirmed]

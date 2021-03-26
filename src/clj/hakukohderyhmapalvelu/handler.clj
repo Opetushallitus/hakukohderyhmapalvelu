@@ -157,14 +157,16 @@
                                 (response/ok
                                   (hakukohderyhma/find-hakukohderyhmat-by-hakukohteet-oids
                                     hakukohderyhma-service session hakukohde-oids)))}}]
-        ["/rename"
-         {:post  {:middleware auth
-                  :tags       ["Hakukohderyhmä"]
-                  :summary    "Uudelleennimeää hakukohderyhmän"
-                  :responses  {200 {:body s/Any}}
-                  :parameters {:body schema/HakukohderyhmaPutRequest}
-                  :handler    (fn [{session :session {hakukohderyhma :body} :parameters}]
-                                (response/ok (hakukohderyhma/rename hakukohderyhma-service session hakukohderyhma)))}}]]
+        ["/:oid/rename"
+         {:post {:middleware auth
+                 :tags       ["Hakukohderyhmä"]
+                 :summary    "Uudelleennimeää hakukohderyhmän"
+                 :responses  {200 {:body s/Any}}
+                 :parameters {:path {:oid s/Str} :body schema/HakukohderyhmaPutRequest}
+                 :handler    (fn [{session :session {hakukohderyhma :body {oid :oid} :path} :parameters}]
+                               (if (= oid (:oid hakukohderyhma))
+                                 (response/ok (hakukohderyhma/rename hakukohderyhma-service session hakukohderyhma))
+                                 (response/bad-request "Polun oid ei vastaa lähetetyn hakukohderyhmän oid:ia")))}}]]
        ["/haku"
         [""
          {:get {:middleware auth
