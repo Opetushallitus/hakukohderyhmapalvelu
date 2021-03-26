@@ -1,0 +1,32 @@
+{
+  "nimet": [],
+  "tyypit": [
+    "Ryhma"
+  ],
+  "postiosoite": {},
+  "parentOidPath": "|1.2.246.562.10.00000000001|",
+  "kieletUris": [],
+  "toimipistekoodi": "",
+  "kuvaus2": {},
+  "muutKotipaikatUris": [],
+  "muutOppilaitosTyyppiUris": [],
+  "parentOid": "1.2.246.562.10.00000000001",
+  "piilotettu": false,
+  "kayttoryhmat": [
+    "kayttoryhmat_1#1"
+  ],
+  "nimi": {
+    "fi": "Testihakukohderyhmä"
+  },
+  "lisatiedot": [],
+  "yhteystiedot": [],
+  "oid": "1.2.246.562.28.47149607930",
+  "status": "AKTIIVINEN",
+  "yhteystietoArvos": [],
+  "ryhmatyypit": [
+    "ryhmatyypit_2#1"
+  ],
+  "kayntiosoite": {},
+  "version": 0,
+  "vuosiluokat": []
+}

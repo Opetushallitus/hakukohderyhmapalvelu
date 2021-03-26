@@ -7,6 +7,7 @@
 
 
 (def hakukohderyhma-luonti (audit/->operation "HakukohderyhmaLuonti"))
+(def hakukohderyhma-uudelleennimeaminen (audit/->operation "HakukohderyhmaUudelleennimeaminen"))
 (def hakukohderyhma-hakukohteet-edit (audit/->operation "HakukohderyhmaLiitosMuokkaus"))
 
 (defn- create-merge-hakukohderyhma-with-hakukohteet-fn [organisations hakukohteet]
@@ -47,7 +48,14 @@
       (assoc r :hakukohteet [])))
 
   (rename [this session hakukohderyhma]
-    (organisaatio/put-organisaatio organisaatio-service hakukohderyhma))
+    (let [previous-org (organisaatio/get-organisaatio organisaatio-service (:oid hakukohderyhma))
+          renamed-org (organisaatio/put-organisaatio organisaatio-service hakukohderyhma)]
+      (audit/log audit-logger
+                 (audit/->user session)
+                 hakukohderyhma-uudelleennimeaminen
+                 (audit/->target {:oid (:oid renamed-org)})
+                 (audit/->changes (:nimi previous-org) (:nimi renamed-org)))
+      renamed-org))
 
   (list-haun-tiedot [_ session is-all]
     (kouta/list-haun-tiedot kouta-service is-all))

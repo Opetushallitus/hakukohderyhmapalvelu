@@ -311,7 +311,7 @@ describe('Hakukohderyhmäpalvelu', () => {
             'hakukohderyhmapalvelu/put-hakukohderyhma-request.json',
           ).as('put-hakukohderyhma-request')
           cy.fixture(
-            'hakukohderyhmapalvelu/post-hakukohderyhma-response.json',
+            'hakukohderyhmapalvelu/put-hakukohderyhma-response.json',
           ).as('put-hakukohderyhma-response')
           cy.mockBackendRequest({
             method: 'PUT',
@@ -323,10 +323,18 @@ describe('Hakukohderyhmäpalvelu', () => {
             responseFixture:
               'hakukohderyhmapalvelu/put-hakukohderyhma-response.json',
           })
+            cy.login()
+            cy.mockBackendRequest({
+                method: 'GET',
+                path: '/organisaatio-service/rest/organisaatio/v4/1.2.246.562.28.47149607930',
+                service: 'organisaatio-service',
+                responseFixture:
+                    'hakukohderyhmapalvelu/get-hakukohderyhma-to-rename-response.json',
+            })
           cy.server()
           cy.route(
             'POST',
-            '/hakukohderyhmapalvelu/api/hakukohderyhma/rename',
+            '/hakukohderyhmapalvelu/api/hakukohderyhma/1.2.246.562.28.47149607930/rename',
           ).as('post-hakukohderyhma-rename')
         })
         it('Uuden nimen voi tallentaa, tallennus-input katoaa näkymästä ja uusi ryhmä on valittu automaattisesti', () => {
