@@ -2,6 +2,7 @@
   (:require [re-frame.core :as re-frame]
             [hakukohderyhmapalvelu.i18n.utils :as i18n-utils]
             [hakukohderyhmapalvelu.events.haku-events :as haku-events]
+            [hakukohderyhmapalvelu.subs.hakukohderyhma-subs :as hakukohderyhma-subs]
             [clojure.string :as str]))
 
 
@@ -25,6 +26,8 @@
 (def haku-hakukohteet-filter :haku/hakukohteet-filter)
 (def haku-hakukohteet-is-empty :haku/hakukohteet-is-empty)
 (def haku-hakukohteet-as-options :haku/hakukohteet-as-options)
+(def haku-selected-hakukohteet :haku/selected-hakukohteet)
+(def haku-hakukohteet-not-in-hakukohderyhma :haku/haku-hakukohteet-not-in-hakukohderyhma)
 
 (re-frame/reg-sub
   haku-haut
@@ -81,13 +84,31 @@
   (fn [db _]
     (get-in db haku-events/haku-hakukohteet-filter)))
 
+
+(re-frame/reg-sub
+  haku-hakukohteet-not-in-hakukohderyhma
+  (fn []
+    [(re-frame/subscribe [haku-hakukohteet])
+     (re-frame/subscribe [hakukohderyhma-subs/hakukohderyhman-hakukohteet])])
+  (fn [[hakukohteet hakukohderyhman-hakukohteet]]
+    (let [hakukohderyhman-hakukohteet-oids (set (map :oid hakukohderyhman-hakukohteet))]
+      (remove #(hakukohderyhman-hakukohteet-oids (:oid %)) hakukohteet))))
+
 (re-frame/reg-sub
   haku-hakukohteet-as-options
   (fn []
     [(re-frame/subscribe [:lang])
-     (re-frame/subscribe [haku-hakukohteet])
-     (re-frame/subscribe [haku-hakukohteet-filter])])
-  (fn [[lang hakukohteet filter-text] _]
-    (let [filtered-hakukohteet (filter #(hakukohde-includes-string? % filter-text lang) hakukohteet)
-          transform-fn (i18n-utils/create-item->option-transformer lang :nimi :oid)]
-      (map transform-fn filtered-hakukohteet))))
+     (re-frame/subscribe [haku-hakukohteet-filter])
+     (re-frame/subscribe [haku-hakukohteet-not-in-hakukohderyhma])])
+  (fn [[lang filter-text hakukohteet] _]
+    (let [transform-fn (i18n-utils/create-item->option-transformer lang :nimi :oid)]
+      (->> hakukohteet
+           (filter #(hakukohde-includes-string? % filter-text lang))
+           (map transform-fn)))))
+
+(re-frame/reg-sub
+  haku-selected-hakukohteet
+  (fn []
+    [(re-frame/subscribe [haku-hakukohteet-not-in-hakukohderyhma])])
+  (fn [[hakukohteet]]
+    (filter :is-selected hakukohteet)))

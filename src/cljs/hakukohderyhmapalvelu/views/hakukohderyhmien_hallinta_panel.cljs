@@ -5,9 +5,9 @@
             [hakukohderyhmapalvelu.components.common.input :as input]
             [hakukohderyhmapalvelu.components.common.panel :as p]
             [hakukohderyhmapalvelu.styles.layout-styles :as layout]
-            [hakukohderyhmapalvelu.subs.hakukohderyhma-create-subs :refer [get-saved-hakukohderyhmas-as-options
-                                                                           get-selected-hakukohderyhma
-                                                                           get-selected-hakukohderyhma-as-option]]
+            [hakukohderyhmapalvelu.subs.hakukohderyhma-create-subs :refer [saved-hakukohderyhmas-as-options
+                                                                           selected-hakukohderyhma
+                                                                           selected-hakukohderyhma-as-option]]
             [hakukohderyhmapalvelu.events.hakukohderyhmien-hallinta-events :refer [add-new-hakukohderyhma-link-clicked
                                                                                    create-input-is-active
                                                                                    edit-hakukohderyhma-link-clicked
@@ -113,7 +113,7 @@
       (let [create-is-active @(re-frame/subscribe [:state-query create-input-is-active false])
             rename-is-active @(re-frame/subscribe [:state-query rename-input-is-active false])
             ongoing-request? @(re-frame/subscribe [:hakukohderyhmien-hallinta/ongoing-request?])
-            selected-ryhma @(re-frame/subscribe [get-selected-hakukohderyhma])
+            selected-ryhma @(re-frame/subscribe [selected-hakukohderyhma])
             selected-ryhma-name (-> selected-ryhma :nimi :fi)
             text-input-label (if rename-is-active selected-ryhma-name "Uuden ryhmän nimi")
             is-visible (or create-is-active rename-is-active)
@@ -164,7 +164,7 @@
                                         (re-frame/dispatch [add-new-hakukohderyhma-link-clicked]))}])
 
 (defn- edit-hakukohderyhma-link [{:keys [cypressid]}]
-  (let [selected-ryhma @(re-frame/subscribe [get-selected-hakukohderyhma])
+  (let [selected-ryhma @(re-frame/subscribe [selected-hakukohderyhma])
         rename-is-active @(re-frame/subscribe [:state-query rename-input-is-active false])
         is-visible (and (some? selected-ryhma) (not rename-is-active))]
     (when is-visible
@@ -211,8 +211,8 @@
                           {:cypressid              (str cypressid "-dropdown")
                            :style-prefix           (str style-prefix "-input")
                            :unselected-label       "Hakukohderyhmä"
-                           :dropdown-items         (re-frame/subscribe [get-saved-hakukohderyhmas-as-options])
-                           :selected-dropdown-item (re-frame/subscribe [get-selected-hakukohderyhma-as-option])
+                           :dropdown-items         (re-frame/subscribe [saved-hakukohderyhmas-as-options])
+                           :selected-dropdown-item (re-frame/subscribe [selected-hakukohderyhma-as-option])
                            :selection-fn           #(re-frame/dispatch [hakukohderyhma-selected %])}]
       :input-id          input-id
       :style-prefix      style-prefix

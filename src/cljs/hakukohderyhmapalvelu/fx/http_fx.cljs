@@ -61,7 +61,7 @@
    (s/optional-key :response-schema) s/Any
    :response-handler                 [(s/one s/Keyword "handler ID") s/Any]
    (s/optional-key :cas)             s/Keyword
-   (s/optional-key :body)            {s/Any s/Any}})
+   (s/optional-key :body)            s/Any})
 
 (re-frame/reg-fx
   :http

@@ -76,16 +76,18 @@
                {:db (update-in db haku-haut (partial add-hakukohteet-for-haku haku-oid hakukohteet))
                 :dispatch [hakukohderyhma-events/get-hakukohderyhmat-for-hakukohteet hakukohde-oids]})))
 
-(events/reg-event-db-validating
+(events/reg-event-fx-validating
   clear-selected-haku
-  (fn-traced [db _]
-             (update-in db haku-haut deselect-all)))
+  (fn-traced [{db :db} _]
+             {:db       (update-in db haku-haut deselect-all)
+              :dispatch [hakukohderyhma-events/handle-get-all-hakukohderyhma []]}))
 
 (events/reg-event-fx-validating
   select-haku
   (fn-traced [{db :db} [haku-oid]]
              {:db       (update-in db haku-haut (partial select-one haku-oid))
-              :dispatch [get-haun-hakukohteet haku-oid]}))
+              :dispatch-n [[hakukohderyhma-events/handle-get-all-hakukohderyhma []]
+                           [get-haun-hakukohteet haku-oid]]}))
 
 (events/reg-event-fx-validating
   get-haun-hakukohteet
