@@ -1,13 +1,32 @@
 (ns hakukohderyhmapalvelu.api-schemas
   (:require [schema.core :as s]
+            [schema-tools.core :as st]
             [hakukohderyhmapalvelu.common-schemas :as c]))
 
 (s/defschema CommonOrganisaatioEntityPayload
   {:oid  s/Str
    :nimi c/Nimi})
 
+(s/defschema Organisaatio
+  (st/merge CommonOrganisaatioEntityPayload
+            {:version      s/Int
+             :parentOid    s/Str
+             :tyypit       [s/Str]
+             :ryhmatyypit  [s/Str]
+             :kayttoryhmat [s/Str]}))
+
+(s/defschema Hakukohde
+  (st/merge
+    CommonOrganisaatioEntityPayload
+    {:organisaatio             Organisaatio
+     (s/optional-key :hakuOid) s/Str}))
+
+(s/defschema Hakukohderyhma
+  (st/merge Organisaatio
+            {:hakukohteet [Hakukohde]}))
+
 (s/defschema HakukohderyhmaPayload
-  (merge
+  (st/merge
     CommonOrganisaatioEntityPayload
     {:version s/Int}))
 
@@ -15,10 +34,10 @@
   {:nimi c/Nimi})
 
 (s/defschema HakukohderyhmaPutRequest
-  HakukohderyhmaPayload)
+  Organisaatio)
 
 (s/defschema HakukohderyhmaResponse
-  HakukohderyhmaPayload)
+  Organisaatio)
 
 (s/defschema HakukohderyhmaSearchRequest
   {:oids [s/Str]})
@@ -29,23 +48,8 @@
 (s/defschema HaunTiedotListResponse
   [HaunTiedot])
 
-(s/defschema Organisaatio
-  CommonOrganisaatioEntityPayload)
-
-(s/defschema Hakukohde
-  (merge
-    CommonOrganisaatioEntityPayload
-    {:organisaatio Organisaatio
-     (s/optional-key :hakuOid) s/Str}))
-
 (s/defschema HakukohdeListResponse
   [Hakukohde])
-
-(s/defschema Hakukohderyhma
-  {:oid  s/Str
-   :nimi c/Nimi
-   :version s/Int
-   :hakukohteet [Hakukohde]})
 
 (s/defschema HakukohderyhmaListResponse
   [Hakukohderyhma])

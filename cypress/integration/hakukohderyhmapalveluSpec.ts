@@ -323,14 +323,15 @@ describe('Hakukohderyhmäpalvelu', () => {
             responseFixture:
               'hakukohderyhmapalvelu/put-hakukohderyhma-response.json',
           })
-            cy.login()
-            cy.mockBackendRequest({
-                method: 'GET',
-                path: '/organisaatio-service/rest/organisaatio/v4/1.2.246.562.28.47149607930',
-                service: 'organisaatio-service',
-                responseFixture:
-                    'hakukohderyhmapalvelu/get-hakukohderyhma-to-rename-response.json',
-            })
+          cy.login()
+          cy.mockBackendRequest({
+            method: 'GET',
+            path:
+              '/organisaatio-service/rest/organisaatio/v4/1.2.246.562.28.47149607930',
+            service: 'organisaatio-service',
+            responseFixture:
+              'hakukohderyhmapalvelu/get-hakukohderyhma-to-rename-response.json',
+          })
           cy.server()
           cy.route(
             'POST',

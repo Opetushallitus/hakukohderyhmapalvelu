@@ -10,7 +10,7 @@
             [hakukohderyhmapalvelu.config :as c]
             [schema-tools.core :as st]))
 
-(def hakukohderyhma-keys [:oid :nimi :version])
+(def hakukohderyhma-keys [:oid :nimi :version :parentOid :tyypit :ryhmatyypit :kayttoryhmat])
 
 (defrecord OrganisaatioService [organisaatio-service-authenticating-client config]
   component/Lifecycle
@@ -72,24 +72,18 @@
                             (http/parse-and-validate schemas/PostNewOrganisaatioResponse))]
       (-> response-body
           :organisaatio
-          (select-keys hakukohderyhma-keys))))
+          (st/select-schema api-schemas/Organisaatio))))
 
   (put-organisaatio [_ hakukohderyhma]
     (s/validate api-schemas/HakukohderyhmaPutRequest hakukohderyhma)
     (let [base-url (oph-url/resolve-url :organisaatio-service.organisaatio.v4 config)
           url (str base-url "/" (:oid hakukohderyhma))
-          parent-oid (-> config :oph-organisaatio-oid)
-          body (merge hakukohderyhma
-                      {:parentOid    parent-oid
-                       :tyypit       ["Ryhma"]
-                       :ryhmatyypit  ["ryhmatyypit_2#1"]
-                       :kayttoryhmat ["kayttoryhmat_1#1"]})
           response-unparsed (authenticating-client-protocol/http-put organisaatio-service-authenticating-client
                                                                           {:url  url
-                                                                           :body body}
+                                                                           :body hakukohderyhma}
                                                                           {:request-schema  schemas/Organisaatio
                                                                            :response-schema schemas/PutNewOrganisaatioResponse})
           response-body (http/parse-and-validate response-unparsed s/Any)]
       (-> response-body
           :organisaatio
-          (select-keys hakukohderyhma-keys)))))
+          (st/select-schema api-schemas/Organisaatio)))))

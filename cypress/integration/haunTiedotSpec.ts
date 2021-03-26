@@ -83,6 +83,11 @@ describe('Hakukohderyhmäpalvelu - haun tiedot', () => {
               organisaatio: {
                 oid: '1.2.10.1.2.1',
                 nimi: { fi: 'Organisaatio 1' },
+                version: 0,
+                parentOid: '1.2.0.0.0.0.1',
+                tyypit: ['organisaatiotyyppi_01'],
+                ryhmatyypit: [],
+                kayttoryhmat: [],
               },
             },
             {
@@ -92,6 +97,11 @@ describe('Hakukohderyhmäpalvelu - haun tiedot', () => {
               organisaatio: {
                 oid: '1.2.10.1.2.2',
                 nimi: { fi: 'Organisaatio 2' },
+                version: 0,
+                parentOid: '1.2.0.0.0.0.1',
+                tyypit: ['organisaatiotyyppi_02'],
+                ryhmatyypit: [],
+                kayttoryhmat: [],
               },
             },
           ]),
@@ -157,6 +167,11 @@ describe('Hakukohderyhmäpalvelu - haun tiedot', () => {
             organisaatio: {
               oid: '1.2.10.1.2.1',
               nimi: { fi: 'Organisaatio 1' },
+              version: 0,
+              parentOid: '1.1.4.2.1.1',
+              tyypit: [],
+              ryhmatyypit: [],
+              kayttoryhmat: [],
             },
           },
           {
@@ -166,6 +181,11 @@ describe('Hakukohderyhmäpalvelu - haun tiedot', () => {
             organisaatio: {
               oid: '1.2.10.1.2.2',
               nimi: { fi: 'Organisaatio 2' },
+              version: 0,
+              parentOid: '1.1.4.2.1.1',
+              tyypit: [],
+              ryhmatyypit: [],
+              kayttoryhmat: [],
             },
           },
         ],
@@ -173,6 +193,11 @@ describe('Hakukohderyhmäpalvelu - haun tiedot', () => {
         expect(body).to.deep.equal({
           oid: '1.2.246.562.28.4',
           nimi: { fi: 'Hakukohderyhmä 1' },
+          version: 0,
+          parentOid: '1.2.246.562.28.01',
+          tyypit: [],
+          ryhmatyypit: [],
+          kayttoryhmat: [],
           hakukohteet: [
             {
               oid: '1.2.4.2.1.1',
@@ -181,6 +206,11 @@ describe('Hakukohderyhmäpalvelu - haun tiedot', () => {
               organisaatio: {
                 oid: '1.2.10.1.2.1',
                 nimi: { fi: 'Organisaatio 1' },
+                version: 0,
+                parentOid: '1.2.0.0.0.0.1',
+                tyypit: ['organisaatiotyyppi_01'],
+                ryhmatyypit: [],
+                kayttoryhmat: [],
               },
             },
             {
@@ -190,6 +220,11 @@ describe('Hakukohderyhmäpalvelu - haun tiedot', () => {
               organisaatio: {
                 oid: '1.2.10.1.2.2',
                 nimi: { fi: 'Organisaatio 2' },
+                version: 0,
+                parentOid: '1.2.0.0.0.0.1',
+                tyypit: ['organisaatiotyyppi_02'],
+                ryhmatyypit: [],
+                kayttoryhmat: [],
               },
             },
           ],
