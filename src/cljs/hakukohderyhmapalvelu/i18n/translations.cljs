@@ -54,7 +54,11 @@
    :haku/hakukohteet
    {:fi "Hakukohteet"}
    :haku/hakukohteet-search-placeholder
-   {:fi "Nimi tai organisaatio"}})
+   {:fi "Nimi tai organisaatio"}
+   :hakukohderyhma/poista-ryhmasta
+   {:fi "Poista ryhmästä"}
+   :hakukohderyhma/liita-ryhmaan
+   {:fi "Liitä ryhmään"}})
 
 (def translations
   (merge
