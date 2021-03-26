@@ -12,7 +12,7 @@
             [schema.core :as s]
             [stylefy.core :as stylefy]))
 
-(def input-row-height "40px")
+(def input-row-height "38px")
 
 (def input-container-styles
   (let [input-left-right-padding "10px"]
@@ -32,10 +32,11 @@
   (merge input-container-styles
          {:outline       "none"
           :position      "relative"
-          ::stylefy/mode [["::placeholder" {:color colors/gray-lighten-1}]
+          ::stylefy/mode [["::placeholder" {:color "hsl(0, 0%, 50%)"}]
                           [:focus {:border-color colors/blue-lighten-2
                                    :box-shadow   effects/inset-box-shadow-effect-blue}]
-                          [:disabled {:background-color colors/gray-lighten-5}]]}))
+                          [:disabled {:background-color colors/gray-lighten-6
+                                      :color "hsl(0, 0%, 50%)"}]]}))
 
 (def ^:private input-text-invalid-styles
   (merge
