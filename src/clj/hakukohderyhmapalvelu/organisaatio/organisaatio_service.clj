@@ -24,15 +24,18 @@
 
   organisaatio-service-protocol/OrganisaatioServiceProtocol
 
-  (get-organisaatio-children [_]
+  (get-organisaatio-children [_ ryhmatyyppi]
     (let [url (oph-url/resolve-url :organisaatio-service.organisaatio.v3.ryhmat config)
           response-body (as-> url res'
                               (authenticating-client-protocol/get organisaatio-service-authenticating-client
                                                                   res'
                                                                   schemas/GetRyhmatResponse)
-                              (http/parse-and-validate res' schemas/GetRyhmatResponse))]
-      (map #(select-keys % hakukohderyhma-keys)
-           response-body)))
+                              (http/parse-and-validate res' schemas/GetRyhmatResponse))
+          orgs (->> response-body
+                    (map #(select-keys % hakukohderyhma-keys))
+                    (filter #(or (nil? ryhmatyyppi)
+                                 (some #{ryhmatyyppi} (:ryhmatyypit %)))))]
+      orgs))
 
   (get-organisaatio [_ oid]
     (let [url (oph-url/resolve-url :organisaatio-service.organisaatio.v4.get config oid)
@@ -56,14 +59,11 @@
       []))
 
   (post-new-organisaatio [_ hakukohderyhma]
-    (s/validate api-schemas/HakukohderyhmaPostRequest hakukohderyhma)
+    (s/validate schemas/PostOrganisaatioHakuohderyhmaParameter hakukohderyhma)
     (let [url           (oph-url/resolve-url :organisaatio-service.organisaatio.v4 config)
           parent-oid    (-> config :oph-organisaatio-oid)
           body          (merge hakukohderyhma
-                               {:parentOid    parent-oid
-                                :tyypit       ["Ryhma"]
-                                :ryhmatyypit  ["ryhmatyypit_2#1"]
-                                :kayttoryhmat ["kayttoryhmat_1#1"]})
+                               {:parentOid    parent-oid})
           response-body (-> (authenticating-client-protocol/post organisaatio-service-authenticating-client
                                                                  {:url  url
                                                                   :body body}

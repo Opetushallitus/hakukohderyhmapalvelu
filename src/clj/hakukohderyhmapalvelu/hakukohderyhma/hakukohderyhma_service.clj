@@ -5,6 +5,10 @@
             [hakukohderyhmapalvelu.organisaatio.organisaatio-protocol :as organisaatio]
             [hakukohderyhmapalvelu.kouta.kouta-protocol :as kouta]))
 
+(def hakukohderyhmapalvelu-ryhmatyyppi "ryhmatyypit_2#2")
+(def default-hakukohderyhma {:tyypit       ["Ryhma"]
+                             :ryhmatyypit  [hakukohderyhmapalvelu-ryhmatyyppi]
+                             :kayttoryhmat ["kayttoryhmat_1#1"]})
 
 (def hakukohderyhma-luonti (audit/->operation "HakukohderyhmaLuonti"))
 (def hakukohderyhma-uudelleennimeaminen (audit/->operation "HakukohderyhmaUudelleennimeaminen"))
@@ -28,7 +32,7 @@
   (find-hakukohderyhmat-by-hakukohteet-oids [_ session hakukohde-oids]
     ;; TODO: Tarkista käyttäjän oikeudet hakukohteisiin ja hakukohderyhmään (organisaatioon)
     (if-not (empty? hakukohde-oids)
-      (let [orgs (organisaatio/get-organisaatio-children organisaatio-service)
+      (let [orgs (organisaatio/get-organisaatio-children organisaatio-service hakukohderyhmapalvelu-ryhmatyyppi)
             hakukohteet (kouta/find-hakukohteet-by-oids kouta-service hakukohde-oids)
             joins (hakukohderyhma-queries/hakukohderyhmat-by-hakukohteet-and-hakukohderyhmat
                     db
@@ -38,8 +42,9 @@
         (map merge-fn joins))
       []))
 
-  (create [_ session hakukohderyhma]
-    (let [r (organisaatio/post-new-organisaatio organisaatio-service hakukohderyhma)]
+  (create [_ session hakukohderyhma-name]
+    (let [r (organisaatio/post-new-organisaatio organisaatio-service (merge default-hakukohderyhma
+                                                                            hakukohderyhma-name))]
       (audit/log audit-logger
                  (audit/->user session)
                  hakukohderyhma-luonti

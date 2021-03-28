@@ -28,6 +28,13 @@
 (s/defschema FindByOidsResponse
   [Organisaatio])
 
+(s/defschema PostOrganisaatioHakuohderyhmaParameter
+  (st/select-keys Organisaatio
+                  [:kayttoryhmat
+                   :ryhmatyypit
+                   :tyypit
+                   :nimi]))
+
 (s/defschema PostNewOrganisaatioRequest
   (st/select-keys Organisaatio
                   [:kayttoryhmat
