@@ -15,3 +15,9 @@ export const haunHakutoimintoNaytaMyosPaattyneetTextSelector =
 
 export const hakukohteetContainerSelector =
   'div[cypressid=hakukohteet-container]'
+
+export const hakukohderyhmanHakukohteetContainerSelector =
+  'div[cypressid=hakukohderyhma-hakukohteet]'
+
+export const poistaRyhmastaButtonSelector =
+  'button[cypressid=remove-from-group-btn]'

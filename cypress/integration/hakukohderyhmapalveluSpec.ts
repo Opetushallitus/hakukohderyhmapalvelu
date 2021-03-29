@@ -7,6 +7,7 @@ import * as hh from '../selectors/hakukohderyhmanHakutoimintoSelectors'
 import * as hl from '../selectors/hakukohderyhmanLisaysSelectors'
 import { PostHakukohderyhmaRequestFixture } from '../fixtures/hakukohderyhmapalvelu/PostHakukohderyhmaRequestFixture'
 import { PutHakukohderyhmaRequestFixture } from '../fixtures/hakukohderyhmapalvelu/PutHakukohderyhmaRequestFixture'
+import { hakukohderyhmanValintaDropdown } from '../selectors/hakukohderyhmanLisaysSelectors'
 
 describe('Hakukohderyhmäpalvelu', () => {
   before(() => {
@@ -54,8 +55,50 @@ describe('Hakukohderyhmäpalvelu', () => {
         'hakukohderyhmapalvelu/post-find-organisaatiot-response.json',
     })
     cy.login()
+    cy.mockBackendRequest({
+      method: 'GET',
+      path: '/organisaatio-service/rest/organisaatio/v4/1.2.2.5.2.9',
+      service: 'organisaatio-service',
+      responseFixture: 'hakukohderyhmapalvelu/get-hakukohderyhma-response.json',
+    })
+    cy.login()
+    cy.mockBackendRequest({
+      method: 'POST',
+      path: '/kouta-internal/hakukohde/findbyoids',
+      service: 'kouta-service',
+      responseFixture: 'hakukohderyhmapalvelu/empty-array.json',
+      requestFixture: 'hakukohderyhmapalvelu/empty-array.json',
+    })
+    cy.login()
+    cy.mockBackendRequest({
+      method: 'POST',
+      path: '/kouta-internal/hakukohde/findbyoids',
+      service: 'kouta-service',
+      responseFixture: 'hakukohderyhmapalvelu/empty-array.json',
+      requestFixture: 'hakukohderyhmapalvelu/empty-array.json',
+    })
+    cy.login()
+    cy.mockBackendRequest({
+      method: 'POST',
+      path: '/kouta-internal/hakukohde/findbyoids',
+      service: 'kouta-service',
+      requestFixture:
+        'hakukohderyhmapalvelu/post-find-hakukohteet-by-oids.json',
+      responseFixture: 'hakukohderyhmapalvelu/get-hakukohde-response.json',
+    })
+    cy.login()
+    cy.mockBackendRequest({
+      method: 'POST',
+      path: '/organisaatio-service/rest/organisaatio/v4/findbyoids',
+      service: 'organisaatio-service',
+      requestFixture:
+        'hakukohderyhmapalvelu/post-find-organisaatiot-request.json',
+      responseFixture:
+        'hakukohderyhmapalvelu/post-find-organisaatiot-response.json',
+    })
 
     cy.visit('/')
+    cy.get('body').type('{ctrl}h')
   })
   it('Ohjaa käyttäjän polkuun /hakukohderyhmapalvelu/hakukohderyhmien-hallinta', () => {
     cy.location().should(location => {
@@ -133,15 +176,67 @@ describe('Hakukohderyhmäpalvelu', () => {
         })
     })
   })
+  describe('Hakukohteen lisääminen ja poistaminen hakukohderyhmäään', () => {
+    it('Lisää hakukohde hakukohderyhmään', () => {
+      cy.fixture('hakukohderyhmapalvelu/get-hakukohde-response.json').then(
+        hakukohteet => {
+          cy.get(hl.hakukohderyhmanValintaDropdown)
+            .type('Suklaaryhmä{enter}')
+            .get(hh.hakukohteidenSuodatusInputSelector)
+            .clear()
+            .type('tutkinto')
+            .get(hh.hakukohteetContainerSelector)
+            .contains(hakukohteet[0].nimi.fi)
+            .click({ force: true })
+            .get(hh.hakukohteetContainerSelector)
+            .contains(hakukohteet[1].nimi.fi)
+            .click({ force: true })
+            .login()
+            .get(hl.hakukohteetLisaysButtonSelector)
+            .click({ force: true })
+            .get(hh.hakukohderyhmanHakukohteetContainerSelector)
+            .children()
+            .eq(1)
+            .should('have.text', hakukohteet[1].nimi.fi)
+            .get(hh.hakukohderyhmanHakukohteetContainerSelector)
+            .children()
+            .eq(0)
+            .should('have.text', hakukohteet[0].nimi.fi)
+        },
+      )
+    })
+    it('Valitaan hakukohderyhmä, jolla ei ole hakukohteita', () => {
+      cy.get(hl.hakukohderyhmanValintaDropdown)
+        .type('Kinuskiryhmä{enter}')
+        .get(hh.hakukohderyhmanHakukohteetContainerSelector)
+        .children()
+        .should('have.length', 0)
+    })
+    it('Poistetaan hakukohteet hakukohderyhmältä', () => {
+      cy.login()
+      cy.get(hl.hakukohderyhmanValintaDropdown)
+        .type('Suklaaryhmä{enter}')
+        .get(hh.hakukohderyhmanHakukohteetContainerSelector)
+        .children()
+        .each(el => {
+          cy.wrap(el).click({ force: true })
+        })
+        .get(hh.poistaRyhmastaButtonSelector)
+        .click({ force: true })
+        .get(hh.hakukohteetContainerSelector)
+        .children()
+        .should('have.length', 2)
+        .get(hh.hakukohderyhmanHakukohteetContainerSelector)
+        .children()
+        .should('have.length', 0)
+    })
+  })
+
   describe('Hakukohderyhmän hallinnointi', () => {
     it('Näyttää hakukohderyhmän lisäysnäkymän', () => {
       cy.get(hl.hakukohderyhmanLisaysHeadingSelector).should(
         'have.text',
         'Hakukohderyhmät',
-      )
-      cy.get(hl.hakukohderyhmanLisaysDropdownSelectorUndropped).should(
-        'have.text',
-        'Hakukohderyhmä',
       )
       cy.get(hl.hakukohderyhmanLisaysLisaaUusiRyhmaLinkSelector).should(
         'have.text',
@@ -153,33 +248,14 @@ describe('Hakukohderyhmäpalvelu', () => {
       cy.get(
         hl.hakukohderyhmanLisaysSaveNewHakukohderyhmaButtonSelector,
       ).should('not.exist')
-      cy.get(hl.hakukohderyhmanLisaysDropdownSelectorDropped).should(
-        'not.exist',
-      )
-    })
-    it('Hakukohderyhmä-dropdownissa näkyy valmiiksi olemassa olevat ryhmät', () => {
-      cy.fixture(
-        'hakukohderyhmapalvelu/get-organisaatio-ryhmat-response.json',
-      ).then(ryhmat => {
-        const preExistingRyhmaNimi = ryhmat[0].nimi.fi
-        cy.get(hl.hakukohderyhmanLisaysDropdownSelectorUndropped).click({
-          force: true,
-        })
-        cy.get(hl.hakukohderyhmanLisaysDropdownSelectorDropped).should('exist')
-          cy.get(hl.hakukohderyhmanLisaysDropdownSelectorItem(preExistingRyhmaNimi)) // eslint-disable-line prettier/prettier
-          .should('exist')
-      })
     })
     it('Hakukohderyhmän voi valita', () => {
       cy.fixture(
         'hakukohderyhmapalvelu/get-organisaatio-ryhmat-response.json',
       ).then(ryhmat => {
         const preExistingRyhmaNimi = ryhmat[0].nimi.fi
-            cy.get(hl.hakukohderyhmanLisaysDropdownSelectorItem(preExistingRyhmaNimi)) // eslint-disable-line prettier/prettier
-          .click({ force: true })
-        cy.get(hl.hakukohderyhmanLisaysDropdownSelectorUndropped).should(
-          'have.text',
-          preExistingRyhmaNimi,
+        cy.get(hakukohderyhmanValintaDropdown).type(
+          `${preExistingRyhmaNimi}{enter}`,
         )
       })
     })
@@ -261,7 +337,7 @@ describe('Hakukohderyhmäpalvelu', () => {
               cy.get(
                 hl.hakukohderyhmanLisaysSaveNewHakukohderyhmaButtonSelector,
               ).should('not.exist')
-              cy.get(hl.hakukohderyhmanLisaysDropdownSelectorUndropped).should(
+              cy.get(hl.hakukohderyhmanValintaDropdown).should(
                 'have.text',
                 hakukohderyhma.nimi.fi,
               )
@@ -351,7 +427,7 @@ describe('Hakukohderyhmäpalvelu', () => {
             cy.get(
               hl.hakukohderyhmanLisaysSaveRenameHakukohderyhmaButtonSelector,
             ).should('not.exist')
-            cy.get(hl.hakukohderyhmanLisaysDropdownSelectorUndropped).should(
+            cy.get(hl.hakukohderyhmanValintaDropdown).should(
               'have.text',
               renamedHakukohderyhma.nimi.fi,
             )
