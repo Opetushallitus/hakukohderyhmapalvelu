@@ -165,7 +165,7 @@
                             :label        "Muokkaa ryhmää"
                             :on-click     #(dispatch [hakukohderyhma-events/edit-hakukohderyhma-link-clicked])}])))
 
-(defn- hakukohdryhma-selection-controls [props]
+(defn- hakukohderyhma-selection-controls [props]
   (let [separator [:span (stylefy/use-style {:margin "6px"})
                    " | "]]
     [:div (stylefy/use-style hakukohderyhma-selection-controls-styles)
@@ -181,7 +181,7 @@
         is-loading (subscribe [hakukohderyhma-subs/is-loading-hakukohderyhmas])
         selected (subscribe [hakukohderyhma-subs/selected-hakukohderyhma-as-option])]
     [input-with-label-and-control
-     {:control-component [hakukohdryhma-selection-controls
+     {:control-component [hakukohderyhma-selection-controls
                           {:cypressid (str cypressid "-control")}]
       :cypressid         cypressid
       :input-component   [:div (stylefy/use-style {:grid-area input-id
