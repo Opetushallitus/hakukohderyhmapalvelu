@@ -83,9 +83,9 @@
                                     :select-fn #(dispatch [haku-events/toggle-hakukohde-selection %])
                                     :cypressid "hakukohteet-container"}]]
        [:div (stylefy/use-style button-row-style)
-        [button/button {:cypressid "add-to-group-btn"
-                        :disabled? (or (empty? @selected-hakukohteet) (nil? @selected-hakukohderyhma))
-                        :label @add-to-group-btn-text
-                        :on-click #(dispatch [hakukohderyhma-events/add-hakukohteet-to-hakukohderyhma
-                                              @selected-hakukohteet])
+        [button/button {:cypressid    "add-to-group-btn"
+                        :disabled?    (or (empty? @selected-hakukohteet) (nil? @selected-hakukohderyhma))
+                        :label        @add-to-group-btn-text
+                        :on-click     #(dispatch [hakukohderyhma-events/added-hakukohteet-to-hakukohderyhma
+                                                  @selected-hakukohteet])
                         :style-prefix "add-to-group-btn"}]]])))
