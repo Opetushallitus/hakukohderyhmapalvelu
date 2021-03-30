@@ -46,29 +46,5 @@
     "tyypit": [
       "Ryhma"
     ]
-  },
-  {
-    "oid": "1.2.2.5.3.9",
-    "nimi": {
-      "fi": "Palveluun_kuulumaton_ryhmä",
-      "en": "Not included in hakukohderyhmapalvelu",
-      "sv": "Ej inkluderad i hakukohderyhmapalvelu"
-    },
-    "status": "AKTIIVINEN",
-    "version": 0,
-    "parentOid": "1.2.2.5.1.0",
-    "parentOidPath": "|1.2.2.5.1.0|",
-    "kuvaus": {
-      "kieli_fi#1": "Tämä ryhmä ei kuulu hakukohderyhmään, sillä tällä on väärä ryhmätyyppi"
-    },
-    "ryhmatyypit": [
-      "ryhmatyypit_2#1"
-    ],
-    "kayttoryhmat": [
-      "kayttoryhmat_1#1"
-    ],
-    "tyypit": [
-      "Ryhma"
-    ]
   }
 ]

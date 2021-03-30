@@ -155,8 +155,11 @@
                   :parameters {:body schema/HakukohderyhmaSearchRequest}
                   :handler    (fn [{session :session {{hakukohde-oids :oids} :body} :parameters}]
                                 (response/ok
-                                  (hakukohderyhma/find-hakukohderyhmat-by-hakukohteet-oids
-                                    hakukohderyhma-service session hakukohde-oids)))}}]
+                                  (try
+                                    (hakukohderyhma/find-hakukohderyhmat-by-hakukohteet-oids
+                                      hakukohderyhma-service session hakukohde-oids)
+                                    (catch Exception e
+                                      (.getMessage e)))))}}]
         ["/:oid/rename"
          {:post {:middleware auth
                  :tags       ["Hakukohderyhmä"]

@@ -108,6 +108,65 @@ describe('Hakukohderyhmäpalvelu - haun tiedot', () => {
       )
     })
   })
+  describe('Hakukohderyhmän hakeminen hakukohteille', () => {
+    beforeEach(() => {
+      cy.login()
+      cy.mockBackendRequest({
+        method: 'GET',
+        path:
+          '/organisaatio-service/rest/organisaatio/v3/ryhmat?ryhmatyyppi=ryhmatyypit_2%232',
+        service: 'organisaatio-service',
+        responseFixture:
+          'hakukohderyhmapalvelu/get-organisaatio-ryhmat-response.json',
+      })
+      cy.mockBackendRequest({
+        method: 'POST',
+        path: '/kouta-internal/hakukohde/findbyoids',
+        service: 'kouta-service',
+        requestFixture:
+          'hakukohderyhmapalvelu/post-find-hakukohteet-by-oids.json',
+        responseFixture: 'hakukohderyhmapalvelu/get-hakukohde-response.json',
+      })
+    })
+    it('Palauttaa tyhjät hakukohderyhmät, kun request bodyssa on hakukohteen oideja', () => {
+      cy.request(
+        'POST',
+        '/hakukohderyhmapalvelu/api/hakukohderyhma/find-by-hakukohde-oids',
+        { oids: ['1.2.4.2.1.1', '1.2.4.2.1.2'] },
+      ).then(({ body }) => {
+        expect(body).to.deep.equal([
+          {
+            oid: '1.1.2.5.2.9',
+            nimi: {
+              fi: 'Kinuskiryhmä',
+              en: 'Caramel group',
+              sv: 'Karamellgrupp',
+            },
+            version: 0,
+            parentOid: '1.2.2.5.1.0',
+            ryhmatyypit: ['ryhmatyypit_2#2'],
+            kayttoryhmat: ['kayttoryhmat_1#1'],
+            tyypit: ['Ryhma'],
+            hakukohteet: [],
+          },
+          {
+            oid: '1.2.2.5.2.9',
+            nimi: {
+              fi: 'Suklaaryhmä',
+              en: 'Chocolate group',
+              sv: 'Chokladgrupp',
+            },
+            version: 0,
+            parentOid: '1.2.2.5.1.0',
+            ryhmatyypit: ['ryhmatyypit_2#2'],
+            kayttoryhmat: ['kayttoryhmat_1#1'],
+            tyypit: ['Ryhma'],
+            hakukohteet: [],
+          },
+        ])
+      })
+    })
+  })
   describe('Hakukohderyhmän liitoksien tallentaminen', () => {
     beforeEach(() => {
       cy.login()

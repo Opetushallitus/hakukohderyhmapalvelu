@@ -25,16 +25,14 @@
   organisaatio-service-protocol/OrganisaatioServiceProtocol
 
   (get-organisaatio-children [_ ryhmatyyppi]
-    (let [url (oph-url/resolve-url :organisaatio-service.organisaatio.v3.ryhmat config)
+    (let [url (oph-url/resolve-url :organisaatio-service.organisaatio.v3.ryhmat config {:ryhmatyyppi ryhmatyyppi})
           response-body (as-> url res'
                               (authenticating-client-protocol/get organisaatio-service-authenticating-client
                                                                   res'
                                                                   schemas/GetRyhmatResponse)
                               (http/parse-and-validate res' schemas/GetRyhmatResponse))
           orgs (->> response-body
-                    (map #(select-keys % hakukohderyhma-keys))
-                    (filter #(or (nil? ryhmatyyppi)
-                                 (some #{ryhmatyyppi} (:ryhmatyypit %)))))]
+                    (map #(st/select-schema % api-schemas/Organisaatio)))]
       orgs))
 
   (get-organisaatio [_ oid]

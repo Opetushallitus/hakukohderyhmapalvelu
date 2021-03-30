@@ -7,9 +7,9 @@
   (when-not (= actual-method expected-method)
     (format "HTTP-kutsun metodi oli väärä (oli: %s, vaadittiin: %s)" actual-method expected-method)))
 
-(defn- validate-path [expected-path actual-url]
-  (when-not (string/ends-with? actual-url expected-path)
-    (format "HTTP-kutsun polku oli väärä (koko osoite oli: %s, vaadittiin päättyvän: %s" actual-url expected-path)))
+(defn- validate-path [expected-path actual-path]
+  (when-not (string/ends-with? actual-path expected-path)
+    (format "HTTP-kutsun polku oli väärä (koko osoite oli: %s, vaadittiin päättyvän: %s" actual-path expected-path)))
 
 (defn- validate-body [expected-body actual-body]
   (when-not (= expected-body actual-body)
