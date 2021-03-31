@@ -10,6 +10,11 @@ import { PutHakukohderyhmaRequestFixture } from '../fixtures/hakukohderyhmapalve
 import { hakukohderyhmanValintaDropdown } from '../selectors/hakukohderyhmanLisaysSelectors'
 
 describe('Hakukohderyhmäpalvelu', () => {
+  const hideReframeDebuggerWindow = () => {
+    cy.visit('/')
+    cy.get('body').type('{ctrl}h')
+  }
+
   before(() => {
     cy.login()
     cy.mockBackendRequest({
@@ -98,8 +103,7 @@ describe('Hakukohderyhmäpalvelu', () => {
         'hakukohderyhmapalvelu/post-find-organisaatiot-response.json',
     })
 
-    cy.visit('/')
-    cy.get('body').type('{ctrl}h')
+    hideReframeDebuggerWindow()
   })
   it('Ohjaa käyttäjän polkuun /hakukohderyhmapalvelu/hakukohderyhmien-hallinta', () => {
     cy.location().should(location => {
