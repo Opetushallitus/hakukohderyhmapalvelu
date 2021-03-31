@@ -57,7 +57,7 @@
       []))
 
   (post-new-organisaatio [_ hakukohderyhma]
-    (s/validate schemas/PostOrganisaatioHakuohderyhmaParameter hakukohderyhma)
+    (s/validate schemas/PostOrganisaatioHakukohderyhmaParameter hakukohderyhma)
     (let [url           (oph-url/resolve-url :organisaatio-service.organisaatio.v4 config)
           parent-oid    (-> config :oph-organisaatio-oid)
           body          (merge hakukohderyhma

@@ -19,7 +19,7 @@
    :ryhmatyypit  OrganisaatioRyhmatyypit
    :tyypit       OrganisaatioTyypit
    :nimi         c/Nimi
-   :version      s/Int                     ;TODO fix
+   :version      s/Int
    s/Any         s/Any})
 
 (s/defschema FindByOidsRequest
@@ -28,7 +28,7 @@
 (s/defschema FindByOidsResponse
   [Organisaatio])
 
-(s/defschema PostOrganisaatioHakuohderyhmaParameter
+(s/defschema PostOrganisaatioHakukohderyhmaParameter
   (st/select-keys Organisaatio
                   [:kayttoryhmat
                    :ryhmatyypit

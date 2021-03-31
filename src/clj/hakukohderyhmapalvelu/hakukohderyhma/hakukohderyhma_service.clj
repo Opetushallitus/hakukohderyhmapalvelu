@@ -5,7 +5,7 @@
             [hakukohderyhmapalvelu.organisaatio.organisaatio-protocol :as organisaatio]
             [hakukohderyhmapalvelu.kouta.kouta-protocol :as kouta]))
 
-(def hakukohderyhmapalvelu-ryhmatyyppi "ryhmatyypit_2#2")
+(def hakukohderyhmapalvelu-ryhmatyyppi "ryhmatyypit_6#1")
 (def default-hakukohderyhma {:tyypit       ["Ryhma"]
                              :ryhmatyypit  [hakukohderyhmapalvelu-ryhmatyyppi]
                              :kayttoryhmat ["kayttoryhmat_1#1"]})

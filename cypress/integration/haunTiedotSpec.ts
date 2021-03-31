@@ -114,7 +114,7 @@ describe('Hakukohderyhmäpalvelu - haun tiedot', () => {
       cy.mockBackendRequest({
         method: 'GET',
         path:
-          '/organisaatio-service/rest/organisaatio/v3/ryhmat?ryhmatyyppi=ryhmatyypit_2%232',
+          '/organisaatio-service/rest/organisaatio/v3/ryhmat?ryhmatyyppi=ryhmatyypit_6%231',
         service: 'organisaatio-service',
         responseFixture:
           'hakukohderyhmapalvelu/get-organisaatio-ryhmat-response.json',
@@ -144,7 +144,7 @@ describe('Hakukohderyhmäpalvelu - haun tiedot', () => {
             },
             version: 0,
             parentOid: '1.2.2.5.1.0',
-            ryhmatyypit: ['ryhmatyypit_2#2'],
+            ryhmatyypit: ['ryhmatyypit_6#1'],
             kayttoryhmat: ['kayttoryhmat_1#1'],
             tyypit: ['Ryhma'],
             hakukohteet: [],
@@ -158,7 +158,7 @@ describe('Hakukohderyhmäpalvelu - haun tiedot', () => {
             },
             version: 0,
             parentOid: '1.2.2.5.1.0',
-            ryhmatyypit: ['ryhmatyypit_2#2'],
+            ryhmatyypit: ['ryhmatyypit_6#1'],
             kayttoryhmat: ['kayttoryhmat_1#1'],
             tyypit: ['Ryhma'],
             hakukohteet: [],

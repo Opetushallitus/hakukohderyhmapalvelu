@@ -15,7 +15,7 @@ describe('Hakukohderyhmäpalvelu', () => {
     cy.mockBackendRequest({
       method: 'GET',
       path:
-        '/organisaatio-service/rest/organisaatio/v3/ryhmat?ryhmatyyppi=ryhmatyypit_2%232',
+        '/organisaatio-service/rest/organisaatio/v3/ryhmat?ryhmatyyppi=ryhmatyypit_6%231',
       service: 'organisaatio-service',
       responseFixture:
         'hakukohderyhmapalvelu/get-organisaatio-ryhmat-response.json',
