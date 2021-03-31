@@ -31,11 +31,9 @@
    (s/optional-key :en) s/Str})
 
 (s/defschema Hakukohde
-  {:oid          s/Str
-   :nimi         LocalizedString
-   (s/optional-key :hakuOid) s/Str
-   :organisaatio api-schemas/Organisaatio
-   :is-selected  s/Bool})
+  (st/merge
+    api-schemas/Hakukohde
+    {:is-selected s/Bool}))
 
 (s/defschema HaunTiedot
   {:oid         s/Str
@@ -43,11 +41,16 @@
    :is-selected s/Bool
    :hakukohteet [Hakukohde]})
 
+(s/defschema Hakukohderyhma
+  (st/merge
+    api-schemas/Hakukohderyhma
+    {:is-selected s/Bool
+     :hakukohteet [Hakukohde]}))
 
 (s/defschema HakukohderyhmaPalvelu
   {:hakukohderyhma
-   {:persisted               #{api-schemas/Hakukohderyhma}
-    :selected-hakukohderyhma (s/maybe api-schemas/Hakukohderyhma)
+   {:persisted               #{Hakukohderyhma}
+    :selected-hakukohderyhma (s/maybe Hakukohderyhma)
     :input-visibility        {:create-active? s/Bool
                               :rename-active? s/Bool}
     :haut                    [HaunTiedot]

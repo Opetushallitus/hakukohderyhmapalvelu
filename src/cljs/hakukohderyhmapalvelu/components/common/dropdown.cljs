@@ -73,9 +73,10 @@
            selection-fn]}]
   [:div (stylefy/use-style input-dropdown-item-container-styles)
    (for [item dropdown-items]
-     (dropdown-item
-       {:item         item
-        :selection-fn #(selection-fn item)}))])
+     [dropdown-item
+      {:item         item
+       :key          (:value item)
+       :selection-fn #(selection-fn item)}])])
 
 (s/defn input-dropdown :- s/Any
   [{:keys [cypressid
@@ -95,5 +96,5 @@
                               :unselected-label       unselected-label
                               :is-dropped-down        is-dropped-down})
          (when is-dropped-down
-           (dropdown-item-container {:dropdown-items dereffed-items
-                                     :selection-fn   selection-fn}))]))))
+           [dropdown-item-container {:dropdown-items dereffed-items
+                                     :selection-fn   selection-fn}])]))))

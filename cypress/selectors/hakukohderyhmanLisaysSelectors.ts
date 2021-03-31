@@ -1,15 +1,11 @@
 export const hakukohderyhmanLisaysHeadingSelector =
   'label[cypressid=hakukohderyhma-select-label]:visible'
 
-export const hakukohderyhmanLisaysDropdownSelectorUndropped =
-  'span[cypressid=hakukohderyhma-select-dropdown-label--undropped]:visible'
+export const hakukohderyhmanValintaDropdown =
+  'div[cypressid=hakukohderyhma-select-input]'
 
 export const hakukohderyhmanLisaysDropdownSelectorDropped =
   'span[cypressid=hakukohderyhma-select-dropdown-label--dropped]:visible'
-
-export const hakukohderyhmanLisaysDropdownSelectorItem = (
-  itemName: string,
-): string => `div[cypressid=dropdown-selector--${itemName}]:visible`
 
 export const hakukohderyhmanLisaysLisaaUusiRyhmaLinkSelector =
   'button[cypressid=hakukohderyhma-select-control--add-new-hakukohderyhma]:visible'
@@ -28,3 +24,6 @@ export const hakukohderyhmanLisaysRenameHakukohderyhmaTextInputSelector =
 
 export const hakukohderyhmanLisaysSaveRenameHakukohderyhmaButtonSelector =
   'button[cypressid=hakukohderyhma-rename-button]:visible'
+
+export const hakukohteetLisaysButtonSelector =
+  'button[cypressid=add-to-group-btn]'

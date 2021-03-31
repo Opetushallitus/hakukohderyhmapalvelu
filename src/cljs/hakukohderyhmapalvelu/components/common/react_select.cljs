@@ -13,8 +13,8 @@
                                      :danger      "#DE350B"
                                      :dangerLight "#FFBDAD"
                                      :neutral0    "hsl(0, 0%, 100%)"
-                                     :neutral5    "hsl(0, 0%, 95%)"
-                                     :neutral10   "hsl(0, 0%, 90%)"
+                                     :neutral5    colors/gray-lighten-6
+                                     :neutral10   "#CCCCCC"
                                      :neutral20   "hsl(0, 0%, 80%)"
                                      :neutral30   "hsl(0, 0%, 70%)"
                                      :neutral40   "hsl(0, 0%, 60%)"
@@ -60,9 +60,9 @@
   (let [no-options-message @(subscribe [:translation :no-selectable-items])
         on-change-fns {:select-option on-select-fn
                        :clear         on-clear-fn}
-        props {:disabled         (boolean is-disabled)
+        props {:isDisabled       (boolean is-disabled)
                :isLoading        (boolean is-loading)
-               :isClearable      true
+               :isClearable      (fn? on-clear-fn)
                :noOptionsMessage (constantly no-options-message)
                :onChange         (create-on-change-handler on-change-fns)
                :options          options
