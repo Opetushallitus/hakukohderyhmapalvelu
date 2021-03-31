@@ -26,7 +26,7 @@
 (defrecord HakukohderyhmaService [audit-logger organisaatio-service kouta-service db]
   hakukohderyhma-service-protocol/HakukohderyhmaServiceProtocol
 
-  (find-hakukohderyhmat-by-hakukohteet-oids [_ session hakukohde-oids]
+  (find-hakukohderyhmat-by-hakukohteet-oids [_ session hakukohde-oids include-empty]
     ;; TODO: Tarkista käyttäjän oikeudet hakukohteisiin ja hakukohderyhmään (organisaatioon)
     (if-not (empty? hakukohde-oids)
       (let [hakukohderyhmat (organisaatio/get-organisaatio-children organisaatio-service hakukohderyhmapalvelu-ryhmatyyppi)
@@ -35,8 +35,10 @@
                     db
                     (map :oid hakukohderyhmat)
                     (map :oid hakukohteet))
-            merge-fn (create-merge-hakukohderyhma-with-hakukohteet-fn hakukohderyhmat hakukohteet)]
-        (map merge-fn joins))
+            merge-fn (create-merge-hakukohderyhma-with-hakukohteet-fn hakukohderyhmat hakukohteet)
+            hakukohderyhmat-with-hakukohteet (map merge-fn joins)]
+        (cond->> hakukohderyhmat-with-hakukohteet
+                 (not include-empty) (remove #(empty? (:hakukohteet %)))))
       []))
 
   (create [_ session hakukohderyhma-name]

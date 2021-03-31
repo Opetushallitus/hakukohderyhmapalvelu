@@ -137,7 +137,7 @@
    :path             "/hakukohderyhmapalvelu/api/hakukohderyhma/find-by-hakukohde-oids"
    :response-schema  schemas/HakukohderyhmaListResponse
    :response-handler [response-handler]
-   :body             {:oids hakukohde-oids}})
+   :body             {:oids hakukohde-oids :includeEmpty true}})
 
 
 (events/reg-event-db-validating

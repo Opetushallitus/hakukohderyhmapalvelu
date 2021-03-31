@@ -40,7 +40,8 @@
   Organisaatio)
 
 (s/defschema HakukohderyhmaSearchRequest
-  {:oids [s/Str]})
+  {:oids [s/Str]
+   :includeEmpty s/Bool})
 
 (s/defschema HaunTiedot
   CommonOrganisaatioEntityPayload)

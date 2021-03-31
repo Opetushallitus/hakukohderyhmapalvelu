@@ -128,11 +128,14 @@ describe('Hakukohderyhmäpalvelu - haun tiedot', () => {
         responseFixture: 'hakukohderyhmapalvelu/get-hakukohde-response.json',
       })
     })
-    it('Palauttaa tyhjät hakukohderyhmät, kun request bodyssa on hakukohteen oideja', () => {
+    it('Palauttaa tyhjät hakukohderyhmät, kun request bodyssa on hakukohteen oideja ja includeEmpty parametri on true', () => {
       cy.request(
         'POST',
         '/hakukohderyhmapalvelu/api/hakukohderyhma/find-by-hakukohde-oids',
-        { oids: ['1.2.4.2.1.1', '1.2.4.2.1.2'] },
+        {
+          oids: ['1.2.4.2.1.1', '1.2.4.2.1.2'],
+          includeEmpty: true,
+        },
       ).then(({ body }) => {
         expect(body).to.deep.equal([
           {
@@ -164,6 +167,18 @@ describe('Hakukohderyhmäpalvelu - haun tiedot', () => {
             hakukohteet: [],
           },
         ])
+      })
+    })
+    it('Ei palauta tyhjiä hakukohderyhmiä, kun includeEmpty parametri on false', () => {
+      cy.request(
+        'POST',
+        '/hakukohderyhmapalvelu/api/hakukohderyhma/find-by-hakukohde-oids',
+        {
+          oids: ['1.2.4.2.1.1', '1.2.4.2.1.2'],
+          includeEmpty: false,
+        },
+      ).then(({ body }) => {
+        expect(body).to.deep.equal([])
       })
     })
   })

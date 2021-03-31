@@ -153,9 +153,9 @@
                   :summary    "Hakee kaikki talletetut hakukohderyhmät"
                   :responses  {200 {:body schema/HakukohderyhmaListResponse}}
                   :parameters {:body schema/HakukohderyhmaSearchRequest}
-                  :handler    (fn [{session :session {{hakukohde-oids :oids} :body} :parameters}]
+                  :handler    (fn [{session :session {{hakukohde-oids :oids include-empty :includeEmpty} :body} :parameters}]
                                 (response/ok (hakukohderyhma/find-hakukohderyhmat-by-hakukohteet-oids
-                                               hakukohderyhma-service session hakukohde-oids)))}}]
+                                               hakukohderyhma-service session hakukohde-oids include-empty)))}}]
         ["/:oid/rename"
          {:post {:middleware auth
                  :tags       ["Hakukohderyhmä"]
