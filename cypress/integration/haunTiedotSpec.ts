@@ -140,7 +140,7 @@ describe('Hakukohderyhmäpalvelu - haun tiedot', () => {
             nimi: {
               fi: 'Kinuskiryhmä',
               en: 'Caramel group',
-              sv: 'Karamellgrupp',
+              sv: 'Kolagrupp',
             },
             version: 0,
             parentOid: '1.2.2.5.1.0',
