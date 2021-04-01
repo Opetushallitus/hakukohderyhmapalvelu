@@ -20,7 +20,7 @@
     (fn [{:keys [hakukohderyhma-oid hakukohde-oids]}]
       (when-let [hakukohderyhma (first (get grouped-hakukohderyhmat hakukohderyhma-oid))]
         (->> hakukohde-oids
-             (map #(first (get grouped-hakukohteet %)))
+             (keep #(first (get grouped-hakukohteet %)))
              (assoc hakukohderyhma :hakukohteet))))))
 
 (defrecord HakukohderyhmaService [audit-logger organisaatio-service kouta-service db]
