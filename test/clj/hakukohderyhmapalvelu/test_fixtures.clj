@@ -38,3 +38,24 @@
   (truncate-database (:db @test-system))
   (f)
   (truncate-database (:db @test-system)))
+
+(def organisaatio
+  {:oid          ""
+   :nimi         {:fi ""}
+   :parentOid    ""
+   :version      0
+   :kayttoryhmat []
+   :ryhmatyypit  []
+   :tyypit       []})
+
+(def organisaatio-1
+  (merge organisaatio
+        {:oid          "1.2.246.562.28.1"
+         :nimi         {:fi "Organisaatio 1"}
+         :parentOid    "1.2.246.562.28.01"}))
+
+(def organisaatio-2
+  (merge organisaatio
+         {:oid          "1.2.246.562.28.2"
+          :nimi         {:fi "Organisaatio 2"}
+          :parentOid    "1.2.246.562.28.02"}))

@@ -16,25 +16,26 @@
           hakukohteet [{:oid          "1.2.246.562.20.1"
                         :nimi         {:fi "Hakukohde 1"}
                         :hakuOid      "1.2.246.562.29.1"
-                        :organisaatio {:oid  "1.2.246.562.28.1"
-                                       :nimi {:fi "Organisaatio 1"}}}
+                        :organisaatio test-fixtures/organisaatio-1}
                        {:oid          "1.2.246.562.20.2"
                         :nimi         {:fi "Hakukohde 2"}
                         :hakuOid      "1.2.246.562.29.1"
-                        :organisaatio {:oid  "1.2.246.562.28.2"
-                                       :nimi {:fi "Organisaatio 2"}}}]
+                        :organisaatio test-fixtures/organisaatio-2}]
           expected {:oid         "1.2.246.562.28.4"
                     :nimi        {:fi "Hakukohderyhmä 1"}
+                    :version      0
+                    :kayttoryhmat []
+                    :parentOid    "1.2.246.562.28.01"
+                    :ryhmatyypit  []
+                    :tyypit       []
                     :hakukohteet [{:oid          "1.2.246.562.20.1"
                                    :nimi         {:fi "Hakukohde 1"}
                                    :hakuOid      "1.2.246.562.29.1"
-                                   :organisaatio {:oid  "1.2.246.562.28.1"
-                                                  :nimi {:fi "Organisaatio 1"}}}
+                                   :organisaatio test-fixtures/organisaatio-1}
                                   {:oid          "1.2.246.562.20.2"
                                    :nimi         {:fi "Hakukohde 2"}
                                    :hakuOid      "1.2.246.562.29.1"
-                                   :organisaatio {:oid  "1.2.246.562.28.2"
-                                                  :nimi {:fi "Organisaatio 2"}}}]}]
+                                   :organisaatio test-fixtures/organisaatio-2}]}]
       (dispatch-mock {:method   :get
                       :path     "/organisaatio-service/rest/organisaatio/v4/1.2.246.562.28.4"
                       :service  :organisaatio-service
