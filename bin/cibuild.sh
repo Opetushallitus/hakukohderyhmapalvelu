@@ -18,6 +18,11 @@ test-e2e() {
   npm run cypress:run:travis
 }
 
+test-lein() {
+  CONFIG=oph-configuration/config.cypress.travis.edn \
+    lein test
+}
+
 run-all-tests() {
   lint \
     && test-e2e
@@ -39,7 +44,8 @@ run-all-tests-and-create-uberjar() {
     && lint \
     && create-uberjar \
     && run-mocked-hakukohderyhmapalvelu \
-    && test-e2e
+    && test-e2e \
+    && test-lein
 }
 
 COMMAND=$1
