@@ -48,13 +48,11 @@
     (let [expected [{:oid          "1.2.246.562.20.1"
                      :nimi         {:fi "Hakukohde 1"}
                      :hakuOid      "1.2.246.562.29.1"
-                     :organisaatio {:oid  "1.2.246.562.28.1"
-                                    :nimi {:fi "Organisaatio 1"}}}
+                     :organisaatio test-fixtures/organisaatio-1}
                     {:oid          "1.2.246.562.20.2"
                      :nimi         {:fi "Hakukohde 2"}
                      :hakuOid      "1.2.246.562.29.1"
-                     :organisaatio {:oid  "1.2.246.562.28.2"
-                                    :nimi {:fi "Organisaatio 2"}}}]]
+                     :organisaatio test-fixtures/organisaatio-2}]]
       (dispatch-mock {:method   :get
                       :path     "/kouta-internal/hakukohde/search?haku=1.2.246.562.29.1"
                       :service  :kouta-service
@@ -69,13 +67,11 @@
     (let [expected [{:oid          "1.2.246.562.20.1"
                      :nimi         {:fi "Hakukohde 1"}
                      :hakuOid      "1.2.246.562.29.1"
-                     :organisaatio {:oid  "1.2.246.562.28.1"
-                                    :nimi {:fi "Organisaatio 1"}}}
+                     :organisaatio test-fixtures/organisaatio-1}
                     {:oid          "1.2.246.562.20.2"
                      :nimi         {:fi "Hakukohde 2"}
                      :hakuOid      "1.2.246.562.29.1"
-                     :organisaatio {:oid  "1.2.246.562.28.2"
-                                    :nimi {:fi "Organisaatio 2"}}}]]
+                     :organisaatio test-fixtures/organisaatio-2}]]
       (dispatch-mock {:method   :post
                       :path     "/kouta-internal/hakukohde/findbyoids"
                       :service  :kouta-service
