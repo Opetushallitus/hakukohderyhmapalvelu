@@ -2,8 +2,19 @@
   (:require [hakukohderyhmapalvelu.macros.event-macros :as events]
             [hakukohderyhmapalvelu.api-schemas :as schemas]
             [hakukohderyhmapalvelu.events.hakukohderyhmien-hallinta-events :as hakukohderyhma-events]
-            [day8.re-frame.tracing :refer-macros [fn-traced]]))
+            [day8.re-frame.tracing :refer-macros [fn-traced]]
+            [hakukohderyhmapalvelu.i18n.utils :as i18n-utils]
+            [clojure.string :as str]))
 
+(defn- includes-string? [m string lang]
+  (-> (i18n-utils/get-with-fallback m lang)
+      str/lower-case
+      (str/includes? string)))
+
+(defn- hakukohde-includes-string? [hakukohde string lang]
+  (let [search-paths [[:organisaatio :nimi] [:nimi]]
+        lower-str (str/lower-case string)]
+    (some #(includes-string? (get-in hakukohde %) lower-str lang) search-paths)))
 
 ;; Polut
 (def root-path [:hakukohderyhma])
@@ -18,6 +29,8 @@
 (def get-haun-hakukohteet :haku/get-haun-hakukohteet)
 (def handle-get-hakukohteet-response :haku/handle-get-hakukohteet-response)
 (def toggle-hakukohde-selection :haku/toggle-hakukohde-selection)
+(def all-hakukohde-selected :haku/select-all-hakukohde)
+(def all-hakukohde-deselected :haku/deselect-all-hakukohde)
 (def set-hakukohteet-filter :haku/set-hakukohteet-filter)
 
 ;; Apufunktiot
@@ -40,6 +53,30 @@
          (if (= (:oid haku) haku-oid)
            (assoc haku :hakukohteet hakukohteet)
            haku)) haut))
+
+(defn- deselect-all-items [items]
+  (map
+    #(assoc % :is-selected false)
+    items))
+
+(defn- deselect-all-hakukohde [haut]
+  (map (fn [haku]
+         (if (:is-selected haku)
+           (update haku :hakukohteet deselect-all-items)
+           haku))
+       haut))
+
+(defn- select-all-hakukohde-in-view [filter-str haut]
+  (map (fn [haku]
+         (if (:is-selected haku)
+           (update haku :hakukohteet #(map
+                                        (fn [hakukohde]
+                                          (if (hakukohde-includes-string? hakukohde filter-str :fi);TODO pass current lang
+                                            (assoc hakukohde :is-selected true)
+                                            hakukohde))
+                                        %))
+           haku))
+       haut))
 
 (defn- toggle-selection-of-hakukohde [hakukohde-oid haut]
   (map (fn [haku]
@@ -99,6 +136,17 @@
                        :path             (str "/hakukohderyhmapalvelu/api/haku/" haku-oid "/hakukohde")
                        :response-schema  schemas/HakukohdeListResponse
                        :response-handler [handle-get-hakukohteet-response haku-oid]}})))
+
+(events/reg-event-db-validating
+  all-hakukohde-deselected
+  (fn-traced [db [_]]
+             (update-in db haku-haut deselect-all-hakukohde)))
+
+(events/reg-event-db-validating
+  all-hakukohde-selected
+  (fn-traced [db [_]]
+             (let [filter-str (get-in db haku-hakukohteet-filter)]
+               (update-in db haku-haut (partial select-all-hakukohde-in-view filter-str)))))
 
 (events/reg-event-db-validating
   toggle-hakukohde-selection
