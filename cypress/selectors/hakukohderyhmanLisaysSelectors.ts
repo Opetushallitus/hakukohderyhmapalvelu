@@ -24,6 +24,3 @@ export const hakukohderyhmanLisaysRenameHakukohderyhmaTextInputSelector =
 
 export const hakukohderyhmanLisaysSaveRenameHakukohderyhmaButtonSelector =
   'button[cypressid=hakukohderyhma-rename-button]:visible'
-
-export const hakukohteetLisaysButtonSelector =
-  'button[cypressid=add-to-group-btn]'

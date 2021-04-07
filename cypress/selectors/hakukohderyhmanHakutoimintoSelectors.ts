@@ -21,3 +21,10 @@ export const hakukohderyhmanHakukohteetContainerSelector =
 
 export const poistaRyhmastaButtonSelector =
   'button[cypressid=remove-from-group-btn]'
+
+export const hakukohteetLisaysButtonSelector =
+  'button[cypressid=add-to-group-btn]'
+
+export const hakukohdeSelectAllSelector = 'button[cypressid=select-all-btn]'
+
+export const hakukohdeDeselectAllSelector = 'button[cypressid=deselect-all-btn]'

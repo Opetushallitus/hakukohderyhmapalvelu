@@ -134,7 +134,7 @@ describe('Hakukohderyhmäpalvelu', () => {
       )
     })
 
-    it('Haun valinta - näyttää hakukohteen', () => {
+    it('Haun valinta - näyttää hakukohteet', () => {
       cy.login()
       cy.get(hh.hakukohteetContainerSelector)
         .children()
@@ -197,7 +197,7 @@ describe('Hakukohderyhmäpalvelu', () => {
             .contains(hakukohteet[1].nimi.fi)
             .click({ force: true })
             .login()
-            .get(hl.hakukohteetLisaysButtonSelector)
+            .get(hh.hakukohteetLisaysButtonSelector)
             .click({ force: true })
             .get(hh.hakukohderyhmanHakukohteetContainerSelector)
             .children()
@@ -234,6 +234,57 @@ describe('Hakukohderyhmäpalvelu', () => {
         .get(hh.hakukohderyhmanHakukohteetContainerSelector)
         .children()
         .should('have.length', 0)
+    })
+
+    it('Kaikki hakukohteet voi poistaa valinnasta kerralla, jonka jälkeen nappi disabloituu', () => {
+      cy.get(hh.hakukohdeDeselectAllSelector)
+        .click({ force: true })
+        .should('be.disabled')
+    })
+  })
+
+  describe('Kaikkien hakukohteiden valitseminen kerralla', () => {
+    it('Kaikki hakukohteet voi valita yhdellä kertaa', () => {
+      cy.get(hh.hakukohdeSelectAllSelector)
+        .click({ force: true })
+        .should('be.disabled')
+        .get(hh.hakukohdeDeselectAllSelector)
+        .should('be.not.disabled')
+        .click({ force: true })
+    })
+
+    it('Kaikkien valitseminen kohdistuu vain suodatettuihin hakukohteisiin', () => {
+      cy.get(hh.hakukohteidenSuodatusInputSelector)
+        .clear()
+        .type('perustutkinto')
+        .get(hh.hakukohteetContainerSelector)
+        .children()
+        .should('have.length', 1)
+        .get(hh.hakukohdeSelectAllSelector)
+        .click({ force: true })
+        .should('be.disabled')
+        .get(hh.hakukohteidenSuodatusInputSelector)
+        .clear()
+        .get(hh.hakukohdeSelectAllSelector)
+        .should('be.not.disabled')
+    })
+
+    it('Kaikkien valinnan poistaminen kohdistuu myös suodatuksen ulkopuolelle', () => {
+      cy.get(hh.hakukohdeSelectAllSelector)
+        .click({ force: true })
+        .get(hh.hakukohteidenSuodatusInputSelector)
+        .type('jatkotutkinto')
+        .get(hh.hakukohteetContainerSelector)
+        .children()
+        .should('have.length', 1)
+        .get(hh.hakukohdeDeselectAllSelector)
+        .should('be.not.disabled')
+        .click({ force: true })
+        .should('be.disabled')
+        .get(hh.hakukohteidenSuodatusInputSelector)
+        .clear()
+        .get(hh.hakukohdeDeselectAllSelector)
+        .should('be.disabled')
     })
   })
 
