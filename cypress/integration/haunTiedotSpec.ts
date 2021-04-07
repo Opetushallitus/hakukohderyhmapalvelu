@@ -108,7 +108,7 @@ describe('Hakukohderyhmäpalvelu - haun tiedot', () => {
       )
     })
   })
-  describe('Hakukohderyhmän hakeminen hakukohteille', () => {
+  describe('Hakukohderyhmien kyseleminen hakukohteille', () => {
     beforeEach(() => {
       cy.login()
       cy.mockBackendRequest({
@@ -182,6 +182,11 @@ describe('Hakukohderyhmäpalvelu - haun tiedot', () => {
       })
     })
   })
+  describe('Hahkukohteen hakukohderyhmien oidien hakeminen (rajapinta ulkoiseen käyttöön)', () => {
+    beforeEach(() => {
+      cy.login()
+    })
+  })
   describe('Hakukohderyhmän liitoksien tallentaminen', () => {
     beforeEach(() => {
       cy.login()
@@ -226,6 +231,14 @@ describe('Hakukohderyhmäpalvelu - haun tiedot', () => {
           'hakukohderyhmapalvelu/post-find-organisaatiot-request.json',
         responseFixture:
           'hakukohderyhmapalvelu/post-find-organisaatiot-response.json',
+      })
+    })
+
+    it('Hahkukohteen hakukohderyhmien GET-reitti palauttaa tyhjän listan, jos hakukohde ei kuulu mihinkään ryhmään', () => {
+      cy.request(
+        '/hakukohderyhmapalvelu/api/hakukohde/1.2.4.2.1.1/hakukohderyhmat',
+      ).then(({ body }) => {
+        expect(body).to.deep.equal([])
       })
     })
 
@@ -304,6 +317,13 @@ describe('Hakukohderyhmäpalvelu - haun tiedot', () => {
           ],
         }),
       )
+    })
+    it('Hahkukohteen hakukohderyhmien GET-reitti palauttaa hakukohderyhmien oidit, joihin annettu hakukohde kuuluu', () => {
+      cy.request(
+        '/hakukohderyhmapalvelu/api/hakukohde/1.2.4.2.1.1/hakukohderyhmat',
+      ).then(({ body }) => {
+        expect(body).to.deep.equal(['1.2.246.562.28.4'])
+      })
     })
   })
 })
