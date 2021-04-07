@@ -8,6 +8,7 @@
 
 ;; Esittele sql-kyselyt
 (declare hakukohteet-by-hakukohderyhma-oid)
+(declare hakukohderyhma-oids-by-hakukohde-oid)
 (declare delete-hakukohteet-from-hakukohderyhma!)
 (declare add-hakukohteet-into-hakukohderyhma!)
 (declare hakukohderyhma-by-hakukohteet-and-hakukohderyhmat)
@@ -34,3 +35,8 @@
 (defn hakukohderyhmat-by-hakukohteet-and-hakukohderyhmat [db hakukohderyhma-oids hakukohde-oids]
   (hakukohderyhma-by-hakukohteet-and-hakukohderyhmat db {:hakukohderyhmat hakukohderyhma-oids
                                                          :hakukohteet     hakukohde-oids}))
+
+(defn get-hakukohderyhma-oids-by-hakukohde-oid [db hakukohde-oid]
+  (->> {:hakukohde-oid hakukohde-oid}
+       (hakukohderyhma-oids-by-hakukohde-oid db)
+       (mapv :hakukohderyhma_oid)))

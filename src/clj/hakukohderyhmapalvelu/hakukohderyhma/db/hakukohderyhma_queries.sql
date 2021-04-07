@@ -1,5 +1,10 @@
 -- :name hakukohteet-by-hakukohderyhma-oid :? :*
-SELECT hakukohde_oid AS "hakukohde-oid" FROM hakukohderyhma WHERE hakukohderyhma_oid = :oid
+SELECT hakukohde_oid AS "hakukohde-oid"
+FROM hakukohderyhma
+WHERE hakukohderyhma_oid = :oid
+
+-- :name hakukohderyhma-oids-by-hakukohde-oid :? :*
+SELECT DISTINCT hakukohderyhma_oid FROM hakukohderyhma WHERE hakukohde_oid = :hakukohde-oid
 
 -- :name hakukohderyhma-by-hakukohteet-and-hakukohderyhmat :? :*
 WITH hakukohderyhma_oid_table AS (

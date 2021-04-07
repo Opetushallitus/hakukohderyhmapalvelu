@@ -166,6 +166,14 @@
                                (if (= oid (:oid hakukohderyhma))
                                  (response/ok (hakukohderyhma/rename hakukohderyhma-service session hakukohderyhma))
                                  (response/bad-request "Polun oid ei vastaa lähetetyn hakukohderyhmän oid:ia")))}}]]
+       ["/hakukohde/:oid/hakukohderyhmat"
+        {:get {:middleware auth
+               :responses {200 {:body [s/Str]}}
+               :summary    "Hakee listauksen annetun hakukohteen hakukohderyhmistä"
+               :parameters {:path {:oid s/Str}}
+               :handler    (fn [{session :session {{hakukohde-oid :oid} :path} :parameters}]
+                             (response/ok
+                               (hakukohderyhma/list-hakukohderyhma-oids-by-hakukohde-oid hakukohderyhma-service session hakukohde-oid)))} }]
        ["/haku"
         [""
          {:get {:middleware auth
