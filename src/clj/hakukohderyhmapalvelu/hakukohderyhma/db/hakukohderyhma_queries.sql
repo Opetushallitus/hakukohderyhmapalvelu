@@ -4,7 +4,7 @@ FROM hakukohderyhma
 WHERE hakukohderyhma_oid = :oid
 
 -- :name hakukohderyhma-oids-by-hakukohde-oid :? :*
-SELECT DISTINCT hakukohderyhma_oid FROM hakukohderyhma WHERE hakukohde_oid = :hakukohde-oid
+SELECT DISTINCT hakukohderyhma_oid AS "hakukohderyhma-oid" FROM hakukohderyhma WHERE hakukohde_oid = :hakukohde-oid
 
 -- :name hakukohderyhma-by-hakukohteet-and-hakukohderyhmat :? :*
 WITH hakukohderyhma_oid_table AS (

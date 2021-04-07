@@ -39,4 +39,4 @@
 (defn get-hakukohderyhma-oids-by-hakukohde-oid [db hakukohde-oid]
   (->> {:hakukohde-oid hakukohde-oid}
        (hakukohderyhma-oids-by-hakukohde-oid db)
-       (mapv :hakukohderyhma_oid)))
+       (mapv :hakukohderyhma-oid)))
