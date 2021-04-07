@@ -3,18 +3,7 @@
             [hakukohderyhmapalvelu.api-schemas :as schemas]
             [hakukohderyhmapalvelu.events.hakukohderyhmien-hallinta-events :as hakukohderyhma-events]
             [day8.re-frame.tracing :refer-macros [fn-traced]]
-            [hakukohderyhmapalvelu.i18n.utils :as i18n-utils]
-            [clojure.string :as str]))
-
-(defn- includes-string? [m string lang]
-  (-> (i18n-utils/get-with-fallback m lang)
-      str/lower-case
-      (str/includes? string)))
-
-(defn- hakukohde-includes-string? [hakukohde string lang]
-  (let [search-paths [[:organisaatio :nimi] [:nimi]]
-        lower-str (str/lower-case string)]
-    (some #(includes-string? (get-in hakukohde %) lower-str lang) search-paths)))
+            [hakukohderyhmapalvelu.haku-utils :as u]))
 
 ;; Polut
 (def root-path [:hakukohderyhma])
@@ -29,60 +18,34 @@
 (def get-haun-hakukohteet :haku/get-haun-hakukohteet)
 (def handle-get-hakukohteet-response :haku/handle-get-hakukohteet-response)
 (def toggle-hakukohde-selection :haku/toggle-hakukohde-selection)
-(def all-hakukohde-selected :haku/select-all-hakukohde)
+(def all-hakukohde-in-view-selected :haku/select-all-hakukohde-in-view)
 (def all-hakukohde-deselected :haku/deselect-all-hakukohde)
 (def set-hakukohteet-filter :haku/set-hakukohteet-filter)
 
 ;; Apufunktiot
-(defn- deselect-all [items]
-  (map #(assoc % :is-selected false
-                 :hakukohteet []) items))
-
-(defn- select-one [oid items]
-  (map #(assoc % :is-selected (= (:oid %) oid)
-                 :hakukohteet []) items))
-
-(defn- toggle-item-select [oid items]
-  (map (fn [item]
-         (if (= (:oid item) oid)
-           (update item :is-selected not)
-           item)) items))
-
-(defn- add-hakukohteet-for-haku [haku-oid hakukohteet haut]
-  (map (fn [haku]
-         (if (= (:oid haku) haku-oid)
-           (assoc haku :hakukohteet hakukohteet)
-           haku)) haut))
-
-(defn- deselect-all-items [items]
+(defn- update-hakus-hakukohteet [items should-update? update-fn]
   (map
-    #(assoc % :is-selected false)
+    #(if (should-update? %) (update-fn %) %)
     items))
 
-(defn- deselect-all-hakukohde [haut]
-  (map (fn [haku]
-         (if (:is-selected haku)
-           (update haku :hakukohteet deselect-all-items)
-           haku))
-       haut))
+(defn- add-hakukohteet-for-haku [haku-oid hakukohteet haut]
+  (update-hakus-hakukohteet haut
+                            #(= (:oid %) haku-oid)
+                            #(assoc % :hakukohteet hakukohteet)))
 
-(defn- select-all-hakukohde-in-view [filter-str haut]
-  (map (fn [haku]
-         (if (:is-selected haku)
-           (update haku :hakukohteet #(map
-                                        (fn [hakukohde]
-                                          (if (hakukohde-includes-string? hakukohde filter-str :fi);TODO pass current lang
-                                            (assoc hakukohde :is-selected true)
-                                            hakukohde))
-                                        %))
-           haku))
-       haut))
+(defn- edit-selected-hakus-hakukohteet [haut hakukohde-handler]
+  (update-hakus-hakukohteet haut
+                            :is-selected
+                            (fn [haku] (update haku :hakukohteet #(map hakukohde-handler %)))))
+
+(defn- deselect-all-hakukohde [haut]
+  (edit-selected-hakus-hakukohteet haut u/deselect-item))
+
+(defn- select-all-hakukohde-in-view [in-view? haut]
+  (edit-selected-hakus-hakukohteet haut (partial u/select-filtered-item in-view?)))
 
 (defn- toggle-selection-of-hakukohde [hakukohde-oid haut]
-  (map (fn [haku]
-         (if (:is-selected haku)
-           (update haku :hakukohteet (partial toggle-item-select hakukohde-oid))
-           haku)) haut))
+  (edit-selected-hakus-hakukohteet haut (partial u/select-filtered-item #(= (:oid %) hakukohde-oid))))
 
 ;; Käsittelijät
 (events/reg-event-db-validating
@@ -113,16 +76,20 @@
                {:db (update-in db haku-haut (partial add-hakukohteet-for-haku haku-oid hakukohteet))
                 :dispatch [hakukohderyhma-events/get-hakukohderyhmat-for-hakukohteet hakukohde-oids]})))
 
+(defn- conform-haku-to-schema [haku] (assoc haku :hakukohteet []))
+
 (events/reg-event-fx-validating
   clear-selected-haku
   (fn-traced [{db :db} _]
-             {:db       (update-in db haku-haut deselect-all)
+             {:db       (update-in db haku-haut #(map (comp u/deselect-item
+                                                            conform-haku-to-schema) %))
               :dispatch [hakukohderyhma-events/handle-get-all-hakukohderyhma []]}))
 
 (events/reg-event-fx-validating
   select-haku
   (fn-traced [{db :db} [haku-oid]]
-             {:db       (update-in db haku-haut (partial select-one haku-oid))
+             {:db       (update-in db haku-haut #(map (comp (partial u/select-item-by-oid haku-oid)
+                                                            conform-haku-to-schema) %))
               :dispatch-n [[hakukohderyhma-events/handle-get-all-hakukohderyhma []]
                            [get-haun-hakukohteet haku-oid]]}))
 
@@ -143,10 +110,12 @@
              (update-in db haku-haut deselect-all-hakukohde)))
 
 (events/reg-event-db-validating
-  all-hakukohde-selected
+  all-hakukohde-in-view-selected
   (fn-traced [db [_]]
-             (let [filter-str (get-in db haku-hakukohteet-filter)]
-               (update-in db haku-haut (partial select-all-hakukohde-in-view filter-str)))))
+             (let [lang (get db :lang)
+                   filter-str (get-in db haku-hakukohteet-filter)
+                   in-view? #(u/hakukohde-includes-string? % filter-str lang)]
+               (update-in db haku-haut (partial select-all-hakukohde-in-view in-view?)))))
 
 (events/reg-event-db-validating
   toggle-hakukohde-selection

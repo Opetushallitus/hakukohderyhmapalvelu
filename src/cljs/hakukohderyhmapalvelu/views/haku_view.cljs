@@ -87,7 +87,7 @@
         [button/button {:cypressid    "select-all-btn"
                         :disabled?    (= (count @hakukohteet) (count @selected-hakukohteet))
                         :label        "Valitse kaikki"      ;TODO translation
-                        :on-click     #(dispatch [haku-events/all-hakukohde-selected])
+                        :on-click     #(dispatch [haku-events/all-hakukohde-in-view-selected])
                         :style-prefix "select-all-btn"}]
         [button/button {:cypressid    "deselect-all-btn"
                         :disabled?    (zero? (count @selected-hakukohteet))

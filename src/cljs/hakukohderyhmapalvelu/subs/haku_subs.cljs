@@ -2,19 +2,8 @@
   (:require [re-frame.core :as re-frame]
             [hakukohderyhmapalvelu.i18n.utils :as i18n-utils]
             [hakukohderyhmapalvelu.events.haku-events :as haku-events]
-            [hakukohderyhmapalvelu.subs.hakukohderyhma-subs :as hakukohderyhma-subs]
-            [clojure.string :as str]))
-
-
-(defn- includes-string? [m string lang]
-  (-> (i18n-utils/get-with-fallback m lang)
-      str/lower-case
-      (str/includes? string)))
-
-(defn- hakukohde-includes-string? [hakukohde string lang]
-  (let [search-paths [[:organisaatio :nimi] [:nimi]]
-        lower-str (str/lower-case string)]
-    (some #(includes-string? (get-in hakukohde %) lower-str lang) search-paths)))
+            [hakukohderyhmapalvelu.haku-utils :as u]
+            [hakukohderyhmapalvelu.subs.hakukohderyhma-subs :as hakukohderyhma-subs]))
 
 ;; Tilaukset
 (def haku-haut :haku/haut)
@@ -103,7 +92,7 @@
   (fn [[lang filter-text hakukohteet] _]
     (let [transform-fn (i18n-utils/create-item->option-transformer lang :nimi :oid)]
       (->> hakukohteet
-           (filter #(hakukohde-includes-string? % filter-text lang))
+           (filter #(u/hakukohde-includes-string? % filter-text lang))
            (map transform-fn)))))
 
 (re-frame/reg-sub
