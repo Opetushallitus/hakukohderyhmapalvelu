@@ -168,6 +168,7 @@
                                  (response/bad-request "Polun oid ei vastaa lähetetyn hakukohderyhmän oid:ia")))}}]]
        ["/hakukohde/:oid/hakukohderyhmat"
         {:get {:middleware auth
+               :tags       ["Hakukohde"]
                :responses  {200 {:body [s/Str]}}
                :summary    "Hakee listauksen annetun hakukohteen hakukohderyhmistä"
                :parameters {:path {:oid s/Str}}
@@ -229,7 +230,7 @@
       (swagger-ui/create-swagger-ui-handler
         {:config {:validatorUrl     nil
                   :operationsSorter "alpha"}
-         :path   "/hakukohderyhmapalvelu/swagger/index.html"
+         :path   "/hakukohderyhmapalvelu/swagger"
          :url    "/hakukohderyhmapalvelu/swagger.json"})
       (ring/create-resource-handler {:path "/hakukohderyhmapalvelu" :root "public/hakukohderyhmapalvelu"})
       (ring/create-default-handler {:not-found (constantly {:status 404, :body "<h1>Not found</h1>"})}))))
