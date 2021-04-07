@@ -41,6 +41,10 @@
                  (not include-empty) (remove #(empty? (:hakukohteet %)))))
       []))
 
+  (list-hakukohderyhma-oids-by-hakukohde-oid [_ session hakukohde-oid]
+    (when hakukohde-oid
+      (hakukohderyhma-queries/get-hakukohderyhma-oids-by-hakukohde-oid db hakukohde-oid)))
+
   (create [_ session hakukohderyhma-name]
     (let [hkr (organisaatio/post-new-organisaatio organisaatio-service (merge default-hakukohderyhma
                                                                               hakukohderyhma-name))]

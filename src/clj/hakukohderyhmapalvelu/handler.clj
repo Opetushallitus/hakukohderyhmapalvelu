@@ -147,15 +147,15 @@
                 :handler    (fn [{session :session {hakukohteet :body {oid :oid} :path} :parameters}]
                               (response/ok (hakukohderyhma/update-hakukohderyhma-hakukohteet
                                              hakukohderyhma-service session oid hakukohteet)))}}]
-         ["/find-by-hakukohde-oids"
-          {:post {:middleware auth
-                  :tags       ["Hakukohderyhmä"]
-                  :summary    "Hakee kaikki talletetut hakukohderyhmät"
-                  :responses  {200 {:body schema/HakukohderyhmaListResponse}}
-                  :parameters {:body schema/HakukohderyhmaSearchRequest}
-                  :handler    (fn [{session :session {{hakukohde-oids :oids include-empty :includeEmpty} :body} :parameters}]
-                                (response/ok (hakukohderyhma/find-hakukohderyhmat-by-hakukohteet-oids
-                                               hakukohderyhma-service session hakukohde-oids include-empty)))}}]
+        ["/find-by-hakukohde-oids"
+         {:post {:middleware auth
+                 :tags       ["Hakukohderyhmä"]
+                 :summary    "Hakee kaikki talletetut hakukohderyhmät"
+                 :responses  {200 {:body schema/HakukohderyhmaListResponse}}
+                 :parameters {:body schema/HakukohderyhmaSearchRequest}
+                 :handler    (fn [{session :session {{hakukohde-oids :oids include-empty :includeEmpty} :body} :parameters}]
+                               (response/ok (hakukohderyhma/find-hakukohderyhmat-by-hakukohteet-oids
+                                              hakukohderyhma-service session hakukohde-oids include-empty)))}}]
         ["/:oid/rename"
          {:post {:middleware auth
                  :tags       ["Hakukohderyhmä"]
@@ -166,6 +166,14 @@
                                (if (= oid (:oid hakukohderyhma))
                                  (response/ok (hakukohderyhma/rename hakukohderyhma-service session hakukohderyhma))
                                  (response/bad-request "Polun oid ei vastaa lähetetyn hakukohderyhmän oid:ia")))}}]]
+       ["/hakukohde/:oid/hakukohderyhmat"
+        {:get {:middleware auth
+               :responses  {200 {:body [s/Str]}}
+               :summary    "Hakee listauksen annetun hakukohteen hakukohderyhmistä"
+               :parameters {:path {:oid s/Str}}
+               :handler    (fn [{session :session {{hakukohde-oid :oid} :path} :parameters}]
+                             (response/ok
+                               (hakukohderyhma/list-hakukohderyhma-oids-by-hakukohde-oid hakukohderyhma-service session hakukohde-oid)))}}]
        ["/haku"
         [""
          {:get {:middleware auth
