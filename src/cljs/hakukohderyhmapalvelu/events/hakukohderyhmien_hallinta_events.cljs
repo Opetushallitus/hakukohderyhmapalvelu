@@ -93,10 +93,10 @@
 
 (events/reg-event-fx-validating
   hakukohderyhma-renaming-confirmed
-  (fn-traced [{db :db} [{:keys [oid] :as hakukohderyhma} _]]
-             (let [hakukohderyhma' (conform-hakukohderyhma-to-schema hakukohderyhma)
+  (fn-traced [{db :db} [{:keys [oid] :as hakukohderyhma}]]
+             (let [edited-fields [:version :nimi]
                    db-ryhmat (get-in db persisted-hakukohderyhmas)
-                   merge-rename-data #(merge % hakukohderyhma')
+                   merge-rename-data #(merge % (select-keys hakukohderyhma edited-fields))
                    ryhmat-with-rename (map
                                         #(cond-> % (= oid (:oid %)) merge-rename-data)
                                         db-ryhmat)]
