@@ -6,6 +6,7 @@
             [hakukohderyhmapalvelu.components.common.react-select :as react-select]
             [hakukohderyhmapalvelu.components.common.panel :as p]
             [hakukohderyhmapalvelu.styles.layout-styles :as layout]
+            [hakukohderyhmapalvelu.subs.haku-subs :as haku-subs]
             [hakukohderyhmapalvelu.subs.hakukohderyhma-subs :as hakukohderyhma-subs]
             [hakukohderyhmapalvelu.events.hakukohderyhmien-hallinta-events :as hakukohderyhma-events]
             [hakukohderyhmapalvelu.views.haku-view :as haun-tiedot-panel]
@@ -106,10 +107,11 @@
       (let [create-is-active @(subscribe [:state-query hakukohderyhma-events/create-input-is-active false])
             rename-is-active @(subscribe [:state-query hakukohderyhma-events/rename-input-is-active false])
             ongoing-request? @(subscribe [:hakukohderyhmien-hallinta/ongoing-request?])
+            selected-haku @(subscribe [haku-subs/haku-selected-haku])
             selected-ryhma @(subscribe [hakukohderyhma-subs/selected-hakukohderyhma])
             selected-ryhma-name (-> selected-ryhma :nimi :fi)
             text-input-label (if rename-is-active selected-ryhma-name "Uuden ryhmän nimi")
-            is-visible (or create-is-active rename-is-active)
+            is-visible (and (some? selected-haku) (or create-is-active rename-is-active))
             button-disabled? (or ongoing-request?
                                  (-> @input-value seq nil?))
             operation-type (if rename-is-active "rename" "create")
@@ -141,32 +143,37 @@
 (defn- hakukohderyhma-link [{:keys [cypressid
                                     style-prefix
                                     label
-                                    on-click]}]
+                                    on-click
+                                    disabled?]}]
   [:span
    [b/text-button {:cypressid    cypressid
-                   :disabled?    false
+                   :disabled?    disabled?
                    :style-prefix style-prefix
                    :label        label
                    :on-click     on-click}]])
 
-(defn- add-new-hakukohderyhma-link [{:keys [cypressid]}]
+(defn- add-new-hakukohderyhma-link [{:keys [cypressid disabled?]}]
   [hakukohderyhma-link {:cypressid    (str cypressid "--add-new-hakukohderyhma")
                         :style-prefix "new-hakukohderyhma-btn"
-                        :label        "Luo uusi ryhmä"
+                        :label        @(subscribe [:translation :hakukohderyhma/luo-uusi-ryhma])
+                        :disabled?    disabled?
                         :on-click     #(dispatch [hakukohderyhma-events/add-new-hakukohderyhma-link-clicked])}])
 
 (defn- edit-hakukohderyhma-link [{:keys [cypressid]}]
   (let [selected-ryhma @(subscribe [hakukohderyhma-subs/selected-hakukohderyhma])
         rename-is-active @(subscribe [:state-query hakukohderyhma-events/rename-input-is-active false])
+        label @(subscribe [:translation :hakukohderyhma/muokkaa-ryhmaa])
         is-visible (and (some? selected-ryhma) (not rename-is-active))]
     (when is-visible
       [hakukohderyhma-link {:cypressid    (str cypressid "--rename-hakukohderyhma")
                             :style-prefix "rename-hakukohderyhma-btn"
-                            :label        "Muokkaa ryhmää"
+                            :label        label
+                            :disabled?    false
                             :on-click     #(dispatch [hakukohderyhma-events/edit-hakukohderyhma-link-clicked])}])))
 
-(defn- hakukohderyhma-selection-controls [props]
-  (let [separator [:span (stylefy/use-style {:margin "6px"})
+(defn- hakukohderyhma-selection-controls [{disabled? :disabled? :as props}]
+  (let [separator [:span (stylefy/use-style {:margin "6px"
+                                             :color (if disabled? colors/gray-lighten-3 colors/black)})
                    " | "]]
     [:div (stylefy/use-style hakukohderyhma-selection-controls-styles)
      [edit-hakukohderyhma-link props]
@@ -179,10 +186,12 @@
         style-prefix "hakukohderyhma-select"
         hakukohderyhmas (subscribe [hakukohderyhma-subs/saved-hakukohderyhmas-as-options])
         is-loading (subscribe [hakukohderyhma-subs/is-loading-hakukohderyhmas])
-        selected (subscribe [hakukohderyhma-subs/selected-hakukohderyhma-as-option])]
+        selected (subscribe [hakukohderyhma-subs/selected-hakukohderyhma-as-option])
+        selected-haku (subscribe [haku-subs/haku-selected-haku])]
     [input-with-label-and-control
      {:control-component [hakukohderyhma-selection-controls
-                          {:cypressid (str cypressid "-control")}]
+                          {:cypressid (str cypressid "-control")
+                           :disabled? (nil? @selected-haku)}]
       :cypressid         cypressid
       :input-component   [:div (stylefy/use-style {:grid-area input-id
                                                    :margin-top "8px"}

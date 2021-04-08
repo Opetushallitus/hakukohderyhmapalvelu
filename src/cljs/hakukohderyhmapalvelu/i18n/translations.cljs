@@ -62,7 +62,11 @@
    :hakukohderyhma/valitse-kaikki
    {:fi "Valitse kaikki"}
    :hakukohderyhma/poista-valinnat
-   {:fi "Poista valinnat"}})
+   {:fi "Poista valinnat"}
+   :hakukohderyhma/luo-uusi-ryhma
+   {:fi "Luo uusi ryhmä"}
+   :hakukohderyhma/muokkaa-ryhmaa
+   {:fi "Muokkaa ryhmää"}})
 
 (def translations
   (merge
