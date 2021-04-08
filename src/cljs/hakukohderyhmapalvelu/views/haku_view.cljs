@@ -11,7 +11,8 @@
     [hakukohderyhmapalvelu.components.common.checkbox :as checkbox]
     [hakukohderyhmapalvelu.components.common.multi-select :as multi-select]
     [hakukohderyhmapalvelu.components.common.input :as input]
-    [hakukohderyhmapalvelu.components.common.button :as button]))
+    [hakukohderyhmapalvelu.components.common.button :as button]
+    [hakukohderyhmapalvelu.styles.styles-colors :as colors]))
 
 
 (defn haku-search []
@@ -78,36 +79,40 @@
         select-all-btn-text (subscribe [:translation :hakukohderyhma/valitse-kaikki])
         deselect-all-btn-text (subscribe [:translation :hakukohderyhma/poista-valinnat])]
     (fn []
-      [:div (stylefy/use-style hakukohteet-container-style)
-       [:span (stylefy/use-style {:grid-row 1 :grid-column "1 / 3"}) @hakukohteet-label]
-       [:div (stylefy/use-style {:grid-row 2 :grid-column "1 / 4"})
-        [input/input-text {:cypressid   "hakukohteet-text-filter"
-                           :input-id    "hakukohteet-text-filter"
-                           :on-change   #(dispatch [haku-events/set-hakukohteet-filter %])
-                           :placeholder @hakukohteet-search-placeholder
-                           :aria-label  @hakukohteet-search-placeholder
-                           :is-disabled @hakukohteet-is-empty}]]
-       [:div (stylefy/use-style {:grid-row 3 :grid-column "1 / 4"})
-        [multi-select/multi-select {:options   @hakukohteet
-                                    :select-fn #(dispatch [haku-events/toggle-hakukohde-selection %])
-                                    :cypressid "hakukohteet-container"}]]
-       [:div (stylefy/use-style button-row-style)
-        [:div (stylefy/use-style multi-selection-button-row-style)
-         [button/text-button {:cypressid    "select-all-btn"
-                              :disabled?    (= (count @hakukohteet) (count @selected-hakukohteet))
-                              :label        (str @select-all-btn-text " (" (count @hakukohteet) ")")
-                              :on-click     #(dispatch [haku-events/all-hakukohde-in-view-selected])
-                              :style-prefix "select-all-btn"}]
-         [:span (stylefy/use-style {:margin "6px"})
-          " | "]
-         [button/text-button {:cypressid    "deselect-all-btn"
-                              :disabled?    (zero? (count @selected-hakukohteet))
-                              :label        @deselect-all-btn-text
-                              :on-click     #(dispatch [haku-events/all-hakukohde-deselected])
-                              :style-prefix "deselect-all-btn"}]]
-        [button/button {:cypressid    "add-to-group-btn"
-                        :disabled?    (or (empty? @selected-hakukohteet) (nil? @selected-hakukohderyhma))
-                        :label        @add-to-group-btn-text
-                        :on-click     #(dispatch [hakukohderyhma-events/added-hakukohteet-to-hakukohderyhma
-                                                  @selected-hakukohteet])
-                        :style-prefix "add-to-group-btn"}]]])))
+      (let [select-all-is-disabled (= (count @hakukohteet) (count @selected-hakukohteet))
+            deselect-all-is-disabled (empty? @selected-hakukohteet)]
+        [:div (stylefy/use-style hakukohteet-container-style)
+         [:span (stylefy/use-style {:grid-row 1 :grid-column "1 / 3"}) @hakukohteet-label]
+         [:div (stylefy/use-style {:grid-row 2 :grid-column "1 / 4"})
+          [input/input-text {:cypressid   "hakukohteet-text-filter"
+                             :input-id    "hakukohteet-text-filter"
+                             :on-change   #(dispatch [haku-events/set-hakukohteet-filter %])
+                             :placeholder @hakukohteet-search-placeholder
+                             :aria-label  @hakukohteet-search-placeholder
+                             :is-disabled @hakukohteet-is-empty}]]
+         [:div (stylefy/use-style {:grid-row 3 :grid-column "1 / 4"})
+          [multi-select/multi-select {:options   @hakukohteet
+                                      :select-fn #(dispatch [haku-events/toggle-hakukohde-selection %])
+                                      :cypressid "hakukohteet-container"}]]
+         [:div (stylefy/use-style button-row-style)
+          [:div (stylefy/use-style multi-selection-button-row-style)
+           [button/text-button {:cypressid    "select-all-btn"
+                                :disabled?    select-all-is-disabled
+                                :label        (str @select-all-btn-text " (" (count @hakukohteet) ")")
+                                :on-click     #(dispatch [haku-events/all-hakukohde-in-view-selected])
+                                :style-prefix "select-all-btn"}]
+           [:span (stylefy/use-style {:margin "6px"
+                                      :color (if (and select-all-is-disabled deselect-all-is-disabled)
+                                               colors/gray-lighten-3 colors/black)})
+            " | "]
+           [button/text-button {:cypressid    "deselect-all-btn"
+                                :disabled?    deselect-all-is-disabled
+                                :label        @deselect-all-btn-text
+                                :on-click     #(dispatch [haku-events/all-hakukohde-deselected])
+                                :style-prefix "deselect-all-btn"}]]
+          [button/button {:cypressid    "add-to-group-btn"
+                          :disabled?    (or (empty? @selected-hakukohteet) (nil? @selected-hakukohderyhma))
+                          :label        @add-to-group-btn-text
+                          :on-click     #(dispatch [hakukohderyhma-events/added-hakukohteet-to-hakukohderyhma
+                                                    @selected-hakukohteet])
+                          :style-prefix "add-to-group-btn"}]]]))))
