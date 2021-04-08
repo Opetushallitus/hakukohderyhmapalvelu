@@ -190,8 +190,12 @@
 (events/reg-event-fx-validating
   handle-save-hakukohderyhma-hakukohteet
   (fn-traced [{db :db} [{oid :oid :as hakukohderyhma}]]
-             (let [hakukohderyhma' (conform-hakukohderyhma-to-schema hakukohderyhma)
-                   update-fn (fn [hks] (set (map #(if (= (:oid %) oid) hakukohderyhma' %) hks)))]
+             (let [update-ob (select-keys hakukohderyhma [:hakukohteet])
+                   update-fn (fn [hks] (set
+                                         (map #(if (= (:oid %) oid)
+                                                 (merge % update-ob)
+                                                 %)
+                                              hks)))]
                {:db (update-in db persisted-hakukohderyhmas update-fn)
                 :dispatch [hakukohderyhma-selected {:value oid}]})))
 
