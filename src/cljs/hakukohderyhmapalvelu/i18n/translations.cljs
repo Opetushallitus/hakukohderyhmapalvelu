@@ -58,7 +58,11 @@
    :hakukohderyhma/poista-ryhmasta
    {:fi "Poista ryhmästä"}
    :hakukohderyhma/liita-ryhmaan
-   {:fi "Liitä ryhmään"}})
+   {:fi "Liitä ryhmään"}
+   :hakukohderyhma/valitse-kaikki
+   {:fi "Valitse kaikki"}
+   :hakukohderyhma/poista-valinnat
+   {:fi "Poista valinnat"}})
 
 (def translations
   (merge

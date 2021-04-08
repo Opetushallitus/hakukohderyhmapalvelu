@@ -68,7 +68,9 @@
         hakukohteet-search-placeholder (subscribe [:translation :haku/hakukohteet-search-placeholder])
         selected-hakukohteet (subscribe [haku-subs/haku-selected-hakukohteet])
         selected-hakukohderyhma (subscribe [hakukohderyhma-subs/selected-hakukohderyhma])
-        add-to-group-btn-text (subscribe [:translation :hakukohderyhma/liita-ryhmaan])]
+        add-to-group-btn-text (subscribe [:translation :hakukohderyhma/liita-ryhmaan])
+        select-all-btn-text (subscribe [:translation :hakukohderyhma/valitse-kaikki])
+        deselect-all-btn-text (subscribe [:translation :hakukohderyhma/poista-valinnat])]
     (fn []
       [:div (stylefy/use-style hakukohteet-container-style)
        [:span (stylefy/use-style {:grid-row 1 :grid-column "1 / 3"}) @hakukohteet-label]
@@ -86,12 +88,12 @@
        [:div (stylefy/use-style button-row-style)
         [button/button {:cypressid    "select-all-btn"
                         :disabled?    (= (count @hakukohteet) (count @selected-hakukohteet))
-                        :label        (str "Valitse kaikki (" (count @hakukohteet) ")")
+                        :label        (str @select-all-btn-text " (" (count @hakukohteet) ")")
                         :on-click     #(dispatch [haku-events/all-hakukohde-in-view-selected])
                         :style-prefix "select-all-btn"}]
         [button/button {:cypressid    "deselect-all-btn"
                         :disabled?    (zero? (count @selected-hakukohteet))
-                        :label        "Poista valinnat"
+                        :label        @deselect-all-btn-text
                         :on-click     #(dispatch [haku-events/all-hakukohde-deselected])
                         :style-prefix "deselect-all-btn"}]
         [button/button {:cypressid    "add-to-group-btn"
