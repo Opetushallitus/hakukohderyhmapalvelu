@@ -57,9 +57,9 @@
 (def ^:private button-row-style
   {:display "grid"
    :grid "\"select-all-btn deselect-all-btn add-to-group-btn\" 40px"
-   :grid-gap "5px"
+   :grid-gap "10px"
    :grid-row 4
-   :grid-column 3})
+   :grid-column "1/4"})
 
 (defn hakukohteet-container []
   (let [hakukohteet (subscribe [haku-subs/haku-hakukohteet-as-options])
@@ -86,12 +86,12 @@
        [:div (stylefy/use-style button-row-style)
         [button/button {:cypressid    "select-all-btn"
                         :disabled?    (= (count @hakukohteet) (count @selected-hakukohteet))
-                        :label        "Valitse kaikki"      ;TODO translation
+                        :label        (str "Valitse kaikki (" (count @hakukohteet) ")")
                         :on-click     #(dispatch [haku-events/all-hakukohde-in-view-selected])
                         :style-prefix "select-all-btn"}]
         [button/button {:cypressid    "deselect-all-btn"
                         :disabled?    (zero? (count @selected-hakukohteet))
-                        :label        "Poista valinnat"      ;TODO translation
+                        :label        "Poista valinnat"
                         :on-click     #(dispatch [haku-events/all-hakukohde-deselected])
                         :style-prefix "deselect-all-btn"}]
         [button/button {:cypressid    "add-to-group-btn"

@@ -33,10 +33,11 @@
    :label       s/Str
    :value       s/Any})
 
-(defn- multi-select-option [select-fn {:keys [value label is-selected]}]
+(defn- multi-select-option [select-fn {:keys [value label is-selected]} cypressid]
   (let [style (if is-selected option-style-selected option-style)
         on-click #(select-fn value)]
-    [:div (stylefy/use-style style {:on-click on-click})
+    [:div (stylefy/use-style style {:on-click on-click
+                                    :cypressid (str cypressid "__" label (when is-selected "--selected"))})
      label]))
 
 (s/defschema Props
@@ -49,4 +50,4 @@
         container-style (if is-empty multi-select-style-empty multi-select-style)]
     [:div (stylefy/use-style container-style {:cypressid cypressid})
      (for [option options]
-       ^{:key (:value option)} [multi-select-option select-fn option])]))
+       ^{:key (:value option)} [multi-select-option select-fn option cypressid])]))

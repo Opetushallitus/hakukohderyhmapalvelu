@@ -18,7 +18,15 @@
 (defn deselect-item [item]
   (assoc item :is-selected false))
 
-(defn select-filtered-item [filtered? item]
+(defn- change-filtered-item [filtered? item change-fn]
   (if (filtered? item)
-    (assoc item :is-selected true)
+    (change-fn item)
     item))
+
+(defn select-filtered-item [filtered? item]
+  (change-filtered-item filtered? item #(assoc % :is-selected true)))
+
+(defn toggle-filtered-item-selection [filtered? item]
+  (change-filtered-item filtered? item #(update % :is-selected not)))
+
+

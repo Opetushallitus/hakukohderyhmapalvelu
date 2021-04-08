@@ -16,6 +16,15 @@ export const haunHakutoimintoNaytaMyosPaattyneetTextSelector =
 export const hakukohteetContainerSelector =
   'div[cypressid=hakukohteet-container]'
 
+export const hakukohteetContainerOptionSelector = (
+  label: string,
+  isSelected: boolean,
+): string => {
+  return `div[cypressid=hakukohteet-container__${label}${
+    isSelected ? '--selected' : ''
+  }]`
+}
+
 export const hakukohderyhmanHakukohteetContainerSelector =
   'div[cypressid=hakukohderyhma-hakukohteet]'
 

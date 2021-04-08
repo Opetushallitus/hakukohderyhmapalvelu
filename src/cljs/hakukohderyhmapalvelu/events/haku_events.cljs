@@ -45,7 +45,7 @@
   (edit-selected-hakus-hakukohteet haut (partial u/select-filtered-item in-view?)))
 
 (defn- toggle-selection-of-hakukohde [hakukohde-oid haut]
-  (edit-selected-hakus-hakukohteet haut (partial u/select-filtered-item #(= (:oid %) hakukohde-oid))))
+  (edit-selected-hakus-hakukohteet haut (partial u/toggle-filtered-item-selection #(= (:oid %) hakukohde-oid))))
 
 ;; Käsittelijät
 (events/reg-event-db-validating
@@ -76,20 +76,16 @@
                {:db (update-in db haku-haut (partial add-hakukohteet-for-haku haku-oid hakukohteet))
                 :dispatch [hakukohderyhma-events/get-hakukohderyhmat-for-hakukohteet hakukohde-oids]})))
 
-(defn- conform-haku-to-schema [haku] (assoc haku :hakukohteet []))
-
 (events/reg-event-fx-validating
   clear-selected-haku
   (fn-traced [{db :db} _]
-             {:db       (update-in db haku-haut #(map (comp u/deselect-item
-                                                            conform-haku-to-schema) %))
+             {:db       (update-in db haku-haut #(map u/deselect-item %))
               :dispatch [hakukohderyhma-events/handle-get-all-hakukohderyhma []]}))
 
 (events/reg-event-fx-validating
   select-haku
   (fn-traced [{db :db} [haku-oid]]
-             {:db       (update-in db haku-haut #(map (comp (partial u/select-item-by-oid haku-oid)
-                                                            conform-haku-to-schema) %))
+             {:db       (update-in db haku-haut #(map (partial u/select-item-by-oid haku-oid) %))
               :dispatch-n [[hakukohderyhma-events/handle-get-all-hakukohderyhma []]
                            [get-haun-hakukohteet haku-oid]]}))
 
