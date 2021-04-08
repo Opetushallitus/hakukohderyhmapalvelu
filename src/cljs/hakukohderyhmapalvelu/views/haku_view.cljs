@@ -56,10 +56,16 @@
 
 (def ^:private button-row-style
   {:display "grid"
-   :grid "\"select-all-btn deselect-all-btn add-to-group-btn\" 40px"
+   :grid "\"multi-selection-buttons add-to-group-btn\" 40px"
    :grid-gap "10px"
    :grid-row 4
    :grid-column "1/4"})
+
+(def ^:private multi-selection-button-row-style
+  {:display "flex"
+   :justify-content "left"
+   :align-items "center"
+   :grid-area "multi-selection-buttons"})
 
 (defn hakukohteet-container []
   (let [hakukohteet (subscribe [haku-subs/haku-hakukohteet-as-options])
@@ -86,16 +92,19 @@
                                     :select-fn #(dispatch [haku-events/toggle-hakukohde-selection %])
                                     :cypressid "hakukohteet-container"}]]
        [:div (stylefy/use-style button-row-style)
-        [button/button {:cypressid    "select-all-btn"
-                        :disabled?    (= (count @hakukohteet) (count @selected-hakukohteet))
-                        :label        (str @select-all-btn-text " (" (count @hakukohteet) ")")
-                        :on-click     #(dispatch [haku-events/all-hakukohde-in-view-selected])
-                        :style-prefix "select-all-btn"}]
-        [button/button {:cypressid    "deselect-all-btn"
-                        :disabled?    (zero? (count @selected-hakukohteet))
-                        :label        @deselect-all-btn-text
-                        :on-click     #(dispatch [haku-events/all-hakukohde-deselected])
-                        :style-prefix "deselect-all-btn"}]
+        [:div (stylefy/use-style multi-selection-button-row-style)
+         [button/text-button {:cypressid    "select-all-btn"
+                              :disabled?    (= (count @hakukohteet) (count @selected-hakukohteet))
+                              :label        (str @select-all-btn-text " (" (count @hakukohteet) ")")
+                              :on-click     #(dispatch [haku-events/all-hakukohde-in-view-selected])
+                              :style-prefix "select-all-btn"}]
+         [:span (stylefy/use-style {:margin "6px"})
+          " | "]
+         [button/text-button {:cypressid    "deselect-all-btn"
+                              :disabled?    (zero? (count @selected-hakukohteet))
+                              :label        @deselect-all-btn-text
+                              :on-click     #(dispatch [haku-events/all-hakukohde-deselected])
+                              :style-prefix "deselect-all-btn"}]]
         [button/button {:cypressid    "add-to-group-btn"
                         :disabled?    (or (empty? @selected-hakukohteet) (nil? @selected-hakukohderyhma))
                         :label        @add-to-group-btn-text
