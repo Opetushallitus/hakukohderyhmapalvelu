@@ -91,19 +91,18 @@
                        :response-handler [hakukohderyhma-persisting-confirmed]
                        :body             body}})))
 
-(events/reg-event-fx-validating
+(events/reg-event-db-validating
   hakukohderyhma-renaming-confirmed
-  (fn-traced [{db :db} [{:keys [oid] :as hakukohderyhma}]]
+  (fn-traced [db [{:keys [oid] :as hakukohderyhma}]]
              (let [edited-fields [:version :nimi]
                    db-ryhmat (get-in db persisted-hakukohderyhmas)
                    merge-rename-data #(merge % (select-keys hakukohderyhma edited-fields))
                    ryhmat-with-rename (map
                                         #(cond-> % (= oid (:oid %)) merge-rename-data)
                                         db-ryhmat)]
-               {:db (-> db
-                        (assoc-in persisted-hakukohderyhmas (set ryhmat-with-rename))
-                        (assoc-in rename-input-is-active false))
-                :dispatch [hakukohderyhma-selected {:value oid}]})))
+               (-> db
+                   (assoc-in persisted-hakukohderyhmas (set ryhmat-with-rename))
+                   (assoc-in rename-input-is-active false)))))
 
 (events/reg-event-fx-validating
   hakukohderyhma-renamed
@@ -187,17 +186,16 @@
                                         set)]
                (assoc-in db persisted-hakukohderyhmas hakukohderyhmas))))
 
-(events/reg-event-fx-validating
+(events/reg-event-db-validating
   handle-save-hakukohderyhma-hakukohteet
-  (fn-traced [{db :db} [{oid :oid :as hakukohderyhma}]]
+  (fn-traced [db [{oid :oid :as hakukohderyhma}]]
              (let [update-ob (select-keys hakukohderyhma [:hakukohteet])
                    update-fn (fn [hks] (set
                                          (map #(if (= (:oid %) oid)
                                                  (merge % update-ob)
                                                  %)
                                               hks)))]
-               {:db (update-in db persisted-hakukohderyhmas update-fn)
-                :dispatch [hakukohderyhma-selected {:value oid}]})))
+               (update-in db persisted-hakukohderyhmas update-fn))))
 
 (events/reg-event-fx-validating
   save-hakukohderyhma-hakukohteet
