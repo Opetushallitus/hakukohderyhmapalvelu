@@ -146,4 +146,12 @@
                                    :url                 url}
                                   {:request-schema  nil
                                    :response-schema response-schema}
+                                  config))
+
+  (delete [this url response-schema]
+    (do-cas-authenticated-request {:application-session (:application-session this)
+                                   :method              :delete
+                                   :url                 url}
+                                  {:request-schema  nil
+                                   :response-schema response-schema}
                                   config)))

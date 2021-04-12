@@ -12,6 +12,7 @@
 (declare delete-hakukohteet-from-hakukohderyhma!)
 (declare add-hakukohteet-into-hakukohderyhma!)
 (declare hakukohderyhma-by-hakukohteet-and-hakukohderyhmat)
+(declare delete-by-hakukohderyhma-oid)
 
 (defn hakukohde-oidit-by-hakukohderyhma-oid [db hakukohderyhma-oid]
   (->> {:oid hakukohderyhma-oid}
@@ -40,3 +41,6 @@
   (->> {:hakukohde-oid hakukohde-oid}
        (hakukohderyhma-oids-by-hakukohde-oid db)
        (mapv :hakukohderyhma-oid)))
+
+(defn delete-hakukohderyhma [db hakukohderyhma-oid]
+  (delete-by-hakukohderyhma-oid db {:oid hakukohderyhma-oid}))

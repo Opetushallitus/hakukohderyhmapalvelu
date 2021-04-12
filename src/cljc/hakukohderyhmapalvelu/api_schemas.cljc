@@ -3,6 +3,9 @@
             [schema-tools.core :as st]
             [hakukohderyhmapalvelu.common-schemas :as c]))
 
+(defonce StatusDeleted "deleted")
+(defonce StatusInUse "in-use")
+
 (s/defschema CommonOrganisaatioEntityPayload
   {:oid  s/Str
    :nimi c/Nimi})
@@ -38,6 +41,9 @@
 
 (s/defschema HakukohderyhmaResponse
   Organisaatio)
+
+(s/defschema HakukohderyhmaDeleteResponse
+  {:status (s/enum StatusDeleted StatusInUse)})
 
 (s/defschema HakukohderyhmaSearchRequest
   {:oids [s/Str]

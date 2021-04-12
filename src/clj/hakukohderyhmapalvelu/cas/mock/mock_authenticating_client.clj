@@ -45,4 +45,8 @@
 
   (http-put [_ {:keys [url body]} _]
     (-> (get-in @request-map [:put url (hash body)])
-        (validate url :put body))))
+        (validate url :put body)))
+
+  (delete [_ url _]
+    (-> (get-in @request-map [:delete url])
+        (validate url :delete))))

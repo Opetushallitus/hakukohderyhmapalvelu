@@ -3,6 +3,7 @@
 (defprotocol HakukohderyhmaServiceProtocol
   (create [this session hakukohderyhma])
   (rename [this session hakukohderyhma])
+  (delete [this session hakukohderyhma-oid])
   (find-hakukohderyhmat-by-hakukohteet-oids [this session hakukohde-oids include-empty])
   (list-hakukohderyhma-oids-by-hakukohde-oid [this session hakukohde-oid])
   (list-haun-tiedot [this session is-all])

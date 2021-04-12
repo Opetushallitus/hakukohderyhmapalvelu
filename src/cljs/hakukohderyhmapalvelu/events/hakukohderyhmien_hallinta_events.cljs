@@ -133,7 +133,7 @@
 (defn- create-hakukohderyhma-search-request [{:keys [http-request-id hakukohde-oids response-handler]}]
   {:method           :post
    :http-request-id  http-request-id
-   :path             "/hakukohderyhmapalvelu/api/hakukohderyhma/find-by-hakukohde-oids"
+   :path             "/hakukohderyhmapalvelu/api/hakukohderyhma/search/find-by-hakukohde-oids"
    :response-schema  schemas/HakukohderyhmaListResponse
    :response-handler [response-handler]
    :body             {:oids hakukohde-oids :includeEmpty true}})

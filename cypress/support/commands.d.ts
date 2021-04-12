@@ -1,6 +1,6 @@
 /// <reference types="cypress" />
 
-type Method = 'GET' | 'POST' | 'PUT'
+type Method = 'GET' | 'POST' | 'PUT' | 'DELETE'
 
 type Service = 'organisaatio-service' | 'kouta-service'
 

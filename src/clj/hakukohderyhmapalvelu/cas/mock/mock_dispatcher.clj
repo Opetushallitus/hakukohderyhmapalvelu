@@ -16,7 +16,8 @@
           assoc-path (case method
                        :post [method full-path (hash request)]
                        :put [method full-path (hash request)]
-                       :get [method full-path])]
+                       :get [method full-path]
+                       :delete [method full-path])]
       (->> (assoc-in @request-map assoc-path spec)
            (reset! request-map))))
 

@@ -8,7 +8,8 @@
             [hakukohderyhmapalvelu.schemas.organisaatio-service-schemas :as schemas]
             [schema.core :as s]
             [hakukohderyhmapalvelu.config :as c]
-            [schema-tools.core :as st]))
+            [schema-tools.core :as st]
+            [taoensso.timbre :as log]))
 
 (def hakukohderyhma-keys [:oid :nimi :version :parentOid :tyypit :ryhmatyypit :kayttoryhmat])
 
@@ -84,4 +85,12 @@
           response-body (http/parse-and-validate response-unparsed s/Any)]
       (-> response-body
           :organisaatio
-          (st/select-schema api-schemas/Organisaatio)))))
+          (st/select-schema api-schemas/Organisaatio))))
+
+  (delete-organisaatio [_ oid]
+    (let [url (oph-url/resolve-url :organisaatio-service.organisaatio.v4.delete config oid)]
+      (-> (authenticating-client-protocol/delete organisaatio-service-authenticating-client
+                                                 url
+                                                 schemas/DeleteOrganisaatioResponse)
+          (http/parse-and-validate schemas/DeleteOrganisaatioResponse))
+      (log/info (str "Deleted organisation with oid " oid)))))

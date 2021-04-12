@@ -4,4 +4,5 @@
 (defprotocol CasAuthenticatingClientProtocol
   (post [this opts schemas])
   (get [this url response-schema])
-  (http-put [this opts schemas]))
+  (http-put [this opts schemas])
+  (delete [this url response-schema]))

@@ -26,4 +26,20 @@
                       :service  :organisaatio-service
                       :response organisaatio-test-fixtures/organisaatio-response})
       (is (= expected
-             (organisaatio-protocol/get-organisaatio (:organisaatio-service @test-system) "1.2.246.562.28.1"))))))
+             (organisaatio-protocol/get-organisaatio (:organisaatio-service @test-system) "1.2.246.562.28.1")))))
+  (testing "Organisaation poistaminen, poistaminen onnistuu"
+    (let [service (:organisaatio-service @test-system)
+          oid "1.2.246.562.28.001"]
+      (dispatch-mock {:method   :delete
+                      :path     "/organisaatio-service/rest/organisaatio/v4/1.2.246.562.28.001"
+                      :service  :organisaatio-service
+                      :response organisaatio-test-fixtures/organisaatio-delete-response})
+      (is (nil? (organisaatio-protocol/delete-organisaatio service oid)))))
+  (testing "Organisaation poistaminen, poistaminen epäonnistuu"
+    (let [service (:organisaatio-service @test-system)
+          oid "1.2.246.562.28.001"]
+      (dispatch-mock {:method   :delete
+                      :path     "/organisaatio-service/rest/organisaatio/v4/1.2.246.562.28.001"
+                      :service  :organisaatio-service
+                      :response nil})
+      (is (thrown? Exception (organisaatio-protocol/delete-organisaatio service oid))))))

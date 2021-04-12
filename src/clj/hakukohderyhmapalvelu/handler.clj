@@ -138,16 +138,7 @@
                  :parameters {:body schema/HakukohderyhmaPostRequest}
                  :handler    (fn [{session :session {hakukohderyhma :body} :parameters}]
                                (response/ok (hakukohderyhma/create hakukohderyhma-service session hakukohderyhma)))}}]
-        ["/:oid/hakukohteet"
-         {:put {:middleware auth
-                :tags       ["Hakukohderyhmä"]
-                :summary    "Päivittää hakukohderyhmän ja hakukohteiden liitoksen"
-                :responses  {200 {:body schema/Hakukohderyhma}}
-                :parameters {:path {:oid s/Str} :body [schema/Hakukohde]}
-                :handler    (fn [{session :session {hakukohteet :body {oid :oid} :path} :parameters}]
-                              (response/ok (hakukohderyhma/update-hakukohderyhma-hakukohteet
-                                             hakukohderyhma-service session oid hakukohteet)))}}]
-        ["/find-by-hakukohde-oids"
+        ["/search/find-by-hakukohde-oids"
          {:post {:middleware auth
                  :tags       ["Hakukohderyhmä"]
                  :summary    "Hakee kaikki talletetut hakukohderyhmät"
@@ -156,16 +147,37 @@
                  :handler    (fn [{session :session {{hakukohde-oids :oids include-empty :includeEmpty} :body} :parameters}]
                                (response/ok (hakukohderyhma/find-hakukohderyhmat-by-hakukohteet-oids
                                               hakukohderyhma-service session hakukohde-oids include-empty)))}}]
-        ["/:oid/rename"
-         {:post {:middleware auth
+        ["/:oid"
+         [""
+          {:delete {:middleware auth
+                    :tags       ["Hakukohderyhmä"]
+                    :summary    "Poistaa hakukohderyhmän ja hakukohderyhmän liitokset"
+                    :responses  {200 {:body schema/HakukohderyhmaDeleteResponse}
+                                 400 {:body schema/HakukohderyhmaDeleteResponse}}
+                    :parameters {:path {:oid s/Str}}
+                    :handler    (fn [{session :session {{oid :oid} :path} :parameters}]
+                                  (condp = (hakukohderyhma/delete hakukohderyhma-service session oid)
+                                    schema/StatusDeleted (response/ok {:status schema/StatusDeleted})
+                                    schema/StatusInUse (response/bad-request {:status schema/StatusInUse})))}}]
+         ["/hakukohteet"
+          {:put {:middleware auth
                  :tags       ["Hakukohderyhmä"]
-                 :summary    "Uudelleennimeää hakukohderyhmän"
-                 :responses  {200 {:body s/Any}}
-                 :parameters {:path {:oid s/Str} :body schema/HakukohderyhmaPutRequest}
-                 :handler    (fn [{session :session {hakukohderyhma :body {oid :oid} :path} :parameters}]
-                               (if (= oid (:oid hakukohderyhma))
-                                 (response/ok (hakukohderyhma/rename hakukohderyhma-service session hakukohderyhma))
-                                 (response/bad-request "Polun oid ei vastaa lähetetyn hakukohderyhmän oid:ia")))}}]]
+                 :summary    "Päivittää hakukohderyhmän ja hakukohteiden liitoksen"
+                 :responses  {200 {:body schema/Hakukohderyhma}}
+                 :parameters {:path {:oid s/Str} :body [schema/Hakukohde]}
+                 :handler    (fn [{session :session {hakukohteet :body {oid :oid} :path} :parameters}]
+                               (response/ok (hakukohderyhma/update-hakukohderyhma-hakukohteet
+                                              hakukohderyhma-service session oid hakukohteet)))}}]
+         ["/rename"
+          {:post {:middleware auth
+                  :tags       ["Hakukohderyhmä"]
+                  :summary    "Uudelleennimeää hakukohderyhmän"
+                  :responses  {200 {:body s/Any}}
+                  :parameters {:path {:oid s/Str} :body schema/HakukohderyhmaPutRequest}
+                  :handler    (fn [{session :session {hakukohderyhma :body {oid :oid} :path} :parameters}]
+                                (if (= oid (:oid hakukohderyhma))
+                                  (response/ok (hakukohderyhma/rename hakukohderyhma-service session hakukohderyhma))
+                                  (response/bad-request "Polun oid ei vastaa lähetetyn hakukohderyhmän oid:ia")))}}]]]
        ["/hakukohde/:oid/hakukohderyhmat"
         {:get {:middleware auth
                :tags       ["Hakukohde"]

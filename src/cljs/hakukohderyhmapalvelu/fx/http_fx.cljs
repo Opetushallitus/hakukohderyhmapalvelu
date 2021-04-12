@@ -55,7 +55,7 @@
 
 (s/defschema HttpSpec
   {:http-request-id                  s/Keyword
-   :method                           (s/enum :get :post :put)
+   :method                           (s/enum :get :post :put :delete)
    :path                             s/Str
    (s/optional-key :request-schema)  s/Any
    (s/optional-key :response-schema) s/Any
