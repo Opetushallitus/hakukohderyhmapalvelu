@@ -133,7 +133,7 @@ describe('Hakukohderyhmäpalvelu - haun tiedot', () => {
         'POST',
         '/hakukohderyhmapalvelu/api/hakukohderyhma/search/find-by-hakukohde-oids',
         {
-          oids: ['1.2.4.2.1.1', '1.2.4.2.1.2'],
+          oids: ['1.2.4.2.1.2', '1.2.4.2.1.1'],
           includeEmpty: true,
         },
       ).then(({ body }) => {
@@ -174,7 +174,7 @@ describe('Hakukohderyhmäpalvelu - haun tiedot', () => {
         'POST',
         '/hakukohderyhmapalvelu/api/hakukohderyhma/search/find-by-hakukohde-oids',
         {
-          oids: ['1.2.4.2.1.1', '1.2.4.2.1.2'],
+          oids: ['1.2.4.2.1.2', '1.2.4.2.1.1'],
           includeEmpty: false,
         },
       ).then(({ body }) => {
@@ -238,7 +238,7 @@ describe('Hakukohderyhmäpalvelu - haun tiedot', () => {
       cy.request(
         '/hakukohderyhmapalvelu/api/hakukohde/1.2.4.2.1.1/hakukohderyhmat',
       ).then(({ body }) => {
-        expect(body).to.deep.equal([])
+        expect(body).to.deep.equal([]) //FIXME: this fails after first run because of no proper db cleanup
       })
     })
 
@@ -248,12 +248,12 @@ describe('Hakukohderyhmäpalvelu - haun tiedot', () => {
         '/hakukohderyhmapalvelu/api/hakukohderyhma/1.2.246.562.28.4/hakukohteet',
         [
           {
-            oid: '1.2.4.2.1.1',
-            nimi: { fi: 'Testi-perustutkinto' },
+            oid: '1.2.4.2.1.2',
+            nimi: { fi: 'Testi-jatkotutkinto' },
             hakuOid: '1.2.4.1.1.1',
             organisaatio: {
-              oid: '1.2.10.1.2.1',
-              nimi: { fi: 'Organisaatio 1' },
+              oid: '1.2.10.1.2.2',
+              nimi: { fi: 'Organisaatio 2' },
               version: 0,
               parentOid: '1.1.4.2.1.1',
               tyypit: [],
@@ -262,12 +262,12 @@ describe('Hakukohderyhmäpalvelu - haun tiedot', () => {
             },
           },
           {
-            oid: '1.2.4.2.1.2',
-            nimi: { fi: 'Testi-jatkotutkinto' },
+            oid: '1.2.4.2.1.1',
+            nimi: { fi: 'Testi-perustutkinto' },
             hakuOid: '1.2.4.1.1.1',
             organisaatio: {
-              oid: '1.2.10.1.2.2',
-              nimi: { fi: 'Organisaatio 2' },
+              oid: '1.2.10.1.2.1',
+              nimi: { fi: 'Organisaatio 1' },
               version: 0,
               parentOid: '1.1.4.2.1.1',
               tyypit: [],
