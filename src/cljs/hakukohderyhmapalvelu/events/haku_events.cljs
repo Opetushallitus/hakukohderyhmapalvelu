@@ -54,6 +54,7 @@
              (->> response
                   (map #(assoc % :is-selected false
                                  :hakukohteet []))
+                  (sort-by #(-> % :nimi :fi))
                   (assoc-in db haku-haut))))
 
 (events/reg-event-fx-validating

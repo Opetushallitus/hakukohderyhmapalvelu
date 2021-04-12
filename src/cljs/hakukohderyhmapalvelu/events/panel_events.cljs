@@ -11,7 +11,7 @@
      [:haun-asetukset/get-ohjausparametrit haku-oid]]))
 
 (defn- make-hakukohderyhmien-hallinta-dispatches [_]
-  [[haku-events/get-haut]])
+  [[haku-events/get-haut]]);FIXME no fn parameter for get-haut?
 
 (defn- make-dispatches [{:keys [panel parameters]}]
   (when-let [make-fn (case panel
