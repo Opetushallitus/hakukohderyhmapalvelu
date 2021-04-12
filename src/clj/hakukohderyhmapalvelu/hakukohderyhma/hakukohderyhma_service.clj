@@ -3,7 +3,8 @@
             [hakukohderyhmapalvelu.hakukohderyhma.hakukohderyhma-service-protocol :as hakukohderyhma-service-protocol]
             [hakukohderyhmapalvelu.hakukohderyhma.db.hakukohderyhma-queries :as hakukohderyhma-queries]
             [hakukohderyhmapalvelu.organisaatio.organisaatio-protocol :as organisaatio]
-            [hakukohderyhmapalvelu.kouta.kouta-protocol :as kouta]))
+            [hakukohderyhmapalvelu.kouta.kouta-protocol :as kouta]
+            [hakukohderyhmapalvelu.api-schemas :as api-schemas]))
 
 (def hakukohderyhmapalvelu-ryhmatyyppi "ryhmatyypit_6#1")
 (def default-hakukohderyhma {:tyypit       ["Ryhma"]
@@ -13,6 +14,7 @@
 (def hakukohderyhma-luonti (audit/->operation "HakukohderyhmaLuonti"))
 (def hakukohderyhma-uudelleennimeaminen (audit/->operation "HakukohderyhmaUudelleennimeaminen"))
 (def hakukohderyhma-hakukohteet-edit (audit/->operation "HakukohderyhmaLiitosMuokkaus"))
+(def hakukohderyhma-poisto (audit/->operation "HakukohderyhmaPoisto"))
 
 (defn- create-merge-hakukohderyhma-with-hakukohteet-fn [hakukohderyhmat hakukohteet]
   (let [grouped-hakukohderyhmat (group-by :oid hakukohderyhmat)
@@ -54,6 +56,20 @@
                  (audit/->target {:oid (:oid hkr)})
                  (audit/->changes {} hkr))
       (assoc hkr :hakukohteet [])))
+
+  (delete [_ session hakukohderyhma-oid]
+    (let [not-in-ataru-use true]
+      (if not-in-ataru-use
+        (do
+          (organisaatio/delete-organisaatio organisaatio-service hakukohderyhma-oid)
+          (hakukohderyhma-queries/delete-hakukohderyhma db hakukohderyhma-oid)
+          (audit/log audit-logger
+                     (audit/->user session)
+                     hakukohderyhma-poisto
+                     (audit/->target {:oid hakukohderyhma-oid})
+                     (audit/->changes nil nil))
+          api-schemas/StatusDeleted)
+        api-schemas/StatusInUse)))
 
   (rename [this session hakukohderyhma]
     (let [previous-hkr (organisaatio/get-organisaatio organisaatio-service (:oid hakukohderyhma))

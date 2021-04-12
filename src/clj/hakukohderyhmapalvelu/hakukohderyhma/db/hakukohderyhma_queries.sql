@@ -33,3 +33,6 @@ AND hakukohde_oid IN (:v*:hakukohteet)
 -- :name add-hakukohteet-into-hakukohderyhma! :! :n
 INSERT INTO hakukohderyhma (hakukohderyhma_oid, hakukohde_oid)
 VALUES :tuple*:hakukohderyhmat
+
+-- :name delete-by-hakukohderyhma-oid :! :n
+DELETE FROM hakukohderyhma WHERE hakukohderyhma_oid = :oid
