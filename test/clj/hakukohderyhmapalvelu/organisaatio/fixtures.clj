@@ -18,3 +18,6 @@
 
 (def organisaatio-response
   (first organisaatiot-response))
+
+(def organisaatio-delete-response
+  {:message "deleted"})

@@ -4,7 +4,11 @@
             [hakukohderyhmapalvelu.hakukohderyhma.fixtures :as hakukohderyhma-test-fixtures]
             [hakukohderyhmapalvelu.organisaatio.fixtures :as organisaatio-test-fixtures]
             [hakukohderyhmapalvelu.kouta.fixtures :as kouta-test-fixtures]
-            [hakukohderyhmapalvelu.test-fixtures :as test-fixtures :refer [dispatch-mock test-system]]))
+            [hakukohderyhmapalvelu.test-fixtures :as test-fixtures :refer [dispatch-mock
+                                                                           test-system
+                                                                           add-row!
+                                                                           has-row?]]
+            [hakukohderyhmapalvelu.api-schemas :as api-schemas]))
 
 
 (use-fixtures :once test-fixtures/with-mock-system)
@@ -94,3 +98,19 @@
       (is (thrown? Exception
                      (hakukohderyhma-protocol/update-hakukohderyhma-hakukohteet
                        service hakukohderyhma-test-fixtures/fake-session "1.2.246.562.28.4" hakukohteet))))))
+
+(deftest hakukohderyhma-delete-service-test
+  (testing "Hakukohderyhmän poistaminen onnistuu, kun hakukohderyhmää ei käytetä atarussa"
+    (let [service (:hakukohderyhma-service @test-system)
+          session hakukohderyhma-test-fixtures/fake-session
+          db (:db @test-system)
+          hakukohderyhma-oid "1.2.246.562.28.4"
+          expected api-schemas/StatusDeleted]
+      (dispatch-mock {:method :delete
+                      :path   "/organisaatio-service/rest/organisaatio/v4/1.2.246.562.28.4"
+                      :service :organisaatio-service
+                      :response organisaatio-test-fixtures/organisaatio-delete-response})
+      (test-fixtures/add-row! db hakukohderyhma-oid "1.2.3.4.5.6.7.8.9.10")
+
+      (is (= (hakukohderyhma-protocol/delete service session hakukohderyhma-oid) expected))
+      (is (not (test-fixtures/has-row? db hakukohderyhma-oid))))))

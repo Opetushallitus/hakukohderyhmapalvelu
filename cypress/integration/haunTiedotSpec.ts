@@ -131,7 +131,7 @@ describe('Hakukohderyhmäpalvelu - haun tiedot', () => {
     it('Palauttaa tyhjät hakukohderyhmät, kun request bodyssa on hakukohteen oideja ja includeEmpty parametri on true', () => {
       cy.request(
         'POST',
-        '/hakukohderyhmapalvelu/api/hakukohderyhma/find-by-hakukohde-oids',
+        '/hakukohderyhmapalvelu/api/hakukohderyhma/search/find-by-hakukohde-oids',
         {
           oids: ['1.2.4.2.1.1', '1.2.4.2.1.2'],
           includeEmpty: true,
@@ -172,7 +172,7 @@ describe('Hakukohderyhmäpalvelu - haun tiedot', () => {
     it('Ei palauta tyhjiä hakukohderyhmiä, kun includeEmpty parametri on false', () => {
       cy.request(
         'POST',
-        '/hakukohderyhmapalvelu/api/hakukohderyhma/find-by-hakukohde-oids',
+        '/hakukohderyhmapalvelu/api/hakukohderyhma/search/find-by-hakukohde-oids',
         {
           oids: ['1.2.4.2.1.1', '1.2.4.2.1.2'],
           includeEmpty: false,
@@ -323,6 +323,28 @@ describe('Hakukohderyhmäpalvelu - haun tiedot', () => {
         '/hakukohderyhmapalvelu/api/hakukohde/1.2.4.2.1.1/hakukohderyhmat',
       ).then(({ body }) => {
         expect(body).to.deep.equal(['1.2.246.562.28.4'])
+      })
+    })
+  })
+  describe('Hakukohderyhmän poistaminen', () => {
+    beforeEach(() => {
+      cy.login()
+      cy.resetMocks()
+      cy.mockBackendRequest({
+        method: 'DELETE',
+        path: '/organisaatio-service/rest/organisaatio/v4/1.2.246.562.28.001',
+        service: 'organisaatio-service',
+        responseFixture:
+          'hakukohderyhmapalvelu/delete-organisaatio-response.json',
+      })
+    })
+    it('Poisto onnistuu', () => {
+      cy.request(
+        'DELETE',
+        '/hakukohderyhmapalvelu/api/hakukohderyhma/1.2.246.562.28.001',
+      ).then(({ status, body }) => {
+        expect(status).to.equal(200)
+        expect(body).to.deep.equal({ status: 'deleted' })
       })
     })
   })

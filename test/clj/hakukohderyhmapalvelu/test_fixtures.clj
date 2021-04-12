@@ -31,6 +31,15 @@
   (f)
   (stop-system))
 
+(defn add-row! [db hakukohderyhma-oid hakukohde-oid]
+  (jdbc/insert! db :hakukohderyhma {:hakukohderyhma_oid hakukohderyhma-oid
+                                    :hakukohde_oid      hakukohde-oid}))
+
+(defn has-row? [db hakukohderyhma-oid]
+  (-> (jdbc/query db ["SELECT * FROM hakukohderyhma WHERE hakukohderyhma_oid = ?" hakukohderyhma-oid])
+      empty?
+      not))
+
 (defn- truncate-database [db]
   (jdbc/execute! db ["TRUNCATE hakukohderyhma"]))
 
