@@ -71,7 +71,9 @@
 (events/reg-event-fx-validating
   handle-get-hakukohteet-response
   (fn-traced [{db :db} [haku-oid response]]
-             (let [hakukohteet (map #(assoc % :is-selected false) response)
+             (let [hakukohteet (->> response
+                                    (map #(assoc % :is-selected false))
+                                    (sort-by #(-> % :nimi :fi)))
                    hakukohde-oids (map :oid hakukohteet)]
                {:db (update-in db haku-haut (partial add-hakukohteet-for-haku haku-oid hakukohteet))
                 :dispatch [hakukohderyhma-events/get-hakukohderyhmat-for-hakukohteet hakukohde-oids]})))

@@ -164,7 +164,8 @@
              (let [hakukohderyhma (selected-hakukohderyhma db)
                    current-hakukohteet (:hakukohteet hakukohderyhma)
                    unselected-hakukohteet (map #(assoc % :is-selected false) hakukohteet)
-                   updated-hakukohteet (vec (union (set current-hakukohteet) (set unselected-hakukohteet)))
+                   updated-unsorted-hakukohteet (vec (union (set current-hakukohteet) (set unselected-hakukohteet)))
+                   updated-hakukohteet (sort-by #(-> % :nimi :fi) updated-unsorted-hakukohteet)
                    hakukohderyhma' (assoc hakukohderyhma :hakukohteet updated-hakukohteet)]
                {:db       (update-hakukohderyhma db hakukohderyhma')
                 :dispatch [save-hakukohderyhma-hakukohteet (:oid hakukohderyhma) updated-hakukohteet]})))
@@ -192,7 +193,8 @@
   (fn-traced [db [{oid :oid :as hakukohderyhma}]]
              (let [updated-hakukohderyhma (-> hakukohderyhma
                                               (assoc :is-selected true)
-                                              (select-keys [:is-selected :hakukohteet]))
+                                              (select-keys [:is-selected :hakukohteet])
+                                              (update :hakukohteet #(sort-by (fn [hakukohde] (get-in hakukohde [:nimi :fi])) %))) ;TODO i18n and extract
                    update-fn (fn [hks] (map #(if (= (:oid %) oid)
                                                (merge % (conform-hakukohderyhma-to-schema updated-hakukohderyhma))
                                                %)
