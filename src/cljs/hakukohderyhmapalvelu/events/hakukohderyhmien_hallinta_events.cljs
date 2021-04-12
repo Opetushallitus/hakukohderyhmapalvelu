@@ -43,7 +43,6 @@
 (defn- update-hakukohderyhma [db hakukohderyhma]
   (->> (get-in db persisted-hakukohderyhmas)
        (map #(if (:is-selected %) hakukohderyhma %))
-       set
        (assoc-in db persisted-hakukohderyhmas)))
 
 (events/reg-event-db-validating
@@ -51,7 +50,6 @@
   (fn-traced [db [{selected-oid :value}]]
              (->> (get-in db persisted-hakukohderyhmas)
                   (map #(assoc % :is-selected (= (:oid %) selected-oid)))
-                  set
                   (assoc-in db persisted-hakukohderyhmas))))
 
 (events/reg-event-db-validating
@@ -101,7 +99,7 @@
                                         #(cond-> % (= oid (:oid %)) merge-rename-data)
                                         db-ryhmat)]
                (-> db
-                   (assoc-in persisted-hakukohderyhmas (set ryhmat-with-rename))
+                   (assoc-in persisted-hakukohderyhmas ryhmat-with-rename)
                    (assoc-in rename-input-is-active false)))))
 
 (events/reg-event-fx-validating
@@ -143,7 +141,6 @@
   handle-get-all-hakukohderyhma
   (fn-traced [db [response]]
              (->> (map conform-hakukohderyhma-to-schema response)
-                  set
                   (assoc-in db persisted-hakukohderyhmas))))
 
 (events/reg-event-fx-validating
@@ -182,19 +179,19 @@
   toggle-hakukohde-selection
   (fn-traced [db [oid]]
              (let [hakukohderyhmas (->> (get-in db persisted-hakukohderyhmas)
-                                        (map #(cond-> % (:is-selected %) (update :hakukohteet (partial toggle-hakukohde oid))))
-                                        set)]
+                                        (map #(cond-> % (:is-selected %) (update :hakukohteet (partial toggle-hakukohde oid)))))]
                (assoc-in db persisted-hakukohderyhmas hakukohderyhmas))))
 
 (events/reg-event-db-validating
   handle-save-hakukohderyhma-hakukohteet
   (fn-traced [db [{oid :oid :as hakukohderyhma}]]
-             (let [update-ob (select-keys hakukohderyhma [:hakukohteet])
-                   update-fn (fn [hks] (set
-                                         (map #(if (= (:oid %) oid)
-                                                 (merge % update-ob)
-                                                 %)
-                                              hks)))]
+             (let [updated-hakukohderyhma (-> hakukohderyhma
+                                              (assoc :is-selected true)
+                                              (select-keys [:is-selected :hakukohteet]))
+                   update-fn (fn [hks] (map #(if (= (:oid %) oid)
+                                               (merge % (conform-hakukohderyhma-to-schema updated-hakukohderyhma))
+                                               %)
+                                            hks))]
                (update-in db persisted-hakukohderyhmas update-fn))))
 
 (events/reg-event-fx-validating
