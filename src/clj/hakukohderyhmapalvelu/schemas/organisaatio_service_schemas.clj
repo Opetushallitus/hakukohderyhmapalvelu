@@ -51,6 +51,9 @@
   {:organisaatio Organisaatio
    :status       s/Str})
 
+(s/defschema DeleteOrganisaatioResponse
+  {:message (s/eq "deleted")})
+
 (s/defschema Hakukohderyhma
   {:oid  s/Str
    :nimi c/Nimi
