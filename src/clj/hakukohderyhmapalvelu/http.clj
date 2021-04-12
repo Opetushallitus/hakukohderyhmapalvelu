@@ -10,7 +10,8 @@
 (s/defschema HttpMethod
   (s/enum :post
           :put
-          :get))
+          :get
+          :delete))
 
 (s/defschema HttpValidation
   {:request-schema  s/Any
