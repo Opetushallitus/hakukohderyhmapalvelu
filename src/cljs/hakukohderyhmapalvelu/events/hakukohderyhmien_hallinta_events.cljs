@@ -69,9 +69,13 @@
 (events/reg-event-fx-validating
   hakukohderyhma-persisting-confirmed
   (fn-traced [{db :db} [hakukohderyhma _]]
-             (let [hakukohderyhma' (conform-hakukohderyhma-to-schema hakukohderyhma)]
+             (let [hakukohderyhma' (conform-hakukohderyhma-to-schema hakukohderyhma)
+                   db-ryhmat (get-in db persisted-hakukohderyhmas)
+                   ryhmat-with-new-ryhma (->> hakukohderyhma'
+                                              (conj db-ryhmat)
+                                              (sort-by #(-> % :nimi :fi)))];TODO i18n
                {:db (-> db
-                        (update-in persisted-hakukohderyhmas #(conj % hakukohderyhma'))
+                        (assoc-in persisted-hakukohderyhmas ryhmat-with-new-ryhma)
                         (assoc-in create-input-is-active false))
                 :dispatch [hakukohderyhma-selected {:value (:oid hakukohderyhma')}]})))
 
@@ -95,9 +99,9 @@
              (let [edited-fields [:version :nimi]
                    db-ryhmat (get-in db persisted-hakukohderyhmas)
                    merge-rename-data #(merge % (select-keys hakukohderyhma edited-fields))
-                   ryhmat-with-rename (map
-                                        #(cond-> % (= oid (:oid %)) merge-rename-data)
-                                        db-ryhmat)]
+                   ryhmat-with-rename (->> db-ryhmat
+                                           (map #(cond-> % (= oid (:oid %)) merge-rename-data))
+                                           (sort-by #(-> % :nimi :fi)))] ;TODO i18n
                (-> db
                    (assoc-in persisted-hakukohderyhmas ryhmat-with-rename)
                    (assoc-in rename-input-is-active false)))))
@@ -141,6 +145,7 @@
   handle-get-all-hakukohderyhma
   (fn-traced [db [response]]
              (->> (map conform-hakukohderyhma-to-schema response)
+                  (sort-by #(-> % :nimi :fi)) ;TODO i18n
                   (assoc-in db persisted-hakukohderyhmas))))
 
 (events/reg-event-fx-validating
