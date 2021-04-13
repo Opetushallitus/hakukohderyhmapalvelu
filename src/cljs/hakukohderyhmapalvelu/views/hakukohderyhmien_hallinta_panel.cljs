@@ -13,7 +13,8 @@
             [re-frame.core :refer [dispatch subscribe]]
             [reagent.core :as reagent]
             [stylefy.core :as stylefy]
-            [hakukohderyhmapalvelu.styles.styles-colors :as colors]))
+            [hakukohderyhmapalvelu.styles.styles-colors :as colors]
+            [hakukohderyhmapalvelu.components.common.svg :as svg]))
 
 (def ^:private hakukohderyhmapalvelu-grid-styles
   {:display  "grid"
@@ -84,6 +85,9 @@
       :rename (dispatch [hakukohderyhma-events/hakukohderyhma-renamed hakukohderyhma-name])))
   (reset! input-value ""))
 
+(defn on-delete-button-click [deleted-name]
+  (println deleted-name))
+
 (defn- make-input-without-top-row-styles [style-prefix]
   (let [grid (str (format-grid-row "[%s-top-row-start] \". .\" %s [%s-top-row-end]" 1 style-prefix)
                   (format-grid-row "[%s-input-row-start] \"%s-input %s-button\" %s [%s-input-row-end]" 3 style-prefix)
@@ -92,14 +96,9 @@
      :grid     grid
      :grid-gap grid-gap}))
 
-(defn input-and-button-without-top-row
-  [{:keys [button-component
-           input-component
-           style-prefix]}]
-  (let [input-styles (make-input-without-top-row-styles style-prefix)]
-    [:div (stylefy/use-style input-styles)
-     input-component
-     button-component]))
+(def trash-can-icon (svg/icon "trash-can" {:height "20px"
+                                           :width "16px"
+                                           :margin "6px 5px 0px 5px"} ))
 
 (defn- hakukohderyhma-create-and-rename-input []
   (let [input-value (reagent/atom "")]
@@ -119,21 +118,34 @@
             input-id (str "hakukohderyhma-" operation-type "-input")
             style-prefix (str "hakukohderyhma-" operation-type)]
         (when is-visible
-          [input-and-button-without-top-row
-           {:button-component [b/button
-                               {:cypressid    (str cypressid "-button")
-                                :disabled?    button-disabled?
-                                :label        "Tallenna"
-                                :on-click     #(on-save-button-click input-value (keyword operation-type))
-                                :style-prefix (str style-prefix "-button")}]
-            :input-component  [hakukohderyhmien-hallinta-input
-                               {:cypressid    (str cypressid "-input")
-                                :input-id     input-id
-                                :on-change    (partial reset! input-value)
-                                :placeholder  text-input-label
-                                :aria-label   text-input-label
-                                :style-prefix (str style-prefix "-input")}]
-            :style-prefix     style-prefix}])))))
+          (let [input-styles (make-input-without-top-row-styles style-prefix)]
+            [:div (stylefy/use-style input-styles)
+             [hakukohderyhmien-hallinta-input
+              {:cypressid    (str cypressid "-input")
+               :input-id     input-id
+               :on-change    (partial reset! input-value)
+               :placeholder  text-input-label
+               :aria-label   text-input-label
+               :style-prefix (str style-prefix "-input")}]
+             [:span
+              {:style {:grid-area (str style-prefix "-button")
+                       :display "flex"
+                       :flex-direction "row"}}
+              (when rename-is-active
+                [b/button
+                 {:cypressid    (str cypressid "-button")
+                  :disabled?    false
+                  :label        trash-can-icon
+                  :on-click     #(on-delete-button-click selected-ryhma-name)
+                  :style-prefix (str style-prefix "-button")
+                  :custom-style {:is-danger true
+                                 :margin-right "4px"}}])
+              [b/button
+               {:cypressid    (str cypressid "-button")
+                :disabled?    button-disabled?
+                :label        "Tallenna"
+                :on-click     #(on-save-button-click input-value (keyword operation-type))
+                :style-prefix (str style-prefix "-button")}]]]))))))
 
 (def ^:private hakukohderyhma-selection-controls-styles
   (merge layout/vertical-align-center-styles
