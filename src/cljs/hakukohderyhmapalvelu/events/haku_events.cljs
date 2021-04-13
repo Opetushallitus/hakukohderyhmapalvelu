@@ -3,7 +3,8 @@
             [hakukohderyhmapalvelu.api-schemas :as schemas]
             [hakukohderyhmapalvelu.events.hakukohderyhmien-hallinta-events :as hakukohderyhma-events]
             [day8.re-frame.tracing :refer-macros [fn-traced]]
-            [hakukohderyhmapalvelu.haku-utils :as u]))
+            [hakukohderyhmapalvelu.haku-utils :as u]
+            [hakukohderyhmapalvelu.i18n.utils :refer [sort-items-by-name]]))
 
 ;; Polut
 (def root-path [:hakukohderyhma])
@@ -54,7 +55,7 @@
              (->> response
                   (map #(assoc % :is-selected false
                                  :hakukohteet []))
-                  (sort-by #(-> % :nimi :fi))
+                  (sort-items-by-name (:lang db))
                   (assoc-in db haku-haut))))
 
 (events/reg-event-fx-validating
@@ -74,7 +75,7 @@
   (fn-traced [{db :db} [haku-oid response]]
              (let [hakukohteet (->> response
                                     (map #(assoc % :is-selected false))
-                                    (sort-by #(-> % :nimi :fi)))
+                                    (sort-items-by-name (:lang db)))
                    hakukohde-oids (map :oid hakukohteet)]
                {:db (update-in db haku-haut (partial add-hakukohteet-for-haku haku-oid hakukohteet))
                 :dispatch [hakukohderyhma-events/get-hakukohderyhmat-for-hakukohteet hakukohde-oids]})))

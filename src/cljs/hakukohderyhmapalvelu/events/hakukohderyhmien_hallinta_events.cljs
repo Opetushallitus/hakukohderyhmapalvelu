@@ -3,7 +3,8 @@
             [hakukohderyhmapalvelu.api-schemas :as schemas]
             [day8.re-frame.tracing :refer-macros [fn-traced]]
             [clojure.set :refer [union]]
-            [schema-tools.core :as st]))
+            [schema-tools.core :as st]
+            [hakukohderyhmapalvelu.i18n.utils :refer [sort-items-by-name]]))
 
 
 (def root-path [:hakukohderyhma])
@@ -73,7 +74,7 @@
                    db-ryhmat (get-in db persisted-hakukohderyhmas)
                    ryhmat-with-new-ryhma (->> hakukohderyhma'
                                               (conj db-ryhmat)
-                                              (sort-by #(-> % :nimi :fi)))];TODO i18n
+                                              (sort-items-by-name (:lang db)))]
                {:db (-> db
                         (assoc-in persisted-hakukohderyhmas ryhmat-with-new-ryhma)
                         (assoc-in create-input-is-active false))
@@ -101,7 +102,7 @@
                    merge-rename-data #(merge % (select-keys hakukohderyhma edited-fields))
                    ryhmat-with-rename (->> db-ryhmat
                                            (map #(cond-> % (= oid (:oid %)) merge-rename-data))
-                                           (sort-by #(-> % :nimi :fi)))] ;TODO i18n
+                                           (sort-items-by-name (:lang db)))]
                (-> db
                    (assoc-in persisted-hakukohderyhmas ryhmat-with-rename)
                    (assoc-in rename-input-is-active false)))))
@@ -145,7 +146,7 @@
   handle-get-all-hakukohderyhma
   (fn-traced [db [response]]
              (->> (map conform-hakukohderyhma-to-schema response)
-                  (sort-by #(-> % :nimi :fi)) ;TODO i18n
+                  (sort-items-by-name (:lang db))
                   (assoc-in db persisted-hakukohderyhmas))))
 
 (events/reg-event-fx-validating
@@ -165,7 +166,7 @@
                    current-hakukohteet (:hakukohteet hakukohderyhma)
                    unselected-hakukohteet (map #(assoc % :is-selected false) hakukohteet)
                    updated-unsorted-hakukohteet (vec (union (set current-hakukohteet) (set unselected-hakukohteet)))
-                   updated-hakukohteet (sort-by #(-> % :nimi :fi) updated-unsorted-hakukohteet)
+                   updated-hakukohteet (sort-items-by-name (:lang db) updated-unsorted-hakukohteet)
                    hakukohderyhma' (assoc hakukohderyhma :hakukohteet updated-hakukohteet)]
                {:db       (update-hakukohderyhma db hakukohderyhma')
                 :dispatch [save-hakukohderyhma-hakukohteet (:oid hakukohderyhma) updated-hakukohteet]})))
@@ -194,7 +195,7 @@
              (let [updated-hakukohderyhma (-> hakukohderyhma
                                               (assoc :is-selected true)
                                               (select-keys [:is-selected :hakukohteet])
-                                              (update :hakukohteet #(sort-by (fn [hakukohde] (get-in hakukohde [:nimi :fi])) %))) ;TODO i18n and extract
+                                              (update :hakukohteet #(sort-items-by-name (:lang db) %))) ;TODO i18n and extract
                    update-fn (fn [hks] (map #(if (= (:oid %) oid)
                                                (merge % (conform-hakukohderyhma-to-schema updated-hakukohderyhma))
                                                %)
