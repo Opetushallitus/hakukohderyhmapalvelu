@@ -49,7 +49,7 @@
 
 (s/defschema HakukohderyhmaPalvelu
   {:hakukohderyhma
-   {:persisted               #{Hakukohderyhma}
+   {:persisted               [Hakukohderyhma]
     :selected-hakukohderyhma (s/maybe Hakukohderyhma)
     :input-visibility        {:create-active? s/Bool
                               :rename-active? s/Bool}

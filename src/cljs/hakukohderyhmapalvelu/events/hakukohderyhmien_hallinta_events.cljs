@@ -3,7 +3,8 @@
             [hakukohderyhmapalvelu.api-schemas :as schemas]
             [day8.re-frame.tracing :refer-macros [fn-traced]]
             [clojure.set :refer [union]]
-            [schema-tools.core :as st]))
+            [schema-tools.core :as st]
+            [hakukohderyhmapalvelu.i18n.utils :refer [sort-items-by-name]]))
 
 
 (def root-path [:hakukohderyhma])
@@ -43,7 +44,6 @@
 (defn- update-hakukohderyhma [db hakukohderyhma]
   (->> (get-in db persisted-hakukohderyhmas)
        (map #(if (:is-selected %) hakukohderyhma %))
-       set
        (assoc-in db persisted-hakukohderyhmas)))
 
 (events/reg-event-db-validating
@@ -51,7 +51,6 @@
   (fn-traced [db [{selected-oid :value}]]
              (->> (get-in db persisted-hakukohderyhmas)
                   (map #(assoc % :is-selected (= (:oid %) selected-oid)))
-                  set
                   (assoc-in db persisted-hakukohderyhmas))))
 
 (events/reg-event-db-validating
@@ -71,9 +70,13 @@
 (events/reg-event-fx-validating
   hakukohderyhma-persisting-confirmed
   (fn-traced [{db :db} [hakukohderyhma _]]
-             (let [hakukohderyhma' (conform-hakukohderyhma-to-schema hakukohderyhma)]
+             (let [hakukohderyhma' (conform-hakukohderyhma-to-schema hakukohderyhma)
+                   db-ryhmat (get-in db persisted-hakukohderyhmas)
+                   ryhmat-with-new-ryhma (->> hakukohderyhma'
+                                              (conj db-ryhmat)
+                                              (sort-items-by-name (:lang db)))]
                {:db (-> db
-                        (update-in persisted-hakukohderyhmas #(conj % hakukohderyhma'))
+                        (assoc-in persisted-hakukohderyhmas ryhmat-with-new-ryhma)
                         (assoc-in create-input-is-active false))
                 :dispatch [hakukohderyhma-selected {:value (:oid hakukohderyhma')}]})))
 
@@ -97,11 +100,11 @@
              (let [edited-fields [:version :nimi]
                    db-ryhmat (get-in db persisted-hakukohderyhmas)
                    merge-rename-data #(merge % (select-keys hakukohderyhma edited-fields))
-                   ryhmat-with-rename (map
-                                        #(cond-> % (= oid (:oid %)) merge-rename-data)
-                                        db-ryhmat)]
+                   ryhmat-with-rename (->> db-ryhmat
+                                           (map #(cond-> % (= oid (:oid %)) merge-rename-data))
+                                           (sort-items-by-name (:lang db)))]
                (-> db
-                   (assoc-in persisted-hakukohderyhmas (set ryhmat-with-rename))
+                   (assoc-in persisted-hakukohderyhmas ryhmat-with-rename)
                    (assoc-in rename-input-is-active false)))))
 
 (events/reg-event-fx-validating
@@ -143,7 +146,7 @@
   handle-get-all-hakukohderyhma
   (fn-traced [db [response]]
              (->> (map conform-hakukohderyhma-to-schema response)
-                  set
+                  (sort-items-by-name (:lang db))
                   (assoc-in db persisted-hakukohderyhmas))))
 
 (events/reg-event-fx-validating
@@ -162,7 +165,8 @@
              (let [hakukohderyhma (selected-hakukohderyhma db)
                    current-hakukohteet (:hakukohteet hakukohderyhma)
                    unselected-hakukohteet (map #(assoc % :is-selected false) hakukohteet)
-                   updated-hakukohteet (vec (union (set current-hakukohteet) (set unselected-hakukohteet)))
+                   updated-unsorted-hakukohteet (vec (union (set current-hakukohteet) (set unselected-hakukohteet)))
+                   updated-hakukohteet (sort-items-by-name (:lang db) updated-unsorted-hakukohteet)
                    hakukohderyhma' (assoc hakukohderyhma :hakukohteet updated-hakukohteet)]
                {:db       (update-hakukohderyhma db hakukohderyhma')
                 :dispatch [save-hakukohderyhma-hakukohteet (:oid hakukohderyhma) updated-hakukohteet]})))
@@ -182,19 +186,20 @@
   toggle-hakukohde-selection
   (fn-traced [db [oid]]
              (let [hakukohderyhmas (->> (get-in db persisted-hakukohderyhmas)
-                                        (map #(cond-> % (:is-selected %) (update :hakukohteet (partial toggle-hakukohde oid))))
-                                        set)]
+                                        (map #(cond-> % (:is-selected %) (update :hakukohteet (partial toggle-hakukohde oid)))))]
                (assoc-in db persisted-hakukohderyhmas hakukohderyhmas))))
 
 (events/reg-event-db-validating
   handle-save-hakukohderyhma-hakukohteet
   (fn-traced [db [{oid :oid :as hakukohderyhma}]]
-             (let [update-ob (select-keys hakukohderyhma [:hakukohteet])
-                   update-fn (fn [hks] (set
-                                         (map #(if (= (:oid %) oid)
-                                                 (merge % update-ob)
-                                                 %)
-                                              hks)))]
+             (let [updated-hakukohderyhma (-> hakukohderyhma
+                                              (assoc :is-selected true)
+                                              (select-keys [:is-selected :hakukohteet])
+                                              (update :hakukohteet #(sort-items-by-name (:lang db) %))) ;TODO i18n and extract
+                   update-fn (fn [hks] (map #(if (= (:oid %) oid)
+                                               (merge % (conform-hakukohderyhma-to-schema updated-hakukohderyhma))
+                                               %)
+                                            hks))]
                (update-in db persisted-hakukohderyhmas update-fn))))
 
 (events/reg-event-fx-validating

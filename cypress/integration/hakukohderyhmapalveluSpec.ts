@@ -150,7 +150,7 @@ describe('Hakukohderyhmäpalvelu', () => {
         .children()
         .eq(0)
         .should($el => {
-          expect($el.text()).to.equal('Testi-perustutkinto')
+          expect($el.text()).to.equal('Testi-jatkotutkinto')
         })
 
       cy.get(hh.hakukohteidenSuodatusInputSelector)
@@ -202,11 +202,11 @@ describe('Hakukohderyhmäpalvelu', () => {
             .get(hh.hakukohderyhmanHakukohteetContainerSelector)
             .children()
             .eq(1)
-            .should('have.text', hakukohteet[1].nimi.fi)
+            .should('have.text', hakukohteet[0].nimi.fi)
             .get(hh.hakukohderyhmanHakukohteetContainerSelector)
             .children()
             .eq(0)
-            .should('have.text', hakukohteet[0].nimi.fi)
+            .should('have.text', hakukohteet[1].nimi.fi)
         },
       )
     })

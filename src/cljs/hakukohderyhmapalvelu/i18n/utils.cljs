@@ -33,3 +33,8 @@
     lang
     label-field
     value-field))
+
+(defn sort-items-by-name [lang organizations]
+  (sort-by
+    #(get-with-fallback (:nimi %) lang)
+    organizations))
