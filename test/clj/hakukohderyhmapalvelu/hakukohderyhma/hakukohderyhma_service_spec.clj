@@ -8,7 +8,8 @@
                                                                            test-system
                                                                            add-row!
                                                                            has-row?]]
-            [hakukohderyhmapalvelu.api-schemas :as api-schemas]))
+            [hakukohderyhmapalvelu.api-schemas :as api-schemas]
+            [hakukohderyhmapalvelu.ataru.fixtures :as ataru-test-fixtures]))
 
 
 (use-fixtures :once test-fixtures/with-mock-system)
@@ -128,7 +129,32 @@
                       :path     "/organisaatio-service/rest/organisaatio/v4/1.2.246.562.28.4"
                       :service  :organisaatio-service
                       :response organisaatio-test-fixtures/organisaatio-delete-response})
+      (dispatch-mock {:method   :get
+                      :path     "/lomake-editori/api/forms?hakukohderyhma-oid=1.2.246.562.28.4"
+                      :service  :ataru-service
+                      :request  nil
+                      :response ataru-test-fixtures/empty-form-response})
       (test-fixtures/add-row! db hakukohderyhma-oid "1.2.3.4.5.6.7.8.9.10")
 
       (is (= (hakukohderyhma-protocol/delete service session hakukohderyhma-oid) expected))
-      (is (not (test-fixtures/has-row? db hakukohderyhma-oid))))))
+      (is (not (test-fixtures/has-row? db hakukohderyhma-oid)))))
+
+  (testing "Hakukohderyhmän poistaminen epäonnistuu, kun hakukohderyhmää on käytössä atarussa"
+    (let [service (:hakukohderyhma-service @test-system)
+          session hakukohderyhma-test-fixtures/fake-session
+          db (:db @test-system)
+          hakukohderyhma-oid "1.2.246.562.28.4"
+          expected api-schemas/StatusInUse]
+      (dispatch-mock {:method :delete
+                      :path   "/organisaatio-service/rest/organisaatio/v4/1.2.246.562.28.4"
+                      :service :organisaatio-service
+                      :response organisaatio-test-fixtures/organisaatio-delete-response})
+      (dispatch-mock {:method   :get
+                      :path     "/lomake-editori/api/forms?hakukohderyhma-oid=1.2.246.562.28.4"
+                      :service  :ataru-service
+                      :request  nil
+                      :response ataru-test-fixtures/single-form-response})
+      (test-fixtures/add-row! db hakukohderyhma-oid "1.2.3.4.5.6.7.8.9.10")
+
+      (is (= (hakukohderyhma-protocol/delete service session hakukohderyhma-oid) expected))
+      (is (test-fixtures/has-row? db hakukohderyhma-oid)))))

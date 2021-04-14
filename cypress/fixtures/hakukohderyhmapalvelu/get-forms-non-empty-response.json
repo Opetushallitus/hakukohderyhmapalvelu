@@ -1,0 +1,21 @@
+{
+  "forms": [
+    {
+      "deleted": null,
+      "key": "ae73b23d-7cf6-44e7-b225-7a1aa620349d",
+      "content": [],
+      "name": {
+        "fi": "Testihakulomake",
+        "en": "Testapplicationform"
+      },
+      "created-by": "user-1",
+      "locked": null,
+      "id": 123,
+      "created-time": "2020-01-01T01:01:01.007Z",
+      "languages": [
+        "fi",
+        "en"
+      ]
+    }
+  ]
+}

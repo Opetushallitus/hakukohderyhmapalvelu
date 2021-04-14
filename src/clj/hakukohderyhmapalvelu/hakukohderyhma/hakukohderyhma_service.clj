@@ -3,6 +3,7 @@
             [hakukohderyhmapalvelu.hakukohderyhma.hakukohderyhma-service-protocol :as hakukohderyhma-protocol]
             [hakukohderyhmapalvelu.hakukohderyhma.db.hakukohderyhma-queries :as hakukohderyhma-queries]
             [hakukohderyhmapalvelu.organisaatio.organisaatio-protocol :as organisaatio]
+            [hakukohderyhmapalvelu.ataru.ataru-protocol :as ataru]
             [hakukohderyhmapalvelu.kouta.kouta-protocol :as kouta]
             [hakukohderyhmapalvelu.api-schemas :as api-schemas]))
 
@@ -28,7 +29,7 @@
 (defn- session-organizations [session]
   (get-in session [:identity :organizations]))
 
-(defrecord HakukohderyhmaService [audit-logger organisaatio-service kouta-service db]
+(defrecord HakukohderyhmaService [audit-logger organisaatio-service kouta-service ataru-service db]
   hakukohderyhma-protocol/HakukohderyhmaServiceProtocol
 
   (find-hakukohderyhmat-by-hakukohteet-oids [_ session hakukohde-oids include-empty]
@@ -61,7 +62,8 @@
       (assoc hkr :hakukohteet [])))
 
   (delete [this session hakukohderyhma-oid]
-    (let [not-in-ataru-use true
+    (let [forms (ataru/get-forms ataru-service hakukohderyhma-oid)
+          not-in-ataru-use (empty? forms)
           owns-all (->> (hakukohderyhma-protocol/get-hakukohteet-for-hakukohderyhma-oid this session hakukohderyhma-oid)
                         (every? :oikeusHakukohteeseen))]
       (if (and not-in-ataru-use owns-all)
