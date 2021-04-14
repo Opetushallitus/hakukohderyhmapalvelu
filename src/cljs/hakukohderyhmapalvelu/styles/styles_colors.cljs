@@ -20,3 +20,4 @@
 (def red-dark-2 "#a12b2b")
 (def red-dark-3 "#b52d2d")
 (def red-dark-4 "#c44747")
+(def red-dark-5 "#e85454")

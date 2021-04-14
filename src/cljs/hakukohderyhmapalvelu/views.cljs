@@ -1,5 +1,6 @@
 (ns hakukohderyhmapalvelu.views
-  (:require [hakukohderyhmapalvelu.views.hakukohderyhmien-hallinta-panel :as h]
+  (:require [hakukohderyhmapalvelu.components.common.alert :refer [alert]]
+            [hakukohderyhmapalvelu.views.hakukohderyhmien-hallinta-panel :as h]
             [hakukohderyhmapalvelu.views.haun-asetukset-panel :as a]
             [re-frame.core :as re-frame]))
 
@@ -16,5 +17,6 @@
 
 (defn main-panel []
   [:div
+   [alert]
    (let [{panel :panel} @(re-frame/subscribe [:panel/active-panel])]
      [show-panel panel])])
