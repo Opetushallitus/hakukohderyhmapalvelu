@@ -21,6 +21,8 @@
                                      :oppijanumerorekisteri {:service-url-property s/Keyword
                                                              :session-cookie-name  s/Str}
                                      :kouta-internal        {:service-url-property s/Keyword
+                                                             :session-cookie-name  s/Str}
+                                     :ataru                 {:service-url-property s/Keyword
                                                              :session-cookie-name  s/Str}}}
    :urls                 {:virkailija-baseurl        s/Str
                           :hakukohderyhmapalvelu-url s/Str}

@@ -15,6 +15,7 @@
             [hakukohderyhmapalvelu.onr.onr-service :as onr-service]
             [hakukohderyhmapalvelu.organisaatio.organisaatio-service :as organisaatio-service]
             [hakukohderyhmapalvelu.kouta.kouta-service :as kouta-service]
+            [hakukohderyhmapalvelu.ataru.ataru-service :as ataru-service]
             [hakukohderyhmapalvelu.server :as http]))
 
 (defn hakukohderyhmapalvelu-system [config]
@@ -26,6 +27,10 @@
                            :migrations (component/using
                                          (migrations/map->Migrations {})
                                          [:db])
+
+                           :ataru-service (component/using
+                                            (ataru-service/map->AtaruService {:config config})
+                                            [:ataru-authenticating-client])
 
                            :organisaatio-service (component/using
                                                    (organisaatio-service/map->OrganisaatioService {:config config})
@@ -64,6 +69,9 @@
         production-system [:organisaatio-service-authenticating-client (authenticating-client/map->CasAuthenticatingClient {:service :organisaatio-service
                                                                                                                             :config  config})
 
+                           :ataru-authenticating-client (authenticating-client/map->CasAuthenticatingClient {:service :ataru
+                                                                                                             :config  config})
+
                            :kouta-authenticating-client (authenticating-client/map->CasAuthenticatingClient {:service :kouta-internal
                                                                                                              :config  config})
 
@@ -88,6 +96,12 @@
                                                                          (mock-authenticating-client/map->MockedCasClient {})
                                                                          {:request-map :mock-organisaatio-service-cas-request-map})
 
+                           :mock-ataru-cas-request-map (atom {})
+
+                           :ataru-authenticating-client (component/using
+                                                          (mock-authenticating-client/map->MockedCasClient {})
+                                                          {:request-map :mock-ataru-cas-request-map})
+
                            :mock-kouta-cas-request-map (atom {})
 
                            :kouta-authenticating-client (component/using
@@ -103,7 +117,8 @@
                            :mock-dispatcher (component/using
                                               (mock-dispatcher/map->MockDispatcher {:config config})
                                               {:organisaatio-service-request-map :mock-organisaatio-service-cas-request-map
-                                               :kouta-service-request-map        :mock-kouta-cas-request-map})]
+                                               :kouta-service-request-map        :mock-kouta-cas-request-map
+                                               :ataru-service-request-map        :mock-ataru-cas-request-map})]
         system            (into base-system
                                 (if it-profile?
                                   mock-system

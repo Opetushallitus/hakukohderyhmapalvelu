@@ -14,7 +14,9 @@
                                    :oppijanumerorekisteri {:service-url-property :cas.service.oppijanumerorekisteri
                                                            :session-cookie-name  "JSESSIONID"}
                                    :kouta-internal {:service-url-property :cas.service.kouta-internal
-                                                    :session-cookie-name "session"}}}
+                                                    :session-cookie-name "session"}
+                                   :ataru                 {:service-url-property :cas.service.ataru
+                                                           :session-cookie-name  "ring-session"}}}
  :urls                 {:virkailija-baseurl "{{ hakukohderyhmapalvelu_virkailija_base_url }}"
                         :hakukohderyhmapalvelu-url "{{ hakukohderyhmapalvelu_url }}"}
  :oph-organisaatio-oid "1.2.246.562.10.00000000001"
