@@ -83,8 +83,7 @@
   (reset! input-value ""))
 
 (defn on-delete-button-click [deleted-hakukohderyhma]
-
-  (println deleted-hakukohderyhma))
+  (dispatch [hakukohderyhma-events/hakukohderyhma-deleted deleted-hakukohderyhma]))
 
 (defn- make-input-without-top-row-styles [style-prefix]
   (let [grid (str (format-grid-row "[%s-top-row-start] \". .\" %s [%s-top-row-end]" 1 style-prefix)

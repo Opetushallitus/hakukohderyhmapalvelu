@@ -21,6 +21,8 @@
 (def hakukohderyhma-persisting-confirmed :hakukohderyhmien-hallinta/hakukohderyhma-persist-confirmed)
 (def hakukohderyhma-renamed :hakukohderyhmien-hallinta/hakukohderyhma-renamed)
 (def hakukohderyhma-renaming-confirmed :hakukohderyhmien-hallinta/hakukohderyhma-rename-confirmed)
+(def hakukohderyhma-deleted :hakukohderyhmien-hallinta/hakukohderyhma-deleted)
+(def hakukohderyhma-deletion-confirmed :hakukohderyhmien-hallinta/hakukohderyhma-rename-confirmed)
 
 (defn- toggle-hakukohde [hakukohde-oid hakukohteet]
   (let [toggle-fn (fn [{oid :oid :as hakukohde}]
@@ -124,6 +126,28 @@
                        :response-schema  schemas/HakukohderyhmaResponse
                        :response-handler [hakukohderyhma-renaming-confirmed]
                        :body             body}})))
+
+(events/reg-event-db-validating
+  hakukohderyhma-deletion-confirmed
+  (fn-traced [db [deleted-oid {:keys [status]}]]
+             (let [db-ryhmat (get-in db persisted-hakukohderyhmas)
+                   with-deletion (filter #(not= deleted-oid (:oid %)) db-ryhmat)]
+               (if (= "deleted" status)
+                 (-> db
+                     (assoc-in persisted-hakukohderyhmas with-deletion)
+                     (assoc-in rename-input-is-active false))
+                 (println "Hakukohderyhma deletion failed with status " status)))))
+
+(events/reg-event-fx-validating
+  hakukohderyhma-deleted
+  (fn-traced [{db :db} [hakukohderyhma]]
+             (let [http-request-id hakukohderyhma-deleted]
+               {:db   (update db :requests (fnil conj #{}) http-request-id)
+                :http {:method           :delete
+                       :http-request-id  http-request-id
+                       :path             (str "/hakukohderyhmapalvelu/api/hakukohderyhma/" (:oid hakukohderyhma))
+                       :response-schema  schemas/HakukohderyhmaDeleteResponse
+                       :response-handler [hakukohderyhma-deletion-confirmed (:oid hakukohderyhma)]}})))
 
 (def get-hakukohderyhmat-for-hakukohteet :hakukohderyhmien-hallinta/get-all-hakukohderyhma)
 (def handle-get-all-hakukohderyhma :hakukohderyhmien-hallinta/handle-get-all-hakukohderyhma)

@@ -20,7 +20,8 @@
   (let [method'   (case method
                     :get "GET"
                     :post "POST"
-                    :put "PUT")
+                    :put "PUT"
+                    :delete "DELETE")
         caller-id (:caller-id c/config)
         csrf (get-cookie-value "CSRF")
         headers (cond-> {"caller-id"    caller-id
