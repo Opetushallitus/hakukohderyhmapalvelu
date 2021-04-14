@@ -64,10 +64,7 @@
 
 (defn- make-hakukohderyhmien-hallinta-input-styles
   [style-prefix]
-  (merge
-    layout/vertical-align-center-styles
-    {:grid-area style-prefix
-     :position  "relative"}))
+  {:grid-area style-prefix})
 
 (defn- hakukohderyhmien-hallinta-input
   [{:keys [style-prefix] :as props}]
@@ -85,8 +82,9 @@
       :rename (dispatch [hakukohderyhma-events/hakukohderyhma-renamed hakukohderyhma-name])))
   (reset! input-value ""))
 
-(defn on-delete-button-click [deleted-name]
-  (println deleted-name))
+(defn on-delete-button-click [deleted-hakukohderyhma]
+
+  (println deleted-hakukohderyhma))
 
 (defn- make-input-without-top-row-styles [style-prefix]
   (let [grid (str (format-grid-row "[%s-top-row-start] \". .\" %s [%s-top-row-end]" 1 style-prefix)
@@ -101,7 +99,8 @@
                                            :margin "6px 5px 0px 5px"} ))
 
 (defn- hakukohderyhma-create-and-rename-input []
-  (let [input-value (reagent/atom "")]
+  (let [input-value (reagent/atom "")
+        is-confirming-delete (reagent/atom false)]
     (fn []
       (let [create-is-active @(subscribe [:state-query hakukohderyhma-events/create-input-is-active false])
             rename-is-active @(subscribe [:state-query hakukohderyhma-events/rename-input-is-active false])
@@ -131,21 +130,38 @@
               {:style {:grid-area (str style-prefix "-button")
                        :display "flex"
                        :flex-direction "row"}}
-              (when rename-is-active
-                [b/button
-                 {:cypressid    (str cypressid "-button")
-                  :disabled?    false
-                  :label        trash-can-icon
-                  :on-click     #(on-delete-button-click selected-ryhma-name)
-                  :style-prefix (str style-prefix "-button")
-                  :custom-style {:is-danger true
-                                 :margin-right "4px"}}])
-              [b/button
-               {:cypressid    (str cypressid "-button")
-                :disabled?    button-disabled?
-                :label        "Tallenna"
-                :on-click     #(on-save-button-click input-value (keyword operation-type))
-                :style-prefix (str style-prefix "-button")}]]]))))))
+              (if @is-confirming-delete
+                [:<>
+                 [b/button
+                  {:cypressid    (str cypressid "-button")
+                   :disabled?    false
+                   :label        "Vahvista poisto"
+                   :on-click     #(on-delete-button-click selected-ryhma)
+                   :style-prefix (str style-prefix "-button")
+                   :custom-style {:is-danger true
+                                  :margin-right "4px"
+                                  :font-size "12px"}}]
+                 [b/button
+                  {:cypressid    (str cypressid "-button")
+                   :label        "Peruuta"
+                   :on-click     #(reset! is-confirming-delete false)
+                   :style-prefix (str style-prefix "-button")}]]
+                [:<>
+                 (when rename-is-active
+                   [b/button
+                    {:cypressid    (str cypressid "-button")
+                     :disabled?    false
+                     :label        trash-can-icon
+                     :on-click     #(reset! is-confirming-delete true)
+                     :style-prefix (str style-prefix "-button")
+                     :custom-style {:is-danger true
+                                    :margin-right "4px"}}])
+                 [b/button
+                  {:cypressid    (str cypressid "-button")
+                   :disabled?    button-disabled?
+                   :label        "Tallenna"
+                   :on-click     #(on-save-button-click input-value (keyword operation-type))
+                   :style-prefix (str style-prefix "-button")}]])]]))))))
 
 (def ^:private hakukohderyhma-selection-controls-styles
   (merge layout/vertical-align-center-styles
