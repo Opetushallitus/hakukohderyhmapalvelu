@@ -16,8 +16,20 @@
    :flex-direction "row"
    :justify-content "flex-start"})
 
-(defn alert []
-  [:div {:style alert-style}
-   [svg/icon "alert" {:width "20px" :height "20px" :margin-right "6px" :fill "white"}]
-   [:span "Jokin asia epäonnistui. Kokeile jonkin ajan kuluttua uudestaan."]
-   [svg/icon "cross" {:width "10px" :height "10px" :margin-left "3px"}]])
+(defn alert-icon []
+  [svg/icon "alert" {:width "20px" :height "20px" :margin-right "6px" :fill "white"}])
+
+(defn- close-button [on-close]
+  [:span {:on-click on-close
+          :style {:margin-left "10px"
+                  :position "relative"
+                  :bottom "5px"
+                  :cursor "pointer"}}
+   [svg/icon "cross" {:width "8px" :height "8px"}]])
+
+(defn alert [{:keys [message on-close]}]
+  (when (seq message)
+    [:div {:style alert-style}
+     [alert-icon]
+     [:span message]
+     [close-button on-close]]))

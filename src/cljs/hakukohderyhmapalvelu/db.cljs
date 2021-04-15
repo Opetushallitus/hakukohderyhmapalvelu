@@ -5,6 +5,7 @@
   {:active-panel                      {:panel      routes/default-panel
                                        :parameters {:path  {}
                                                     :query {}}}
+   :alert                             {:message ""}
    :requests                          #{}
    :lang                              :fi
    :hakukohderyhma                    {:persisted               []

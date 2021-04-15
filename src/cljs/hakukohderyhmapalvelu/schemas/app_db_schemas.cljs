@@ -22,6 +22,9 @@
      #(-> % :panel (= :panel/haun-asetukset))
      HaunAsetuksetPanel)})
 
+(s/defschema Alert
+  {:alert {:message s/Str}})
+
 (s/defschema Lang
   {:lang (s/enum :fi)})
 
@@ -121,6 +124,7 @@
 
 (s/defschema AppDb
   (st/merge ActivePanel
+            Alert
             Lang
             Requests
             HakukohderyhmaPalvelu
