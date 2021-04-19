@@ -98,11 +98,11 @@
                                            :margin "6px 5px 0px 5px"} ))
 
 (defn- hakukohderyhma-create-and-rename-input []
-  (let [input-value (reagent/atom "")
-        is-confirming-delete (reagent/atom false)]
+  (let [input-value (reagent/atom "")]
     (fn []
       (let [create-is-active @(subscribe [:state-query hakukohderyhma-events/create-input-is-active false])
             rename-is-active @(subscribe [:state-query hakukohderyhma-events/rename-input-is-active false])
+            is-confirming-delete @(subscribe [:state-query hakukohderyhma-events/deletion-confirmation-is-active false])
             ongoing-request? @(subscribe [:hakukohderyhmien-hallinta/ongoing-request?])
             selected-haku @(subscribe [haku-subs/haku-selected-haku])
             selected-ryhma @(subscribe [hakukohderyhma-subs/selected-hakukohderyhma])
@@ -129,7 +129,7 @@
               {:style {:grid-area (str style-prefix "-button")
                        :display "flex"
                        :flex-direction "row"}}
-              (if @is-confirming-delete
+              (if (and rename-is-active is-confirming-delete)
                 [:<>
                  [b/button
                   {:cypressid    (str cypressid "-button")
@@ -143,7 +143,7 @@
                  [b/button
                   {:cypressid    (str cypressid "-button")
                    :label        "Peruuta"
-                   :on-click     #(reset! is-confirming-delete false)
+                   :on-click     #(dispatch [hakukohderyhma-events/deletion-confirmation-dialogue-toggled false])
                    :style-prefix (str style-prefix "-button")}]]
                 [:<>
                  (when rename-is-active
@@ -151,7 +151,7 @@
                     {:cypressid    "hakukohderyhma-delete-button"
                      :disabled?    false
                      :label        trash-can-icon
-                     :on-click     #(reset! is-confirming-delete true)
+                     :on-click    #(dispatch [hakukohderyhma-events/deletion-confirmation-dialogue-toggled true])
                      :style-prefix (str style-prefix "-button")
                      :custom-style {:is-danger true
                                     :margin-right "4px"}}])

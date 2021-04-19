@@ -11,7 +11,8 @@
    :hakukohderyhma                    {:persisted               []
                                        :selected-hakukohderyhma nil
                                        :input-visibility        {:create-active? false
-                                                                 :rename-active? false}
+                                                                 :rename-active? false
+                                                                 :deletion-confirmation-active? false}
                                        :haut                    []
                                        :hakukohteet-filter      ""}
    :haun-asetukset                    {:haut {}}

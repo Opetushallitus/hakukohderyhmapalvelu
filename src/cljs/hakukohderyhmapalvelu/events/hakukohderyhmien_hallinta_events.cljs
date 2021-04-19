@@ -14,6 +14,7 @@
 (def ^:private input-visibility (conj root-path :input-visibility))
 (def create-input-is-active (conj input-visibility :create-active?))
 (def rename-input-is-active (conj input-visibility :rename-active?))
+(def deletion-confirmation-is-active (conj input-visibility :deletion-confirmation-active?))
 
 (def add-new-hakukohderyhma-link-clicked :hakukohderyhmien-hallinta/add-new-hakukohderyhma-link-clicked)
 (def edit-hakukohderyhma-link-clicked :hakukohderyhmien-hallinta/rename-hakukohderyhma-link-clicked)
@@ -23,7 +24,13 @@
 (def hakukohderyhma-renamed :hakukohderyhmien-hallinta/hakukohderyhma-renamed)
 (def hakukohderyhma-renaming-confirmed :hakukohderyhmien-hallinta/hakukohderyhma-rename-confirmed)
 (def hakukohderyhma-deleted :hakukohderyhmien-hallinta/hakukohderyhma-deleted)
-(def hakukohderyhma-deletion-confirmed :hakukohderyhmien-hallinta/hakukohderyhma-deletion-confirmed)
+(def handle-hakukohderyhma-deletion :hakukohderyhmien-hallinta/hakukohderyhma-deletion-confirmed)
+(def deletion-confirmation-dialogue-toggled :hakukohderyhmien-hallinta/deletion-confirmation-dialogue-toggled)
+
+(defn- hide-edit-inputs [db]
+  (-> db
+      (assoc-in rename-input-is-active false)
+      (assoc-in deletion-confirmation-is-active false)))
 
 (defn- toggle-hakukohde [hakukohde-oid hakukohteet]
   (let [toggle-fn (fn [{oid :oid :as hakukohde}]
@@ -52,15 +59,19 @@
 (events/reg-event-db-validating
   hakukohderyhma-selected
   (fn-traced [db [{selected-oid :value}]]
-             (->> (get-in db persisted-hakukohderyhmas)
-                  (map #(assoc % :is-selected (= (:oid %) selected-oid)))
-                  (assoc-in db persisted-hakukohderyhmas))))
+             (let [db-ryhmat (get-in db persisted-hakukohderyhmas)
+                   ryhmat-with-new-selection (map
+                                               #(assoc % :is-selected (= (:oid %) selected-oid))
+                                               db-ryhmat)]
+               (-> db
+                   (assoc-in persisted-hakukohderyhmas ryhmat-with-new-selection)
+                   (assoc-in deletion-confirmation-is-active false)))))
 
 (events/reg-event-db-validating
   add-new-hakukohderyhma-link-clicked
   (fn-traced [db]
              (-> db
-                 (assoc-in rename-input-is-active false)
+                 hide-edit-inputs
                  (update-in create-input-is-active not))))
 
 (events/reg-event-db-validating
@@ -68,6 +79,7 @@
   (fn-traced [db]
              (-> db
                  (assoc-in create-input-is-active false)
+                 (assoc-in deletion-confirmation-is-active false)
                  (update-in rename-input-is-active not))))
 
 (events/reg-event-fx-validating
@@ -108,7 +120,7 @@
                                            (sort-items-by-name (:lang db)))]
                (-> db
                    (assoc-in persisted-hakukohderyhmas ryhmat-with-rename)
-                   (assoc-in rename-input-is-active false)))))
+                   hide-edit-inputs))))
 
 (events/reg-event-fx-validating
   hakukohderyhma-renamed
@@ -128,11 +140,16 @@
                        :response-handler [hakukohderyhma-renaming-confirmed]
                        :body             body}})))
 
+(events/reg-event-db-validating
+  deletion-confirmation-dialogue-toggled
+  (fn-traced [db [is-active]]
+             (assoc-in db deletion-confirmation-is-active is-active)))
+
 (def hakukohderyhma-in-use-alert-message
   {:fi "Hakukohderyhmä on käytössä hakulomakkeella ja sitä ei voi poistaa."})
 
 (events/reg-event-db-validating
-  hakukohderyhma-deletion-confirmed
+  handle-hakukohderyhma-deletion
   (fn-traced [db [deleted-oid {:keys [status]}]]
              (let [db-ryhmat (get-in db persisted-hakukohderyhmas)
                    with-deletion (filter #(not= deleted-oid (:oid %)) db-ryhmat)
@@ -140,12 +157,13 @@
                (condp = status
                  "deleted" (-> db
                                (assoc-in persisted-hakukohderyhmas with-deletion)
-                               (assoc-in rename-input-is-active false))
+                               hide-edit-inputs)
 
-                 "in-use" (assoc-in
-                            db
-                            alert-events/alert-message-path
-                            (get hakukohderyhma-in-use-alert-message lang))))))
+                 "in-use" (-> db
+                              (assoc-in
+                                alert-events/alert-message-path
+                                (get hakukohderyhma-in-use-alert-message lang))
+                              (assoc-in deletion-confirmation-is-active false))))))
 
 (events/reg-event-fx-validating
   hakukohderyhma-deleted
@@ -156,7 +174,7 @@
                        :http-request-id  http-request-id
                        :path             (str "/hakukohderyhmapalvelu/api/hakukohderyhma/" (:oid hakukohderyhma))
                        :response-schema  schemas/HakukohderyhmaDeleteResponse
-                       :response-handler [hakukohderyhma-deletion-confirmed (:oid hakukohderyhma)]}})))
+                       :response-handler [handle-hakukohderyhma-deletion (:oid hakukohderyhma)]}})))
 
 (def get-hakukohderyhmat-for-hakukohteet :hakukohderyhmien-hallinta/get-all-hakukohderyhma)
 (def handle-get-all-hakukohderyhma :hakukohderyhmien-hallinta/handle-get-all-hakukohderyhma)

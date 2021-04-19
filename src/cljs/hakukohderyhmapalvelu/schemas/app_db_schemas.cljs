@@ -55,7 +55,8 @@
    {:persisted               [Hakukohderyhma]
     :selected-hakukohderyhma (s/maybe Hakukohderyhma)
     :input-visibility        {:create-active? s/Bool
-                              :rename-active? s/Bool}
+                              :rename-active? s/Bool
+                              :deletion-confirmation-active? s/Bool}
     :haut                    [HaunTiedot]
     :hakukohteet-filter      s/Str}})
 
