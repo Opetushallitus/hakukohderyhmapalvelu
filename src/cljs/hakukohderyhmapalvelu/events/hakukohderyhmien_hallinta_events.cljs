@@ -1,6 +1,7 @@
 (ns hakukohderyhmapalvelu.events.hakukohderyhmien-hallinta-events
   (:require [hakukohderyhmapalvelu.macros.event-macros :as events]
             [hakukohderyhmapalvelu.api-schemas :as schemas]
+            [hakukohderyhmapalvelu.events.alert-events :as alert-events]
             [day8.re-frame.tracing :refer-macros [fn-traced]]
             [clojure.set :refer [union]]
             [schema-tools.core :as st]
@@ -127,16 +128,24 @@
                        :response-handler [hakukohderyhma-renaming-confirmed]
                        :body             body}})))
 
+(def hakukohderyhma-in-use-alert-message
+  {:fi "Hakukohderyhmä on käytössä hakulomakkeella ja sitä ei voi poistaa."})
+
 (events/reg-event-db-validating
   hakukohderyhma-deletion-confirmed
   (fn-traced [db [deleted-oid {:keys [status]}]]
              (let [db-ryhmat (get-in db persisted-hakukohderyhmas)
-                   with-deletion (filter #(not= deleted-oid (:oid %)) db-ryhmat)]
-               (if (= "deleted" status)
-                 (-> db
-                     (assoc-in persisted-hakukohderyhmas with-deletion)
-                     (assoc-in rename-input-is-active false))
-                 (println "Hakukohderyhma deletion failed with status " status)))))
+                   with-deletion (filter #(not= deleted-oid (:oid %)) db-ryhmat)
+                   lang (:lang db)]
+               (condp = status
+                 "deleted" (-> db
+                               (assoc-in persisted-hakukohderyhmas with-deletion)
+                               (assoc-in rename-input-is-active false))
+
+                 "in-use" (assoc-in
+                            db
+                            alert-events/alert-message-path
+                            (get hakukohderyhma-in-use-alert-message lang))))))
 
 (events/reg-event-fx-validating
   hakukohderyhma-deleted
