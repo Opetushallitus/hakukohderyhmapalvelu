@@ -148,7 +148,7 @@
                 [:<>
                  (when rename-is-active
                    [b/button
-                    {:cypressid    (str cypressid "-button")
+                    {:cypressid    "hakukohderyhma-delete-button"
                      :disabled?    false
                      :label        trash-can-icon
                      :on-click     #(reset! is-confirming-delete true)

@@ -22,7 +22,7 @@
 (def hakukohderyhma-renamed :hakukohderyhmien-hallinta/hakukohderyhma-renamed)
 (def hakukohderyhma-renaming-confirmed :hakukohderyhmien-hallinta/hakukohderyhma-rename-confirmed)
 (def hakukohderyhma-deleted :hakukohderyhmien-hallinta/hakukohderyhma-deleted)
-(def hakukohderyhma-deletion-confirmed :hakukohderyhmien-hallinta/hakukohderyhma-rename-confirmed)
+(def hakukohderyhma-deletion-confirmed :hakukohderyhmien-hallinta/hakukohderyhma-deletion-confirmed)
 
 (defn- toggle-hakukohde [hakukohde-oid hakukohteet]
   (let [toggle-fn (fn [{oid :oid :as hakukohde}]
