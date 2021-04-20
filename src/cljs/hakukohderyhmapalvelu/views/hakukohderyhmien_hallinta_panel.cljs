@@ -132,7 +132,7 @@
               (if (and rename-is-active is-confirming-delete)
                 [:<>
                  [b/button
-                  {:cypressid    (str cypressid "-button")
+                  {:cypressid    "hakukohderyhma-delete-confirm-button"
                    :disabled?    false
                    :label        "Vahvista poisto"
                    :on-click     #(on-delete-button-click selected-ryhma)
@@ -141,7 +141,7 @@
                                   :margin-right "4px"
                                   :font-size "12px"}}]
                  [b/button
-                  {:cypressid    (str cypressid "-button")
+                  {:cypressid    "hakukohderyhma-delete-cancel-button"
                    :label        "Peruuta"
                    :on-click     #(dispatch [hakukohderyhma-events/deletion-confirmation-dialogue-toggled false])
                    :style-prefix (str style-prefix "-button")}]]
