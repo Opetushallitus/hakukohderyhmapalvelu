@@ -13,8 +13,8 @@
    :style-prefix               s/Str})
 
 (defn- make-button-styles [style-prefix {:keys [is-danger] :as custom-style}]
-  (let [bg-color-1 (if is-danger colors/red-dark-3 colors/blue-lighten-1)
-        bg-color-2 (if is-danger colors/red-dark-4 colors/blue-lighten-2)
+  (let [bg-color-1 (if is-danger colors/red-dark-1 colors/blue-lighten-1)
+        bg-color-2 (if is-danger colors/red-dark-2 colors/blue-lighten-2)
         hover-styles {:background-color bg-color-2
                       :border-color     bg-color-2}
 

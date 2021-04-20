@@ -558,7 +558,6 @@ describe('Hakukohderyhmäpalvelu', () => {
             'DELETE',
             '/hakukohderyhmapalvelu/api/hakukohderyhma/1.2.2.5.2.9',
           )
-          //mock routes
         })
         it('Poistonapin painamisen jälkeen tehdään varmistus, jossa käyttäjä voi vielä peruuttaa poiston', () => {
           cy.get(hl.hakukohderyhmanLisaysMuokkaaRyhmaaLinkSelector).click({

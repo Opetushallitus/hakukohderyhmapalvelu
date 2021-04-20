@@ -35,12 +35,18 @@
    {:fi "Hakuajat"}
    :application-form
    {:fi "Hakulomake"}
+   :cancel
+   {:fi "Peruuta"}
+   :confirm-delete
+   {:fi "Vahvista poisto"}
    :modify-form
    {:fi "muokkaa lomaketta"}
    :modify-haku
    {:fi "muokkaa hakua"}
    :required-legend
    {:fi "* merkityt kentät ovat pakollisia"}
+   :save
+   {:fi "Tallenna"}
    :no-selectable-items
    {:fi "Valittavia kohteita ei löytynyt"}})
 
@@ -66,7 +72,9 @@
    :hakukohderyhma/luo-uusi-ryhma
    {:fi "Luo uusi ryhmä"}
    :hakukohderyhma/muokkaa-ryhmaa
-   {:fi "Muokkaa ryhmää"}})
+   {:fi "Muokkaa ryhmää"}
+   :hakukohderyhma/hakukohderyhma-käytössä-viesti
+   {:fi "Hakukohderyhmä on käytössä hakulomakkeella ja sitä ei voi poistaa."}})
 
 (def translations
   (merge

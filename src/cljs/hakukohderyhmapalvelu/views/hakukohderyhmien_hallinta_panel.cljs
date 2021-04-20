@@ -93,9 +93,9 @@
      :grid     grid
      :grid-gap grid-gap}))
 
-(def trash-can-icon (svg/icon "trash-can" {:height "20px"
-                                           :width "16px"
-                                           :margin "6px 5px 0px 5px"} ))
+(def trash-can-icon (svg/img-icon "trash-can" {:height "20px"
+                                               :width  "16px"
+                                               :margin "6px 5px 0px 5px"}))
 
 (defn- hakukohderyhma-create-and-rename-input []
   (let [input-value (reagent/atom "")]
@@ -134,7 +134,7 @@
                  [b/button
                   {:cypressid    "hakukohderyhma-delete-confirm-button"
                    :disabled?    false
-                   :label        "Vahvista poisto"
+                   :label        @(subscribe [:translation :confirm-delete])
                    :on-click     #(on-delete-button-click selected-ryhma)
                    :style-prefix (str style-prefix "-button")
                    :custom-style {:is-danger true
@@ -142,8 +142,8 @@
                                   :font-size "12px"}}]
                  [b/button
                   {:cypressid    "hakukohderyhma-delete-cancel-button"
-                   :label        "Peruuta"
-                   :on-click     #(dispatch [hakukohderyhma-events/deletion-confirmation-dialogue-toggled false])
+                   :label        @(subscribe [:translation :cancel])
+                   :on-click     #(dispatch [hakukohderyhma-events/set-deletion-confirmation-dialogue-visibility false])
                    :style-prefix (str style-prefix "-button")}]]
                 [:<>
                  (when rename-is-active
@@ -151,14 +151,14 @@
                     {:cypressid    "hakukohderyhma-delete-button"
                      :disabled?    false
                      :label        trash-can-icon
-                     :on-click    #(dispatch [hakukohderyhma-events/deletion-confirmation-dialogue-toggled true])
+                     :on-click    #(dispatch [hakukohderyhma-events/set-deletion-confirmation-dialogue-visibility true])
                      :style-prefix (str style-prefix "-button")
                      :custom-style {:is-danger true
                                     :margin-right "4px"}}])
                  [b/button
                   {:cypressid    (str cypressid "-button")
                    :disabled?    button-disabled?
-                   :label        "Tallenna"
+                   :label        @(subscribe [:translation :tallenna])
                    :on-click     #(on-save-button-click input-value (keyword operation-type))
                    :style-prefix (str style-prefix "-button")}]])]]))))))
 

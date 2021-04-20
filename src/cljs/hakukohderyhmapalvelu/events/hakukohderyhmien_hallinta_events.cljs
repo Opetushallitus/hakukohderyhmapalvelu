@@ -1,11 +1,12 @@
 (ns hakukohderyhmapalvelu.events.hakukohderyhmien-hallinta-events
   (:require [hakukohderyhmapalvelu.macros.event-macros :as events]
-            [hakukohderyhmapalvelu.api-schemas :as schemas]
+            [hakukohderyhmapalvelu.api-schemas :as api-schemas]
             [hakukohderyhmapalvelu.events.alert-events :as alert-events]
             [day8.re-frame.tracing :refer-macros [fn-traced]]
             [clojure.set :refer [union]]
             [schema-tools.core :as st]
-            [hakukohderyhmapalvelu.i18n.utils :refer [sort-items-by-name]]))
+            [hakukohderyhmapalvelu.i18n.utils :refer [sort-items-by-name]]
+            [hakukohderyhmapalvelu.i18n.translations :refer [translations]]))
 
 
 (def root-path [:hakukohderyhma])
@@ -25,7 +26,7 @@
 (def hakukohderyhma-renaming-confirmed :hakukohderyhmien-hallinta/hakukohderyhma-rename-confirmed)
 (def hakukohderyhma-deleted :hakukohderyhmien-hallinta/hakukohderyhma-deleted)
 (def handle-hakukohderyhma-deletion :hakukohderyhmien-hallinta/hakukohderyhma-deletion-confirmed)
-(def deletion-confirmation-dialogue-toggled :hakukohderyhmien-hallinta/deletion-confirmation-dialogue-toggled)
+(def set-deletion-confirmation-dialogue-visibility :hakukohderyhmien-hallinta/deletion-confirmation-dialogue-toggled)
 
 (defn- hide-edit-inputs [db]
   (-> db
@@ -104,8 +105,8 @@
                 :http {:method           :post
                        :http-request-id  http-request-id
                        :path             "/hakukohderyhmapalvelu/api/hakukohderyhma"
-                       :request-schema   schemas/HakukohderyhmaPostRequest
-                       :response-schema  schemas/Hakukohderyhma
+                       :request-schema   api-schemas/HakukohderyhmaPostRequest
+                       :response-schema  api-schemas/Hakukohderyhma
                        :response-handler [hakukohderyhma-persisting-confirmed]
                        :body             body}})))
 
@@ -129,41 +130,41 @@
                    selected-ryhma (selected-hakukohderyhma db)
                    language (:lang db)
                    body (-> selected-ryhma
-                            (st/select-schema schemas/HakukohderyhmaPutRequest)
+                            (st/select-schema api-schemas/HakukohderyhmaPutRequest)
                             (assoc-in [:nimi (keyword language)] hakukohderyhma-name))]
                {:db   (update db :requests (fnil conj #{}) http-request-id)
                 :http {:method           :post
                        :http-request-id  http-request-id
                        :path             (str "/hakukohderyhmapalvelu/api/hakukohderyhma/" (:oid selected-ryhma) "/rename")
-                       :request-schema   schemas/HakukohderyhmaPutRequest
-                       :response-schema  schemas/HakukohderyhmaResponse
+                       :request-schema   api-schemas/HakukohderyhmaPutRequest
+                       :response-schema  api-schemas/HakukohderyhmaResponse
                        :response-handler [hakukohderyhma-renaming-confirmed]
                        :body             body}})))
 
 (events/reg-event-db-validating
-  deletion-confirmation-dialogue-toggled
-  (fn-traced [db [is-active]]
-             (assoc-in db deletion-confirmation-is-active is-active)))
-
-(def hakukohderyhma-in-use-alert-message
-  {:fi "Hakukohderyhmä on käytössä hakulomakkeella ja sitä ei voi poistaa."})
+  set-deletion-confirmation-dialogue-visibility
+  (fn-traced [db [is-visible]]
+             (assoc-in db deletion-confirmation-is-active is-visible)))
 
 (events/reg-event-db-validating
   handle-hakukohderyhma-deletion
   (fn-traced [db [deleted-oid {:keys [status]}]]
              (let [db-ryhmat (get-in db persisted-hakukohderyhmas)
                    with-deletion (filter #(not= deleted-oid (:oid %)) db-ryhmat)
-                   lang (:lang db)]
+                   lang (:lang db)
+                   in-use-message (-> translations
+                                      :hakukohderyhma/hakukohderyhma-käytössä-viesti
+                                      (keyword lang))]
                (condp = status
-                 "deleted" (-> db
-                               (assoc-in persisted-hakukohderyhmas with-deletion)
-                               hide-edit-inputs)
+                 api-schemas/StatusDeleted (-> db
+                                               (assoc-in persisted-hakukohderyhmas with-deletion)
+                                               hide-edit-inputs)
 
-                 "in-use" (-> db
-                              (assoc-in
-                                alert-events/alert-message-path
-                                (get hakukohderyhma-in-use-alert-message lang))
-                              (assoc-in deletion-confirmation-is-active false))))))
+                 api-schemas/StatusInUse (-> db
+                                             (assoc-in
+                                               alert-events/alert-message-path
+                                               in-use-message)
+                                             (assoc-in deletion-confirmation-is-active false))))))
 
 (events/reg-event-fx-validating
   hakukohderyhma-deleted
@@ -173,7 +174,7 @@
                 :http {:method           :delete
                        :http-request-id  http-request-id
                        :path             (str "/hakukohderyhmapalvelu/api/hakukohderyhma/" (:oid hakukohderyhma))
-                       :response-schema  schemas/HakukohderyhmaDeleteResponse
+                       :response-schema  api-schemas/HakukohderyhmaDeleteResponse
                        :response-handler [handle-hakukohderyhma-deletion (:oid hakukohderyhma)]}})))
 
 (def get-hakukohderyhmat-for-hakukohteet :hakukohderyhmien-hallinta/get-all-hakukohderyhma)
@@ -188,7 +189,7 @@
   {:method           :post
    :http-request-id  http-request-id
    :path             "/hakukohderyhmapalvelu/api/hakukohderyhma/search/find-by-hakukohde-oids"
-   :response-schema  schemas/HakukohderyhmaListResponse
+   :response-schema  api-schemas/HakukohderyhmaListResponse
    :response-handler [response-handler]
    :body             {:oids hakukohde-oids :includeEmpty true}})
 
@@ -256,11 +257,11 @@
 (events/reg-event-fx-validating
   save-hakukohderyhma-hakukohteet
   (fn-traced [_ [oid hakukohteet]]
-             (let [body (st/select-schema hakukohteet [schemas/Hakukohde])]
+             (let [body (st/select-schema hakukohteet [api-schemas/Hakukohde])]
                {:http {:method           :put
                        :http-request-id  save-hakukohderyhma-hakukohteet
                        :path             (str "/hakukohderyhmapalvelu/api/hakukohderyhma/" oid "/hakukohteet")
-                       :request-schema   [schemas/Hakukohde]
-                       :response-schema  schemas/Hakukohderyhma
+                       :request-schema   [api-schemas/Hakukohde]
+                       :response-schema  api-schemas/Hakukohderyhma
                        :response-handler [handle-save-hakukohderyhma-hakukohteet]
                        :body             body}})))
