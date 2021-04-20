@@ -10,6 +10,8 @@
 (def root-path [:hakukohderyhma])
 (def haku-haut (conj root-path :haut))
 (def haku-hakukohteet-filter (conj root-path :hakukohteet-filter))
+(def haku-lisarajaimet-path (conj root-path :lisarajaimet))
+(def haku-lisarajaimet-visible-path (conj haku-lisarajaimet-path :popup-visible))
 
 ;; Tapahtumat
 (def get-haut :haku/get-haut)
@@ -22,6 +24,8 @@
 (def all-hakukohde-in-view-selected :haku/select-all-hakukohde-in-view)
 (def all-hakukohde-deselected :haku/deselect-all-hakukohde)
 (def set-hakukohteet-filter :haku/set-hakukohteet-filter)
+(def toggle-haku-lisarajaimet-visibility :haku/toggle-haku-lisarajaimet-visibility)
+(def close-haku-lisarajaimet :haku/close-haku-lisarajaimet)
 
 ;; Apufunktiot
 (defn- update-hakus-hakukohteet [items should-update? update-fn]
@@ -128,3 +132,13 @@
   set-hakukohteet-filter
   (fn-traced [db [filter-text]]
              (assoc-in db haku-hakukohteet-filter filter-text)))
+
+(events/reg-event-db-validating
+  toggle-haku-lisarajaimet-visibility
+  (fn-traced [db]
+             (update-in db haku-lisarajaimet-visible-path not)))
+
+(events/reg-event-db-validating
+  close-haku-lisarajaimet
+  (fn-traced [db]
+             (assoc-in db haku-lisarajaimet-visible-path false)))

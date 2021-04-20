@@ -12,6 +12,7 @@
     [hakukohderyhmapalvelu.components.common.multi-select :as multi-select]
     [hakukohderyhmapalvelu.components.common.input :as input]
     [hakukohderyhmapalvelu.components.common.button :as button]
+    [hakukohderyhmapalvelu.components.common.popup :as popup]
     [hakukohderyhmapalvelu.styles.styles-colors :as colors]))
 
 
@@ -59,7 +60,7 @@
   {:display "grid"
    :grid "\"multi-selection-buttons add-to-group-btn\" 40px"
    :grid-gap "10px"
-   :grid-row 4
+   :grid-row 5
    :grid-column "1/4"})
 
 (def ^:private multi-selection-button-row-style
@@ -75,6 +76,7 @@
         hakukohteet-search-placeholder (subscribe [:translation :haku/hakukohteet-search-placeholder])
         selected-hakukohteet (subscribe [haku-subs/haku-selected-hakukohteet])
         selected-hakukohderyhma (subscribe [hakukohderyhma-subs/selected-hakukohderyhma])
+        haku-lisarajaimet-visible (subscribe [haku-subs/haku-lisarajaimet-visible])
         add-to-group-btn-text (subscribe [:translation :hakukohderyhma/liita-ryhmaan])
         select-all-btn-text (subscribe [:translation :hakukohderyhma/valitse-kaikki])
         deselect-all-btn-text (subscribe [:translation :hakukohderyhma/poista-valinnat])]
@@ -83,14 +85,25 @@
             deselect-all-is-disabled (empty? @selected-hakukohteet)]
         [:div (stylefy/use-style hakukohteet-container-style)
          [:span (stylefy/use-style {:grid-row 1 :grid-column "1 / 3"}) @hakukohteet-label]
-         [:div (stylefy/use-style {:grid-row 2 :grid-column "1 / 4"})
+         [:div (stylefy/use-style {:grid-row 1 :grid-column "3 / 3" :text-align "end"})
+          [button/text-button {:cypressid "extra-filters-btn"
+                               :disabled? false
+                               :label "Lisäsuodattimet"
+                               :on-click #(dispatch [haku-events/toggle-haku-lisarajaimet-visibility])
+                               :style-prefix "extra-filters-btn"}]]
+         [:div (stylefy/use-style {:grid-row 2 :grid-auto-columns "auto"})
+          (when @haku-lisarajaimet-visible
+            [popup/popup {:style    {:width "25rem"
+                                     :left  "calc(50% - 25rem)"}
+                          :on-close #(dispatch [haku-events/close-haku-lisarajaimet])}])]
+         [:div (stylefy/use-style {:grid-row 3 :grid-column "1 / 4"})
           [input/input-text {:cypressid   "hakukohteet-text-filter"
                              :input-id    "hakukohteet-text-filter"
                              :on-change   #(dispatch [haku-events/set-hakukohteet-filter %])
                              :placeholder @hakukohteet-search-placeholder
                              :aria-label  @hakukohteet-search-placeholder
                              :is-disabled @hakukohteet-is-empty}]]
-         [:div (stylefy/use-style {:grid-row 3 :grid-column "1 / 4"})
+         [:div (stylefy/use-style {:grid-row 4 :grid-column "1 / 4"})
           [multi-select/multi-select {:options   @hakukohteet
                                       :select-fn #(dispatch [haku-events/toggle-hakukohde-selection %])
                                       :cypressid "hakukohteet-container"}]]

@@ -17,6 +17,7 @@
 (def haku-hakukohteet-as-options :haku/hakukohteet-as-options)
 (def haku-selected-hakukohteet :haku/selected-hakukohteet)
 (def haku-hakukohteet-not-in-hakukohderyhma :haku/haku-hakukohteet-not-in-hakukohderyhma)
+(def haku-lisarajaimet-visible :haku/lisarajaimet-visible)
 
 (re-frame/reg-sub
   haku-haut
@@ -102,3 +103,8 @@
     [(re-frame/subscribe [haku-hakukohteet-not-in-hakukohderyhma])])
   (fn [[hakukohteet]]
     (filter :is-selected hakukohteet)))
+
+(re-frame/reg-sub
+  haku-lisarajaimet-visible
+  (fn [db _]
+    (get-in db haku-events/haku-lisarajaimet-visible-path)))

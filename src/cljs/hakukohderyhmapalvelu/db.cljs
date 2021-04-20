@@ -14,7 +14,8 @@
                                                                  :rename-active? false
                                                                  :deletion-confirmation-active? false}
                                        :haut                    []
-                                       :hakukohteet-filter      ""}
+                                       :hakukohteet-filter      ""
+                                       :lisarajaimet {:popup-visible false}}
    :haun-asetukset                    {:haut {}}
    :forms                             {}
    :ohjausparametrit                  {}
