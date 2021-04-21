@@ -520,7 +520,7 @@ describe('Hakukohderyhmäpalvelu', () => {
           cy.route(
             'POST',
             '/hakukohderyhmapalvelu/api/hakukohderyhma/1.2.246.562.28.47149607930/rename',
-          ).as('post-hakukohderyhma-rename')
+          )
         })
         it('Uuden nimen voi tallentaa, tallennus-input katoaa näkymästä ja uusi ryhmä on valittu automaattisesti', () => {
           cy.get(
@@ -540,6 +540,110 @@ describe('Hakukohderyhmäpalvelu', () => {
               renamedHakukohderyhma.nimi.fi,
             )
           })
+        })
+      })
+      describe('Hakukohderyhmän poisto', () => {
+        before(() => {
+          cy.resetMocks()
+          cy.login()
+          cy.mockBackendRequest({
+            method: 'DELETE',
+            path: '/organisaatio-service/rest/organisaatio/v4/1.2.2.5.2.9',
+            service: 'organisaatio-service',
+            responseFixture:
+              'hakukohderyhmapalvelu/delete-organisaatio-response.json',
+          })
+          cy.server()
+          cy.route(
+            'DELETE',
+            '/hakukohderyhmapalvelu/api/hakukohderyhma/1.2.2.5.2.9',
+          )
+        })
+        it('Poistonapin painamisen jälkeen tehdään varmistus, jossa käyttäjä voi vielä peruuttaa poiston', () => {
+          cy.get(hl.hakukohderyhmanLisaysMuokkaaRyhmaaLinkSelector).click({
+            force: true,
+          })
+          cy.get(hl.hakukohderyhmanLisaysRenameHakukohderyhmaTextInputSelector)
+            .should(
+              'have.attr',
+              'placeholder',
+              'Uudelleennimetty testihakukohderyhmä',
+            )
+            .should('have.text', '')
+          cy.get(hl.hakukohderyhmanPoistoDeleteButtton).click({
+            force: true,
+          })
+          cy.get(hl.hakukohderyhmanPoistoCancelDeleteButtton).click({
+            force: true,
+          })
+          cy.get(hl.hakukohderyhmanPoistoDeleteButtton).should('exist')
+        })
+        it('Jos käyttäjä vaihtaa ryhmää kesken varmistuksen, varmistusdialogi katoaa', () => {
+          cy.get(hl.hakukohderyhmanLisaysRenameHakukohderyhmaTextInputSelector)
+            .should(
+              'have.attr',
+              'placeholder',
+              'Uudelleennimetty testihakukohderyhmä',
+            )
+            .should('have.text', '')
+          cy.get(hl.hakukohderyhmanPoistoDeleteButtton).click({
+            force: true,
+          })
+
+          cy.get(hl.hakukohderyhmanPoistoCancelDeleteButtton).should('exist')
+          cy.fixture(
+            'hakukohderyhmapalvelu/get-organisaatio-ryhmat-response.json',
+          ).then(ryhmat => {
+            const preExistingRyhmaNimi = ryhmat[1].nimi.fi
+            cy.get(hakukohderyhmanValintaDropdown).type(
+              `${preExistingRyhmaNimi}{enter}`,
+            )
+          })
+          cy.get(hl.hakukohderyhmanPoistoDeleteButtton).should('exist')
+          cy.get(hl.hakukohderyhmanPoistoCancelDeleteButtton).should(
+            'not.exist',
+          )
+        })
+        it('Hakukohderyhmän voi poistaa', () => {
+          cy.fixture(
+            'hakukohderyhmapalvelu/get-organisaatio-ryhmat-response.json',
+          ).then(ryhmat => {
+            const preExistingRyhmaNimi = ryhmat[1].nimi.fi
+            const searchStr = preExistingRyhmaNimi.substr(0, 4)
+            cy.get(hakukohderyhmanValintaDropdown)
+              .type(searchStr)
+              .contains(preExistingRyhmaNimi)
+
+            cy.get(hl.hakukohderyhmanPoistoDeleteButtton).click({
+              force: true,
+            })
+            cy.login()
+            cy.get(hl.hakukohderyhmanPoistoConfirmDeleteButtton).click({
+              force: true,
+            })
+
+            cy.get(hakukohderyhmanValintaDropdown)
+              .type(searchStr)
+              .contains('Valittavia kohteita ei löytynyt')
+          })
+        })
+      })
+      describe('Hakukohderyhmän epäonnistunut poisto', () => {
+        before(() => {
+          //TODO when ataru check has been implemented
+          //mock routes to return `in-use` status
+        })
+        it('Jos poistettava ryhmä on käytössä, käyttäjälle näytetään alert banner', () => {
+          //valitse ryhmä
+          //muokkaa ryhmää
+          //paina roskakori-nappia
+          //paina vahvista poisto- nappia
+          //assert, että roskakori on näkyvissä
+          //assert, että alert banner näkyy ja siinä oikea teksti
+        })
+        it('Käyttäjä voi sulkea alert bannerin', () => {
+          //paina alert bannerin sulkuruksia
+          //assert, että alert banner katoaa
         })
       })
     })

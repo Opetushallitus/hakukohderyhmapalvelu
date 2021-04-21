@@ -4,6 +4,7 @@
     [re-frame.core :as re-frame]
     [schema.core :as s]
     [hakukohderyhmapalvelu.events.core-events]
+    [hakukohderyhmapalvelu.events.alert-events]
     [hakukohderyhmapalvelu.events.hakukohderyhmien-hallinta-events]
     [hakukohderyhmapalvelu.events.haun-asetukset-events]
     [hakukohderyhmapalvelu.events.http-events]
@@ -14,6 +15,7 @@
     [hakukohderyhmapalvelu.views :as views]
     [hakukohderyhmapalvelu.styles.styles-init :as styles]
     [hakukohderyhmapalvelu.subs.core-subs]
+    [hakukohderyhmapalvelu.subs.alert-subs]
     [hakukohderyhmapalvelu.subs.hakukohderyhma-subs]
     [hakukohderyhmapalvelu.subs.haun-asetukset-subs]
     [hakukohderyhmapalvelu.subs.panel-subs]))

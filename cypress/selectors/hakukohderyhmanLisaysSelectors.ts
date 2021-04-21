@@ -24,3 +24,12 @@ export const hakukohderyhmanLisaysRenameHakukohderyhmaTextInputSelector =
 
 export const hakukohderyhmanLisaysSaveRenameHakukohderyhmaButtonSelector =
   'button[cypressid=hakukohderyhma-rename-button]:visible'
+
+export const hakukohderyhmanPoistoDeleteButtton =
+  'button[cypressid=hakukohderyhma-delete-button]:visible'
+
+export const hakukohderyhmanPoistoCancelDeleteButtton =
+  'button[cypressid=hakukohderyhma-delete-cancel-button]:visible'
+
+export const hakukohderyhmanPoistoConfirmDeleteButtton =
+  'button[cypressid=hakukohderyhma-delete-confirm-button]:visible'

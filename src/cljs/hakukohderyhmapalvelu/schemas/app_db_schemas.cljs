@@ -22,6 +22,9 @@
      #(-> % :panel (= :panel/haun-asetukset))
      HaunAsetuksetPanel)})
 
+(s/defschema Alert
+  {:alert {:message s/Str}})
+
 (s/defschema Lang
   {:lang (s/enum :fi)})
 
@@ -52,7 +55,8 @@
    {:persisted               [Hakukohderyhma]
     :selected-hakukohderyhma (s/maybe Hakukohderyhma)
     :input-visibility        {:create-active? s/Bool
-                              :rename-active? s/Bool}
+                              :rename-active? s/Bool
+                              :deletion-confirmation-active? s/Bool}
     :haut                    [HaunTiedot]
     :hakukohteet-filter      s/Str}})
 
@@ -121,6 +125,7 @@
 
 (s/defschema AppDb
   (st/merge ActivePanel
+            Alert
             Lang
             Requests
             HakukohderyhmaPalvelu

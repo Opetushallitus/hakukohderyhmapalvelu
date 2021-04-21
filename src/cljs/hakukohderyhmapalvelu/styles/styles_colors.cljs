@@ -16,3 +16,5 @@
 (def white "#FFFFFF")
 
 (def red "#FF0000")
+(def red-dark-1 "#e85454")
+(def red-dark-2 "#e35b5b")
