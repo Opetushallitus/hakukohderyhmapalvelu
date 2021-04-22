@@ -50,6 +50,16 @@
           (response/content-type "text/html")
           (response/charset "utf-8")))))
 
+(defn- create-error-handler [config]
+  (let [rendered-page (selmer/render-file
+                        "templates/login-error.html.template"
+                        {:apply-raamit (c/production-environment? config)})]
+    (fn [_]
+      (log/warn "Kirjautuminen epäonnistui ja käyttäjä ohjattiin virhesivulle.")
+      (-> (response/forbidden rendered-page)
+          (response/content-type "text/html")
+          (response/charset "utf-8")))))
+
 (defn- create-wrap-database-backed-session [config datasource]
   (fn [handler] (ring-session/wrap-session handler
                                            {:root         "/hakukohderyhmapalvelu"
@@ -95,10 +105,7 @@
      ["/hakukohderyhmapalvelu"
       ["/login-error"
        {:get {:no-doc  true
-              :handler (fn [_]
-                         (log/warn "Kirjautuminen epäonnistui ja käyttäjä ohjattiin virhesivulle.")
-                         (-> (response/internal-server-error "<h1>Virhe sisäänkirjautumisessa.</h1>")
-                             (response/content-type "text/html")))}}]
+              :handler (create-error-handler config)}}]
       [""
        {:get {:middleware auth
               :no-doc     true

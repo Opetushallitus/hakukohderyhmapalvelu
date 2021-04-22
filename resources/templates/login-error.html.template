@@ -1,0 +1,41 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset='utf-8'>
+    <meta name="viewport" content="width=device-width,initial-scale=1">
+    <title>Hakukohderyhmäpalvelu</title>
+    <style>
+        .login-error-wrapper {
+            width: 80vw;
+            padding: 16px;
+            margin: 0 auto;
+            border-radius: 4px;
+            border: 1px solid rgb(10, 120, 156);
+            background-color: rgb(231, 248, 253);
+            font-family: "Roboto", sans-serif;
+        }
+        span.login-error-info {
+            color: rgb(102, 102, 102);
+            line-height: 1.5rem;
+            font-size: 1rem;
+        }
+        h6.login-error-title {
+            margin: 0 0 8px;
+            padding: 0;
+            line-height: 1.2;
+            color: rgb(42, 42, 42);
+            font-weight: 500;
+            font-size: 1rem;
+        }
+    </style>
+</head>
+<body>
+<div id="app">
+    <div class="login-error-wrapper">
+        <h6 class="login-error-title">Kirjautuminen epäonnistui</h6>
+        <span class="login-error-info">Käyttäjältäsi puuttuu järjestelmän käyttöön vaadittavia rooleja.</span>
+    </div>
+</div>
+{% if apply-raamit %}<script src="/virkailija-raamit/apply-raamit.js"></script>{% endif %}
+</body>
+</html>

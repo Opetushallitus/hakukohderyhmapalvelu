@@ -2,7 +2,25 @@
   (:require [hakukohderyhmapalvelu.cas.cas-authenticating-client-protocol :as authenticating-client]
             [hakukohderyhmapalvelu.http :as http]
             [hakukohderyhmapalvelu.kayttooikeus.kayttooikeus-protocol :as kayttooikeus-protocol]
-            [hakukohderyhmapalvelu.oph-url-properties :as url]))
+            [hakukohderyhmapalvelu.oph-url-properties :as url]
+            [schema.core :as s]))
+
+(def hakukohderyhmapalvelu-crud-permission
+  {:palvelu "HAKUKOHDERYHMAPALVELU"
+   :oikeus  "CRUD"})
+
+(s/defn has-permission [virkailija :- kayttooikeus-protocol/Virkailija
+                        permission :- kayttooikeus-protocol/Kayttooikeus]
+  (let [permissions (set (mapcat :kayttooikeudet (:organisaatiot virkailija)))]
+    (contains? permissions permission)))
+
+(defn- virkailija-with-hakukohderyhma-permission [response]
+  (when-let [virkailija (first (http/parse-and-validate response [kayttooikeus-protocol/Virkailija]))]
+    (if (has-permission virkailija hakukohderyhmapalvelu-crud-permission)
+      virkailija
+      (throw (new RuntimeException
+                  (str "No required permission found for username " (:username virkailija)))))))
+
 
 (defrecord HttpKayttooikeusService [kayttooikeus-authenticating-client config]
 
@@ -12,7 +30,7 @@
           response (authenticating-client/get kayttooikeus-authenticating-client url [kayttooikeus-protocol/Virkailija])
           {:keys [status body]} response]
       (if (= 200 status)
-        (if-let [virkailija (first (http/parse-and-validate response [kayttooikeus-protocol/Virkailija]))]
+        (if-let [virkailija (virkailija-with-hakukohderyhma-permission response)]
           virkailija
           (throw (new RuntimeException
                       (str "No virkailija found by username " username))))
