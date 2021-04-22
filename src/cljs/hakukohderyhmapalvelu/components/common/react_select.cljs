@@ -39,6 +39,7 @@
 (s/defschema Option
   {:value                        s/Any
    :label                        s/Str
+   (s/optional-key :is-disabled) s/Bool
    (s/optional-key :is-selected) s/Bool})
 
 (s/defschema SelectProps

@@ -28,14 +28,23 @@
     option-style
     {:background-color colors/blue-lighten-3}))
 
+(def ^:private option-style-disabled
+  (merge
+    option-style
+    {:color "#b8b8b8"}))
+
 (s/defschema Option
   {:is-selected s/Bool
+   :is-disabled s/Bool
    :label       s/Str
    :value       s/Any})
 
-(defn- multi-select-option [select-fn {:keys [value label is-selected]} cypressid]
-  (let [style (if is-selected option-style-selected option-style)
-        on-click #(select-fn value)]
+(defn- multi-select-option [select-fn {:keys [value label is-selected is-disabled]} cypressid]
+  (let [style (cond
+                is-disabled option-style-disabled
+                is-selected option-style-selected
+                :default option-style)
+        on-click #(when (not is-disabled) (select-fn value))]
     [:div (stylefy/use-style style {:on-click on-click
                                     :cypressid (str cypressid "__" label (when is-selected "--selected"))})
      label]))
