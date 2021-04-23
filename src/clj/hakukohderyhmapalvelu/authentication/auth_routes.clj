@@ -22,27 +22,30 @@
 
 (def kirjautuminen (audit/->operation "kirjautuminen"))
 
-(defn- add-request-session-data-to [response-session request]
-  (merge response-session
-         (select-keys (:session request) [:key :user-agent])))
+(defn- merged-session [request response virkailija]
+  (let [organisaatiot (map :organisaatioOid (:organisaatiot virkailija))
+        request-session (:session request)
+        response-session (:session response)]
+    (-> response-session
+        (merge (select-keys request-session [:key :user-agent]))
+        (assoc-in [:identity :organizations] organisaatiot))))
 
 (defn- login-succeeded [organisaatio-service audit-logger request response virkailija henkilo username ticket]
   (log/info "user" username "logged in")
-  (let [session (add-request-session-data-to (:session response) request)
+  (let [session (merged-session request response virkailija)
         henkilo-oid (:oidHenkilo henkilo)]
     (s/validate (p/extends-class-pred organisaatio-protocol/OrganisaatioServiceProtocol) organisaatio-service)
     (s/validate (p/extends-class-pred audit/AuditLoggerProtocol) audit-logger)
     (s/validate kayttooikeus-protocol/Virkailija virkailija)
     (s/validate s/Str henkilo-oid)
     (s/validate s/Str ticket)
-    (s/validate schema/Session (:session response))
-
+    (s/validate schema/Session session)
     (audit/log audit-logger
                (audit/->user session)
                kirjautuminen
                (audit/->target {:henkiloOid henkilo-oid})
                (audit/->changes {} {:ticket ticket}))
-    response))
+    (assoc response :session session)))
 
 (defn- login-failed
   ([login-failed-url e]
