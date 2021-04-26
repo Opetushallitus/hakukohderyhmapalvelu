@@ -44,7 +44,7 @@
   (let [style (cond
                 is-disabled option-style-disabled
                 is-selected option-style-selected
-                :default option-style)
+                :else option-style)
         on-click #(when (not is-disabled) (select-fn value))]
     [:div (stylefy/use-style style {:on-click on-click
                                     :cypressid (str cypressid "__" label (when is-selected "--selected"))})
