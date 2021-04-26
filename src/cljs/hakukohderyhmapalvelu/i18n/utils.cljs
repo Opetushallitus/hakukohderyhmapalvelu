@@ -18,28 +18,28 @@
        (remove nil?)
        first))
 
-(defn- hakukohde-option-disabled? [hakukohde-item]
-  (and
-    (contains? hakukohde-item :oikeusHakukohteeseen)
-    (not (:oikeusHakukohteeseen hakukohde-item))))
-
-(defn- item->option [lang label-field value-field item]
+(defn- item->option [lang label-field value-field disabled? item]
   (when (some? item)
     (let [localized (get item label-field)
           value (get item value-field)
           is-selected (:is-selected item)
-          is-disabled (hakukohde-option-disabled? item)]
-      {:label       (get-with-fallback localized lang)
-       :value       value
-       :is-selected is-selected
-       :is-disabled is-disabled})))                                ;TODO logic here
+          is-disabled (disabled? item)]
+      (cond-> {:label       (get-with-fallback localized lang)
+               :value       value
+               :is-selected is-selected}
+              (boolean? is-disabled) (assoc :is-disabled is-disabled)))))
 
-(defn create-item->option-transformer [lang label-field value-field]
-  (partial
-    item->option
-    lang
-    label-field
-    value-field))
+(defn create-item->option-transformer
+  ([lang label value disabled?]
+   (partial
+     item->option
+     lang
+     label
+     value
+     disabled?))
+  ([lang label value]
+   (create-item->option-transformer lang label value
+     (constantly nil))))
 
 (defn sort-items-by-name [lang organizations]
   (sort-by
