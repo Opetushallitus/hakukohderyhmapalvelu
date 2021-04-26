@@ -22,6 +22,7 @@
   (st/merge
     CommonOrganisaatioEntityPayload
     {:organisaatio             Organisaatio
+     (s/optional-key :oikeusHakukohteeseen) s/Bool
      (s/optional-key :hakuOid) s/Str}))
 
 (s/defschema Hakukohderyhma

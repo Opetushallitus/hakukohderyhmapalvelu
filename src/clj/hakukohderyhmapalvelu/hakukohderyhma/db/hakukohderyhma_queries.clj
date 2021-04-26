@@ -19,11 +19,15 @@
        (hakukohteet-by-hakukohderyhma-oid db)
        (map :hakukohde-oid)))
 
-(defn update-hakukohderyhma-hakukohteet! [db hakukohderyhma-oid hakukohteet]
+(defn update-hakukohderyhma-hakukohteet! [db hakukohderyhma-oid current-hakukohteet new-hakukohteet]
   (with-db-transaction [tx db]
-                       (let [incoming (map :oid hakukohteet)
-                             current (hakukohde-oidit-by-hakukohderyhma-oid db hakukohderyhma-oid)
-                             [to-delete to-add _] (diff current incoming)
+                       (let [get-authorized-oids (fn [hakukohteet]
+                                                   (->> hakukohteet
+                                                        (filter :oikeusHakukohteeseen)
+                                                        (map :oid)))
+                             new (get-authorized-oids new-hakukohteet)
+                             current (get-authorized-oids current-hakukohteet)
+                             [to-delete to-add _] (diff current new)
                              to-delete' (remove nil? to-delete)
                              hakukohteet-to-add-tuple (->> (remove nil? to-add)
                                                            (map (fn [hk-oid] [hakukohderyhma-oid hk-oid])))]
@@ -31,7 +35,8 @@
                            (delete-hakukohteet-from-hakukohderyhma! tx {:oid         hakukohderyhma-oid
                                                                         :hakukohteet to-delete'}))
                          (when-not (empty? hakukohteet-to-add-tuple)
-                           (add-hakukohteet-into-hakukohderyhma! tx {:hakukohderyhmat hakukohteet-to-add-tuple})))))
+                           (add-hakukohteet-into-hakukohderyhma! tx {:hakukohderyhmat hakukohteet-to-add-tuple}))
+                         (hakukohde-oidit-by-hakukohderyhma-oid tx hakukohderyhma-oid))))
 
 (defn hakukohderyhmat-by-hakukohteet-and-hakukohderyhmat [db hakukohderyhma-oids hakukohde-oids]
   (hakukohderyhma-by-hakukohteet-and-hakukohderyhmat db {:hakukohderyhmat hakukohderyhma-oids

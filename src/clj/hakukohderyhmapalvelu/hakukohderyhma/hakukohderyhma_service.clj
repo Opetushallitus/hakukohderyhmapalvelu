@@ -1,6 +1,6 @@
 (ns hakukohderyhmapalvelu.hakukohderyhma.hakukohderyhma-service
   (:require [hakukohderyhmapalvelu.audit-logger-protocol :as audit]
-            [hakukohderyhmapalvelu.hakukohderyhma.hakukohderyhma-service-protocol :as hakukohderyhma-service-protocol]
+            [hakukohderyhmapalvelu.hakukohderyhma.hakukohderyhma-service-protocol :as hakukohderyhma-protocol]
             [hakukohderyhmapalvelu.hakukohderyhma.db.hakukohderyhma-queries :as hakukohderyhma-queries]
             [hakukohderyhmapalvelu.organisaatio.organisaatio-protocol :as organisaatio]
             [hakukohderyhmapalvelu.kouta.kouta-protocol :as kouta]
@@ -25,14 +25,17 @@
              (keep #(first (get grouped-hakukohteet %)))
              (assoc hakukohderyhma :hakukohteet))))))
 
+(defn- session-organizations [session]
+  (get-in session [:identity :organizations]))
+
 (defrecord HakukohderyhmaService [audit-logger organisaatio-service kouta-service db]
-  hakukohderyhma-service-protocol/HakukohderyhmaServiceProtocol
+  hakukohderyhma-protocol/HakukohderyhmaServiceProtocol
 
   (find-hakukohderyhmat-by-hakukohteet-oids [_ session hakukohde-oids include-empty]
-    ;; TODO: Tarkista käyttäjän oikeudet hakukohteisiin ja hakukohderyhmään (organisaatioon)
     (if-not (empty? hakukohde-oids)
-      (let [hakukohderyhmat (organisaatio/get-organisaatio-children organisaatio-service hakukohderyhmapalvelu-ryhmatyyppi)
-            hakukohteet (kouta/find-hakukohteet-by-oids kouta-service hakukohde-oids)
+      (let [user-organisaatiot (session-organizations session)
+            hakukohderyhmat (organisaatio/get-organisaatio-children organisaatio-service hakukohderyhmapalvelu-ryhmatyyppi)
+            hakukohteet (kouta/find-hakukohteet-by-oids kouta-service hakukohde-oids user-organisaatiot)
             joins (hakukohderyhma-queries/hakukohderyhmat-by-hakukohteet-and-hakukohderyhmat
                     db
                     (map :oid hakukohderyhmat)
@@ -57,9 +60,11 @@
                  (audit/->changes {} hkr))
       (assoc hkr :hakukohteet [])))
 
-  (delete [_ session hakukohderyhma-oid]
-    (let [not-in-ataru-use true]
-      (if not-in-ataru-use
+  (delete [this session hakukohderyhma-oid]
+    (let [not-in-ataru-use true
+          owns-all (->> (hakukohderyhma-protocol/get-hakukohteet-for-hakukohderyhma-oid this session hakukohderyhma-oid)
+                        (every? :oikeusHakukohteeseen))]
+      (if (and not-in-ataru-use owns-all)
         (do
           (organisaatio/delete-organisaatio organisaatio-service hakukohderyhma-oid)
           (hakukohderyhma-queries/delete-hakukohderyhma db hakukohderyhma-oid)
@@ -82,30 +87,39 @@
       renamed-hkr))
 
   (list-haun-tiedot [_ session is-all]
-    (kouta/list-haun-tiedot kouta-service is-all))
+    (let [user-organisaatiot (session-organizations session)]
+      (kouta/list-haun-tiedot kouta-service is-all user-organisaatiot)))
 
   (list-haun-hakukohteet [_ session haku-oid]
-    (kouta/list-haun-hakukohteet kouta-service haku-oid))
+    (let [user-organisaatiot (session-organizations session)]
+      (kouta/list-haun-hakukohteet kouta-service haku-oid user-organisaatiot)))
 
   (update-hakukohderyhma-hakukohteet [this session oid hakukohteet]
-    ;; TODO: Tarkista käyttäjän oikeudet hakukohteisiin ja hakukohderyhmään (organisaatioon)
-    (let [current-hakukohderyhma (hakukohderyhma-service-protocol/get-hakukohderyhma this session oid)
-          hakukohteet' (->> (map :oid hakukohteet)
-                            (kouta/find-hakukohteet-by-oids kouta-service))
-          updated-hakukohderyhma (assoc current-hakukohderyhma :hakukohteet hakukohteet')
-          distinct-haut (distinct (map :hakuOid hakukohteet'))]
-      (if (< (count distinct-haut) 2)
-        (do
-          (hakukohderyhma-queries/update-hakukohderyhma-hakukohteet! db oid hakukohteet')
+    (let [user-organisaatiot (session-organizations session)
+          hakukohde-oidit (map :oid hakukohteet)
+          new-hakukohteet (kouta/find-hakukohteet-by-oids kouta-service hakukohde-oidit user-organisaatiot)
+          hakukohderyhma (hakukohderyhma-protocol/get-hakukohderyhma this session oid)
+          current-hakukohteet (:hakukohteet hakukohderyhma)
+          distinct-haut (distinct (map :hakuOid new-hakukohteet))]
+      (if (< (count distinct-haut) 2)                       ;; Hakukohteet kuuluvat samaan hakuun
+        (let [updated-hakukohde-oids (hakukohderyhma-queries/update-hakukohderyhma-hakukohteet! db oid current-hakukohteet new-hakukohteet)
+              all-hakukohteet (merge (group-by :oid new-hakukohteet) (group-by :oid current-hakukohteet))
+              updated-hakukohteet (map #(first (get all-hakukohteet %)) updated-hakukohde-oids)
+              hakukohderyhma' (assoc hakukohderyhma :hakukohteet updated-hakukohteet)]
           (audit/log audit-logger
                      (audit/->user session)
                      hakukohderyhma-hakukohteet-edit
                      (audit/->target {:oid oid})
-                     (audit/->changes current-hakukohderyhma updated-hakukohderyhma))
-          updated-hakukohderyhma)
+                     (audit/->changes hakukohderyhma hakukohderyhma'))
+          hakukohderyhma')
         (throw (Exception. "Hakukohteet eivät kuulu samaan hakuun.")))))
 
-  (get-hakukohderyhma [_ session hakukohderyhma-oid]
-    (let [hakukohderyhma (organisaatio/get-organisaatio organisaatio-service hakukohderyhma-oid)
-          hakukohde-oidit (hakukohderyhma-queries/hakukohde-oidit-by-hakukohderyhma-oid db (:oid hakukohderyhma))]
-      (assoc hakukohderyhma :hakukohteet (kouta/find-hakukohteet-by-oids kouta-service hakukohde-oidit)))))
+  (get-hakukohteet-for-hakukohderyhma-oid [_ session hakukohderyhma-oid]
+    (let [user-organisaatiot (session-organizations session)
+          hakukohde-oidit (hakukohderyhma-queries/hakukohde-oidit-by-hakukohderyhma-oid db hakukohderyhma-oid)]
+      (kouta/find-hakukohteet-by-oids kouta-service hakukohde-oidit user-organisaatiot)))
+
+  (get-hakukohderyhma [this session hakukohderyhma-oid]
+    (let [hakukohderyhma (organisaatio/get-organisaatio organisaatio-service hakukohderyhma-oid)]
+      (->> (hakukohderyhma-protocol/get-hakukohteet-for-hakukohderyhma-oid this session hakukohderyhma-oid)
+           (assoc hakukohderyhma :hakukohteet)))))

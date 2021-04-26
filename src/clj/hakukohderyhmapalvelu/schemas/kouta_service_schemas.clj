@@ -21,6 +21,7 @@
    :nimi c/Nimi
    :organisaatioOid s/Str
    :hakuOid s/Str
+   (s/optional-key :oikeusHakukohteeseen) s/Bool
    s/Any s/Any})
 
 (s/defschema HakukohdeListResponse
