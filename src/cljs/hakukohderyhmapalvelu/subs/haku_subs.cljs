@@ -93,7 +93,8 @@
     (let [transform-fn (i18n-utils/create-item->option-transformer lang :nimi :oid)]
       (->> hakukohteet
            (filter #(u/hakukohde-includes-string? % filter-text lang))
-           (map transform-fn)))))
+           (map transform-fn)
+           (remove #(:is-disabled %))))))
 
 (re-frame/reg-sub
   haku-selected-hakukohteet

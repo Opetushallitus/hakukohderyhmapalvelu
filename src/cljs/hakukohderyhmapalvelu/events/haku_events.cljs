@@ -114,7 +114,9 @@
   (fn-traced [db [_]]
              (let [lang (get db :lang)
                    filter-str (get-in db haku-hakukohteet-filter)
-                   in-view? #(u/hakukohde-includes-string? % filter-str lang)]
+                   in-view? #(and
+                               (u/hakukohde-includes-string? % filter-str lang)
+                               (:oikeusHakukohteeseen %))]
                (update-in db haku-haut (partial select-all-hakukohde-in-view in-view?)))))
 
 (events/reg-event-db-validating

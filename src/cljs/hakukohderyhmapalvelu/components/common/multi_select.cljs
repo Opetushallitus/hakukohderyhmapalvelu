@@ -31,7 +31,8 @@
 (def ^:private option-style-disabled
   (merge
     option-style
-    {:color "#b8b8b8"}))
+    {:color "#b8b8b8"
+     :cursor "arrow"}))
 
 (s/defschema Option
   {:is-selected s/Bool
