@@ -3,6 +3,8 @@
 /// <reference path="../support/commands.d.ts"/>
 
 describe('Hakukohderyhmäpalvelu - haun tiedot', () => {
+  const tarjoajaParameter = 'tarjoaja=1.2.246.562.10.0439845%2C1.2.246.562.28.1'
+
   before(() => {
     cy.resetMocks()
     cy.login()
@@ -15,7 +17,7 @@ describe('Hakukohderyhmäpalvelu - haun tiedot', () => {
       cy.login()
       cy.mockBackendRequest({
         method: 'GET',
-        path: '/kouta-internal/haku/search?tarjoaja=1.2.246.562.10.00000000001',
+        path: `/kouta-internal/haku/search?${tarjoajaParameter}`,
         service: 'kouta-service',
         responseFixture: 'hakukohderyhmapalvelu/get-haku-response.json',
       })
@@ -58,7 +60,7 @@ describe('Hakukohderyhmäpalvelu - haun tiedot', () => {
       cy.login()
       cy.mockBackendRequest({
         method: 'GET',
-        path: '/kouta-internal/hakukohde/search?haku=1.2.4.1.1.1',
+        path: `/kouta-internal/hakukohde/search?haku=1.2.4.1.1.1&${tarjoajaParameter}&all=true`,
         service: 'kouta-service',
         responseFixture: 'hakukohderyhmapalvelu/get-hakukohde-response.json',
       })
@@ -89,6 +91,7 @@ describe('Hakukohderyhmäpalvelu - haun tiedot', () => {
                 ryhmatyypit: [],
                 kayttoryhmat: [],
               },
+              oikeusHakukohteeseen: true,
             },
             {
               oid: '1.2.4.2.1.2',
@@ -103,6 +106,7 @@ describe('Hakukohderyhmäpalvelu - haun tiedot', () => {
                 ryhmatyypit: [],
                 kayttoryhmat: [],
               },
+              oikeusHakukohteeseen: true,
             },
           ]),
       )
@@ -121,7 +125,7 @@ describe('Hakukohderyhmäpalvelu - haun tiedot', () => {
       })
       cy.mockBackendRequest({
         method: 'POST',
-        path: '/kouta-internal/hakukohde/findbyoids',
+        path: `/kouta-internal/hakukohde/findbyoids?${tarjoajaParameter}`,
         service: 'kouta-service',
         requestFixture:
           'hakukohderyhmapalvelu/post-find-hakukohteet-by-oids.json',
@@ -200,23 +204,7 @@ describe('Hakukohderyhmäpalvelu - haun tiedot', () => {
       cy.login()
       cy.mockBackendRequest({
         method: 'POST',
-        path: '/kouta-internal/hakukohde/findbyoids',
-        service: 'kouta-service',
-        responseFixture: 'hakukohderyhmapalvelu/empty-array.json',
-        requestFixture: 'hakukohderyhmapalvelu/empty-array.json',
-      })
-      cy.login()
-      cy.mockBackendRequest({
-        method: 'POST',
-        path: '/kouta-internal/hakukohde/findbyoids',
-        service: 'kouta-service',
-        responseFixture: 'hakukohderyhmapalvelu/empty-array.json',
-        requestFixture: 'hakukohderyhmapalvelu/empty-array.json',
-      })
-      cy.login()
-      cy.mockBackendRequest({
-        method: 'POST',
-        path: '/kouta-internal/hakukohde/findbyoids',
+        path: `/kouta-internal/hakukohde/findbyoids?${tarjoajaParameter}`,
         service: 'kouta-service',
         requestFixture:
           'hakukohderyhmapalvelu/post-find-hakukohteet-by-oids.json',
@@ -290,6 +278,7 @@ describe('Hakukohderyhmäpalvelu - haun tiedot', () => {
               oid: '1.2.4.2.1.1',
               nimi: { fi: 'Testi-perustutkinto' },
               hakuOid: '1.2.4.1.1.1',
+              oikeusHakukohteeseen: true,
               organisaatio: {
                 oid: '1.2.10.1.2.1',
                 nimi: { fi: 'Organisaatio 1' },
@@ -304,6 +293,7 @@ describe('Hakukohderyhmäpalvelu - haun tiedot', () => {
               oid: '1.2.4.2.1.2',
               nimi: { fi: 'Testi-jatkotutkinto' },
               hakuOid: '1.2.4.1.1.1',
+              oikeusHakukohteeseen: true,
               organisaatio: {
                 oid: '1.2.10.1.2.2',
                 nimi: { fi: 'Organisaatio 2' },

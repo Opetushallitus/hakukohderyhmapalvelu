@@ -14,6 +14,7 @@ describe('Hakukohderyhmäpalvelu', () => {
     cy.visit('/')
     cy.get('body').type('{ctrl}h')
   }
+  const tarjoajaParameter = 'tarjoaja=1.2.246.562.10.0439845%2C1.2.246.562.28.1'
 
   before(() => {
     cy.login()
@@ -28,14 +29,14 @@ describe('Hakukohderyhmäpalvelu', () => {
     cy.login()
     cy.mockBackendRequest({
       method: 'GET',
-      path: '/kouta-internal/haku/search?tarjoaja=1.2.246.562.10.00000000001',
+      path: `/kouta-internal/haku/search?${tarjoajaParameter}`,
       service: 'kouta-service',
       responseFixture: 'hakukohderyhmapalvelu/get-haku-response.json',
     })
     cy.login()
     cy.mockBackendRequest({
       method: 'GET',
-      path: '/kouta-internal/hakukohde/search?haku=1.2.3.4.5.3',
+      path: `/kouta-internal/hakukohde/search?haku=1.2.3.4.5.3&${tarjoajaParameter}&all=true`,
       service: 'kouta-service',
       responseFixture: 'hakukohderyhmapalvelu/get-hakukohde-response.json',
     })
@@ -43,7 +44,7 @@ describe('Hakukohderyhmäpalvelu', () => {
     cy.login()
     cy.mockBackendRequest({
       method: 'POST',
-      path: '/kouta-internal/hakukohde/findbyoids',
+      path: `/kouta-internal/hakukohde/findbyoids?${tarjoajaParameter}`,
       service: 'kouta-service',
       requestFixture:
         'hakukohderyhmapalvelu/post-find-hakukohteet-by-oids.json',
@@ -70,26 +71,19 @@ describe('Hakukohderyhmäpalvelu', () => {
     cy.login()
     cy.mockBackendRequest({
       method: 'POST',
-      path: '/kouta-internal/hakukohde/findbyoids',
-      service: 'kouta-service',
-      responseFixture: 'hakukohderyhmapalvelu/empty-array.json',
-      requestFixture: 'hakukohderyhmapalvelu/empty-array.json',
-    })
-    cy.login()
-    cy.mockBackendRequest({
-      method: 'POST',
-      path: '/kouta-internal/hakukohde/findbyoids',
-      service: 'kouta-service',
-      responseFixture: 'hakukohderyhmapalvelu/empty-array.json',
-      requestFixture: 'hakukohderyhmapalvelu/empty-array.json',
-    })
-    cy.login()
-    cy.mockBackendRequest({
-      method: 'POST',
-      path: '/kouta-internal/hakukohde/findbyoids',
+      path: `/kouta-internal/hakukohde/findbyoids?${tarjoajaParameter}`,
       service: 'kouta-service',
       requestFixture:
         'hakukohderyhmapalvelu/post-find-hakukohteet-by-oids.json',
+      responseFixture: 'hakukohderyhmapalvelu/get-hakukohde-response.json',
+    })
+    cy.login()
+    cy.mockBackendRequest({
+      method: 'POST',
+      path: `/kouta-internal/hakukohde/findbyoids?${tarjoajaParameter}`,
+      service: 'kouta-service',
+      requestFixture:
+        'hakukohderyhmapalvelu/post-find-hakukohteet-by-oids-reversed.json',
       responseFixture: 'hakukohderyhmapalvelu/get-hakukohde-response.json',
     })
     cy.login()

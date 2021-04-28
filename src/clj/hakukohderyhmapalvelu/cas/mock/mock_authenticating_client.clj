@@ -29,7 +29,7 @@
        (if (empty? errors)
          {:status 200 :body (json/generate-string mock-response)}
          (throw (Exception. (format "Hakukohderyhmäpalvelun taustajärjestelmä yritti tehdä määritysten vastaisen HTTP-kutsun:\n\n%s" (clojure.string/join "\n" errors))))))
-     (throw (Exception. (format "Hakukohderyhmäpalvelun taustajärjestelmä yritti lähettää määrittämättömän HTTP-kutsun osoitteeseen %s datalla %s" url body))))))
+     (throw (Exception. (format "Hakukohderyhmäpalvelun taustajärjestelmä yritti lähettää määrittämättömän HTTP-kutsun osoitteeseen %s datalla %s" url (prn-str body)))))))
 
 
 (defrecord MockedCasClient [request-map]

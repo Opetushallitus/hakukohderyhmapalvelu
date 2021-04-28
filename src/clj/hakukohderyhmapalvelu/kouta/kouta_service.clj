@@ -81,16 +81,17 @@
       (enrich-hakukohteet-with-organisaatio hakukohteet organisaatiot)))
 
   (find-hakukohteet-by-oids [_ oids tarjoajat]
-    (let [tarjoaja (str/join "," tarjoajat)
-          url (oph-url/resolve-url :kouta-internal.hakukohde.findbyoids config {:tarjoaja tarjoaja})
-          hakukohteet (as-> url res'
-                            (authenticating-client-protocol/post kouta-authenticating-client
-                                                                 {:url res'
-                                                                  :body oids}
-                                                                 {:request-schema [s/Str]
-                                                                  :response-schema schemas/HakukohdeListResponse})
-                            (http/parse-and-validate res' schemas/HakukohdeListResponse))
-          organisaatiot (->> (map :organisaatioOid hakukohteet)
-                             (organisaatio/find-by-oids organisaatio-service)
-                             (group-by :oid))]
-      (enrich-hakukohteet-with-organisaatio hakukohteet organisaatiot))))
+    (when (seq oids)
+      (let [tarjoaja (str/join "," tarjoajat)
+            url (oph-url/resolve-url :kouta-internal.hakukohde.findbyoids config {:tarjoaja tarjoaja})
+            hakukohteet (as-> url res'
+                              (authenticating-client-protocol/post kouta-authenticating-client
+                                                                   {:url res'
+                                                                    :body oids}
+                                                                   {:request-schema [s/Str]
+                                                                    :response-schema schemas/HakukohdeListResponse})
+                              (http/parse-and-validate res' schemas/HakukohdeListResponse))
+            organisaatiot (->> (map :organisaatioOid hakukohteet)
+                               (organisaatio/find-by-oids organisaatio-service)
+                               (group-by :oid))]
+        (enrich-hakukohteet-with-organisaatio hakukohteet organisaatiot)))))
