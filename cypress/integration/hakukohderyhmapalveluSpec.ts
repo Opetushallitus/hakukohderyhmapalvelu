@@ -128,7 +128,7 @@ describe('Hakukohderyhmäpalvelu', () => {
       )
     })
 
-    it('Haun valinta - näyttää hakukohteet', () => {
+    it('Näyttää hakukohteet, joihin käyttäjällä on oikeus', () => {
       cy.login()
       cy.get(hh.hakukohteetContainerSelector)
         .children()
@@ -146,6 +146,12 @@ describe('Hakukohderyhmäpalvelu', () => {
         .should($el => {
           expect($el.text()).to.equal('Testi-jatkotutkinto')
         })
+
+      cy.get(hh.hakukohteetContainerSelector).contains('Testi-perustutkinto')
+
+      cy.get(hh.hakukohteetContainerSelector)
+        .contains('Testi-ei-oikeuksia')
+        .should('not.exist')
 
       cy.get(hh.hakukohteidenSuodatusInputSelector)
         .clear()
