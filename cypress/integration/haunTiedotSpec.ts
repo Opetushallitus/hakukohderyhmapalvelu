@@ -108,6 +108,21 @@ describe('Hakukohderyhmäpalvelu - haun tiedot', () => {
               },
               oikeusHakukohteeseen: true,
             },
+            {
+              oid: '1.2.4.2.1.3',
+              nimi: { fi: 'Testi-ei-oikeuksia' },
+              hakuOid: '1.2.4.1.1.1',
+              organisaatio: {
+                oid: '1.2.10.1.2.3',
+                nimi: { fi: 'Organisaatio, johon käyttäjällä ei ole asiaa' },
+                version: 0,
+                parentOid: '1.2.0.0.0.0.1',
+                tyypit: ['organisaatiotyyppi_03'],
+                ryhmatyypit: [],
+                kayttoryhmat: [],
+              },
+              oikeusHakukohteeseen: false,
+            },
           ]),
       )
     })
@@ -137,7 +152,7 @@ describe('Hakukohderyhmäpalvelu - haun tiedot', () => {
         'POST',
         '/hakukohderyhmapalvelu/api/hakukohderyhma/search/find-by-hakukohde-oids',
         {
-          oids: ['1.2.4.2.1.2', '1.2.4.2.1.1'],
+          oids: ['1.2.4.2.1.3', '1.2.4.2.1.2', '1.2.4.2.1.1'],
           includeEmpty: true,
         },
       ).then(({ body }) => {
@@ -178,7 +193,7 @@ describe('Hakukohderyhmäpalvelu - haun tiedot', () => {
         'POST',
         '/hakukohderyhmapalvelu/api/hakukohderyhma/search/find-by-hakukohde-oids',
         {
-          oids: ['1.2.4.2.1.2', '1.2.4.2.1.1'],
+          oids: ['1.2.4.2.1.3', '1.2.4.2.1.2', '1.2.4.2.1.1'],
           includeEmpty: false,
         },
       ).then(({ body }) => {
@@ -207,8 +222,9 @@ describe('Hakukohderyhmäpalvelu - haun tiedot', () => {
         path: `/kouta-internal/hakukohde/findbyoids?${tarjoajaParameter}`,
         service: 'kouta-service',
         requestFixture:
-          'hakukohderyhmapalvelu/post-find-hakukohteet-by-oids.json',
-        responseFixture: 'hakukohderyhmapalvelu/get-hakukohde-response.json',
+          'hakukohderyhmapalvelu/post-find-authorized-hakukohteet-by-oids.json',
+        responseFixture:
+          'hakukohderyhmapalvelu/find-authorized-hakukohde-response.json',
       })
       cy.login()
       cy.mockBackendRequest({
@@ -216,9 +232,9 @@ describe('Hakukohderyhmäpalvelu - haun tiedot', () => {
         path: '/organisaatio-service/rest/organisaatio/v4/findbyoids',
         service: 'organisaatio-service',
         requestFixture:
-          'hakukohderyhmapalvelu/post-find-organisaatiot-request.json',
+          'hakukohderyhmapalvelu/post-find-authorized-organisaatiot-request.json',
         responseFixture:
-          'hakukohderyhmapalvelu/post-find-organisaatiot-response.json',
+          'hakukohderyhmapalvelu/post-find-authorized-organisaatiot-response.json',
       })
     })
 
