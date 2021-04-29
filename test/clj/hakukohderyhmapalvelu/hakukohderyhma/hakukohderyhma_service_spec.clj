@@ -25,32 +25,34 @@
                         :nimi         {:fi "Hakukohde 2"}
                         :hakuOid      "1.2.246.562.29.1"
                         :organisaatio test-fixtures/organisaatio-2}]
-          expected {:oid         "1.2.246.562.28.4"
-                    :nimi        {:fi "Hakukohderyhmä 1"}
+          expected {:oid          "1.2.246.562.28.4"
+                    :nimi         {:fi "Hakukohderyhmä 1"}
                     :version      0
                     :kayttoryhmat []
                     :parentOid    "1.2.246.562.28.01"
                     :ryhmatyypit  []
                     :tyypit       []
-                    :hakukohteet [{:oid          "1.2.246.562.20.1"
-                                   :nimi         {:fi "Hakukohde 1"}
-                                   :hakuOid      "1.2.246.562.29.1"
-                                   :organisaatio test-fixtures/organisaatio-1}
-                                  {:oid          "1.2.246.562.20.2"
-                                   :nimi         {:fi "Hakukohde 2"}
-                                   :hakuOid      "1.2.246.562.29.1"
-                                   :organisaatio test-fixtures/organisaatio-2}]}]
+                    :hakukohteet  [{:oid                  "1.2.246.562.20.1"
+                                    :nimi                 {:fi "Hakukohde 1"}
+                                    :hakuOid              "1.2.246.562.29.1"
+                                    :organisaatio         test-fixtures/organisaatio-1
+                                    :oikeusHakukohteeseen true}
+                                   {:oid                  "1.2.246.562.20.2"
+                                    :nimi                 {:fi "Hakukohde 2"}
+                                    :hakuOid              "1.2.246.562.29.1"
+                                    :organisaatio         test-fixtures/organisaatio-2
+                                    :oikeusHakukohteeseen true}]}]
       (dispatch-mock {:method   :get
                       :path     "/organisaatio-service/rest/organisaatio/v4/1.2.246.562.28.4"
                       :service  :organisaatio-service
                       :response organisaatio-test-fixtures/hakukohderyhma-response})
       (dispatch-mock {:method   :post
-                      :path     "/kouta-internal/hakukohde/findbyoids"
+                      :path     "/kouta-internal/hakukohde/findbyoids?tarjoaja=1.2.246.562.10.00000000001"
                       :service  :kouta-service
                       :request  []
                       :response []})
       (dispatch-mock {:method   :post
-                      :path     "/kouta-internal/hakukohde/findbyoids"
+                      :path     "/kouta-internal/hakukohde/findbyoids?tarjoaja=1.2.246.562.10.00000000001"
                       :service  :kouta-service
                       :request  ["1.2.246.562.20.1" "1.2.246.562.20.2"]
                       :response kouta-test-fixtures/kouta-hakukohteet-response})
@@ -81,12 +83,12 @@
                       :service  :organisaatio-service
                       :response organisaatio-test-fixtures/hakukohderyhma-response})
       (dispatch-mock {:method   :post
-                      :path     "/kouta-internal/hakukohde/findbyoids"
+                      :path     "/kouta-internal/hakukohde/findbyoids?tarjoaja=1.2.246.562.10.00000000001"
                       :service  :kouta-service
                       :request  []
                       :response []})
       (dispatch-mock {:method   :post
-                      :path     "/kouta-internal/hakukohde/findbyoids"
+                      :path     "/kouta-internal/hakukohde/findbyoids?tarjoaja=1.2.246.562.10.00000000001"
                       :service  :kouta-service
                       :request  ["1.2.246.562.20.1" "1.2.246.562.20.3"]
                       :response kouta-test-fixtures/kouta-hakukohteet-response-1-3})
@@ -106,9 +108,19 @@
           db (:db @test-system)
           hakukohderyhma-oid "1.2.246.562.28.4"
           expected api-schemas/StatusDeleted]
-      (dispatch-mock {:method :delete
-                      :path   "/organisaatio-service/rest/organisaatio/v4/1.2.246.562.28.4"
-                      :service :organisaatio-service
+      (dispatch-mock {:method   :post
+                      :path     "/kouta-internal/hakukohde/findbyoids?tarjoaja=1.2.246.562.10.00000000001"
+                      :service  :kouta-service
+                      :request  ["1.2.3.4.5.6.7.8.9.10"]
+                      :response kouta-test-fixtures/kouta-hakukohteet-response-for-delete})
+      (dispatch-mock {:method   :post
+                      :path     "/organisaatio-service/rest/organisaatio/v4/findbyoids"
+                      :service  :organisaatio-service
+                      :request  ["1.2.246.562.28.1"]
+                      :response [test-fixtures/organisaatio-1]})
+      (dispatch-mock {:method   :delete
+                      :path     "/organisaatio-service/rest/organisaatio/v4/1.2.246.562.28.4"
+                      :service  :organisaatio-service
                       :response organisaatio-test-fixtures/organisaatio-delete-response})
       (test-fixtures/add-row! db hakukohderyhma-oid "1.2.3.4.5.6.7.8.9.10")
 

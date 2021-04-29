@@ -645,6 +645,14 @@ describe('Hakukohderyhmäpalvelu', () => {
           //paina alert bannerin sulkuruksia
           //assert, että alert banner katoaa
         })
+        it('Jos poistettava ryhmässä on oikeudettomia hakukohtteita, käyttäjälle näytetään alert banner', () => {
+          //valitse ryhmä
+          //muokkaa ryhmää
+          //paina roskakori-nappia
+          //paina vahvista poisto- nappia
+          //assert, että roskakori on näkyvissä
+          //assert, että alert banner näkyy ja siinä oikea teksti
+        })
       })
     })
   })

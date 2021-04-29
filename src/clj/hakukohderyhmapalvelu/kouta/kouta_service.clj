@@ -81,7 +81,7 @@
       (enrich-hakukohteet-with-organisaatio hakukohteet organisaatiot)))
 
   (find-hakukohteet-by-oids [_ oids tarjoajat]
-    (when (seq oids)
+    (if (seq oids)
       (let [tarjoaja (str/join "," tarjoajat)
             url (oph-url/resolve-url :kouta-internal.hakukohde.findbyoids config {:tarjoaja tarjoaja})
             hakukohteet (as-> url res'
@@ -94,4 +94,5 @@
             organisaatiot (->> (map :organisaatioOid hakukohteet)
                                (organisaatio/find-by-oids organisaatio-service)
                                (group-by :oid))]
-        (enrich-hakukohteet-with-organisaatio hakukohteet organisaatiot)))))
+        (enrich-hakukohteet-with-organisaatio hakukohteet organisaatiot))
+      [])))
