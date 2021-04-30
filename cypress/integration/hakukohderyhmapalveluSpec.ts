@@ -121,6 +121,20 @@ describe('Hakukohderyhmäpalvelu', () => {
       'Hakukohderyhmien hallinta',
     )
   })
+  describe('Kantayhteystesti', () => {
+    it('test', () => {
+      cy.task('query', {
+        sql: `
+                SELECT * 
+                FROM hakukohderyhma
+            `,
+        values: [],
+      }).then(res => {
+        const dbRes = res || { rows: [] }
+        expect(dbRes.rows.length).to.equal(0)
+      })
+    })
+  })
   describe('Haun hakutoiminto', () => {
     it('Näyttää haun hakutoiminnon', () => {
       cy.login()
