@@ -47,6 +47,9 @@
   (-> (merge {:is-selected false} hakukohderyhma)
       (update :hakukohteet #(map conform-hakukohde-to-schema %))))
 
+(defn- sort-hakukohderyhma-hakukohteet [lang hakukohderyhma]
+  (update hakukohderyhma :hakukohteet #(sort-items-by-name lang %)))
+
 (defn- selected-hakukohderyhma [db]
   (->> (get-in db persisted-hakukohderyhmas)
        (filter :is-selected)
@@ -197,7 +200,10 @@
 (events/reg-event-db-validating
   handle-get-all-hakukohderyhma
   (fn-traced [db [response]]
-             (->> (map conform-hakukohderyhma-to-schema response)
+             (->> (map
+                    (comp (partial sort-hakukohderyhma-hakukohteet (:lang db))
+                          conform-hakukohderyhma-to-schema)
+                    response)
                   (sort-items-by-name (:lang db))
                   (assoc-in db persisted-hakukohderyhmas))))
 
