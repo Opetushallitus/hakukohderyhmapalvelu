@@ -80,8 +80,7 @@
         deselect-all-btn-text (subscribe [:translation :hakukohderyhma/poista-valinnat])]
     (fn []
       (let [select-all-is-disabled (= (count @hakukohteet) (count @selected-hakukohteet))
-            deselect-all-is-disabled (empty? @selected-hakukohteet)
-            authorized-hakukohde-count (count (filter :oikeusHakukohteeseen @hakukohteet))]
+            deselect-all-is-disabled (empty? @selected-hakukohteet)]
         [:div (stylefy/use-style hakukohteet-container-style)
          [:span (stylefy/use-style {:grid-row 1 :grid-column "1 / 3"}) @hakukohteet-label]
          [:div (stylefy/use-style {:grid-row 2 :grid-column "1 / 4"})
@@ -99,7 +98,7 @@
           [:div (stylefy/use-style multi-selection-button-row-style)
            [button/text-button {:cypressid    "select-all-btn"
                                 :disabled?    select-all-is-disabled
-                                :label        (str @select-all-btn-text " (" authorized-hakukohde-count ")")
+                                :label        (str @select-all-btn-text " (" (count @hakukohteet) ")")
                                 :on-click     #(dispatch [haku-events/all-hakukohde-in-view-selected])
                                 :style-prefix "select-all-btn"}]
            [:span (stylefy/use-style {:margin "6px"
