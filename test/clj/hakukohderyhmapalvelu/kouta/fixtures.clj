@@ -14,7 +14,10 @@
    {:oid      "1.2.246.562.29.3"
     :nimi     {:fi "Nykyhetkellä voimassa"}
     :hakuajat [{:alkaa   "2020-01-02T00:00:00"
-                :paattyy "2100-12-01T00:00:00"}]}])
+                :paattyy "2100-12-01T00:00:00"}]}
+   {:oid      "1.2.246.562.29.4"
+    :nimi     {:fi "Nykyhetkellä voimassa oleva jatkuva"}
+    :hakuajat [{:alkaa   "2020-01-03T00:00:00"}]}])
 
 (def kouta-hakukohteet-response
   [{:oid                  "1.2.246.562.20.1"

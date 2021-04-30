@@ -22,7 +22,9 @@
     (let [expected [{:oid  "1.2.246.562.29.2"
                      :nimi {:fi "Tulevaisuuden haku"}}
                     {:oid  "1.2.246.562.29.3"
-                     :nimi {:fi "Nykyhetkellä voimassa"}}]]
+                     :nimi {:fi "Nykyhetkellä voimassa"}}
+                    {:oid  "1.2.246.562.29.4"
+                     :nimi {:fi "Nykyhetkellä voimassa oleva jatkuva"}}]]
       (dispatch-mock {:method   :get
                       :path     "/kouta-internal/haku/search?tarjoaja=1.2.246.562.10.00000000001"
                       :service  :kouta-service
@@ -34,7 +36,9 @@
                     {:oid  "1.2.246.562.29.2"
                      :nimi {:fi "Tulevaisuuden haku"}}
                     {:oid  "1.2.246.562.29.3"
-                     :nimi {:fi "Nykyhetkellä voimassa"}}]]
+                     :nimi {:fi "Nykyhetkellä voimassa"}}
+                    {:oid  "1.2.246.562.29.4"
+                     :nimi {:fi "Nykyhetkellä voimassa oleva jatkuva"}}]]
       (dispatch-mock {:method   :get
                       :path     "/kouta-internal/haku/search?tarjoaja=1.2.246.562.10.00000000001"
                       :service  :kouta-service

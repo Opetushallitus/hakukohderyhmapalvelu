@@ -17,12 +17,11 @@
 (defn- local-date-time? [dt]
   (instance? LocalDateTime dt))
 
-(defn- hakuaika-not-over? [now {:keys [alkaa paattyy]}]
-  ;; Haku ei ole päättynyt, jos sillä on tulevaisuudessa alkavia hakuja
-  ;; tai alkaneet haut eivät ole vielä päättyneet.
+(defn- hakuaika-not-over? [now {paattyy :paattyy}]
+  ;; Haku ei ole päättynyt, jos sillä on hakuja joilla ei ole
+  ;; päättymispäivää tai alkaneet haut eivät ole vielä päättyneet.
   (or
-    (when (local-date-time? alkaa)
-      (.isAfter alkaa now))
+    (nil? paattyy)
     (when (local-date-time? paattyy)
       (.isAfter paattyy now))))
 
