@@ -352,4 +352,10 @@ describe('Hakukohderyhmäpalvelu - haun tiedot', () => {
       })
     })
   })
+
+  after('Clean up db', () => {
+    cy.task('query', {
+      sql: 'TRUNCATE hakukohderyhma',
+    })
+  })
 })
