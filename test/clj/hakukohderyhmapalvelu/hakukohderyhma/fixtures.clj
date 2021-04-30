@@ -3,6 +3,7 @@
 (def fake-session
   {:identity
                                                  {:oid        "1.2.246.562.24.1"
+                                                  :organizations ["1.2.246.562.10.00000000001"]
                                                   :lang       "fi"
                                                   :ticket     "ticket-1"
                                                   :username   "testuser"

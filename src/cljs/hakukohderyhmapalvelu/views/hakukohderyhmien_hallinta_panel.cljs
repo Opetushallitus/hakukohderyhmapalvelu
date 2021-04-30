@@ -114,7 +114,8 @@
             operation-type (if rename-is-active "rename" "create")
             cypressid (str "hakukohderyhma-" operation-type)
             input-id (str "hakukohderyhma-" operation-type "-input")
-            style-prefix (str "hakukohderyhma-" operation-type)]
+            style-prefix (str "hakukohderyhma-" operation-type)
+            all-hakukohteet-are-authorized (every? :oikeusHakukohteeseen (:hakukohteet selected-ryhma))]
         (when is-visible
           (let [input-styles (make-input-without-top-row-styles style-prefix)]
             [:div (stylefy/use-style input-styles)
@@ -146,7 +147,9 @@
                    :on-click     #(dispatch [hakukohderyhma-events/set-deletion-confirmation-dialogue-visibility false])
                    :style-prefix (str style-prefix "-button")}]]
                 [:<>
-                 (when rename-is-active
+                 (when (and
+                         rename-is-active
+                         all-hakukohteet-are-authorized)
                    [b/button
                     {:cypressid    "hakukohderyhma-delete-button"
                      :disabled?    false

@@ -247,7 +247,7 @@
              (let [updated-hakukohderyhma (-> hakukohderyhma
                                               (assoc :is-selected true)
                                               (select-keys [:is-selected :hakukohteet])
-                                              (update :hakukohteet #(sort-items-by-name (:lang db) %))) ;TODO i18n and extract
+                                              (update :hakukohteet #(sort-items-by-name (:lang db) %)))
                    update-fn (fn [hks] (map #(if (= (:oid %) oid)
                                                (merge % (conform-hakukohderyhma-to-schema updated-hakukohderyhma))
                                                %)

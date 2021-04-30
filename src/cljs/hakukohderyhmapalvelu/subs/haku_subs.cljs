@@ -90,10 +90,11 @@
      (re-frame/subscribe [haku-hakukohteet-filter])
      (re-frame/subscribe [haku-hakukohteet-not-in-hakukohderyhma])])
   (fn [[lang filter-text hakukohteet] _]
-    (let [transform-fn (i18n-utils/create-item->option-transformer lang :nimi :oid)]
+    (let [transform-fn (i18n-utils/create-item->option-transformer lang :nimi :oid #(-> % :oikeusHakukohteeseen not))]
       (->> hakukohteet
            (filter #(u/hakukohde-includes-string? % filter-text lang))
-           (map transform-fn)))))
+           (map transform-fn)
+           (remove :is-disabled)))))
 
 (re-frame/reg-sub
   haku-selected-hakukohteet

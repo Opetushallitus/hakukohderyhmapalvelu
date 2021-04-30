@@ -9,7 +9,8 @@
             [hakukohderyhmapalvelu.api-schemas :as api-schemas]
             [schema.core :as s]
             [schema-tools.core :as st]
-            [hakukohderyhmapalvelu.config :as c])
+            [hakukohderyhmapalvelu.config :as c]
+            [clojure.string :as str])
   (:import (java.time LocalDateTime)))
 
 
@@ -54,10 +55,10 @@
 
   kouta-service-protocol/KoutaServiceProtocol
 
-  (list-haun-tiedot [_ is-all]
+  (list-haun-tiedot [_ is-all tarjoajat]
     (let [now (LocalDateTime/now)
-          organisaatio-oid (:oph-organisaatio-oid config)
-          url (oph-url/resolve-url :kouta-internal.haku.search config {:tarjoaja organisaatio-oid})
+          tarjoaja (str/join "," tarjoajat)
+          url (oph-url/resolve-url :kouta-internal.haku.search config {:tarjoaja tarjoaja})
           filter-fn (if is-all identity (partial not-over? now))]
       (as-> url res'
             (authenticating-client-protocol/get kouta-authenticating-client res' schemas/HaunTiedotListResponse)
@@ -65,8 +66,11 @@
             (filter filter-fn res')
             (st/select-schema res' api-schemas/HaunTiedotListResponse))))
 
-  (list-haun-hakukohteet [_ haku-oid]
-    (let [url (oph-url/resolve-url :kouta-internal.hakukohde.search config {:haku haku-oid})
+  (list-haun-hakukohteet [_ haku-oid tarjoajat]
+    (let [tarjoaja (str/join "," tarjoajat)
+          url (oph-url/resolve-url :kouta-internal.hakukohde.search config {:haku     haku-oid
+                                                                            :tarjoaja tarjoaja
+                                                                            :all      "true"})
           hakukohteet (as-> url res'
                             (authenticating-client-protocol/get kouta-authenticating-client res' schemas/HakukohdeListResponse)
                             (http/parse-and-validate res' schemas/HakukohdeListResponse))
@@ -76,16 +80,19 @@
 
       (enrich-hakukohteet-with-organisaatio hakukohteet organisaatiot)))
 
-  (find-hakukohteet-by-oids [_ oids]
-    (let [url (oph-url/resolve-url :kouta-internal.hakukohde.findbyoids config)
-          hakukohteet (as-> url res'
-                            (authenticating-client-protocol/post kouta-authenticating-client
-                                                                 {:url res'
-                                                                  :body oids}
-                                                                 {:request-schema [s/Str]
-                                                                  :response-schema schemas/HakukohdeListResponse})
-                            (http/parse-and-validate res' schemas/HakukohdeListResponse))
-          organisaatiot (->> (map :organisaatioOid hakukohteet)
-                             (organisaatio/find-by-oids organisaatio-service)
-                             (group-by :oid))]
-      (enrich-hakukohteet-with-organisaatio hakukohteet organisaatiot))))
+  (find-hakukohteet-by-oids [_ oids tarjoajat]
+    (if (seq oids)
+      (let [tarjoaja (str/join "," tarjoajat)
+            url (oph-url/resolve-url :kouta-internal.hakukohde.findbyoids config {:tarjoaja tarjoaja})
+            hakukohteet (as-> url res'
+                              (authenticating-client-protocol/post kouta-authenticating-client
+                                                                   {:url res'
+                                                                    :body oids}
+                                                                   {:request-schema [s/Str]
+                                                                    :response-schema schemas/HakukohdeListResponse})
+                              (http/parse-and-validate res' schemas/HakukohdeListResponse))
+            organisaatiot (->> (map :organisaatioOid hakukohteet)
+                               (organisaatio/find-by-oids organisaatio-service)
+                               (group-by :oid))]
+        (enrich-hakukohteet-with-organisaatio hakukohteet organisaatiot))
+      [])))

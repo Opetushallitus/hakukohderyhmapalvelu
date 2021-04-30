@@ -36,7 +36,8 @@
 (s/defschema Hakukohde
   (st/merge
     api-schemas/Hakukohde
-    {:is-selected s/Bool}))
+    {(s/optional-key :oikeusHakukohteeseen) s/Bool ;debug, not optional belongs to api-schemas
+     :is-selected s/Bool}))
 
 (s/defschema HaunTiedot
   {:oid         s/Str

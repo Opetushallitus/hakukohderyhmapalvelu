@@ -66,7 +66,7 @@
     [(re-frame/subscribe [:lang])
      (re-frame/subscribe [hakukohderyhman-hakukohteet])])
   (fn [[lang hakukohteet]]
-    (let [transform-fn (i18n-utils/create-item->option-transformer lang :nimi :oid)]
+    (let [transform-fn (i18n-utils/create-item->option-transformer lang :nimi :oid #(-> % :oikeusHakukohteeseen not))]
       (map transform-fn hakukohteet))))
 
 (re-frame/reg-sub

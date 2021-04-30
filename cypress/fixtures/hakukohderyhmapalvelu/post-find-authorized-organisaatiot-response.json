@@ -24,18 +24,5 @@
     },
     "parentOid": "1.2.0.0.0.0.1",
     "version": 0
-  },
-  {
-    "ryhmatyypit": [],
-    "kayttoryhmat": [],
-    "tyypit": [
-      "organisaatiotyyppi_03"
-    ],
-    "oid": "1.2.10.1.2.3",
-    "nimi": {
-      "fi": "Organisaatio, johon käyttäjällä ei ole asiaa"
-    },
-    "parentOid": "1.2.0.0.0.0.1",
-    "version": 0
   }
 ]

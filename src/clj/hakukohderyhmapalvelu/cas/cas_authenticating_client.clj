@@ -5,11 +5,15 @@
             [hakukohderyhmapalvelu.config :as c]
             [hakukohderyhmapalvelu.http :as http]
             [hakukohderyhmapalvelu.oph-url-properties :as url]
-            [schema.core :as s])
+            [schema.core :as s]
+            [taoensso.timbre :as log])
   (:import [fi.vm.sade.javautils.cas CasSession ApplicationSession SessionToken]
            [java.net.http HttpClient]
            [java.time Duration]
            [java.net CookieManager URI]))
+
+(def auth-fail-status #{302 401})
+(def error-status #{500 400})
 
 (defn- invalidate-cas-session [^ApplicationSession application-session
                                ^SessionToken session-token]
@@ -24,6 +28,11 @@
 (s/defschema PostOrPutOpts
   {:url  s/Str
    :body s/Any})
+
+(defn retry-with-session-refresh [application-session session-token request-fn]
+  (invalidate-cas-session application-session session-token)
+  (let [new-session-token (init-cas-session application-session)]
+    (request-fn new-session-token)))
 
 (s/defn do-authenticated-json-request
   [{:keys [method
@@ -67,13 +76,13 @@
                              (do-authenticated-json-request
                                schemas
                                config)))
-        response       (request-fn session-token)]
-    (if (some #{(:status response)} [302 401])
-      (do
-        (invalidate-cas-session application-session session-token)
-        (let [new-session-token (init-cas-session application-session)]
-          (request-fn new-session-token)))
-      response)))
+        response       (request-fn session-token)
+        status (:status response)]
+    (when (error-status status)
+      (log/error (str "CAS-authenticated request failed with status " status " on url " url)))
+    (cond
+      (auth-fail-status status) (retry-with-session-refresh application-session session-token request-fn)
+      :else response)))
 
 (defn- create-uri [url-key config]
   (s/validate c/HakukohderyhmaConfig config)

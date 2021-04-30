@@ -8,7 +8,8 @@
    :ticket                   s/Str
    :last-name                s/Str
    :first-name               s/Str
-   :lang                     s/Str})
+   :lang                     s/Str
+   :organizations            [s/Str]})
 
 (s/defschema Session
   (st/open-schema
