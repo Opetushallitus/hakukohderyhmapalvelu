@@ -6,7 +6,6 @@ describe('Hakukohderyhmäpalvelu - haun tiedot', () => {
   const tarjoajaParameter = 'tarjoaja=1.2.246.562.10.0439845%2C1.2.246.562.28.1'
 
   before(() => {
-    cy.resetMocks()
     cy.login()
   })
   describe('Haun tietojen hakeminen', () => {
@@ -335,7 +334,6 @@ describe('Hakukohderyhmäpalvelu - haun tiedot', () => {
   describe('Hakukohderyhmän poistaminen', () => {
     beforeEach(() => {
       cy.login()
-      cy.resetMocks()
       cy.mockBackendRequest({
         method: 'DELETE',
         path: '/organisaatio-service/rest/organisaatio/v4/1.2.246.562.28.001',

@@ -489,7 +489,6 @@ describe('Hakukohderyhmäpalvelu', () => {
       })
       describe('Uuden nimen tallentaminen', () => {
         before(() => {
-          cy.resetMocks()
           cy.login()
           cy.fixture(
             'hakukohderyhmapalvelu/put-hakukohderyhma-request.json',
@@ -544,7 +543,6 @@ describe('Hakukohderyhmäpalvelu', () => {
       })
       describe('Hakukohderyhmän poisto', () => {
         before(() => {
-          cy.resetMocks()
           cy.login()
           cy.mockBackendRequest({
             method: 'DELETE',
