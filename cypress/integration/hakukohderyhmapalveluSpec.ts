@@ -89,6 +89,15 @@ describe('Hakukohderyhmäpalvelu', () => {
     cy.login()
     cy.mockBackendRequest({
       method: 'POST',
+      path: `/kouta-internal/hakukohde/findbyoids?${tarjoajaParameter}`,
+      service: 'kouta-service',
+      requestFixture:
+        'hakukohderyhmapalvelu/post-find-hakukohteet-by-oids-unreversed.json',
+      responseFixture: 'hakukohderyhmapalvelu/get-hakukohde-response.json',
+    })
+    cy.login()
+    cy.mockBackendRequest({
+      method: 'POST',
       path: '/organisaatio-service/rest/organisaatio/v4/findbyoids',
       service: 'organisaatio-service',
       requestFixture:
