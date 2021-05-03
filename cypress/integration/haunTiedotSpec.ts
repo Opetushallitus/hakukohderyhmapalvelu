@@ -122,6 +122,21 @@ describe('Hakukohderyhmäpalvelu - haun tiedot', () => {
               },
               oikeusHakukohteeseen: false,
             },
+            {
+              oid: '1.2.4.2.1.4',
+              nimi: { fi: 'Testi-ei-oikeuksia-ryhmitelty' },
+              hakuOid: '1.2.4.1.1.1',
+              organisaatio: {
+                oid: '1.2.10.1.2.3',
+                nimi: { fi: 'Organisaatio, johon käyttäjällä ei ole asiaa' },
+                version: 0,
+                parentOid: '1.2.0.0.0.0.1',
+                tyypit: ['organisaatiotyyppi_03'],
+                ryhmatyypit: [],
+                kayttoryhmat: [],
+              },
+              oikeusHakukohteeseen: false,
+            },
           ]),
       )
     })
@@ -151,7 +166,7 @@ describe('Hakukohderyhmäpalvelu - haun tiedot', () => {
         'POST',
         '/hakukohderyhmapalvelu/api/hakukohderyhma/search/find-by-hakukohde-oids',
         {
-          oids: ['1.2.4.2.1.3', '1.2.4.2.1.2', '1.2.4.2.1.1'],
+          oids: ['1.2.4.2.1.3', '1.2.4.2.1.4', '1.2.4.2.1.2', '1.2.4.2.1.1'],
           includeEmpty: true,
         },
       ).then(({ body }) => {
@@ -192,7 +207,7 @@ describe('Hakukohderyhmäpalvelu - haun tiedot', () => {
         'POST',
         '/hakukohderyhmapalvelu/api/hakukohderyhma/search/find-by-hakukohde-oids',
         {
-          oids: ['1.2.4.2.1.3', '1.2.4.2.1.2', '1.2.4.2.1.1'],
+          oids: ['1.2.4.2.1.3', '1.2.4.2.1.4', '1.2.4.2.1.2', '1.2.4.2.1.1'],
           includeEmpty: false,
         },
       ).then(({ body }) => {
