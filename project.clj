@@ -16,6 +16,7 @@
                  [fi.vm.sade/auditlogger "9.0.0-SNAPSHOT"]
                  [fi.vm.sade.java-utils/java-cas "0.6.2-SNAPSHOT"]
                  [fi.vm.sade.java-utils/java-properties "0.1.0-SNAPSHOT"]
+                 [fi.vm.sade/scala-cas_2.12 "2.2.1-SNAPSHOT"]
                  [oph/clj-access-logging "1.0.0-SNAPSHOT"]
                  [oph/clj-stdout-access-logging "1.0.0-SNAPSHOT"]
                  [oph/clj-timbre-access-logging "1.0.0-SNAPSHOT"]

@@ -221,8 +221,10 @@
                 :parameters {:query {:ticket s/Str}}
                 :handler    (fn [{{{:keys [ticket]} :query} :parameters :as request}]
                               (auth-routes/login auth-routes-source ticket request))}
-         :post {:no-doc  true
-                :handler (fn [request] (auth-routes/cas-logout auth-routes-source request))}}]
+         :post {:no-doc     true
+                :parameters {:form {:logoutRequest s/Str}}
+                :handler    (fn [{{logout-request :logoutRequest} :params}]
+                              (auth-routes/cas-logout auth-routes-source logout-request))}}]
        ["/logout"
         {:get {:no-doc  true
                :handler (fn [{:keys [session]}] (auth-routes/logout auth-routes-source session))}}]]]]))
