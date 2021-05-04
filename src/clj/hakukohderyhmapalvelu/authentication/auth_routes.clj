@@ -1,5 +1,6 @@
 (ns hakukohderyhmapalvelu.authentication.auth-routes
   (:require [clj-ring-db-session.authentication.login :as crdsa-login]
+            [clj-ring-db-session.session.session-store :as oph-session]
             [com.stuartsierra.component :as component]
             [hakukohderyhmapalvelu.audit-logger-protocol :as audit]
             [hakukohderyhmapalvelu.authentication.schema :as schema]
@@ -10,10 +11,12 @@
             [hakukohderyhmapalvelu.oph-url-properties :as url]
             [hakukohderyhmapalvelu.organisaatio.organisaatio-protocol :as organisaatio-protocol]
             [hakukohderyhmapalvelu.schemas.class-pred :as p]
+            [ring.util.http-response :refer [ok]]
             [ring.util.response :as resp]
             [schema.core :as s]
             [taoensso.timbre :as log])
-  (:import javax.sql.DataSource))
+  (:import javax.sql.DataSource
+           (fi.vm.sade.utils.cas CasLogout)))
 
 (defprotocol AuthRoutesSource
   (login [this ticket request])
@@ -54,9 +57,14 @@
   ([login-failed-url]
    (resp/redirect login-failed-url)))
 
-(defn- cas-initiated-logout [logout-request]
-  (log/warn (str "Saatiin logout-pyyntö'" logout-request "', mutta cas-initiated logoutia ei ole vielä toteutettu!"))
-  (throw (new RuntimeException "CASin tekemää logouttia ei ole vielä toteutettu.")))
+(defn- cas-initiated-logout [session-store logout-request]
+  (log/info "cas-initiated logout")
+  (let [ticket (CasLogout/parseTicketFromLogoutRequest logout-request)]
+    (log/info "logging out ticket" ticket)
+    (if (.isEmpty ticket)
+      (log/error "Could not parse ticket from CAS request" logout-request)
+      (crdsa-login/cas-initiated-logout (.get ticket) session-store))
+    (ok)))
 
 (defrecord AuthRoutesMaker [config
                             db
@@ -74,18 +82,18 @@
     (s/validate (p/extends-class-pred onr-protocol/PersonService) person-service)
     (s/validate (p/extends-class-pred organisaatio-protocol/OrganisaatioServiceProtocol) organisaatio-service)
     (s/validate (p/extends-class-pred audit/AuditLoggerProtocol) audit-logger)
-    (assoc this :hakukohderyhmapalvelu-url (get-in config [:urls :hakukohderyhmapalvelu-url]))
-    (assoc this :login-failure-url (url/resolve-url :cas.failure config))
     (s/validate s/Str (get-in config [:urls :hakukohderyhmapalvelu-url]))
     (s/validate s/Str (url/resolve-url :cas.failure config))
     (assoc this
       :hakukohderyhmapalvelu-url (get-in config [:urls :hakukohderyhmapalvelu-url])
-      :login-failure-url (url/resolve-url :cas.failure config)))
+      :login-failure-url (url/resolve-url :cas.failure config)
+      :session-store (oph-session/create-session-store (:datasource db))))
 
   (stop [this]
     (assoc this
       :hakukohderyhmapalvelu-url nil
-      :login-failure-url nil))
+      :login-failure-url nil
+      :session-store nil))
 
   AuthRoutesSource
 
@@ -107,8 +115,10 @@
       (catch Exception e
         (login-failed (:login-failure-url this) e))))
 
-  (cas-logout [_ request]
-    (cas-initiated-logout request))
+  (cas-logout [this request]
+    (-> this
+        :session-store
+        (cas-initiated-logout request)))
 
   (logout [_ session]
     (crdsa-login/logout session (url/resolve-url :cas.logout config))))
