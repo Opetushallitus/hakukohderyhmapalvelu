@@ -4,7 +4,10 @@ FROM hakukohderyhma
 WHERE hakukohderyhma_oid = :oid
 
 -- :name hakukohderyhma-oids-by-hakukohde-oid :? :*
-SELECT DISTINCT hakukohderyhma_oid AS "hakukohderyhma-oid" FROM hakukohderyhma WHERE hakukohde_oid = :hakukohde-oid
+SELECT DISTINCT hakukohderyhma_oid AS "hakukohderyhma-oid"
+    FROM hakukohderyhma
+    WHERE hakukohde_oid = :hakukohde-oid
+    ORDER BY hakukohderyhma_oid
 
 -- :name hakukohderyhma-by-hakukohteet-and-hakukohderyhmat :? :*
 WITH hakukohderyhma_oid_table AS (
@@ -24,6 +27,7 @@ SELECT m.hakukohderyhma_oid                         AS "hakukohderyhma-oid",
 FROM matching_hakukohderyhma m
          LEFT JOIN hakukohderyhma h ON m.hakukohderyhma_oid = h.hakukohderyhma_oid
 GROUP BY m.hakukohderyhma_oid
+ORDER BY m.hakukohderyhma_oid
 ;
 
 -- :name delete-hakukohteet-from-hakukohderyhma! :! :n
