@@ -1,6 +1,13 @@
 (ns hakukohderyhmapalvelu.db
   (:require [hakukohderyhmapalvelu.routes :as routes]))
 
+(def default-lisarajain-filters
+  [{:id    "kaksoistutkinto-filter"
+    :label :haku/lisarajain-kaksoistutkinto
+    :path  [:toinenAsteOnkoKaksoistutkinto]
+    :type  :boolean
+    :value false}])
+
 (def default-db
   {:active-panel                      {:panel      routes/default-panel
                                        :parameters {:path  {}
@@ -14,7 +21,9 @@
                                                                  :rename-active? false
                                                                  :deletion-confirmation-active? false}
                                        :haut                    []
-                                       :hakukohteet-filter      ""}
+                                       :hakukohteet-filter      ""
+                                       :lisarajaimet            {:popup-visible false
+                                                                 :filters       default-lisarajain-filters}}
    :haun-asetukset                    {:haut {}}
    :forms                             {}
    :ohjausparametrit                  {}

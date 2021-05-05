@@ -10,6 +10,9 @@
 (def root-path [:hakukohderyhma])
 (def haku-haut (conj root-path :haut))
 (def haku-hakukohteet-filter (conj root-path :hakukohteet-filter))
+(def haku-lisarajaimet-path (conj root-path :lisarajaimet))
+(def haku-lisarajaimet-visible-path (conj haku-lisarajaimet-path :popup-visible))
+(def haku-lisarajaimet-filters-path (conj haku-lisarajaimet-path :filters))
 
 ;; Tapahtumat
 (def get-haut :haku/get-haut)
@@ -22,6 +25,9 @@
 (def all-hakukohde-in-view-selected :haku/select-all-hakukohde-in-view)
 (def all-hakukohde-deselected :haku/deselect-all-hakukohde)
 (def set-hakukohteet-filter :haku/set-hakukohteet-filter)
+(def open-haku-lisarajaimet :haku/open-haku-lisarajaimet)
+(def close-haku-lisarajaimet :haku/close-haku-lisarajaimet)
+(def set-haku-lisarajaimet-filter :haku/set-haku-lisarajaimet-filter)
 
 ;; Apufunktiot
 (defn- update-hakus-hakukohteet [items should-update? update-fn]
@@ -47,6 +53,9 @@
 
 (defn- toggle-selection-of-hakukohde [hakukohde-oid haut]
   (edit-selected-hakus-hakukohteet haut (partial u/toggle-filtered-item-selection #(= (:oid %) hakukohde-oid))))
+
+(defn- update-haku-lisarajaimet-filter [id value-fn filters]
+  (map #(cond-> % (= id (:id %)) (update :value value-fn)) filters))
 
 ;; Käsittelijät
 (events/reg-event-db-validating
@@ -113,9 +122,12 @@
   all-hakukohde-in-view-selected
   (fn-traced [db [_]]
              (let [lang (get db :lang)
+                   lisarajaimet (->> (get-in db haku-lisarajaimet-filters-path)
+                                     (keep u/lisarajain->fn))
                    filter-str (get-in db haku-hakukohteet-filter)
                    in-view? #(and
                                (u/hakukohde-includes-string? % filter-str lang)
+                               (apply (u/create-hakukohde-matches-all-lisarajaimet lisarajaimet) [%])
                                (:oikeusHakukohteeseen %))]
                (update-in db haku-haut (partial select-all-hakukohde-in-view in-view?)))))
 
@@ -128,3 +140,18 @@
   set-hakukohteet-filter
   (fn-traced [db [filter-text]]
              (assoc-in db haku-hakukohteet-filter filter-text)))
+
+(events/reg-event-db-validating
+  open-haku-lisarajaimet
+  (fn-traced [db]
+             (assoc-in db haku-lisarajaimet-visible-path true)))
+
+(events/reg-event-db-validating
+  close-haku-lisarajaimet
+  (fn-traced [db]
+             (assoc-in db haku-lisarajaimet-visible-path false)))
+
+(events/reg-event-db-validating
+  set-haku-lisarajaimet-filter
+  (fn-traced [db [id value-fn]]
+             (update-in db haku-lisarajaimet-filters-path (partial update-haku-lisarajaimet-filter id value-fn))))

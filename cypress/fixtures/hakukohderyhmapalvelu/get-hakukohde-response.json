@@ -11,7 +11,7 @@
     "aloituspaikat": 200,
     "pohjakoulutusvaatimusKoodiUrit": ["pohjakoulutusvaatimuskouta_pk#1"],
     "muuPohjakoulutusvaatimus": {},
-    "toinenAsteOnkoKaksoistutkinto": false,
+    "toinenAsteOnkoKaksoistutkinto": true,
     "kaytetaanHaunAikataulua": false,
     "valintaperusteId": "3310c079-9516-4395-b06e-ad7037b6bbdd",
     "yhdenPaikanSaanto": {"voimassa": false, "syy": "Ei erityistä syytä"},

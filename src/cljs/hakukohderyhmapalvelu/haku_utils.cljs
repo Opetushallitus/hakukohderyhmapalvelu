@@ -29,4 +29,11 @@
 (defn toggle-filtered-item-selection [filtered? item]
   (change-filtered-item filtered? item #(update % :is-selected not)))
 
+(defn create-hakukohde-matches-all-lisarajaimet [lisarajaimet]
+  (fn [hakukohde]
+    (every? #(apply % [hakukohde]) lisarajaimet)))
 
+(defn lisarajain->fn [lisarajain]
+  (let [{type :type value :value path :path} lisarajain]
+    (case type
+      :boolean (when value (fn [hk] (true? (get-in hk path)))))))

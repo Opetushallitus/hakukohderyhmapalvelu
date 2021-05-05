@@ -17,6 +17,10 @@
 (def haku-hakukohteet-as-options :haku/hakukohteet-as-options)
 (def haku-selected-hakukohteet :haku/selected-hakukohteet)
 (def haku-hakukohteet-not-in-hakukohderyhma :haku/haku-hakukohteet-not-in-hakukohderyhma)
+(def haku-lisarajaimet-visible :haku/lisarajaimet-visible)
+(def haku-lisarajaimet-filters :haku/lisarajaimet-filters)
+(def haku-lisarajaimet-filters-as-fns :haku/haku-lisarajaimet-filters-as-fns)
+(def haku-lisarajaimet-text :haku/haku-lisarajaimet-text)
 
 (re-frame/reg-sub
   haku-haut
@@ -73,7 +77,6 @@
   (fn [db _]
     (get-in db haku-events/haku-hakukohteet-filter)))
 
-
 (re-frame/reg-sub
   haku-hakukohteet-not-in-hakukohderyhma
   (fn []
@@ -88,11 +91,13 @@
   (fn []
     [(re-frame/subscribe [:lang])
      (re-frame/subscribe [haku-hakukohteet-filter])
-     (re-frame/subscribe [haku-hakukohteet-not-in-hakukohderyhma])])
-  (fn [[lang filter-text hakukohteet] _]
+     (re-frame/subscribe [haku-hakukohteet-not-in-hakukohderyhma])
+     (re-frame/subscribe [haku-lisarajaimet-filters-as-fns])])
+  (fn [[lang filter-text hakukohteet lisarajaimet] _]
     (let [transform-fn (i18n-utils/create-item->option-transformer lang :nimi :oid #(-> % :oikeusHakukohteeseen not))]
       (->> hakukohteet
            (filter #(u/hakukohde-includes-string? % filter-text lang))
+           (filter (u/create-hakukohde-matches-all-lisarajaimet lisarajaimet))
            (map transform-fn)
            (remove :is-disabled)))))
 
@@ -102,3 +107,28 @@
     [(re-frame/subscribe [haku-hakukohteet-not-in-hakukohderyhma])])
   (fn [[hakukohteet]]
     (filter :is-selected hakukohteet)))
+
+(re-frame/reg-sub
+  haku-lisarajaimet-visible
+  (fn [db _]
+    (get-in db haku-events/haku-lisarajaimet-visible-path)))
+
+(re-frame/reg-sub
+  haku-lisarajaimet-filters
+  (fn [db]
+    (get-in db haku-events/haku-lisarajaimet-filters-path)))
+
+(re-frame/reg-sub
+  haku-lisarajaimet-filters-as-fns
+  (fn [db]
+      (->> (get-in db haku-events/haku-lisarajaimet-filters-path)
+           (keep u/lisarajain->fn))))
+
+(re-frame/reg-sub
+  haku-lisarajaimet-text
+  (fn []
+    [(re-frame/subscribe [:translation :haku/lisarajaimet])
+     (re-frame/subscribe [haku-lisarajaimet-filters-as-fns])])
+  (fn [[text lisarajaimet] _]
+    (cond-> text
+            (not-empty lisarajaimet) (str " (" (count lisarajaimet) ")"))))

@@ -32,16 +32,18 @@
                     :parentOid    "1.2.246.562.28.01"
                     :ryhmatyypit  []
                     :tyypit       []
-                    :hakukohteet  [{:oid                  "1.2.246.562.20.1"
-                                    :nimi                 {:fi "Hakukohde 1"}
-                                    :hakuOid              "1.2.246.562.29.1"
-                                    :organisaatio         test-fixtures/organisaatio-1
-                                    :oikeusHakukohteeseen true}
-                                   {:oid                  "1.2.246.562.20.2"
-                                    :nimi                 {:fi "Hakukohde 2"}
-                                    :hakuOid              "1.2.246.562.29.1"
-                                    :organisaatio         test-fixtures/organisaatio-2
-                                    :oikeusHakukohteeseen true}]}]
+                    :hakukohteet  [{:oid                           "1.2.246.562.20.1"
+                                    :nimi                          {:fi "Hakukohde 1"}
+                                    :hakuOid                       "1.2.246.562.29.1"
+                                    :organisaatio                  test-fixtures/organisaatio-1
+                                    :toinenAsteOnkoKaksoistutkinto false
+                                    :oikeusHakukohteeseen          true}
+                                   {:oid                           "1.2.246.562.20.2"
+                                    :nimi                          {:fi "Hakukohde 2"}
+                                    :hakuOid                       "1.2.246.562.29.1"
+                                    :organisaatio                  test-fixtures/organisaatio-2
+                                    :toinenAsteOnkoKaksoistutkinto false
+                                    :oikeusHakukohteeseen          true}]}]
       (dispatch-mock {:method   :get
                       :path     "/organisaatio-service/rest/organisaatio/v4/1.2.246.562.28.4"
                       :service  :organisaatio-service
@@ -98,8 +100,8 @@
                       :request  ["1.2.246.562.28.1" "1.2.246.562.28.2"]
                       :response organisaatio-test-fixtures/organisaatiot-response})
       (is (thrown? Exception
-                     (hakukohderyhma-protocol/update-hakukohderyhma-hakukohteet
-                       service hakukohderyhma-test-fixtures/fake-session "1.2.246.562.28.4" hakukohteet))))))
+                   (hakukohderyhma-protocol/update-hakukohderyhma-hakukohteet
+                     service hakukohderyhma-test-fixtures/fake-session "1.2.246.562.28.4" hakukohteet))))))
 
 (deftest hakukohderyhma-delete-service-test
   (testing "Hakukohderyhmän poistaminen onnistuu, kun hakukohderyhmää ei käytetä atarussa"

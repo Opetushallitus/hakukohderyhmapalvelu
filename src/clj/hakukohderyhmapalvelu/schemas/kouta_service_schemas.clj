@@ -17,12 +17,13 @@
   [HaunTiedot])
 
 (s/defschema Hakukohde
-  {:oid  s/Str
-   :nimi c/Nimi
-   :organisaatioOid s/Str
-   :hakuOid s/Str
+  {:oid                                   s/Str
+   :nimi                                  c/Nimi
+   :organisaatioOid                       s/Str
+   :hakuOid                               s/Str
+   :toinenAsteOnkoKaksoistutkinto         s/Bool
    (s/optional-key :oikeusHakukohteeseen) s/Bool
-   s/Any s/Any})
+   s/Any                                  s/Any})
 
 (s/defschema HakukohdeListResponse
   [Hakukohde])

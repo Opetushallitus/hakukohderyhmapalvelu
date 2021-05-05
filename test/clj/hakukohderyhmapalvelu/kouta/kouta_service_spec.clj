@@ -51,16 +51,18 @@
                     :response []})
     (is (empty? (kouta-service-protocol/list-haun-hakukohteet (:kouta-service @test-system) "1.2.246.562.29.1" tarjoajat))))
   (testing "List hakukohteet for haku"
-    (let [expected [{:oid          "1.2.246.562.20.1"
-                     :nimi         {:fi "Hakukohde 1"}
-                     :hakuOid      "1.2.246.562.29.1"
-                     :organisaatio test-fixtures/organisaatio-1
-                     :oikeusHakukohteeseen true}
-                    {:oid          "1.2.246.562.20.2"
-                     :nimi         {:fi "Hakukohde 2"}
-                     :hakuOid      "1.2.246.562.29.1"
-                     :organisaatio test-fixtures/organisaatio-2
-                     :oikeusHakukohteeseen true}]]
+    (let [expected [{:oid                           "1.2.246.562.20.1"
+                     :nimi                          {:fi "Hakukohde 1"}
+                     :hakuOid                       "1.2.246.562.29.1"
+                     :organisaatio                  test-fixtures/organisaatio-1
+                     :toinenAsteOnkoKaksoistutkinto false
+                     :oikeusHakukohteeseen          true}
+                    {:oid                           "1.2.246.562.20.2"
+                     :nimi                          {:fi "Hakukohde 2"}
+                     :hakuOid                       "1.2.246.562.29.1"
+                     :organisaatio                  test-fixtures/organisaatio-2
+                     :toinenAsteOnkoKaksoistutkinto false
+                     :oikeusHakukohteeseen          true}]]
       (dispatch-mock {:method   :get
                       :path     "/kouta-internal/hakukohde/search?haku=1.2.246.562.29.1&tarjoaja=1.2.246.562.10.00000000001&all=true"
                       :service  :kouta-service
@@ -72,16 +74,18 @@
                       :response organisaatio-test-fixtures/organisaatiot-response})
       (is (= expected (kouta-service-protocol/list-haun-hakukohteet (:kouta-service @test-system) "1.2.246.562.29.1" tarjoajat)))))
   (testing "Find hakukohteet by oids"
-    (let [expected [{:oid          "1.2.246.562.20.1"
-                     :nimi         {:fi "Hakukohde 1"}
-                     :hakuOid      "1.2.246.562.29.1"
-                     :organisaatio test-fixtures/organisaatio-1
-                     :oikeusHakukohteeseen true}
-                    {:oid          "1.2.246.562.20.2"
-                     :nimi         {:fi "Hakukohde 2"}
-                     :hakuOid      "1.2.246.562.29.1"
-                     :organisaatio test-fixtures/organisaatio-2
-                     :oikeusHakukohteeseen true}]]
+    (let [expected [{:oid                           "1.2.246.562.20.1"
+                     :nimi                          {:fi "Hakukohde 1"}
+                     :hakuOid                       "1.2.246.562.29.1"
+                     :organisaatio                  test-fixtures/organisaatio-1
+                     :toinenAsteOnkoKaksoistutkinto false
+                     :oikeusHakukohteeseen          true}
+                    {:oid                           "1.2.246.562.20.2"
+                     :nimi                          {:fi "Hakukohde 2"}
+                     :hakuOid                       "1.2.246.562.29.1"
+                     :organisaatio                  test-fixtures/organisaatio-2
+                     :toinenAsteOnkoKaksoistutkinto false
+                     :oikeusHakukohteeseen          true}]]
       (dispatch-mock {:method   :post
                       :path     "/kouta-internal/hakukohde/findbyoids?tarjoaja=1.2.246.562.10.00000000001"
                       :service  :kouta-service

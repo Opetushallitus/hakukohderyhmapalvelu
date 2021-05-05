@@ -37,3 +37,10 @@ export const hakukohteetLisaysButtonSelector =
 export const hakukohdeSelectAllSelector = 'button[cypressid=select-all-btn]'
 
 export const hakukohdeDeselectAllSelector = 'button[cypressid=deselect-all-btn]'
+
+export const extraFiltersButtonSelector = 'button[cypressid=extra-filters-btn]'
+
+export const extraFiltersPopupClose = 'div[cypressid=extra-filters-popup-close]'
+
+export const extraFilterBooleanSelector = (name: string): string =>
+  `div[cypressid=${name}-extra-filter-input]`

@@ -45,6 +45,14 @@
    :is-selected s/Bool
    :hakukohteet [Hakukohde]})
 
+(s/defschema Lisarajaimet
+  {:popup-visible s/Bool
+   :filters       [{:id    s/Str
+                    :label s/Keyword
+                    :path  [s/Keyword]
+                    :type  s/Keyword
+                    :value s/Any}]})
+
 (s/defschema Hakukohderyhma
   (st/merge
     api-schemas/Hakukohderyhma
@@ -59,7 +67,8 @@
                               :rename-active? s/Bool
                               :deletion-confirmation-active? s/Bool}
     :haut                    [HaunTiedot]
-    :hakukohteet-filter      s/Str}})
+    :hakukohteet-filter      s/Str
+    :lisarajaimet            Lisarajaimet}})
 
 (s/defschema Requests
   {:requests #{s/Keyword}})

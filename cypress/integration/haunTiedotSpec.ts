@@ -91,6 +91,7 @@ describe('Hakukohderyhmäpalvelu - haun tiedot', () => {
                 kayttoryhmat: [],
               },
               oikeusHakukohteeseen: true,
+              toinenAsteOnkoKaksoistutkinto: true,
             },
             {
               oid: '1.2.4.2.1.2',
@@ -106,6 +107,7 @@ describe('Hakukohderyhmäpalvelu - haun tiedot', () => {
                 kayttoryhmat: [],
               },
               oikeusHakukohteeseen: true,
+              toinenAsteOnkoKaksoistutkinto: false,
             },
             {
               oid: '1.2.4.2.1.3',
@@ -121,6 +123,7 @@ describe('Hakukohderyhmäpalvelu - haun tiedot', () => {
                 kayttoryhmat: [],
               },
               oikeusHakukohteeseen: false,
+              toinenAsteOnkoKaksoistutkinto: false,
             },
             {
               oid: '1.2.4.2.1.4',
@@ -269,6 +272,7 @@ describe('Hakukohderyhmäpalvelu - haun tiedot', () => {
             oid: '1.2.4.2.1.2',
             nimi: { fi: 'Testi-jatkotutkinto' },
             hakuOid: '1.2.4.1.1.1',
+            toinenAsteOnkoKaksoistutkinto: false,
             organisaatio: {
               oid: '1.2.10.1.2.2',
               nimi: { fi: 'Organisaatio 2' },
@@ -283,6 +287,7 @@ describe('Hakukohderyhmäpalvelu - haun tiedot', () => {
             oid: '1.2.4.2.1.1',
             nimi: { fi: 'Testi-perustutkinto' },
             hakuOid: '1.2.4.1.1.1',
+            toinenAsteOnkoKaksoistutkinto: false,
             organisaatio: {
               oid: '1.2.10.1.2.1',
               nimi: { fi: 'Organisaatio 1' },
@@ -309,6 +314,7 @@ describe('Hakukohderyhmäpalvelu - haun tiedot', () => {
               nimi: { fi: 'Testi-perustutkinto' },
               hakuOid: '1.2.4.1.1.1',
               oikeusHakukohteeseen: true,
+              toinenAsteOnkoKaksoistutkinto: false,
               organisaatio: {
                 oid: '1.2.10.1.2.1',
                 nimi: { fi: 'Organisaatio 1' },
@@ -324,6 +330,7 @@ describe('Hakukohderyhmäpalvelu - haun tiedot', () => {
               nimi: { fi: 'Testi-jatkotutkinto' },
               hakuOid: '1.2.4.1.1.1',
               oikeusHakukohteeseen: true,
+              toinenAsteOnkoKaksoistutkinto: false,
               organisaatio: {
                 oid: '1.2.10.1.2.2',
                 nimi: { fi: 'Organisaatio 2' },
