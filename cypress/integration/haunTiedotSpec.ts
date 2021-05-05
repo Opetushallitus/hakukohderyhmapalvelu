@@ -139,6 +139,7 @@ describe('Hakukohderyhmäpalvelu - haun tiedot', () => {
                 kayttoryhmat: [],
               },
               oikeusHakukohteeseen: false,
+              toinenAsteOnkoKaksoistutkinto: false,
             },
           ]),
       )
