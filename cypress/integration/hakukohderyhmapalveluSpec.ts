@@ -14,9 +14,19 @@ describe('Hakukohderyhmäpalvelu', () => {
     cy.visit('/')
     cy.get('body').type('{ctrl}h')
   }
+  const addUnauthorizedMockHakukohdeToHakukohderyhma = () => {
+    cy.task('query', {
+      sql: `
+                INSERT INTO hakukohderyhma (hakukohde_oid, hakukohderyhma_oid)
+                VALUES ($1, $2)
+            `,
+      values: ['1.2.4.2.1.4', '1.1.2.5.2.9'],
+    })
+  }
   const tarjoajaParameter = 'tarjoaja=1.2.246.562.10.0439845%2C1.2.246.562.28.1'
 
   before(() => {
+    addUnauthorizedMockHakukohdeToHakukohderyhma()
     cy.login()
     cy.mockBackendRequest({
       method: 'GET',
@@ -219,12 +229,41 @@ describe('Hakukohderyhmäpalvelu', () => {
         },
       )
     })
-    it('Valitaan hakukohderyhmä, jolla ei ole hakukohteita', () => {
-      cy.get(hl.hakukohderyhmanValintaDropdown)
-        .type('Kinuskiryhmä{enter}')
-        .get(hh.hakukohderyhmanHakukohteetContainerSelector)
-        .children()
-        .should('have.length', 0)
+    it('Valitaan hakukohderyhmä, jolla on ainoastaan oikeudettomia hakukohteita', () => {
+      cy.fixture('hakukohderyhmapalvelu/get-hakukohde-response.json').then(
+        hakukohteet => {
+          cy.get(hl.hakukohderyhmanValintaDropdown)
+            .type('Kinuskiryhmä{enter}')
+            .get(hh.hakukohderyhmanHakukohteetContainerSelector)
+            .children()
+            .should('have.length', 1)
+            .get(hh.hakukohderyhmanHakukohteetContainerSelector)
+            .contains(hakukohteet[1].nimi.fi)
+            .should('not.exist')
+            .get(hh.hakukohderyhmanHakukohteetContainerSelector)
+            .contains(hakukohteet[3].nimi.fi)
+            .should('exist')
+        },
+      )
+    })
+    it('Oikeudettomia hakukohteita ei voi poistaa ryhmästä', () => {
+      cy.fixture('hakukohderyhmapalvelu/get-hakukohde-response.json').then(
+        hakukohteet => {
+          cy.get(hh.hakukohderyhmanHakukohteetContainerSelector)
+            .children()
+            .each(el => {
+              cy.wrap(el).click({ force: true })
+            })
+            .get(hh.poistaRyhmastaButtonSelector)
+            .click({ force: true })
+            .get(hh.hakukohderyhmanHakukohteetContainerSelector)
+            .children()
+            .should('have.length', 1)
+            .get(hh.hakukohderyhmanHakukohteetContainerSelector)
+            .contains(hakukohteet[3].nimi.fi)
+            .should('exist')
+        },
+      )
     })
     it('Poistetaan hakukohteet hakukohderyhmältä', () => {
       cy.login()
@@ -635,6 +674,28 @@ describe('Hakukohderyhmäpalvelu', () => {
           })
         })
       })
+      describe('Hakukohderyhmässä oikeudettomia hakukohteita', () => {
+        it('Hakukohderyhmää ei voi poistaa, jos siinä on oikeudettomia hakukohteita', () => {
+          cy.fixture(
+            'hakukohderyhmapalvelu/get-organisaatio-ryhmat-response.json',
+          ).then(ryhmat => {
+            const preExistingRyhmaNimi = ryhmat[0].nimi.fi
+            const searchStr = preExistingRyhmaNimi.substr(0, 4)
+            cy.get(hakukohderyhmanValintaDropdown)
+              .type(`${searchStr}{enter}`)
+              .get(hl.hakukohderyhmanLisaysMuokkaaRyhmaaLinkSelector)
+              .click({
+                force: true,
+              })
+              .get(hl.hakukohderyhmanPoistoDeleteButtton)
+              .should('not.exist')
+              .get(
+                hl.hakukohderyhmanLisaysSaveRenameHakukohderyhmaButtonSelector,
+              )
+              .should('exist')
+          })
+        })
+      })
       describe('Hakukohderyhmän epäonnistunut poisto', () => {
         before(() => {
           //TODO when ataru check has been implemented
@@ -652,15 +713,13 @@ describe('Hakukohderyhmäpalvelu', () => {
           //paina alert bannerin sulkuruksia
           //assert, että alert banner katoaa
         })
-        it('Jos poistettava ryhmässä on oikeudettomia hakukohtteita, käyttäjälle näytetään alert banner', () => {
-          //valitse ryhmä
-          //muokkaa ryhmää
-          //paina roskakori-nappia
-          //paina vahvista poisto- nappia
-          //assert, että roskakori on näkyvissä
-          //assert, että alert banner näkyy ja siinä oikea teksti
-        })
       })
+    })
+  })
+
+  after('Clean up db', () => {
+    cy.task('query', {
+      sql: 'TRUNCATE hakukohderyhma',
     })
   })
 })

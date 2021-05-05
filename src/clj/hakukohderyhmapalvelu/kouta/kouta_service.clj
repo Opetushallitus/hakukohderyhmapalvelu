@@ -42,6 +42,12 @@
         (map #(enrich-with-organisaatio % organisaatiot) hakukohteet')
         (st/select-schema hakukohteet' api-schemas/HakukohdeListResponse)))
 
+(defn- get-organisations-for-hakukohteet [organisaatio-service hakukohteet]
+  (->> (map :organisaatioOid hakukohteet)
+       distinct
+       (organisaatio/find-by-oids organisaatio-service)
+       (group-by :oid)))
+
 (defrecord KoutaService [kouta-authenticating-client organisaatio-service config]
   component/Lifecycle
 
@@ -73,10 +79,7 @@
           hakukohteet (as-> url res'
                             (authenticating-client-protocol/get kouta-authenticating-client res' schemas/HakukohdeListResponse)
                             (http/parse-and-validate res' schemas/HakukohdeListResponse))
-          organisaatiot (->> (map :organisaatioOid hakukohteet)
-                             (organisaatio/find-by-oids organisaatio-service)
-                             (group-by :oid))]
-
+          organisaatiot (get-organisations-for-hakukohteet organisaatio-service hakukohteet)]
       (enrich-hakukohteet-with-organisaatio hakukohteet organisaatiot)))
 
   (find-hakukohteet-by-oids [_ oids tarjoajat]
@@ -85,13 +88,11 @@
             url (oph-url/resolve-url :kouta-internal.hakukohde.findbyoids config {:tarjoaja tarjoaja})
             hakukohteet (as-> url res'
                               (authenticating-client-protocol/post kouta-authenticating-client
-                                                                   {:url res'
+                                                                   {:url  res'
                                                                     :body oids}
-                                                                   {:request-schema [s/Str]
+                                                                   {:request-schema  [s/Str]
                                                                     :response-schema schemas/HakukohdeListResponse})
                               (http/parse-and-validate res' schemas/HakukohdeListResponse))
-            organisaatiot (->> (map :organisaatioOid hakukohteet)
-                               (organisaatio/find-by-oids organisaatio-service)
-                               (group-by :oid))]
+            organisaatiot (get-organisations-for-hakukohteet organisaatio-service hakukohteet)]
         (enrich-hakukohteet-with-organisaatio hakukohteet organisaatiot))
       [])))
