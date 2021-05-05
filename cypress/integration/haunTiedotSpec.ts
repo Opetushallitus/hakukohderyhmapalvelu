@@ -2,6 +2,8 @@
 // eslint-disable-next-line @typescript-eslint/triple-slash-reference
 /// <reference path="../support/commands.d.ts"/>
 
+import { v4 as uuidv4 } from 'uuid'
+
 describe('Hakukohderyhmäpalvelu - haun tiedot', () => {
   const tarjoajaParameter = 'tarjoaja=1.2.246.562.10.0439845%2C1.2.246.562.28.1'
 
@@ -379,6 +381,53 @@ describe('Hakukohderyhmäpalvelu - haun tiedot', () => {
         expect(status).to.equal(200)
         expect(body).to.deep.equal({ status: 'deleted' })
       })
+    })
+  })
+
+  describe('CAS-logout', () => {
+    const id = uuidv4()
+    const data = {
+      identity: {
+        oid: '1.2.246.562.24.1',
+        lang: 'fi',
+        ticket: 'TICKET-123',
+        username: 'user1',
+        'last-name': 'Last',
+        'first-name': 'First',
+        organizations: ['1.2.246.562.10.00000000001'],
+      },
+      'client-ip': '127.0.0.1',
+      'logged-in': true,
+      'user-agent': 'None',
+      'ring.middleware.session-timeout/idle-timeout': 12345567,
+    }
+    const logoutRequest = `
+    <samlp:LogoutRequest xmlns:samlp="urn:oasis:names:tc:SAML:2.0:protocol" ID="id" Version="2.0" IssueInstant="2021-05-05T10:00:00Z">
+        <saml:NameID xmlns:saml="urn:oasis:names:tc:SAML:2.0:assertion">user1</saml:NameID>
+        <samlp:SessionIndex>TICKET-123</samlp:SessionIndex>
+    </samlp:LogoutRequest>
+    `
+
+    it('Uloskirjaus onnistuu', () => {
+      cy.task('query', {
+        sql: 'INSERT INTO sessions(key, data) VALUES ($1, $2)',
+        values: [id, JSON.stringify(data)],
+      })
+        .request({
+          method: 'POST',
+          url: '/hakukohderyhmapalvelu/auth/cas',
+          form: true,
+          body: { logoutRequest },
+        })
+        .task('query', {
+          sql:
+            'SELECT data->\'logged-in\' AS "loggedIn" FROM sessions WHERE key = $1',
+          values: [id],
+        })
+        .then((res: any) => { // eslint-disable-line
+          const { loggedIn } = res.rows[0]
+          expect(loggedIn).to.equal(false)
+        })
     })
   })
 
