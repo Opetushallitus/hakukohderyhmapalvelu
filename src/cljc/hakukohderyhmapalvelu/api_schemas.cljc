@@ -21,9 +21,10 @@
 (s/defschema Hakukohde
   (st/merge
     CommonOrganisaatioEntityPayload
-    {:organisaatio             Organisaatio
+    {:organisaatio                          Organisaatio
+     :toinenAsteOnkoKaksoistutkinto         s/Bool
      (s/optional-key :oikeusHakukohteeseen) s/Bool
-     (s/optional-key :hakuOid) s/Str}))
+     (s/optional-key :hakuOid)              s/Str}))
 
 (s/defschema Hakukohderyhma
   (st/merge Organisaatio
@@ -47,7 +48,7 @@
   {:status (s/enum StatusDeleted StatusInUse)})
 
 (s/defschema HakukohderyhmaSearchRequest
-  {:oids [s/Str]
+  {:oids         [s/Str]
    :includeEmpty s/Bool})
 
 (s/defschema HaunTiedot

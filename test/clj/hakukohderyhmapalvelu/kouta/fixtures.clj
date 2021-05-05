@@ -17,35 +17,40 @@
                 :paattyy "2100-12-01T00:00:00"}]}
    {:oid      "1.2.246.562.29.4"
     :nimi     {:fi "Nykyhetkellä voimassa oleva jatkuva"}
-    :hakuajat [{:alkaa   "2020-01-03T00:00:00"}]}])
+    :hakuajat [{:alkaa "2020-01-03T00:00:00"}]}])
 
 (def kouta-hakukohteet-response
-  [{:oid                  "1.2.246.562.20.1"
-    :nimi                 {:fi "Hakukohde 1"}
-    :organisaatioOid      "1.2.246.562.28.1"
-    :hakuOid              "1.2.246.562.29.1"
-    :oikeusHakukohteeseen true}
-   {:oid                  "1.2.246.562.20.2"
-    :nimi                 {:fi "Hakukohde 2"}
-    :organisaatioOid      "1.2.246.562.28.2"
-    :hakuOid              "1.2.246.562.29.1"
-    :oikeusHakukohteeseen true}])
+  [{:oid                           "1.2.246.562.20.1"
+    :nimi                          {:fi "Hakukohde 1"}
+    :organisaatioOid               "1.2.246.562.28.1"
+    :hakuOid                       "1.2.246.562.29.1"
+    :toinenAsteOnkoKaksoistutkinto false
+    :oikeusHakukohteeseen          true}
+   {:oid                           "1.2.246.562.20.2"
+    :nimi                          {:fi "Hakukohde 2"}
+    :organisaatioOid               "1.2.246.562.28.2"
+    :hakuOid                       "1.2.246.562.29.1"
+    :toinenAsteOnkoKaksoistutkinto false
+    :oikeusHakukohteeseen          true}])
 
 (def kouta-hakukohteet-response-1-3
-  [{:oid                  "1.2.246.562.20.1"
-    :nimi                 {:fi "Hakukohde 1"}
-    :organisaatioOid      "1.2.246.562.28.1"
-    :hakuOid              "1.2.246.562.29.1"
-    :oikeusHakukohteeseen true}
-   {:oid                  "1.2.246.562.20.3"
-    :nimi                 {:fi "Hakukohde 3"}
-    :organisaatioOid      "1.2.246.562.28.2"
-    :hakuOid              "1.2.246.562.29.2"
-    :oikeusHakukohteeseen true}])
+  [{:oid                           "1.2.246.562.20.1"
+    :nimi                          {:fi "Hakukohde 1"}
+    :organisaatioOid               "1.2.246.562.28.1"
+    :hakuOid                       "1.2.246.562.29.1"
+    :toinenAsteOnkoKaksoistutkinto false
+    :oikeusHakukohteeseen          true}
+   {:oid                           "1.2.246.562.20.3"
+    :nimi                          {:fi "Hakukohde 3"}
+    :organisaatioOid               "1.2.246.562.28.2"
+    :hakuOid                       "1.2.246.562.29.2"
+    :toinenAsteOnkoKaksoistutkinto false
+    :oikeusHakukohteeseen          true}])
 
 (def kouta-hakukohteet-response-for-delete
-  [{:oid                  "1.2.3.4.5.6.7.8.9.10"
-    :nimi                 {:fi "Hakukohde 1"}
-    :organisaatioOid      "1.2.246.562.28.1"
-    :hakuOid              "1.2.246.562.29.1"
-    :oikeusHakukohteeseen true}])
+  [{:oid                           "1.2.3.4.5.6.7.8.9.10"
+    :nimi                          {:fi "Hakukohde 1"}
+    :organisaatioOid               "1.2.246.562.28.1"
+    :hakuOid                       "1.2.246.562.29.1"
+    :toinenAsteOnkoKaksoistutkinto false
+    :oikeusHakukohteeseen          true}])
