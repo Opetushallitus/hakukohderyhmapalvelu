@@ -16,7 +16,7 @@
    :z-index          1
    :filter           "drop-shadow(0 1px 3px rgba(0, 0, 0, 0.3))"
    :background-color "white"
-   :padding          "5px"
+   :padding          "1rem"
    ::stylefy/mode    [[:after {:bottom        "100%"
                                :right         "80px"
                                :margin-right  "-8px"
@@ -34,11 +34,12 @@
                                 :border-bottom-color "#ffffff"}]]})
 
 (s/defschema PopupProps
-  {:on-close s/Any
-   :style    {s/Any s/Any}})
+  {:on-close  s/Any
+   :style     {s/Any s/Any}
+   :cypressid s/Str})
 
-(s/defn popup [{:keys [style on-close]} :- PopupProps]
+(s/defn popup [{:keys [style on-close cypressid]} :- PopupProps & children]
   [:<>
-   [:div (stylefy/use-style popup-background {:on-click #(on-close)})]
-   [:div (stylefy/use-style (merge popup-style style))
-    "POPUPIN SISÄLTÖÄ TÄHÄN"]])
+   [:div (stylefy/use-style popup-background {:cypressid (str cypressid "-close") :on-click #(on-close)})]
+   [:div (stylefy/use-style (merge popup-style style) {:cypressid cypressid})
+    children]])

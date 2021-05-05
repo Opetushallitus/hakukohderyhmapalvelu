@@ -189,6 +189,50 @@ describe('Hakukohderyhmäpalvelu', () => {
           expect($el.text()).to.equal('Testi-perustutkinto')
         })
     })
+
+    it('Suodattaa hakukohteita lisärajaimilla', () => {
+      cy.get(hh.hakukohteidenSuodatusInputSelector).clear()
+      cy.get(hh.hakukohteetContainerSelector)
+        .children()
+        .should('have.length', 2)
+
+      cy.get(hh.extraFiltersButtonSelector).click({ force: true })
+      cy.get(hh.extraFilterBooleanSelector('kaksoistutkinto-filter')).should(
+        'have.attr',
+        'aria-checked',
+        'false',
+      )
+      cy.get(hh.extraFilterBooleanSelector('kaksoistutkinto-filter')).click({
+        force: true,
+      })
+      cy.get(hh.extraFilterBooleanSelector('kaksoistutkinto-filter')).should(
+        'have.attr',
+        'aria-checked',
+        'true',
+      )
+      cy.get(hh.extraFiltersPopupClose).click({ force: true })
+
+      cy.get(hh.hakukohteetContainerSelector)
+        .children()
+        .should('have.length', 1)
+
+      cy.get(hh.hakukohteetContainerSelector)
+        .children()
+        .eq(0)
+        .should($el => {
+          expect($el.text()).to.equal('Testi-perustutkinto')
+        })
+
+      cy.get(hh.extraFiltersButtonSelector).click({ force: true })
+      cy.get(hh.extraFilterBooleanSelector('kaksoistutkinto-filter')).click({
+        force: true,
+      })
+      cy.get(hh.extraFiltersPopupClose).click({ force: true })
+
+      cy.get(hh.hakukohteetContainerSelector)
+        .children()
+        .should('have.length', 2)
+    })
   })
   describe('Hakukohteen lisääminen ja poistaminen hakukohderyhmäään', () => {
     it('Lisää hakukohde hakukohderyhmään', () => {

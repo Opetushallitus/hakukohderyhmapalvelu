@@ -74,7 +74,11 @@
    :hakukohderyhma/muokkaa-ryhmaa
    {:fi "Muokkaa ryhmää"}
    :hakukohderyhma/hakukohderyhma-käytössä-viesti
-   {:fi "Hakukohderyhmä on käytössä hakulomakkeella ja sitä ei voi poistaa."}})
+   {:fi "Hakukohderyhmä on käytössä hakulomakkeella ja sitä ei voi poistaa."}
+   :haku/lisarajaimet
+   {:fi "Lisäsuodattimet"}
+   :haku/lisarajain-kaksoistutkinto
+   {:fi "Hakukohteella mahdollisuus kaksoistutkintoon"}})
 
 (def translations
   (merge
