@@ -52,7 +52,6 @@
    :grid-area       style-prefix
    :margin          0
    :padding         0
-   :text-decoration "underline"
    ::stylefy/mode   [[":hover:not(:disabled)" {:color colors/blue-lighten-1}]
                      [:disabled {:cursor "default"
                                  :color colors/blue-lighten-3}]]})
