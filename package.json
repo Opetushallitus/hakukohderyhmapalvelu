@@ -70,8 +70,8 @@
   },
   "dependencies": {
     "@cypress/webpack-preprocessor": "^5.4.8",
-    "react": "^16.14.0",
-    "react-dom": "^16.14.0",
-    "react-select": "^4.1.0"
+    "react": "^17.0.2",
+    "react-dom": "^17.0.2",
+    "react-select": "^4.3.0"
   }
 }
