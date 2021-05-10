@@ -2,11 +2,18 @@
   (:require [hakukohderyhmapalvelu.routes :as routes]))
 
 (def default-lisarajain-filters
-  [{:id    "kaksoistutkinto-filter"
-    :label :haku/lisarajain-kaksoistutkinto
-    :path  [:toinenAsteOnkoKaksoistutkinto]
-    :type  :boolean
-    :value false}])
+  [{:id      "sora-filter"
+    :label   :haku/lisarajain-sora-hakukohde
+    :path    [:sora :tila]
+    :type    :boolean
+    :pred-fn #(= "aktiivinen" %)
+    :value   false}
+   {:id      "kaksoistutkinto-filter"
+    :label   :haku/lisarajain-kaksoistutkinto
+    :path    [:toinenAsteOnkoKaksoistutkinto]
+    :type    :boolean
+    :pred-fn true?
+    :value   false}])
 
 (def default-db
   {:active-panel                      {:panel      routes/default-panel

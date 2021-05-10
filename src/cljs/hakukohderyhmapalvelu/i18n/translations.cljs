@@ -78,7 +78,9 @@
    :haku/lisarajaimet
    {:fi "Lisäsuodattimet"}
    :haku/lisarajain-kaksoistutkinto
-   {:fi "Hakukohteella mahdollisuus kaksoistutkintoon"}})
+   {:fi "Hakukohteella mahdollisuus kaksoistutkintoon"}
+   :haku/lisarajain-sora-hakukohde
+   {:fi "SORA -hakukohteet"}})
 
 (def translations
   (merge

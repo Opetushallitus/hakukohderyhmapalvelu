@@ -33,7 +33,6 @@
   (fn [hakukohde]
     (every? #(apply % [hakukohde]) lisarajaimet)))
 
-(defn lisarajain->fn [lisarajain]
-  (let [{type :type value :value path :path} lisarajain]
-    (case type
-      :boolean (when value (fn [hk] (true? (get-in hk path)))))))
+(defn lisarajain->fn [{:keys [type value path pred-fn]}]
+  (case type
+    :boolean (when value (fn [hk] (pred-fn (get-in hk path))))))
