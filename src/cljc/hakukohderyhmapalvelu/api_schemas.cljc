@@ -18,13 +18,17 @@
              :ryhmatyypit  [s/Str]
              :kayttoryhmat [s/Str]}))
 
+(s/defschema SoraTieto
+  {:tila s/Str})
+
 (s/defschema Hakukohde
   (st/merge
     CommonOrganisaatioEntityPayload
     {:organisaatio                          Organisaatio
      :toinenAsteOnkoKaksoistutkinto         s/Bool
      (s/optional-key :oikeusHakukohteeseen) s/Bool
-     (s/optional-key :hakuOid)              s/Str}))
+     (s/optional-key :hakuOid)              s/Str
+     (s/optional-key :sora)                 SoraTieto}))
 
 (s/defschema Hakukohderyhma
   (st/merge Organisaatio

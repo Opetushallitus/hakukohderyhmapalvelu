@@ -47,11 +47,12 @@
 
 (s/defschema Lisarajaimet
   {:popup-visible s/Bool
-   :filters       [{:id    s/Str
-                    :label s/Keyword
-                    :path  [s/Keyword]
-                    :type  s/Keyword
-                    :value s/Any}]})
+   :filters       [{:id      s/Str
+                    :label   s/Keyword
+                    :path    [s/Keyword]
+                    :type    s/Keyword
+                    :value   s/Any
+                    :pred-fn s/Any}]})
 
 (s/defschema Hakukohderyhma
   (st/merge

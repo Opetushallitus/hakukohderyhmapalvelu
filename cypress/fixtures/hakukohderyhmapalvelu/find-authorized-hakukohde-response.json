@@ -27,7 +27,8 @@
     "organisaatioOid": "1.2.10.1.2.1",
     "kielivalinta": ["fi"],
     "modified": "2021-01-05T10:01:02",
-    "oikeusHakukohteeseen":  true
+    "oikeusHakukohteeseen":  true,
+    "sora": {"tila": "arkistoitu"}
   },
   {
     "oid": "1.2.4.2.1.2",
@@ -57,6 +58,7 @@
     "organisaatioOid": "1.2.10.1.2.2",
     "kielivalinta": ["fi"],
     "modified": "2021-02-05T10:01:02",
-    "oikeusHakukohteeseen":  true
+    "oikeusHakukohteeseen":  true,
+    "sora": {"tila": "aktiivinen"}
   }
 ]

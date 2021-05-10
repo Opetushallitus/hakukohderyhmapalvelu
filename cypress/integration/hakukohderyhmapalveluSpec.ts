@@ -237,6 +237,26 @@ describe('Hakukohderyhmäpalvelu', () => {
       cy.get(hh.extraFilterBooleanSelector('kaksoistutkinto-filter')).click({
         force: true,
       })
+      cy.get(hh.extraFilterBooleanSelector('sora-filter')).click({
+        force: true,
+      })
+      cy.get(hh.extraFiltersPopupClose).click({ force: true })
+
+      cy.get(hh.hakukohteetContainerSelector)
+        .children()
+        .should('have.length', 1)
+
+      cy.get(hh.hakukohteetContainerSelector)
+        .children()
+        .eq(0)
+        .should($el => {
+          expect($el.text()).to.equal('Testi-jatkotutkinto')
+        })
+
+      cy.get(hh.extraFiltersButtonSelector).click({ force: true })
+      cy.get(hh.extraFilterBooleanSelector('sora-filter')).click({
+        force: true,
+      })
       cy.get(hh.extraFiltersPopupClose).click({ force: true })
 
       cy.get(hh.hakukohteetContainerSelector)

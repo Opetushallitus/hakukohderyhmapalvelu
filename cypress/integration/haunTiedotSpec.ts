@@ -92,6 +92,7 @@ describe('Hakukohderyhmäpalvelu - haun tiedot', () => {
               },
               oikeusHakukohteeseen: true,
               toinenAsteOnkoKaksoistutkinto: true,
+              sora: { tila: 'arkistoitu' },
             },
             {
               oid: '1.2.4.2.1.2',
@@ -108,6 +109,7 @@ describe('Hakukohderyhmäpalvelu - haun tiedot', () => {
               },
               oikeusHakukohteeseen: true,
               toinenAsteOnkoKaksoistutkinto: false,
+              sora: { tila: 'aktiivinen' },
             },
             {
               oid: '1.2.4.2.1.3',
@@ -124,6 +126,7 @@ describe('Hakukohderyhmäpalvelu - haun tiedot', () => {
               },
               oikeusHakukohteeseen: false,
               toinenAsteOnkoKaksoistutkinto: false,
+              sora: { tila: 'arkistoitu' },
             },
             {
               oid: '1.2.4.2.1.4',
@@ -140,6 +143,7 @@ describe('Hakukohderyhmäpalvelu - haun tiedot', () => {
               },
               oikeusHakukohteeseen: false,
               toinenAsteOnkoKaksoistutkinto: false,
+              sora: { tila: 'aktiivinen' },
             },
           ]),
       )
@@ -260,7 +264,7 @@ describe('Hakukohderyhmäpalvelu - haun tiedot', () => {
       cy.request(
         '/hakukohderyhmapalvelu/api/hakukohde/1.2.4.2.1.1/hakukohderyhmat',
       ).then(({ body }) => {
-        expect(body).to.deep.equal([]) //FIXME: this fails after first run because of no proper db cleanup
+        expect(body).to.deep.equal([])
       })
     })
 
@@ -316,6 +320,7 @@ describe('Hakukohderyhmäpalvelu - haun tiedot', () => {
               hakuOid: '1.2.4.1.1.1',
               oikeusHakukohteeseen: true,
               toinenAsteOnkoKaksoistutkinto: false,
+              sora: { tila: 'arkistoitu' },
               organisaatio: {
                 oid: '1.2.10.1.2.1',
                 nimi: { fi: 'Organisaatio 1' },
@@ -332,6 +337,7 @@ describe('Hakukohderyhmäpalvelu - haun tiedot', () => {
               hakuOid: '1.2.4.1.1.1',
               oikeusHakukohteeseen: true,
               toinenAsteOnkoKaksoistutkinto: false,
+              sora: { tila: 'aktiivinen' },
               organisaatio: {
                 oid: '1.2.10.1.2.2',
                 nimi: { fi: 'Organisaatio 2' },
