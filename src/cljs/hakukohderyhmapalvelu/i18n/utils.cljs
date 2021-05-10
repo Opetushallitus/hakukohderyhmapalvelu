@@ -14,8 +14,7 @@
 
 (defn get-with-fallback [m lang]
   (->> (order-for-lang lang)
-       (map #(get m %))
-       (remove nil?)
+       (keep #(get m %))
        first))
 
 (defn- item->option [lang label-field value-field disabled? item]
