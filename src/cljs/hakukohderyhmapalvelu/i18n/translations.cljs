@@ -79,6 +79,8 @@
    {:fi "Lisäsuodattimet"}
    :haku/lisarajain-kaksoistutkinto
    {:fi "Hakukohteella mahdollisuus kaksoistutkintoon"}
+   :haku/lisarajain-koulutustyypit
+   {:fi "Koulutustyypit"}
    :haku/lisarajain-sora-hakukohde
    {:fi "SORA -hakukohteet"}})
 

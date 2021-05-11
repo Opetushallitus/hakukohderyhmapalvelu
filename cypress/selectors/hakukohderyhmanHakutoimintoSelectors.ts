@@ -44,3 +44,6 @@ export const extraFiltersPopupClose = 'div[cypressid=extra-filters-popup-close]'
 
 export const extraFilterBooleanSelector = (name: string): string =>
   `div[cypressid=${name}-extra-filter-input]`
+
+export const extraFilterSelectSelector = (name: string): string =>
+  `div[cypressid=${name}-extra-filter]`

@@ -26,9 +26,10 @@
     CommonOrganisaatioEntityPayload
     {:organisaatio                          Organisaatio
      :toinenAsteOnkoKaksoistutkinto         s/Bool
-     :sora                                  (s/maybe SoraTieto)
+     (s/optional-key :sora)                 SoraTieto
      (s/optional-key :oikeusHakukohteeseen) s/Bool
-     (s/optional-key :hakuOid)              s/Str}))
+     (s/optional-key :hakuOid)              s/Str
+     (s/optional-key :koulutustyypit)       [s/Str]}))
 
 (s/defschema Hakukohderyhma
   (st/merge Organisaatio
@@ -66,3 +67,10 @@
 
 (s/defschema HakukohderyhmaListResponse
   [Hakukohderyhma])
+
+(s/defschema KoodistoResponse
+  [{:koodiUri s/Str
+    :metadata [{:nimi  s/Str
+                :kieli s/Str
+                s/Any  s/Any}]
+    s/Any     s/Any}])
