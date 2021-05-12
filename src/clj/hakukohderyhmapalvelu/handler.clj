@@ -128,6 +128,7 @@
                                :description "Hakukohderyhmäpalvelun ulkoinen rajapinta."}}
               :handler (swagger/create-swagger-handler)}}]
       ["/api"
+       {:parameters {:header {:caller-id s/Str}}}
        ["/health"
         {:get {:summary "Terveystarkastus"
                :tags    ["Admin"]

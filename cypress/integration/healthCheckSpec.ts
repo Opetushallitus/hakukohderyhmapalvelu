@@ -4,7 +4,9 @@
 
 describe('Hakukohderyhmäpalvelun health check', () => {
   before(() => {
-    cy.visit('/hakukohderyhmapalvelu/api/health')
+    cy.visit('/hakukohderyhmapalvelu/api/health', {
+      headers: { 'caller-id': 'cypress' },
+    })
   })
   it('Näyttää health check -tarkistuksen läpimenosta kertovan viestin', () => {
     cy.get('body').should(

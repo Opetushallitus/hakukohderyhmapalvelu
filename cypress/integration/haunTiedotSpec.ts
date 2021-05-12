@@ -24,7 +24,11 @@ describe('Hakukohderyhmäpalvelu - haun tiedot', () => {
       })
     })
     it('Hakee listauksen hauista, myös päättyneet haut', () => {
-      cy.request('/hakukohderyhmapalvelu/api/haku?all=true').then(({ body }) =>
+      cy.request({
+        method: 'GET',
+        url: '/hakukohderyhmapalvelu/api/haku?all=true',
+        headers: { 'caller-id': 'cypress' },
+      }).then(({ body }) =>
         expect(body).to.deep.equal([
           {
             oid: '1.2.3.4.5.1',
@@ -40,7 +44,11 @@ describe('Hakukohderyhmäpalvelu - haun tiedot', () => {
       )
     })
     it('Hakee listauksen hauista, vain voimassaolevat haut. Testaa, että all=false oletuksena', () => {
-      cy.request('/hakukohderyhmapalvelu/api/haku').then(({ body }) =>
+      cy.request({
+        method: 'GET',
+        url: '/hakukohderyhmapalvelu/api/haku',
+        headers: { 'caller-id': 'cypress' },
+      }).then(({ body }) =>
         expect(body).to.deep.equal([
           { oid: '1.2.3.4.5.2', nimi: { fi: 'Testihaku vain suomeksi' } },
           { oid: '1.2.3.4.5.3', nimi: { fi: 'Testihaku 3' } },
@@ -48,7 +56,11 @@ describe('Hakukohderyhmäpalvelu - haun tiedot', () => {
       )
     })
     it('Hakee listauksen hauista, vain voimassaolevat haut.', () => {
-      cy.request('/hakukohderyhmapalvelu/api/haku?all=false').then(({ body }) =>
+      cy.request({
+        method: 'GET',
+        url: '/hakukohderyhmapalvelu/api/haku?all=false',
+        headers: { 'caller-id': 'cypress' },
+      }).then(({ body }) =>
         expect(body).to.deep.equal([
           { oid: '1.2.3.4.5.2', nimi: { fi: 'Testihaku vain suomeksi' } },
           { oid: '1.2.3.4.5.3', nimi: { fi: 'Testihaku 3' } },
@@ -76,78 +88,81 @@ describe('Hakukohderyhmäpalvelu - haun tiedot', () => {
       })
     })
     it('Hakee listauksen haun hakukohteista', () => {
-      cy.request('/hakukohderyhmapalvelu/api/haku/1.2.4.1.1.1/hakukohde').then(
-        ({ body }) =>
-          expect(body).to.deep.equal([
-            {
-              oid: '1.2.4.2.1.1',
-              nimi: { fi: 'Testi-perustutkinto' },
-              hakuOid: '1.2.4.1.1.1',
-              organisaatio: {
-                oid: '1.2.10.1.2.1',
-                nimi: { fi: 'Organisaatio 1' },
-                version: 0,
-                parentOid: '1.2.0.0.0.0.1',
-                tyypit: ['organisaatiotyyppi_01'],
-                ryhmatyypit: [],
-                kayttoryhmat: [],
-              },
-              oikeusHakukohteeseen: true,
-              toinenAsteOnkoKaksoistutkinto: true,
-              sora: { tila: 'arkistoitu' },
+      cy.request({
+        method: 'GET',
+        url: '/hakukohderyhmapalvelu/api/haku/1.2.4.1.1.1/hakukohde',
+        headers: { 'caller-id': 'cypress' },
+      }).then(({ body }) =>
+        expect(body).to.deep.equal([
+          {
+            oid: '1.2.4.2.1.1',
+            nimi: { fi: 'Testi-perustutkinto' },
+            hakuOid: '1.2.4.1.1.1',
+            organisaatio: {
+              oid: '1.2.10.1.2.1',
+              nimi: { fi: 'Organisaatio 1' },
+              version: 0,
+              parentOid: '1.2.0.0.0.0.1',
+              tyypit: ['organisaatiotyyppi_01'],
+              ryhmatyypit: [],
+              kayttoryhmat: [],
             },
-            {
-              oid: '1.2.4.2.1.2',
-              nimi: { fi: 'Testi-jatkotutkinto' },
-              hakuOid: '1.2.4.1.1.1',
-              organisaatio: {
-                oid: '1.2.10.1.2.2',
-                nimi: { fi: 'Organisaatio 2' },
-                version: 0,
-                parentOid: '1.2.0.0.0.0.1',
-                tyypit: ['organisaatiotyyppi_02'],
-                ryhmatyypit: [],
-                kayttoryhmat: [],
-              },
-              oikeusHakukohteeseen: true,
-              toinenAsteOnkoKaksoistutkinto: false,
-              sora: { tila: 'aktiivinen' },
+            oikeusHakukohteeseen: true,
+            toinenAsteOnkoKaksoistutkinto: true,
+            sora: { tila: 'arkistoitu' },
+          },
+          {
+            oid: '1.2.4.2.1.2',
+            nimi: { fi: 'Testi-jatkotutkinto' },
+            hakuOid: '1.2.4.1.1.1',
+            organisaatio: {
+              oid: '1.2.10.1.2.2',
+              nimi: { fi: 'Organisaatio 2' },
+              version: 0,
+              parentOid: '1.2.0.0.0.0.1',
+              tyypit: ['organisaatiotyyppi_02'],
+              ryhmatyypit: [],
+              kayttoryhmat: [],
             },
-            {
-              oid: '1.2.4.2.1.3',
-              nimi: { fi: 'Testi-ei-oikeuksia' },
-              hakuOid: '1.2.4.1.1.1',
-              organisaatio: {
-                oid: '1.2.10.1.2.3',
-                nimi: { fi: 'Organisaatio, johon käyttäjällä ei ole asiaa' },
-                version: 0,
-                parentOid: '1.2.0.0.0.0.1',
-                tyypit: ['organisaatiotyyppi_03'],
-                ryhmatyypit: [],
-                kayttoryhmat: [],
-              },
-              oikeusHakukohteeseen: false,
-              toinenAsteOnkoKaksoistutkinto: false,
-              sora: { tila: 'arkistoitu' },
+            oikeusHakukohteeseen: true,
+            toinenAsteOnkoKaksoistutkinto: false,
+            sora: { tila: 'aktiivinen' },
+          },
+          {
+            oid: '1.2.4.2.1.3',
+            nimi: { fi: 'Testi-ei-oikeuksia' },
+            hakuOid: '1.2.4.1.1.1',
+            organisaatio: {
+              oid: '1.2.10.1.2.3',
+              nimi: { fi: 'Organisaatio, johon käyttäjällä ei ole asiaa' },
+              version: 0,
+              parentOid: '1.2.0.0.0.0.1',
+              tyypit: ['organisaatiotyyppi_03'],
+              ryhmatyypit: [],
+              kayttoryhmat: [],
             },
-            {
-              oid: '1.2.4.2.1.4',
-              nimi: { fi: 'Testi-ei-oikeuksia-ryhmitelty' },
-              hakuOid: '1.2.4.1.1.1',
-              organisaatio: {
-                oid: '1.2.10.1.2.3',
-                nimi: { fi: 'Organisaatio, johon käyttäjällä ei ole asiaa' },
-                version: 0,
-                parentOid: '1.2.0.0.0.0.1',
-                tyypit: ['organisaatiotyyppi_03'],
-                ryhmatyypit: [],
-                kayttoryhmat: [],
-              },
-              oikeusHakukohteeseen: false,
-              toinenAsteOnkoKaksoistutkinto: false,
-              sora: { tila: 'aktiivinen' },
+            oikeusHakukohteeseen: false,
+            toinenAsteOnkoKaksoistutkinto: false,
+            sora: { tila: 'arkistoitu' },
+          },
+          {
+            oid: '1.2.4.2.1.4',
+            nimi: { fi: 'Testi-ei-oikeuksia-ryhmitelty' },
+            hakuOid: '1.2.4.1.1.1',
+            organisaatio: {
+              oid: '1.2.10.1.2.3',
+              nimi: { fi: 'Organisaatio, johon käyttäjällä ei ole asiaa' },
+              version: 0,
+              parentOid: '1.2.0.0.0.0.1',
+              tyypit: ['organisaatiotyyppi_03'],
+              ryhmatyypit: [],
+              kayttoryhmat: [],
             },
-          ]),
+            oikeusHakukohteeseen: false,
+            toinenAsteOnkoKaksoistutkinto: false,
+            sora: { tila: 'aktiivinen' },
+          },
+        ]),
       )
     })
   })
@@ -172,14 +187,16 @@ describe('Hakukohderyhmäpalvelu - haun tiedot', () => {
       })
     })
     it('Palauttaa tyhjät hakukohderyhmät, kun request bodyssa on hakukohteen oideja ja includeEmpty parametri on true', () => {
-      cy.request(
-        'POST',
-        '/hakukohderyhmapalvelu/api/hakukohderyhma/search/find-by-hakukohde-oids',
-        {
+      cy.request({
+        method: 'POST',
+        url:
+          '/hakukohderyhmapalvelu/api/hakukohderyhma/search/find-by-hakukohde-oids',
+        headers: { 'caller-id': 'cypress' },
+        body: {
           oids: ['1.2.4.2.1.3', '1.2.4.2.1.4', '1.2.4.2.1.2', '1.2.4.2.1.1'],
           includeEmpty: true,
         },
-      ).then(({ body }) => {
+      }).then(({ body }) => {
         expect(body).to.deep.equal([
           {
             oid: '1.1.2.5.2.9',
@@ -213,14 +230,16 @@ describe('Hakukohderyhmäpalvelu - haun tiedot', () => {
       })
     })
     it('Ei palauta tyhjiä hakukohderyhmiä, kun includeEmpty parametri on false', () => {
-      cy.request(
-        'POST',
-        '/hakukohderyhmapalvelu/api/hakukohderyhma/search/find-by-hakukohde-oids',
-        {
+      cy.request({
+        method: 'POST',
+        url:
+          '/hakukohderyhmapalvelu/api/hakukohderyhma/search/find-by-hakukohde-oids',
+        headers: { 'caller-id': 'cypress' },
+        body: {
           oids: ['1.2.4.2.1.3', '1.2.4.2.1.4', '1.2.4.2.1.2', '1.2.4.2.1.1'],
           includeEmpty: false,
         },
-      ).then(({ body }) => {
+      }).then(({ body }) => {
         expect(body).to.deep.equal([])
       })
     })
@@ -263,18 +282,22 @@ describe('Hakukohderyhmäpalvelu - haun tiedot', () => {
     })
 
     it('Hahkukohteen hakukohderyhmien GET-reitti palauttaa tyhjän listan, jos hakukohde ei kuulu mihinkään ryhmään', () => {
-      cy.request(
-        '/hakukohderyhmapalvelu/api/hakukohde/1.2.4.2.1.1/hakukohderyhmat',
-      ).then(({ body }) => {
+      cy.request({
+        method: 'GET',
+        url: '/hakukohderyhmapalvelu/api/hakukohde/1.2.4.2.1.1/hakukohderyhmat',
+        headers: { 'caller-id': 'cypress' },
+      }).then(({ body }) => {
         expect(body).to.deep.equal([])
       })
     })
 
     it('Päivittää hakukohderyhmän hakukohteet', () => {
-      cy.request(
-        'PUT',
-        '/hakukohderyhmapalvelu/api/hakukohderyhma/1.2.246.562.28.4/hakukohteet',
-        [
+      cy.request({
+        method: 'PUT',
+        url:
+          '/hakukohderyhmapalvelu/api/hakukohderyhma/1.2.246.562.28.4/hakukohteet',
+        headers: { 'caller-id': 'cypress' },
+        body: [
           {
             oid: '1.2.4.2.1.2',
             nimi: { fi: 'Testi-jatkotutkinto' },
@@ -308,7 +331,7 @@ describe('Hakukohderyhmäpalvelu - haun tiedot', () => {
             },
           },
         ],
-      ).then(({ body }) =>
+      }).then(({ body }) =>
         expect(body).to.deep.equal({
           oid: '1.2.246.562.28.4',
           nimi: { fi: 'Hakukohderyhmä 1' },
@@ -357,9 +380,11 @@ describe('Hakukohderyhmäpalvelu - haun tiedot', () => {
       )
     })
     it('Hahkukohteen hakukohderyhmien GET-reitti palauttaa hakukohderyhmien oidit, joihin annettu hakukohde kuuluu', () => {
-      cy.request(
-        '/hakukohderyhmapalvelu/api/hakukohde/1.2.4.2.1.1/hakukohderyhmat',
-      ).then(({ body }) => {
+      cy.request({
+        method: 'GET',
+        url: '/hakukohderyhmapalvelu/api/hakukohde/1.2.4.2.1.1/hakukohderyhmat',
+        headers: { 'caller-id': 'cypress' },
+      }).then(({ body }) => {
         expect(body).to.deep.equal(['1.2.246.562.28.4'])
       })
     })
@@ -376,12 +401,35 @@ describe('Hakukohderyhmäpalvelu - haun tiedot', () => {
       })
     })
     it('Poisto onnistuu', () => {
-      cy.request(
-        'DELETE',
-        '/hakukohderyhmapalvelu/api/hakukohderyhma/1.2.246.562.28.001',
-      ).then(({ status, body }) => {
+      cy.request({
+        method: 'DELETE',
+        url: '/hakukohderyhmapalvelu/api/hakukohderyhma/1.2.246.562.28.001',
+        headers: { 'caller-id': 'cypress' },
+      }).then(({ status, body }) => {
         expect(status).to.equal(200)
         expect(body).to.deep.equal({ status: 'deleted' })
+      })
+    })
+  })
+
+  describe('Caller-id otsakkeen tarkistus', () => {
+    it('Kutsu epäonnistuu ilman otsaketta', () => {
+      cy.request({
+        method: 'GET',
+        url: '/hakukohderyhmapalvelu/api/health',
+        failOnStatusCode: false,
+      }).then(({ status }) => {
+        expect(status).to.deep.equal(400)
+      })
+    })
+    it('Kutsu onnistuu otsakkeella', () => {
+      cy.request({
+        method: 'GET',
+        url: '/hakukohderyhmapalvelu/api/health',
+        failOnStatusCode: false,
+        headers: { 'caller-id': 'cypress' },
+      }).then(({ status }) => {
+        expect(status).to.deep.equal(200)
       })
     })
   })

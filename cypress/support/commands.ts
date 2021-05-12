@@ -4,7 +4,11 @@
 Cypress.Commands.add(
   'resetMocks',
   (): Cypress.Chainable<Cypress.Response> =>
-    cy.request('POST', '/hakukohderyhmapalvelu/api/mock/reset'),
+    cy.request({
+      method: 'POST',
+      url: '/hakukohderyhmapalvelu/api/mock/reset',
+      headers: { 'caller-id': 'cypres' },
+    }),
 )
 
 Cypress.Commands.add(
@@ -20,17 +24,18 @@ Cypress.Commands.add(
           .then(response => ({ request, response })),
       )
       .then(({ request, response }) =>
-        cy.request(
-          'POST',
-          '/hakukohderyhmapalvelu/api/mock/authenticating-client',
-          {
+        cy.request({
+          method: 'POST',
+          url: '/hakukohderyhmapalvelu/api/mock/authenticating-client',
+          headers: { 'caller-id': 'cypres' },
+          body: {
             method: opts.method.toLowerCase(),
             path: opts.path,
             service: opts.service,
             request,
             response,
           },
-        ),
+        }),
       )
   },
 )
