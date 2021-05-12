@@ -278,6 +278,7 @@ describe('Hakukohderyhmäpalvelu - haun tiedot', () => {
           {
             oid: '1.2.4.2.1.2',
             nimi: { fi: 'Testi-jatkotutkinto' },
+            sora: { tila: 'aktiivinen' },
             hakuOid: '1.2.4.1.1.1',
             toinenAsteOnkoKaksoistutkinto: false,
             organisaatio: {
@@ -293,6 +294,7 @@ describe('Hakukohderyhmäpalvelu - haun tiedot', () => {
           {
             oid: '1.2.4.2.1.1',
             nimi: { fi: 'Testi-perustutkinto' },
+            sora: { tila: 'arkistoitu' },
             hakuOid: '1.2.4.1.1.1',
             toinenAsteOnkoKaksoistutkinto: false,
             organisaatio: {
