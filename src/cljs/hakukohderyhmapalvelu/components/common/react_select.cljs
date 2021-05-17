@@ -58,7 +58,7 @@
                         on-select-fn
                         on-clear-fn
                         value]} :- SelectProps]
-  (let [no-options-message @(subscribe [:translation :no-selectable-items])
+  (let [no-options-message @(subscribe [:translation :yleiset/ei-valittavia-kohteita])
         on-change-fns {:select-option on-select-fn
                        :clear         on-clear-fn}
         props {:isDisabled       (boolean is-disabled)

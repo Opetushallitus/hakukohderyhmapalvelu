@@ -127,7 +127,7 @@
 (re-frame/reg-sub
   haku-lisarajaimet-text
   (fn []
-    [(re-frame/subscribe [:translation :haku/lisarajaimet])
+    [(re-frame/subscribe [:translation :hakukohderyhma/lisarajaimet])
      (re-frame/subscribe [haku-lisarajaimet-filters-as-fns])])
   (fn [[text lisarajaimet] _]
     (cond-> text

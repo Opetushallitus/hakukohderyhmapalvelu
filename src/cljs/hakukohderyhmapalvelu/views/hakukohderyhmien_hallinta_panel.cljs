@@ -125,7 +125,7 @@
              [b/button
               {:cypressid    "hakukohderyhma-delete-confirm-button"
                :disabled?    false
-               :label        @(subscribe [:translation :confirm-delete])
+               :label        @(subscribe [:translation :yleiset/vahvista-poisto])
                :on-click     #(on-delete-button-click selected-ryhma)
                :style-prefix (str style-prefix "-button")
                :custom-style {:is-danger    true
@@ -133,7 +133,7 @@
                               :font-size    "12px"}}]
              [b/button
               {:cypressid    "hakukohderyhma-delete-cancel-button"
-               :label        @(subscribe [:translation :cancel])
+               :label        @(subscribe [:translation :yleiset/peruuta])
                :on-click     #(dispatch [hakukohderyhma-events/set-deletion-confirmation-dialogue-visibility false])
                :style-prefix (str style-prefix "-button")}]]
             [:<>
@@ -151,7 +151,7 @@
              [b/button
               {:cypressid    (str cypressid "-button")
                :disabled?    button-disabled?
-               :label        @(subscribe [:translation :tallenna])
+               :label        @(subscribe [:translation :yleiset/tallenna])
                :on-click     #(on-save-button-click name-text (keyword operation-type))
                :style-prefix (str style-prefix "-button")}]])]]))))
 
