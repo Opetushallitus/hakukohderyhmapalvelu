@@ -5,7 +5,7 @@
             [day8.re-frame.tracing :refer-macros [fn-traced]]
             [clojure.set :refer [union]]
             [schema-tools.core :as st]
-            [hakukohderyhmapalvelu.i18n.utils :refer [sort-items-by-name]]
+            [hakukohderyhmapalvelu.i18n.utils :refer [get-with-fallback sort-items-by-name]]
             [hakukohderyhmapalvelu.i18n.translations :refer [translations]]))
 
 
@@ -15,6 +15,7 @@
 (def ^:private input-visibility (conj root-path :input-visibility))
 (def create-input-is-active (conj input-visibility :create-active?))
 (def rename-input-is-active (conj input-visibility :rename-active?))
+(def hakukohderyhma-name-text (conj root-path :hakukohderyhma-name-text))
 (def deletion-confirmation-is-active (conj input-visibility :deletion-confirmation-active?))
 
 (def add-new-hakukohderyhma-link-clicked :hakukohderyhmien-hallinta/add-new-hakukohderyhma-link-clicked)
@@ -26,12 +27,14 @@
 (def hakukohderyhma-renaming-confirmed :hakukohderyhmien-hallinta/hakukohderyhma-rename-confirmed)
 (def hakukohderyhma-deleted :hakukohderyhmien-hallinta/hakukohderyhma-deleted)
 (def handle-hakukohderyhma-deletion :hakukohderyhmien-hallinta/hakukohderyhma-deletion-confirmed)
+(def set-hakukohderyhma-name-text :hakukohderyhmien-hallinta/set-hakukohderyhma-name-text)
 (def set-deletion-confirmation-dialogue-visibility :hakukohderyhmien-hallinta/deletion-confirmation-dialogue-toggled)
 
 (defn- hide-edit-inputs [db]
   (-> db
       (assoc-in rename-input-is-active false)
-      (assoc-in deletion-confirmation-is-active false)))
+      (assoc-in deletion-confirmation-is-active false)
+      (assoc-in hakukohderyhma-name-text "")))
 
 (defn- toggle-hakukohde [hakukohde-oid hakukohteet]
   (let [toggle-fn (fn [{oid :oid :as hakukohde}]
@@ -69,22 +72,31 @@
                                                db-ryhmat)]
                (-> db
                    (assoc-in persisted-hakukohderyhmas ryhmat-with-new-selection)
-                   (assoc-in deletion-confirmation-is-active false)))))
+                   (assoc-in deletion-confirmation-is-active false)
+                   (assoc-in create-input-is-active false)
+                   hide-edit-inputs))))
 
-(events/reg-event-db-validating
+(events/reg-event-fx-validating
   add-new-hakukohderyhma-link-clicked
-  (fn-traced [db]
-             (-> db
-                 hide-edit-inputs
-                 (update-in create-input-is-active not))))
+  (fn-traced [{db :db}]
+             {:db (-> db
+                      hide-edit-inputs
+                      (update-in create-input-is-active not))
+              :dispatch [set-hakukohderyhma-name-text ""]}))
+
+(events/reg-event-fx-validating
+  edit-hakukohderyhma-link-clicked
+  (fn-traced [{db :db} [{nimi :nimi}]]
+             {:db (-> db
+                      (assoc-in create-input-is-active false)
+                      (assoc-in deletion-confirmation-is-active false)
+                      (update-in rename-input-is-active not))
+              :dispatch [set-hakukohderyhma-name-text (get-with-fallback nimi (:lang db))]}))
 
 (events/reg-event-db-validating
-  edit-hakukohderyhma-link-clicked
-  (fn-traced [db]
-             (-> db
-                 (assoc-in create-input-is-active false)
-                 (assoc-in deletion-confirmation-is-active false)
-                 (update-in rename-input-is-active not))))
+  set-hakukohderyhma-name-text
+  (fn-traced [db [text]]
+             (assoc-in db hakukohderyhma-name-text text)))
 
 (events/reg-event-fx-validating
   hakukohderyhma-persisting-confirmed
@@ -94,10 +106,11 @@
                    ryhmat-with-new-ryhma (->> hakukohderyhma'
                                               (conj db-ryhmat)
                                               (sort-items-by-name (:lang db)))]
-               {:db (-> db
-                        (assoc-in persisted-hakukohderyhmas ryhmat-with-new-ryhma)
-                        (assoc-in create-input-is-active false))
-                :dispatch [hakukohderyhma-selected {:value (:oid hakukohderyhma')}]})))
+               {:db         (-> db
+                                (assoc-in persisted-hakukohderyhmas ryhmat-with-new-ryhma)
+                                (assoc-in create-input-is-active false))
+                :dispatch-n [[hakukohderyhma-selected {:value (:oid hakukohderyhma')}]
+                             [set-hakukohderyhma-name-text ""]]})))
 
 (events/reg-event-fx-validating
   hakukohderyhma-persisted

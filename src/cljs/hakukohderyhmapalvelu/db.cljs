@@ -31,11 +31,12 @@
    :lang                              :fi
    :hakukohderyhma                    {:persisted               []
                                        :selected-hakukohderyhma nil
-                                       :input-visibility        {:create-active? false
-                                                                 :rename-active? false
+                                       :input-visibility        {:create-active?                false
+                                                                 :rename-active?                false
                                                                  :deletion-confirmation-active? false}
                                        :haut                    []
                                        :hakukohteet-filter      ""
+                                       :hakukohderyhma-name-text   ""
                                        :lisarajaimet            {:popup-visible false
                                                                  :filters       default-lisarajain-filters}}
    :haun-asetukset                    {:haut {}}

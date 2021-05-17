@@ -67,20 +67,20 @@
   {:grid-area style-prefix})
 
 (defn- hakukohderyhmien-hallinta-input
-  [{:keys [style-prefix] :as props}]
+  [{:keys [style-prefix value] :as props}]
   (let [hakukohderyhmien-hallinta-input-styles (make-hakukohderyhmien-hallinta-input-styles
                                                  style-prefix)
-        props' (dissoc props :style-prefix)]
+        props' (-> props
+                   (dissoc :style-prefix)
+                   (assoc :value (reagent/atom (or value ""))))]
     [:div
      (stylefy/use-style hakukohderyhmien-hallinta-input-styles)
      [input/input-text props']]))
 
 (defn on-save-button-click [input-value saved-operation-type] ;TODO saved-operation-type - add schema for possible vals, [:create :rename]
-  (let [hakukohderyhma-name @input-value]
-    (case saved-operation-type
-      :create (dispatch [hakukohderyhma-events/hakukohderyhma-persisted hakukohderyhma-name])
-      :rename (dispatch [hakukohderyhma-events/hakukohderyhma-renamed hakukohderyhma-name])))
-  (reset! input-value ""))
+  (case saved-operation-type
+    :create (dispatch [hakukohderyhma-events/hakukohderyhma-persisted input-value])
+    :rename (dispatch [hakukohderyhma-events/hakukohderyhma-renamed input-value])))
 
 (defn on-delete-button-click [deleted-hakukohderyhma]
   (dispatch [hakukohderyhma-events/hakukohderyhma-deleted deleted-hakukohderyhma]))
@@ -98,72 +98,74 @@
                                                :margin "6px 5px 0px 5px"}))
 
 (defn- hakukohderyhma-create-and-rename-input []
-  (let [input-value (reagent/atom "")]
-    (fn []
-      (let [create-is-active @(subscribe [:state-query hakukohderyhma-events/create-input-is-active false])
-            rename-is-active @(subscribe [:state-query hakukohderyhma-events/rename-input-is-active false])
-            is-confirming-delete @(subscribe [:state-query hakukohderyhma-events/deletion-confirmation-is-active false])
-            ongoing-request? @(subscribe [:hakukohderyhmien-hallinta/ongoing-request?])
-            selected-haku @(subscribe [haku-subs/haku-selected-haku])
-            selected-ryhma @(subscribe [hakukohderyhma-subs/selected-hakukohderyhma])
-            selected-ryhma-name (-> selected-ryhma :nimi :fi)
-            text-input-label (if rename-is-active selected-ryhma-name "Uuden ryhmän nimi")
-            is-visible (and (some? selected-haku) (or create-is-active rename-is-active))
-            button-disabled? (or ongoing-request?
-                                 (-> @input-value seq nil?))
-            operation-type (if rename-is-active "rename" "create")
-            cypressid (str "hakukohderyhma-" operation-type)
-            input-id (str "hakukohderyhma-" operation-type "-input")
-            style-prefix (str "hakukohderyhma-" operation-type)
-            all-hakukohteet-are-authorized (every? :oikeusHakukohteeseen (:hakukohteet selected-ryhma))]
-        (when is-visible
-          (let [input-styles (make-input-without-top-row-styles style-prefix)]
-            [:div (stylefy/use-style input-styles)
-             [hakukohderyhmien-hallinta-input
-              {:cypressid    (str cypressid "-input")
-               :input-id     input-id
-               :on-change    (partial reset! input-value)
-               :placeholder  text-input-label
-               :aria-label   text-input-label
-               :style-prefix (str style-prefix "-input")}]
-             [:span
-              {:style {:grid-area (str style-prefix "-button")
-                       :display "flex"
-                       :flex-direction "row"}}
-              (if (and rename-is-active is-confirming-delete)
-                [:<>
+  (fn []
+    (let [create-is-active @(subscribe [:state-query hakukohderyhma-events/create-input-is-active false])
+          rename-is-active @(subscribe [:state-query hakukohderyhma-events/rename-input-is-active false])
+          is-confirming-delete @(subscribe [:state-query hakukohderyhma-events/deletion-confirmation-is-active false])
+          ongoing-request? @(subscribe [:hakukohderyhmien-hallinta/ongoing-request?])
+          selected-haku @(subscribe [haku-subs/haku-selected-haku])
+          selected-ryhma @(subscribe [hakukohderyhma-subs/selected-hakukohderyhma])
+          selected-ryhma-name (:label @(subscribe [hakukohderyhma-subs/selected-hakukohderyhma-as-option]))
+          text-input-label @(subscribe [:translation :hakukohderyhma/hakukohderyhma-nimi])
+          name-text @(subscribe [:state-query hakukohderyhma-events/hakukohderyhma-name-text])
+          is-visible (and (some? selected-haku) (or create-is-active rename-is-active))
+          button-disabled? (or ongoing-request?
+                               (= selected-ryhma-name name-text)
+                               (-> name-text seq nil?))
+          operation-type (if rename-is-active "rename" "create")
+          cypressid (str "hakukohderyhma-" operation-type)
+          input-id (str "hakukohderyhma-" operation-type "-input")
+          style-prefix (str "hakukohderyhma-" operation-type)
+          all-hakukohteet-are-authorized (every? :oikeusHakukohteeseen (:hakukohteet selected-ryhma))]
+      (when is-visible
+        (let [input-styles (make-input-without-top-row-styles style-prefix)]
+          [:div (stylefy/use-style input-styles)
+           [hakukohderyhmien-hallinta-input
+            {:cypressid    (str cypressid "-input")
+             :input-id     input-id
+             :on-change    #(dispatch [hakukohderyhma-events/set-hakukohderyhma-name-text %])
+             :placeholder  text-input-label
+             :aria-label   text-input-label
+             :style-prefix (str style-prefix "-input")
+             :value        name-text}]
+           [:span
+            {:style {:grid-area      (str style-prefix "-button")
+                     :display        "flex"
+                     :flex-direction "row"}}
+            (if (and rename-is-active is-confirming-delete)
+              [:<>
+               [b/button
+                {:cypressid    "hakukohderyhma-delete-confirm-button"
+                 :disabled?    false
+                 :label        @(subscribe [:translation :confirm-delete])
+                 :on-click     #(on-delete-button-click selected-ryhma)
+                 :style-prefix (str style-prefix "-button")
+                 :custom-style {:is-danger    true
+                                :margin-right "4px"
+                                :font-size    "12px"}}]
+               [b/button
+                {:cypressid    "hakukohderyhma-delete-cancel-button"
+                 :label        @(subscribe [:translation :cancel])
+                 :on-click     #(dispatch [hakukohderyhma-events/set-deletion-confirmation-dialogue-visibility false])
+                 :style-prefix (str style-prefix "-button")}]]
+              [:<>
+               (when (and
+                       rename-is-active
+                       all-hakukohteet-are-authorized)
                  [b/button
-                  {:cypressid    "hakukohderyhma-delete-confirm-button"
+                  {:cypressid    "hakukohderyhma-delete-button"
                    :disabled?    false
-                   :label        @(subscribe [:translation :confirm-delete])
-                   :on-click     #(on-delete-button-click selected-ryhma)
+                   :label        trash-can-icon
+                   :on-click     #(dispatch [hakukohderyhma-events/set-deletion-confirmation-dialogue-visibility true])
                    :style-prefix (str style-prefix "-button")
-                   :custom-style {:is-danger true
-                                  :margin-right "4px"
-                                  :font-size "12px"}}]
-                 [b/button
-                  {:cypressid    "hakukohderyhma-delete-cancel-button"
-                   :label        @(subscribe [:translation :cancel])
-                   :on-click     #(dispatch [hakukohderyhma-events/set-deletion-confirmation-dialogue-visibility false])
-                   :style-prefix (str style-prefix "-button")}]]
-                [:<>
-                 (when (and
-                         rename-is-active
-                         all-hakukohteet-are-authorized)
-                   [b/button
-                    {:cypressid    "hakukohderyhma-delete-button"
-                     :disabled?    false
-                     :label        trash-can-icon
-                     :on-click    #(dispatch [hakukohderyhma-events/set-deletion-confirmation-dialogue-visibility true])
-                     :style-prefix (str style-prefix "-button")
-                     :custom-style {:is-danger true
-                                    :margin-right "4px"}}])
-                 [b/button
-                  {:cypressid    (str cypressid "-button")
-                   :disabled?    button-disabled?
-                   :label        @(subscribe [:translation :tallenna])
-                   :on-click     #(on-save-button-click input-value (keyword operation-type))
-                   :style-prefix (str style-prefix "-button")}]])]]))))))
+                   :custom-style {:is-danger    true
+                                  :margin-right "4px"}}])
+               [b/button
+                {:cypressid    (str cypressid "-button")
+                 :disabled?    button-disabled?
+                 :label        @(subscribe [:translation :tallenna])
+                 :on-click     #(on-save-button-click name-text (keyword operation-type))
+                 :style-prefix (str style-prefix "-button")}]])]])))))
 
 (def ^:private hakukohderyhma-selection-controls-styles
   (merge layout/vertical-align-center-styles
@@ -199,7 +201,7 @@
                             :style-prefix "rename-hakukohderyhma-btn"
                             :label        label
                             :disabled?    false
-                            :on-click     #(dispatch [hakukohderyhma-events/edit-hakukohderyhma-link-clicked])}])))
+                            :on-click     #(dispatch [hakukohderyhma-events/edit-hakukohderyhma-link-clicked selected-ryhma])}])))
 
 (defn- hakukohderyhma-selection-controls [{disabled? :disabled? :as props}]
   (let [separator [:span (stylefy/use-style {:margin "6px"

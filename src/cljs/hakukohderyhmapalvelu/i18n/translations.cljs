@@ -73,6 +73,8 @@
    {:fi "Luo uusi ryhmä"}
    :hakukohderyhma/muokkaa-ryhmaa
    {:fi "Muokkaa ryhmää"}
+   :hakukohderyhma/hakukohderyhma-nimi
+   {:fi "Hakukohderyhmän nimi"}
    :hakukohderyhma/hakukohderyhma-käytössä-viesti
    {:fi "Hakukohderyhmä on käytössä hakulomakkeella ja sitä ei voi poistaa."}
    :haku/lisarajaimet
