@@ -209,120 +209,124 @@ describe('Hakukohderyhmäpalvelu', () => {
     })
 
     it('Suodattaa hakukohteita lisärajaimilla', () => {
-      // Kaksoistutkinto
-      cy.get(hh.hakukohteidenSuodatusInputSelector).clear()
-      cy.get(hh.hakukohteetContainerSelector)
-        .children()
-        .should('have.length', 2)
+      it('Suodattaa kaksoistutkinnolla', () => {
+        cy.get(hh.hakukohteidenSuodatusInputSelector).clear()
+        cy.get(hh.hakukohteetContainerSelector)
+          .children()
+          .should('have.length', 2)
 
-      cy.get(hh.extraFiltersButtonSelector).click({ force: true })
-      cy.get(hh.extraFilterBooleanSelector('kaksoistutkinto-filter')).should(
-        'have.attr',
-        'aria-checked',
-        'false',
-      )
-      cy.get(hh.extraFilterBooleanSelector('kaksoistutkinto-filter')).click({
-        force: true,
-      })
-      cy.get(hh.extraFilterBooleanSelector('kaksoistutkinto-filter')).should(
-        'have.attr',
-        'aria-checked',
-        'true',
-      )
-      cy.get(hh.extraFiltersPopupClose).click({ force: true })
-
-      cy.get(hh.hakukohteetContainerSelector)
-        .children()
-        .should('have.length', 1)
-
-      cy.get(hh.hakukohteetContainerSelector)
-        .children()
-        .eq(0)
-        .should($el => {
-          expect($el.text()).to.equal('Testi-perustutkinto')
+        cy.get(hh.extraFiltersButtonSelector).click({ force: true })
+        cy.get(hh.extraFilterBooleanSelector('kaksoistutkinto-filter')).should(
+          'have.attr',
+          'aria-checked',
+          'false',
+        )
+        cy.get(hh.extraFilterBooleanSelector('kaksoistutkinto-filter')).click({
+          force: true,
         })
+        cy.get(hh.extraFilterBooleanSelector('kaksoistutkinto-filter')).should(
+          'have.attr',
+          'aria-checked',
+          'true',
+        )
+        cy.get(hh.extraFiltersPopupClose).click({ force: true })
 
-      // SORA
-      cy.get(hh.extraFiltersButtonSelector).click({ force: true })
-      cy.get(hh.extraFilterBooleanSelector('kaksoistutkinto-filter')).click({
-        force: true,
+        cy.get(hh.hakukohteetContainerSelector)
+          .children()
+          .should('have.length', 1)
+
+        cy.get(hh.hakukohteetContainerSelector)
+          .children()
+          .eq(0)
+          .should($el => {
+            expect($el.text()).to.equal('Testi-perustutkinto')
+          })
       })
-      cy.get(hh.extraFilterBooleanSelector('sora-filter')).click({
-        force: true,
-      })
-      cy.get(hh.extraFiltersPopupClose).click({ force: true })
 
-      cy.get(hh.hakukohteetContainerSelector)
-        .children()
-        .should('have.length', 1)
-
-      cy.get(hh.hakukohteetContainerSelector)
-        .children()
-        .eq(0)
-        .should($el => {
-          expect($el.text()).to.equal('Testi-jatkotutkinto')
+      it('Suodattaa SORA-tiedolla', () => {
+        cy.get(hh.extraFiltersButtonSelector).click({ force: true })
+        cy.get(hh.extraFilterBooleanSelector('kaksoistutkinto-filter')).click({
+          force: true,
         })
-
-      cy.get(hh.extraFiltersButtonSelector).click({ force: true })
-      cy.get(hh.extraFilterBooleanSelector('sora-filter')).click({
-        force: true,
-      })
-      cy.get(hh.extraFiltersPopupClose).click({ force: true })
-
-      cy.get(hh.hakukohteetContainerSelector)
-        .children()
-        .should('have.length', 2)
-
-      // Koulutustyyppi
-      cy.get(hh.extraFiltersButtonSelector).click({ force: true })
-      cy.get(hh.extraFilterSelectSelector('koulutustyypit-filter')).type(
-        'Vapaan sivistystyön koulutus{enter}',
-      )
-      cy.get(hh.extraFiltersPopupClose).click({ force: true })
-
-      cy.get(hh.hakukohteetContainerSelector)
-        .children()
-        .should('have.length', 1)
-
-      cy.get(hh.hakukohteetContainerSelector)
-        .children()
-        .eq(0)
-        .should($el => {
-          expect($el.text()).to.equal('Testi-perustutkinto')
+        cy.get(hh.extraFilterBooleanSelector('sora-filter')).click({
+          force: true,
         })
+        cy.get(hh.extraFiltersPopupClose).click({ force: true })
 
-      cy.get(hh.extraFiltersButtonSelector).click({ force: true })
-      cy.get(hh.extraFilterSelectSelector('koulutustyypit-filter'))
-        .find('svg')
-        .eq(0)
-        .click({ force: true })
+        cy.get(hh.hakukohteetContainerSelector)
+          .children()
+          .should('have.length', 1)
 
-      cy.get(hh.extraFiltersPopupClose).click({ force: true })
-      cy.get(hh.hakukohteetContainerSelector)
-        .children()
-        .should('have.length', 2)
+        cy.get(hh.hakukohteetContainerSelector)
+          .children()
+          .eq(0)
+          .should($el => {
+            expect($el.text()).to.equal('Testi-jatkotutkinto')
+          })
 
-      // Ei mikään
-      cy.get(hh.extraFiltersButtonSelector).click({ force: true })
-      cy.get(hh.extraFilterSelectSelector('koulutustyypit-filter')).type(
-        'Lukiokoulutus{enter}',
-      )
-      cy.get(hh.extraFiltersPopupClose).click({ force: true })
+        cy.get(hh.extraFiltersButtonSelector).click({ force: true })
+        cy.get(hh.extraFilterBooleanSelector('sora-filter')).click({
+          force: true,
+        })
+        cy.get(hh.extraFiltersPopupClose).click({ force: true })
 
-      cy.get(hh.hakukohteetContainerSelector)
-        .children()
-        .should('have.length', 0)
+        cy.get(hh.hakukohteetContainerSelector)
+          .children()
+          .should('have.length', 2)
+      })
 
-      cy.get(hh.extraFiltersButtonSelector).click({ force: true })
-      cy.get(hh.extraFilterSelectSelector('koulutustyypit-filter'))
-        .find('svg')
-        .eq(0)
-        .click({ force: true })
+      it('Suodattaa koulutustyypillä', () => {
+        cy.get(hh.extraFiltersButtonSelector).click({ force: true })
+        cy.get(hh.extraFilterSelectSelector('koulutustyypit-filter')).type(
+          'Vapaan sivistystyön koulutus{enter}',
+        )
+        cy.get(hh.extraFiltersPopupClose).click({ force: true })
 
-      cy.get(hh.extraFiltersPopupClose).click({ force: true })
-      cy.get(hh.hakukohteetContainerSelector)
-        .children()
-        .should('have.length', 2)
+        cy.get(hh.hakukohteetContainerSelector)
+          .children()
+          .should('have.length', 1)
+
+        cy.get(hh.hakukohteetContainerSelector)
+          .children()
+          .eq(0)
+          .should($el => {
+            expect($el.text()).to.equal('Testi-perustutkinto')
+          })
+
+        cy.get(hh.extraFiltersButtonSelector).click({ force: true })
+        cy.get(hh.extraFilterSelectSelector('koulutustyypit-filter'))
+          .find('svg')
+          .eq(0)
+          .click({ force: true })
+
+        cy.get(hh.extraFiltersPopupClose).click({ force: true })
+        cy.get(hh.hakukohteetContainerSelector)
+          .children()
+          .should('have.length', 2)
+      })
+
+      it('Suodattaa kaikki hakukohteet pois', () => {
+        cy.get(hh.extraFiltersButtonSelector).click({ force: true })
+        cy.get(hh.extraFilterSelectSelector('koulutustyypit-filter')).type(
+          'Lukiokoulutus{enter}',
+        )
+        cy.get(hh.extraFiltersPopupClose).click({ force: true })
+
+        cy.get(hh.hakukohteetContainerSelector)
+          .children()
+          .should('have.length', 0)
+
+        cy.get(hh.extraFiltersButtonSelector).click({ force: true })
+        cy.get(hh.extraFilterSelectSelector('koulutustyypit-filter'))
+          .find('svg')
+          .eq(0)
+          .click({ force: true })
+
+        cy.get(hh.extraFiltersPopupClose).click({ force: true })
+        cy.get(hh.hakukohteetContainerSelector)
+          .children()
+          .should('have.length', 2)
+      })
     })
   })
   describe('Hakukohteen lisääminen ja poistaminen hakukohderyhmäään', () => {
