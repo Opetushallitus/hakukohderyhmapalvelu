@@ -1,6 +1,7 @@
 (ns hakukohderyhmapalvelu.fx.http-fx
   (:require [cljs.core.async :as async]
             [cljs.core.async.interop]
+            [clojure.string :as string]
             [hakukohderyhmapalvelu.config :as c]
             [hakukohderyhmapalvelu.urls :as urls]
             [re-frame.core :as re-frame]
@@ -13,11 +14,27 @@
 (defn- get-cookie-value [name]
   (.get goog.net.cookies name))
 
+(defn- create-search-params [url search-params]
+  (let [search-params' (-> (js/URL. url (.-href js/location))
+                           (.-searchParams))]
+    (doseq [[key val] search-params]
+      (.append search-params' (name key) val))
+    (.toString search-params')))
+
+(defn- create-url [url search-params]
+  (let [url' (js/URL. url (.-href js/location))
+        search-params' (create-search-params url search-params)]
+    (if (string/blank? search-params')
+      url
+      (str (.-origin url') (.-pathname url') "?" search-params'))))
+
 (defn- fetch [{:keys [url
                       method
                       redirect?
-                      body]}]
-  (let [method'   (case method
+                      body
+                      search-params]}]
+  (let [url' (create-url url search-params)
+        method'   (case method
                     :get "GET"
                     :post "POST"
                     :put "PUT"
@@ -32,7 +49,7 @@
                     "error")]
     (go
       (let [response        (<p! (js/fetch
-                                   url
+                                   url'
                                    (clj->js (cond-> {:method   method'
                                                      :headers  headers
                                                      :redirect redirect}
@@ -62,7 +79,8 @@
    (s/optional-key :response-schema) s/Any
    :response-handler                 [(s/one s/Keyword "handler ID") s/Any]
    (s/optional-key :cas)             s/Keyword
-   (s/optional-key :body)            s/Any})
+   (s/optional-key :body)            s/Any
+   (s/optional-key :search-params)   [[(s/one s/Keyword "key") (s/one s/Str "value")]]})
 
 (re-frame/reg-fx
   :http
@@ -73,21 +91,24 @@
                          response-schema
                          response-handler
                          cas
-                         body]} :- HttpSpec]
+                         body
+                         search-params]} :- HttpSpec]
     (when request-schema
       (s/validate request-schema body))
     (go
       (let [do-request            (fn do-request []
-                                    (fetch (cond-> {:url       path
-                                                    :method    method
-                                                    :redirect? true}
+                                    (fetch (cond-> {:url           path
+                                                    :method        method
+                                                    :redirect?     true
+                                                    :search-params search-params}
                                                    (seq body)
                                                    (assoc :body body))))
             do-cas-authentication (fn do-cas-authentication []
                                     (let [url (urls/get-url cas)]
-                                      (fetch {:url       url
-                                              :method    :get
-                                              :redirect? true})))
+                                      (fetch {:url           url
+                                              :method        :get
+                                              :redirect?     true
+                                              :search-params search-params})))
             {body :body} (let [response' (async/<! (do-request))]
                            (cond (and (:redirected? response')
                                       (not= method :get))

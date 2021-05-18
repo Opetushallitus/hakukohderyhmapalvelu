@@ -95,6 +95,7 @@ describe('Hakukohderyhmäpalvelu - haun tiedot', () => {
               oikeusHakukohteeseen: true,
               toinenAsteOnkoKaksoistutkinto: true,
               sora: { tila: 'arkistoitu' },
+              koulutustyypit: ['koulutustyyppi_10'],
             },
             {
               oid: '1.2.4.2.1.2',
@@ -112,6 +113,7 @@ describe('Hakukohderyhmäpalvelu - haun tiedot', () => {
               oikeusHakukohteeseen: true,
               toinenAsteOnkoKaksoistutkinto: false,
               sora: { tila: 'aktiivinen' },
+              koulutustyypit: [],
             },
             {
               oid: '1.2.4.2.1.3',
@@ -129,6 +131,7 @@ describe('Hakukohderyhmäpalvelu - haun tiedot', () => {
               oikeusHakukohteeseen: false,
               toinenAsteOnkoKaksoistutkinto: false,
               sora: { tila: 'arkistoitu' },
+              koulutustyypit: ['koulutustyyppi_4'],
             },
             {
               oid: '1.2.4.2.1.4',
@@ -146,6 +149,7 @@ describe('Hakukohderyhmäpalvelu - haun tiedot', () => {
               oikeusHakukohteeseen: false,
               toinenAsteOnkoKaksoistutkinto: false,
               sora: { tila: 'aktiivinen' },
+              koulutustyypit: ['koulutustyyppi_1'],
             },
           ]),
       )

@@ -1,4 +1,5 @@
-(ns hakukohderyhmapalvelu.i18n.utils)
+(ns hakukohderyhmapalvelu.i18n.utils
+  (:require [clojure.string :as str]))
 
 ;; Oletusjärjestys, jolla haetaan kielistettyä arvoa eri kielillä
 (def ^:private fi-order [:fi :sv :en])
@@ -14,8 +15,7 @@
 
 (defn get-with-fallback [m lang]
   (->> (order-for-lang lang)
-       (map #(get m %))
-       (remove nil?)
+       (keep #(get m %))
        first))
 
 (defn- item->option [lang label-field value-field disabled? item]
@@ -45,3 +45,11 @@
   (sort-by
     #(get-with-fallback (:nimi %) lang)
     organizations))
+
+(defn koodisto->option [lang {koodi-uri :koodiUri metadata :metadata}]
+  (let [grouped-metadata (group-by #(keyword (str/lower-case (:kieli %))) metadata)
+        label (-> (get-with-fallback grouped-metadata lang)
+                  first
+                  :nimi)]
+    {:value koodi-uri
+     :label label}))

@@ -4,7 +4,8 @@
             [hakukohderyhmapalvelu.events.hakukohderyhmien-hallinta-events :as hakukohderyhma-events]
             [day8.re-frame.tracing :refer-macros [fn-traced]]
             [hakukohderyhmapalvelu.haku-utils :as u]
-            [hakukohderyhmapalvelu.i18n.utils :refer [sort-items-by-name]]))
+            [hakukohderyhmapalvelu.i18n.utils :refer [sort-items-by-name koodisto->option]]
+            [hakukohderyhmapalvelu.urls :as urls]))
 
 ;; Polut
 (def root-path [:hakukohderyhma])
@@ -28,6 +29,9 @@
 (def open-haku-lisarajaimet :haku/open-haku-lisarajaimet)
 (def close-haku-lisarajaimet :haku/close-haku-lisarajaimet)
 (def set-haku-lisarajaimet-filter :haku/set-haku-lisarajaimet-filter)
+(def set-haku-lisarajaimet-options :haku/set-haku-lisarajaimet-options)
+(def get-koulutustyypit :haku/get-koulutustyypit)
+(def handle-get-koulutustyypit-response :haku/handle-get-koulutustyypit-response)
 
 ;; Apufunktiot
 (defn- update-hakus-hakukohteet [items should-update? update-fn]
@@ -54,8 +58,8 @@
 (defn- toggle-selection-of-hakukohde [hakukohde-oid haut]
   (edit-selected-hakus-hakukohteet haut (partial u/toggle-filtered-item-selection #(= (:oid %) hakukohde-oid))))
 
-(defn- update-haku-lisarajaimet-filter [id value-fn filters]
-  (map #(cond-> % (= id (:id %)) (update :value value-fn)) filters))
+(defn- update-haku-lisarajaimet-filter [id key value-fn filters]
+  (map #(cond-> % (= id (:id %)) (update key value-fn)) filters))
 
 ;; Käsittelijät
 (events/reg-event-db-validating
@@ -75,9 +79,38 @@
                {:db   (update db :requests (fnil conj #{}) http-request-id)
                 :http {:method           :get
                        :http-request-id  http-request-id
-                       :path             (str "/hakukohderyhmapalvelu/api/haku?all=" is-fetch-all)
+                       :path             "/hakukohderyhmapalvelu/api/haku"
+                       :search-params    [[:all (str is-fetch-all)]]
                        :response-schema  schemas/HaunTiedotListResponse
                        :response-handler [handle-get-haut-response]}})))
+
+(events/reg-event-fx-validating
+  get-koulutustyypit
+  (fn-traced [{db :db}]
+             (let [http-request-id get-koulutustyypit
+                   url (str (urls/get-url :koodisto-service.baseurl) "/koodisto-service/rest/json/searchKoodis")]
+               {:db   (update db :requests (fnil conj #{}) http-request-id)
+                :http {:method           :get
+                       :http-request-id  http-request-id
+                       :path             url
+                       :search-params    [[:koodiUris "koulutustyyppi_1"]
+                                          [:koodiUris "koulutustyyppi_2"]
+                                          [:koodiUris "koulutustyyppi_4"]
+                                          [:koodiUris "koulutustyyppi_10"]
+                                          [:koodiUris "koulutustyyppi_40"]
+                                          [:koodiTilas "HYVAKSYTTY"]
+                                          [:koodiVersioSelection "LATEST"]]
+                       :response-schema  schemas/KoodistoResponse
+                       :response-handler [handle-get-koulutustyypit-response]}})))
+
+(events/reg-event-fx-validating
+  handle-get-koulutustyypit-response
+  (fn-traced [{db :db} [response]]
+             (let [lang (get db :lang)
+                   options (->> response
+                                (map (partial koodisto->option lang))
+                                (sort-by :label))]
+               {:dispatch [set-haku-lisarajaimet-options "koulutustyypit-filter" options]})))
 
 (events/reg-event-fx-validating
   handle-get-hakukohteet-response
@@ -154,4 +187,11 @@
 (events/reg-event-db-validating
   set-haku-lisarajaimet-filter
   (fn-traced [db [id value-fn]]
-             (update-in db haku-lisarajaimet-filters-path (partial update-haku-lisarajaimet-filter id value-fn))))
+             (->> (partial update-haku-lisarajaimet-filter id :value value-fn)
+                  (update-in db haku-lisarajaimet-filters-path))))
+
+(events/reg-event-db-validating
+  set-haku-lisarajaimet-options
+  (fn-traced [db [id options]]
+             (->> (partial update-haku-lisarajaimet-filter id :options (constantly options))
+                  (update-in db haku-lisarajaimet-filters-path))))

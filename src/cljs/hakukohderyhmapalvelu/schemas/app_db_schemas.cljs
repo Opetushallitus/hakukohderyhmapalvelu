@@ -45,6 +45,10 @@
    :is-selected s/Bool
    :hakukohteet [Hakukohde]})
 
+(s/defschema LisarajainOption
+  {:value s/Any
+   :label s/Str})
+
 (s/defschema Lisarajaimet
   {:popup-visible s/Bool
    :filters       [{:id      s/Str
@@ -52,7 +56,8 @@
                     :path    [s/Keyword]
                     :type    s/Keyword
                     :value   s/Any
-                    :pred-fn s/Any}]})
+                    :pred-fn s/Any
+                    (s/optional-key :options) [LisarajainOption]}]})
 
 (s/defschema Hakukohderyhma
   (st/merge

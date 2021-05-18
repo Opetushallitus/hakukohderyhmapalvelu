@@ -2,7 +2,14 @@
   (:require [hakukohderyhmapalvelu.routes :as routes]))
 
 (def default-lisarajain-filters
-  [{:id      "sora-filter"
+  [{:id      "koulutustyypit-filter"
+    :label   :haku/lisarajain-koulutustyypit
+    :path    [:koulutustyypit]
+    :type    :select
+    :pred-fn (fn [val coll] (some #(= val %) coll))
+    :value   nil
+    :options []}
+   {:id      "sora-filter"
     :label   :haku/lisarajain-sora-hakukohde
     :path    [:sora :tila]
     :type    :boolean
