@@ -1,6 +1,5 @@
 (ns hakukohderyhmapalvelu.views.hakukohderyhmien-hallinta-panel
-  (:require [goog.string :as gstring]
-            [hakukohderyhmapalvelu.components.common.button :as b]
+  (:require [hakukohderyhmapalvelu.components.common.button :as b]
             [hakukohderyhmapalvelu.components.common.input :as input]
             [hakukohderyhmapalvelu.components.common.multi-select :as multi-select]
             [hakukohderyhmapalvelu.components.common.react-select :as react-select]
@@ -25,24 +24,18 @@
 
 (def ^:private grid-gap "10px")
 
-(defn- format-grid-row [row n style-prefix]
-  (->> [(repeat n style-prefix) "1fr" style-prefix]
-       flatten
-       (apply gstring/format row)))
-
 (defn make-input-with-label-and-control-styles
   [style-prefix]
-  (let [grid (str (format-grid-row "[%s-heading-row-start] \"%s-heading %s-control\" %s [%s-heading-row-end]" 3 style-prefix)
-                  (format-grid-row "[%s-input-row-start] \"%s-input %s-input\" %s [%s-input-row-end]" 3 style-prefix)
-                  "/ 1fr 1fr")]
-    {:display             "grid"
-     :grid-area           style-prefix
-     :grid                grid
-     :grid-gap            grid-gap
-     ::stylefy/sub-styles {:heading
-                           (merge layout/vertical-align-center-styles
-                                  {:color     colors/black
-                                   :grid-area (str style-prefix "-heading")})}}))
+  {:display               "grid"
+   :grid-area             style-prefix
+   :grid-template-columns "repeat(3, 1fr)"
+   :grid-auto-rows        "minmax(auto, auto)"
+   :grid-gap              grid-gap
+   ::stylefy/sub-styles   {:heading
+                           (-> layout/vertical-align-center-styles
+                               (assoc :color colors/black
+                                      :grid-area (str style-prefix "-heading"))
+                               (dissoc :align-items))}})
 
 (defn input-with-label-and-control
   [{:keys [control-component
@@ -53,28 +46,25 @@
            label]}]
   (let [input-styles (make-input-with-label-and-control-styles style-prefix)]
     [:div (stylefy/use-style input-styles)
-     [:label (stylefy/use-sub-style
-               input-styles
-               :heading
+     [:label (stylefy/use-style
+               (-> layout/vertical-align-center-styles
+                   (assoc :color colors/black
+                          :grid-row "1"
+                          :grid-column "1/2")
+                   (dissoc :align-items))
                {:cypressid (str cypressid "-label")
                 :for       input-id})
       label]
      input-component
      control-component]))
 
-(defn- make-hakukohderyhmien-hallinta-input-styles
-  [style-prefix]
-  {:grid-area style-prefix})
-
 (defn- hakukohderyhmien-hallinta-input
   [{:keys [style-prefix value] :as props}]
-  (let [hakukohderyhmien-hallinta-input-styles (make-hakukohderyhmien-hallinta-input-styles
-                                                 style-prefix)
-        props' (-> props
+  (let [props' (-> props
                    (dissoc :style-prefix)
                    (assoc :value (reagent/atom (or value ""))))]
     [:div
-     (stylefy/use-style hakukohderyhmien-hallinta-input-styles)
+     (stylefy/use-style {:grid-area style-prefix})
      [input/input-text props']]))
 
 (defn on-save-button-click [input-value saved-operation-type] ;TODO saved-operation-type - add schema for possible vals, [:create :rename]
@@ -84,14 +74,6 @@
 
 (defn on-delete-button-click [deleted-hakukohderyhma]
   (dispatch [hakukohderyhma-events/hakukohderyhma-deleted deleted-hakukohderyhma]))
-
-(defn- make-input-without-top-row-styles [style-prefix]
-  (let [grid (str (format-grid-row "[%s-top-row-start] \". .\" %s [%s-top-row-end]" 1 style-prefix)
-                  (format-grid-row "[%s-input-row-start] \"%s-input %s-button\" %s [%s-input-row-end]" 3 style-prefix)
-                  "/ minmax(auto, 100%) minmax(auto, 1fr)")]
-    {:display  "grid"
-     :grid     grid
-     :grid-gap grid-gap}))
 
 (def trash-can-icon (svg/img-icon "trash-can" {:height "20px"
                                                :width  "16px"
@@ -118,59 +100,67 @@
           style-prefix (str "hakukohderyhma-" operation-type)
           all-hakukohteet-are-authorized (every? :oikeusHakukohteeseen (:hakukohteet selected-ryhma))]
       (when is-visible
-        (let [input-styles (make-input-without-top-row-styles style-prefix)]
-          [:div (stylefy/use-style input-styles)
-           [hakukohderyhmien-hallinta-input
-            {:cypressid    (str cypressid "-input")
-             :input-id     input-id
-             :on-change    #(dispatch [hakukohderyhma-events/set-hakukohderyhma-name-text %])
-             :placeholder  text-input-label
-             :aria-label   text-input-label
-             :style-prefix (str style-prefix "-input")
-             :value        name-text}]
-           [:span
-            {:style {:grid-area      (str style-prefix "-button")
-                     :display        "flex"
-                     :flex-direction "row"}}
-            (if (and rename-is-active is-confirming-delete)
-              [:<>
+        [:div (stylefy/use-style {:grid-area "hakukohderyhma-create"
+                                  :display   "grid"
+                                  :grid-gap  grid-gap
+                                  :grid      (str
+                                               (str "[empty-row-start]\". .\" 24px [empty-row-end]")
+                                               (str "\"" style-prefix "-input " style-prefix "-button\" 40px")
+                                               (str "/ minmax(auto, 95%) 1fr"))})
+         [hakukohderyhmien-hallinta-input
+          {:cypressid    (str cypressid "-input")
+           :input-id     input-id
+           :on-change    #(dispatch [hakukohderyhma-events/set-hakukohderyhma-name-text %])
+           :placeholder  text-input-label
+           :aria-label   text-input-label
+           :style-prefix (str style-prefix "-input")
+           :value        name-text}]
+         [:span
+          {:style {:grid-area      (str style-prefix "-button")
+                   :display        "flex"
+                   :justify-self   "end"
+                   :flex-direction "row"}}
+          (if (and rename-is-active is-confirming-delete)
+            [:<>
+             [b/button
+              {:cypressid    "hakukohderyhma-delete-confirm-button"
+               :disabled?    false
+               :label        @(subscribe [:translation :confirm-delete])
+               :on-click     #(on-delete-button-click selected-ryhma)
+               :style-prefix (str style-prefix "-button")
+               :custom-style {:is-danger    true
+                              :margin-right "4px"
+                              :font-size    "12px"}}]
+             [b/button
+              {:cypressid    "hakukohderyhma-delete-cancel-button"
+               :label        @(subscribe [:translation :cancel])
+               :on-click     #(dispatch [hakukohderyhma-events/set-deletion-confirmation-dialogue-visibility false])
+               :style-prefix (str style-prefix "-button")}]]
+            [:<>
+             (when (and
+                     rename-is-active
+                     all-hakukohteet-are-authorized)
                [b/button
-                {:cypressid    "hakukohderyhma-delete-confirm-button"
+                {:cypressid    "hakukohderyhma-delete-button"
                  :disabled?    false
-                 :label        @(subscribe [:translation :confirm-delete])
-                 :on-click     #(on-delete-button-click selected-ryhma)
+                 :label        trash-can-icon
+                 :on-click     #(dispatch [hakukohderyhma-events/set-deletion-confirmation-dialogue-visibility true])
                  :style-prefix (str style-prefix "-button")
                  :custom-style {:is-danger    true
-                                :margin-right "4px"
-                                :font-size    "12px"}}]
-               [b/button
-                {:cypressid    "hakukohderyhma-delete-cancel-button"
-                 :label        @(subscribe [:translation :cancel])
-                 :on-click     #(dispatch [hakukohderyhma-events/set-deletion-confirmation-dialogue-visibility false])
-                 :style-prefix (str style-prefix "-button")}]]
-              [:<>
-               (when (and
-                       rename-is-active
-                       all-hakukohteet-are-authorized)
-                 [b/button
-                  {:cypressid    "hakukohderyhma-delete-button"
-                   :disabled?    false
-                   :label        trash-can-icon
-                   :on-click     #(dispatch [hakukohderyhma-events/set-deletion-confirmation-dialogue-visibility true])
-                   :style-prefix (str style-prefix "-button")
-                   :custom-style {:is-danger    true
-                                  :margin-right "4px"}}])
-               [b/button
-                {:cypressid    (str cypressid "-button")
-                 :disabled?    button-disabled?
-                 :label        @(subscribe [:translation :tallenna])
-                 :on-click     #(on-save-button-click name-text (keyword operation-type))
-                 :style-prefix (str style-prefix "-button")}]])]])))))
+                                :margin-right "4px"}}])
+             [b/button
+              {:cypressid    (str cypressid "-button")
+               :disabled?    button-disabled?
+               :label        @(subscribe [:translation :tallenna])
+               :on-click     #(on-save-button-click name-text (keyword operation-type))
+               :style-prefix (str style-prefix "-button")}]])]]))))
 
 (def ^:private hakukohderyhma-selection-controls-styles
-  (merge layout/vertical-align-center-styles
-         {:grid-area    "hakukohderyhma-select-control"
-          :justify-self "end"}))
+  (-> layout/vertical-align-center-styles
+      (assoc :grid-row "1"
+             :grid-column "2/4"
+             :justify-self "end")
+      (dissoc :align-items)))
 
 (defn- hakukohderyhma-link [{:keys [cypressid
                                     style-prefix
@@ -204,8 +194,8 @@
                             :on-click     #(dispatch [hakukohderyhma-events/edit-hakukohderyhma-link-clicked selected-ryhma])}])))
 
 (defn- hakukohderyhma-selection-controls [{disabled? :disabled? :as props}]
-  (let [separator [:span (stylefy/use-style {:margin "6px"
-                                             :color (if disabled? colors/gray-lighten-3 colors/black)})
+  (let [separator [:span (stylefy/use-style {:margin "0 6px"
+                                             :color  (if disabled? colors/gray-lighten-3 colors/black)})
                    " | "]]
     [:div (stylefy/use-style hakukohderyhma-selection-controls-styles)
      [edit-hakukohderyhma-link props]
@@ -225,8 +215,9 @@
                           {:cypressid (str cypressid "-control")
                            :disabled? (nil? @selected-haku)}]
       :cypressid         cypressid
-      :input-component   [:div (stylefy/use-style {:grid-area input-id
-                                                   :margin-top "8px"}
+      :input-component   [:div (stylefy/use-style {:grid-row       "3"
+                                                   :grid-column    "1/4"
+                                                   :padding-bottom "2px"}
                                                   {:cypressid (str cypressid "-input")})
                           [react-select/select {:options      @hakukohderyhmas
                                                 :on-select-fn #(dispatch [hakukohderyhma-events/hakukohderyhma-selected %])
@@ -246,6 +237,7 @@
       [:div (stylefy/use-style {:grid-area "hakukohderyhma-container"
                                 :display   "grid"
                                 :grid-gap  "10px"
+                                :margin-top "2rem"
                                 :grid      (str "\"hakukohderyhma-select hakukohderyhma-select hakukohderyhma-select hakukohderyhma-select\" 1fr "
                                                 "\"hakukohderyhma-select hakukohderyhma-select hakukohderyhma-select hakukohderyhma-select\" 1fr "
                                                 "\"hakukohderyhma-hakukohteet hakukohderyhma-hakukohteet hakukohderyhma-hakukohteet hakukohderyhma-hakukohteet\" 20rem"
@@ -253,7 +245,8 @@
                                {:cypressid "hakukohderyhma-container"})
 
        [hakukohderyhma-select]
-       [:div (stylefy/use-style {:grid-area "hakukohderyhma-hakukohteet"})
+       [:div (stylefy/use-style {:grid-area  "hakukohderyhma-hakukohteet"
+                                 :margin-top "-2px"})
         [multi-select/multi-select {:options   @hakukohteet
                                     :cypressid "hakukohderyhma-hakukohteet"
                                     :select-fn #(dispatch [hakukohderyhma-events/toggle-hakukohde-selection %])}]]
