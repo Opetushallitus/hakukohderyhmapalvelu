@@ -559,7 +559,7 @@ describe('Hakukohderyhmäpalvelu', () => {
       it('Näyttää hakukohderyhmän luonnin tekstikentän ja sen ohjetekstin', () => {
         cy.get(
           hl.hakukohderyhmanLisaysNewHakukohderyhmaNameTextInputSelector,
-        ).should('have.attr', 'placeholder', 'Uuden ryhmän nimi')
+        ).should('have.attr', 'placeholder', 'Hakukohderyhmän nimi')
         cy.get(
           hl.hakukohderyhmanLisaysSaveNewHakukohderyhmaButtonSelector,
         ).should('be.disabled')
@@ -632,13 +632,19 @@ describe('Hakukohderyhmäpalvelu', () => {
       })
     })
     describe('Hakukohderyhmän nimen muuttaminen', () => {
-      it('Näyttää hakukohderyhmän muokkauksen tekstikentän ja muokattavan ryhmän nimen placeholderissa', () => {
+      it('Näyttää hakukohderyhmän muokkauksen tekstikentän ja muokattavan ryhmän nimen', () => {
+        cy.get(hakukohderyhmanValintaDropdown).type(
+          'Testihakukohderyhmä{enter}',
+        )
         cy.get(hl.hakukohderyhmanLisaysMuokkaaRyhmaaLinkSelector).click({
           force: true,
         })
+        cy.get(
+          hl.hakukohderyhmanLisaysRenameHakukohderyhmaTextInputSelector,
+        ).should('have.attr', 'placeholder', 'Hakukohderyhmän nimi')
         cy.get(hl.hakukohderyhmanLisaysRenameHakukohderyhmaTextInputSelector)
-          .should('have.attr', 'placeholder', 'Testihakukohderyhmä')
-          .should('have.text', '')
+          .then(el => el.val())
+          .should('be.equal', 'Testihakukohderyhmä')
         cy.get(
           hl.hakukohderyhmanLisaysSaveRenameHakukohderyhmaButtonSelector,
         ).should('be.disabled')
@@ -656,7 +662,9 @@ describe('Hakukohderyhmäpalvelu', () => {
           .then(renamedHakukohderyhma => {
             cy.get(
               hl.hakukohderyhmanLisaysRenameHakukohderyhmaTextInputSelector,
-            ).type(renamedHakukohderyhma.nimi.fi, { force: true })
+            )
+              .clear()
+              .type(renamedHakukohderyhma.nimi.fi, { force: true })
           })
       })
       it('Uuden nimen tallennuspainiketta voi klikata', () => {
@@ -699,9 +707,10 @@ describe('Hakukohderyhmäpalvelu', () => {
           )
         })
         it('Uuden nimen voi tallentaa, tallennus-input katoaa näkymästä ja uusi ryhmä on valittu automaattisesti', () => {
-          cy.get(
-            hl.hakukohderyhmanLisaysSaveRenameHakukohderyhmaButtonSelector,
-          ).click({ force: true })
+          cy.wait(500) // eslint-disable-line
+            // Waits for debounce to settle
+            .get(hl.hakukohderyhmanLisaysSaveRenameHakukohderyhmaButtonSelector)
+            .click({ force: true })
           cy.get<PutHakukohderyhmaRequestFixture>(
             '@put-hakukohderyhma-request',
           ).then(renamedHakukohderyhma => {
@@ -739,11 +748,7 @@ describe('Hakukohderyhmäpalvelu', () => {
             force: true,
           })
           cy.get(hl.hakukohderyhmanLisaysRenameHakukohderyhmaTextInputSelector)
-            .should(
-              'have.attr',
-              'placeholder',
-              'Uudelleennimetty testihakukohderyhmä',
-            )
+            .should('have.value', 'Uudelleennimetty testihakukohderyhmä')
             .should('have.text', '')
           cy.get(hl.hakukohderyhmanPoistoDeleteButtton).click({
             force: true,
@@ -753,13 +758,9 @@ describe('Hakukohderyhmäpalvelu', () => {
           })
           cy.get(hl.hakukohderyhmanPoistoDeleteButtton).should('exist')
         })
-        it('Jos käyttäjä vaihtaa ryhmää kesken varmistuksen, varmistusdialogi katoaa', () => {
+        it('Jos käyttäjä vaihtaa ryhmää kesken varmistuksen, inputit katoaa', () => {
           cy.get(hl.hakukohderyhmanLisaysRenameHakukohderyhmaTextInputSelector)
-            .should(
-              'have.attr',
-              'placeholder',
-              'Uudelleennimetty testihakukohderyhmä',
-            )
+            .should('have.value', 'Uudelleennimetty testihakukohderyhmä')
             .should('have.text', '')
           cy.get(hl.hakukohderyhmanPoistoDeleteButtton).click({
             force: true,
@@ -774,7 +775,10 @@ describe('Hakukohderyhmäpalvelu', () => {
               `${preExistingRyhmaNimi}{enter}`,
             )
           })
-          cy.get(hl.hakukohderyhmanPoistoDeleteButtton).should('exist')
+          cy.get(
+            hl.hakukohderyhmanLisaysRenameHakukohderyhmaTextInputSelector,
+          ).should('not.exist')
+          cy.get(hl.hakukohderyhmanPoistoDeleteButtton).should('not.exist')
           cy.get(hl.hakukohderyhmanPoistoCancelDeleteButtton).should(
             'not.exist',
           )
@@ -785,10 +789,12 @@ describe('Hakukohderyhmäpalvelu', () => {
           ).then(ryhmat => {
             const preExistingRyhmaNimi = ryhmat[1].nimi.fi
             const searchStr = preExistingRyhmaNimi.substr(0, 4)
-            cy.get(hakukohderyhmanValintaDropdown)
-              .type(searchStr)
-              .contains(preExistingRyhmaNimi)
-
+            cy.get(hakukohderyhmanValintaDropdown).type(
+              `${preExistingRyhmaNimi}{enter}`,
+            )
+            cy.get(hl.hakukohderyhmanLisaysMuokkaaRyhmaaLinkSelector).click({
+              force: true,
+            })
             cy.get(hl.hakukohderyhmanPoistoDeleteButtton).click({
               force: true,
             })
@@ -796,7 +802,6 @@ describe('Hakukohderyhmäpalvelu', () => {
             cy.get(hl.hakukohderyhmanPoistoConfirmDeleteButtton).click({
               force: true,
             })
-
             cy.get(hakukohderyhmanValintaDropdown)
               .type(searchStr)
               .contains('Valittavia kohteita ei löytynyt')

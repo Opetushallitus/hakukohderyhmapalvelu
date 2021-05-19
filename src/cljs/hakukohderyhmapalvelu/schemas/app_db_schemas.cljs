@@ -67,14 +67,15 @@
 
 (s/defschema HakukohderyhmaPalvelu
   {:hakukohderyhma
-   {:persisted               [Hakukohderyhma]
-    :selected-hakukohderyhma (s/maybe Hakukohderyhma)
-    :input-visibility        {:create-active? s/Bool
-                              :rename-active? s/Bool
-                              :deletion-confirmation-active? s/Bool}
-    :haut                    [HaunTiedot]
-    :hakukohteet-filter      s/Str
-    :lisarajaimet            Lisarajaimet}})
+   {:persisted                [Hakukohderyhma]
+    :selected-hakukohderyhma  (s/maybe Hakukohderyhma)
+    :input-visibility         {:create-active?                s/Bool
+                               :rename-active?                s/Bool
+                               :deletion-confirmation-active? s/Bool}
+    :haut                     [HaunTiedot]
+    :hakukohteet-filter       s/Str
+    :hakukohderyhma-name-text s/Str
+    :lisarajaimet             Lisarajaimet}})
 
 (s/defschema Requests
   {:requests #{s/Keyword}})

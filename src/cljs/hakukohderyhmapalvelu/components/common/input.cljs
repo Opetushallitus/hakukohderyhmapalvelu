@@ -73,33 +73,38 @@
                aria-label
                aria-describedby
                is-disabled
-               is-required]} :- {(s/optional-key :cypressid)        s/Str
-                               :input-id                          s/Str
-                               :on-change                         s/Any
-                               :placeholder                       s/Str
-                               :aria-label                        s/Str
-                               (s/optional-key :aria-describedby) s/Str
-                               (s/optional-key :is-disabled)        s/Bool
-                               (s/optional-key :is-required)        s/Bool}]
+               is-required
+               value]} :- {(s/optional-key :cypressid)        s/Str
+                           :input-id                          s/Str
+                           :on-change                         s/Any
+                           :placeholder                       s/Str
+                           :aria-label                        s/Str
+                           (s/optional-key :aria-describedby) s/Str
+                           (s/optional-key :is-disabled)      s/Bool
+                           (s/optional-key :is-required)      s/Bool
+                           (s/optional-key :value)            s/Any}]
       [:input (stylefy/use-style
                 (cond-> input-text-styles
                         @invalid?
                         (merge input-text-invalid-styles))
-                {:cypressid        cypressid
-                 :id               input-id
-                 :on-change        (fn [event]
-                                     (let [value (.. event -target -value)
-                                           valid? (if is-required
-                                                    (not (string/blank? value))
-                                                    true)]
-                                       (reset! invalid? (not valid?))
-                                       (when valid?
-                                         (on-change-debounced on-change value))))
-                 :disabled         (boolean is-disabled)
-                 :placeholder      placeholder
-                 :type             "text"
-                 :aria-label       aria-label
-                 :aria-describedby aria-describedby})])))
+                (cond-> {:cypressid        cypressid
+                         :id               input-id
+                         :on-change        (fn [event]
+                                             (let [new-value (.. event -target -value)
+                                                   valid? (if is-required
+                                                            (not (string/blank? new-value))
+                                                            true)]
+                                               (reset! invalid? (not valid?))
+                                               (when value
+                                                 (reset! value new-value))
+                                               (when valid?
+                                                 (on-change-debounced on-change new-value))))
+                         :disabled         (boolean is-disabled)
+                         :placeholder      placeholder
+                         :type             "text"
+                         :aria-label       aria-label
+                         :aria-describedby aria-describedby}
+                        value (assoc :value @value)))])))
 
 (s/defn input-number :- s/Any
   [{:keys [value]} :- {(s/optional-key :value) s/Str
