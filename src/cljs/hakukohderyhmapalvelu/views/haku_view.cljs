@@ -30,7 +30,7 @@
         on-select (fn [{oid :value}] (dispatch [haku-events/select-haku oid]))
         on-clear (fn [] (dispatch [haku-events/clear-selected-haku]))]
     (fn []
-      [:div (stylefy/use-style {:grid-area "haku-search"} {:cypressid "haku-search-cypress"})
+      [:div (stylefy/use-style {:grid-area "haku-search" :margin-bottom "2px"} {:cypressid "haku-search-cypress"})
        [:div (stylefy/use-style {:margin-bottom "10px"})
         [:span @title-text]
         [:div (stylefy/use-style {:float "right"})

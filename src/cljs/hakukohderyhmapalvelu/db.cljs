@@ -30,7 +30,6 @@
    :requests                          #{}
    :lang                              :fi
    :hakukohderyhma                    {:persisted               []
-                                       :selected-hakukohderyhma nil
                                        :input-visibility        {:create-active?                false
                                                                  :rename-active?                false
                                                                  :deletion-confirmation-active? false}
