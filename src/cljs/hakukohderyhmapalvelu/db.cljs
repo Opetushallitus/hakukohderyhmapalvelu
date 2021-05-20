@@ -1,27 +1,7 @@
 (ns hakukohderyhmapalvelu.db
-  (:require [hakukohderyhmapalvelu.routes :as routes]
-            [hakukohderyhmapalvelu.i18n.translations :as translations]))
-
-(def default-lisarajain-filters
-  [{:id      "koulutustyypit-filter"
-    :label   :hakukohderyhma/lisarajain-koulutustyypit
-    :path    [:koulutustyypit]
-    :type    :select
-    :pred-fn (fn [val coll] (some #(= val %) coll))
-    :value   nil
-    :options []}
-   {:id      "sora-filter"
-    :label   :hakukohderyhma/sora-hakukohteet
-    :path    [:sora :tila]
-    :type    :boolean
-    :pred-fn #(= "aktiivinen" %)
-    :value   false}
-   {:id      "kaksoistutkinto-filter"
-    :label   :hakukohderyhma/lisarajain-kaksoistutkinto
-    :path    [:toinenAsteOnkoKaksoistutkinto]
-    :type    :boolean
-    :pred-fn true?
-    :value   false}])
+  (:require [hakukohderyhmapalvelu.i18n.translations :as translations]
+            [hakukohderyhmapalvelu.lisarajaimet :as lisarajaimet]
+            [hakukohderyhmapalvelu.routes :as routes]))
 
 (def default-db
   {:active-panel                      {:panel      routes/default-panel
@@ -40,7 +20,7 @@
                                        :hakukohteet-filter       ""
                                        :hakukohderyhma-name-text ""
                                        :lisarajaimet             {:popup-visible false
-                                                                  :filters       default-lisarajain-filters}}
+                                                                  :filters       lisarajaimet/default-lisarajain-filters}}
    :haun-asetukset                    {:haut {}}
    :forms                             {}
    :ohjausparametrit                  {}

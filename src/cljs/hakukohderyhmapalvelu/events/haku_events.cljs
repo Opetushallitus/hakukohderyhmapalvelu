@@ -1,5 +1,6 @@
 (ns hakukohderyhmapalvelu.events.haku-events
   (:require [hakukohderyhmapalvelu.macros.event-macros :as events]
+            [hakukohderyhmapalvelu.lisarajaimet :as lisarajaimet]
             [hakukohderyhmapalvelu.api-schemas :as schemas]
             [hakukohderyhmapalvelu.events.hakukohderyhmien-hallinta-events :as hakukohderyhma-events]
             [day8.re-frame.tracing :refer-macros [fn-traced]]
@@ -160,7 +161,7 @@
   (fn-traced [db [_]]
              (let [lang (get db :lang)
                    lisarajaimet (->> (get-in db haku-lisarajaimet-filters-path)
-                                     (keep u/lisarajain->fn))
+                                     (keep lisarajaimet/lisarajain->fn))
                    filter-str (get-in db haku-hakukohteet-filter)
                    in-view? #(and
                                (u/hakukohde-includes-string? % filter-str lang)
