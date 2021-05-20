@@ -1,5 +1,6 @@
 (ns hakukohderyhmapalvelu.events.translation-events
-  (:require [clojure.string :as str]
+  (:require [camel-snake-kebab.core :as csk]
+            [clojure.string :as str]
             [day8.re-frame.tracing :refer-macros [fn-traced]]
             [hakukohderyhmapalvelu.macros.event-macros :as events]
             [hakukohderyhmapalvelu.urls :as urls]))
@@ -17,7 +18,7 @@
                                                                          (str/split #"\."))
                                             value (:value trans-res)]
                                         (assoc-in translations
-                                                  (map keyword [namespace-key name-key locale])
+                                                  (map csk/->kebab-case-keyword [namespace-key name-key locale])
                                                   value)))
                    synced-translations (reduce
                                          sync-translation

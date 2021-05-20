@@ -38,7 +38,7 @@
 
 (s/defschema Translations
   {:translations {:yleiset Translation
-                  :haunAsetukset Translation
+                  :haun-asetukset Translation
                   :hakukohderyhma Translation}})
 
 (s/defschema Hakukohde
