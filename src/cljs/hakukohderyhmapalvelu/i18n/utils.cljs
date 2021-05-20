@@ -1,5 +1,6 @@
 (ns hakukohderyhmapalvelu.i18n.utils
-  (:require [clojure.string :as str]))
+  (:require [clojure.string :as str]
+            [camel-snake-kebab.core :as csk]))
 
 ;; Oletusjärjestys, jolla haetaan kielistettyä arvoa eri kielillä
 (def ^:private fi-order [:fi :sv :en])
@@ -53,3 +54,8 @@
                   :nimi)]
     {:value koodi-uri
      :label label}))
+
+(defn get-translation [lang translations tx-key]
+  (let [[namespace-key name-key] (->> ((juxt namespace name) tx-key)
+                                      (map #(-> % csk/->camelCase keyword)))]
+    (-> translations namespace-key name-key lang)))

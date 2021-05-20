@@ -1,5 +1,5 @@
 (ns hakukohderyhmapalvelu.subs.core-subs
-  (:require [camel-snake-kebab.core :as csk]
+  (:require [hakukohderyhmapalvelu.i18n.utils :as i18n]
             [re-frame.core :as re-frame]))
 
 (re-frame/reg-sub
@@ -23,6 +23,4 @@
     [(re-frame/subscribe [:lang])
      (re-frame/subscribe [:translations])])
   (fn [[lang translations] [_ tx-key]]
-    (let [[namespace-key name-key] (->> ((juxt namespace name) tx-key)
-                                        (map #(-> % csk/->camelCase keyword)))]
-      (-> translations namespace-key name-key lang))))
+    (i18n/get-translation lang translations tx-key)))

@@ -3,10 +3,9 @@
             [hakukohderyhmapalvelu.api-schemas :as api-schemas]
             [hakukohderyhmapalvelu.events.alert-events :as alert-events]
             [day8.re-frame.tracing :refer-macros [fn-traced]]
-            [re-frame.core :refer [subscribe]]
             [clojure.set :refer [union]]
             [schema-tools.core :as st]
-            [hakukohderyhmapalvelu.i18n.utils :refer [get-with-fallback sort-items-by-name]]))
+            [hakukohderyhmapalvelu.i18n.utils :as i18n :refer [get-with-fallback sort-items-by-name]]))
 
 
 (def root-path [:hakukohderyhma])
@@ -167,7 +166,7 @@
   (fn-traced [db [deleted-oid {:keys [status]}]]
              (let [db-ryhmat (get-in db persisted-hakukohderyhmas)
                    with-deletion (filter #(not= deleted-oid (:oid %)) db-ryhmat)
-                   in-use-message @(subscribe [:translation :hakukohderyhma/hakukohderyhma-kaytossa])]
+                   in-use-message (i18n/get-translation (:lang db) (:translations db) :hakukohderyhma/hakukohderyhma-kaytossa)]
                (condp = status
                  api-schemas/StatusDeleted (-> db
                                                (assoc-in persisted-hakukohderyhmas with-deletion)
