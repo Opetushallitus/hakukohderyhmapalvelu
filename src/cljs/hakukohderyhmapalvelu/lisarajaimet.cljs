@@ -1,5 +1,15 @@
 (ns hakukohderyhmapalvelu.lisarajaimet)
 
+(defn- harkinnanvarainen-hakukohde? [hakukohde]
+  (let [ammatillinen-koulustyyppi? #{"koulutustyyppi_1" "koulutustyyppi_4"}
+        is-ei-harkinnanvarainen nil
+        has-valintakoe nil]
+    (and
+      (some ammatillinen-koulustyyppi? (:koulutustyypit hakukohde))
+      (or
+        (not is-ei-harkinnanvarainen)
+        (not has-valintakoe)))))
+
 (def default-lisarajain-filters
   [{:id      "koulutustyypit-filter"
     :label   :hakukohderyhma/lisarajain-koulutustyypit
@@ -13,6 +23,12 @@
     :path    [:sora :tila]
     :type    :boolean
     :pred-fn #(= "aktiivinen" %)
+    :value   false}
+   {:id      "harkinnanvaraiset-filter"
+    :label   :hakukohderyhma/lisarajain-harkinnanvaraiset
+    :path    []
+    :type    :boolean
+    :pred-fn harkinnanvarainen-hakukohde?
     :value   false}
    {:id      "kaksoistutkinto-filter"
     :label   :hakukohderyhma/lisarajain-kaksoistutkinto
