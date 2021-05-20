@@ -1,3 +1,6 @@
+export const haunHakutoimintoTitleSelector =
+  'span[cypressid=haku-search-title]:visible'
+
 export const haunHakutoimintoDivSelector =
   'div[cypressid=haku-search-cypress]:visible'
 

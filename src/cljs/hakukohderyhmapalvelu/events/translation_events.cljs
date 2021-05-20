@@ -13,9 +13,9 @@
              (let [current-translations (:translations db)
                    sync-translation (fn [translations trans-res]
                                       (let [[namespace-key name-key] (-> trans-res
-                                                                         (get "key")
+                                                                         :key
                                                                          (str/split #"\."))
-                                            value (get trans-res "value")]
+                                            value (:value trans-res)]
                                         (assoc-in translations
                                                   (map keyword [namespace-key name-key locale])
                                                   value)))

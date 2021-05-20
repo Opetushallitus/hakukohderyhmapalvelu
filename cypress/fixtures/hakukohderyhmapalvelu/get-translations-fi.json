@@ -1,0 +1,30 @@
+[
+  {
+    "accesscount": 0,
+    "id": 20840,
+    "category": "hakukohderyhmapalvelu",
+    "key": "hakukohderyhma.haku",
+    "force": false,
+    "accessed": 1553767553464,
+    "created": 1553767553464,
+    "createdBy": "1.2.6.2.2.3",
+    "modified": 1553767553464,
+    "modifiedBy": "1.2.6.2.2.3",
+    "locale": "fi",
+    "value": "Haku (muutettu)"
+  },
+  {
+    "accesscount": 0,
+    "id": 20841,
+    "category": "hakukohderyhmapalvelu",
+    "key": "hakukohderyhma.hakukohteet",
+    "force": false,
+    "accessed": 1553767553464,
+    "created": 1553767553464,
+    "createdBy": "1.2.6.2.2.3",
+    "modified": 1553767553464,
+    "modifiedBy": "1.2.6.2.2.3",
+    "locale": "fi",
+    "value": "Hakukohteet"
+  }
+]

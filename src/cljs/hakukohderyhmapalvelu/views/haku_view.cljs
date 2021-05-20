@@ -32,7 +32,7 @@
     (fn []
       [:div (stylefy/use-style {:grid-area "haku-search" :margin-bottom "2px"} {:cypressid "haku-search-cypress"})
        [:div (stylefy/use-style {:margin-bottom "10px"})
-        [:span @title-text]
+        [:span {:cypressid "haku-search-title"} @title-text]
         [:div (stylefy/use-style {:float "right"})
          [checkbox/checkbox-with-label {:id        "haku-search-checkbox"
                                         :checked?  @is-selected
