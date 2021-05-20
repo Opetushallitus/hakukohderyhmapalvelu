@@ -68,7 +68,6 @@
 (s/defschema HakukohderyhmaPalvelu
   {:hakukohderyhma
    {:persisted                [Hakukohderyhma]
-    :selected-hakukohderyhma  (s/maybe Hakukohderyhma)
     :input-visibility         {:create-active?                s/Bool
                                :rename-active?                s/Bool
                                :deletion-confirmation-active? s/Bool}

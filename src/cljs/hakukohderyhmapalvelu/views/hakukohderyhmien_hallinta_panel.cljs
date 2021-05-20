@@ -221,6 +221,7 @@
                                                   {:cypressid (str cypressid "-input")})
                           [react-select/select {:options      @hakukohderyhmas
                                                 :on-select-fn #(dispatch [hakukohderyhma-events/hakukohderyhma-selected %])
+                                                :on-clear-fn  #(dispatch [hakukohderyhma-events/hakukohderyhma-selected nil])
                                                 :is-disabled  (empty? @hakukohderyhmas)
                                                 :is-loading   @is-loading
                                                 :placeholder  "Hakukohderyhmä"
