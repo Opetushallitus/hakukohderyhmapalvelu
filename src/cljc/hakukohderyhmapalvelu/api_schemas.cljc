@@ -26,6 +26,7 @@
     CommonOrganisaatioEntityPayload
     {:organisaatio                          Organisaatio
      :toinenAsteOnkoKaksoistutkinto         s/Bool
+     (s/optional-key :hasValintakoe)        s/Bool
      (s/optional-key :sora)                 SoraTieto
      (s/optional-key :oikeusHakukohteeseen) s/Bool
      (s/optional-key :hakuOid)              s/Str
