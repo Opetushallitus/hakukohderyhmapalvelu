@@ -14,6 +14,14 @@ describe('Hakukohderyhmäpalvelu', () => {
     cy.visit('/')
     cy.get('body').type('{ctrl}h')
   }
+  const mockLocalizationRoute = (locale: string) => {
+    cy.mockBrowserRequest({
+      method: 'GET',
+      path: `http://localhost/lokalisointi/cxf/rest/v1/localisation?category=hakukohderyhmapalvelu&locale=${locale}`,
+      fixturePath: `hakukohderyhmapalvelu/get-translations-${locale}.json`,
+      responseAlias: `hakukohderyhmapalvelu-get-${locale}-translations-response`,
+    })
+  }
   const addUnauthorizedMockHakukohdeToHakukohderyhma = () => {
     cy.task('query', {
       sql: `
@@ -124,6 +132,10 @@ describe('Hakukohderyhmäpalvelu', () => {
       responseAlias: 'hakukohderyhmapalvelu-get-koulutustyypit-response',
     })
 
+    mockLocalizationRoute('fi')
+    mockLocalizationRoute('sv')
+    mockLocalizationRoute('en')
+
     hideReframeDebuggerWindow()
   })
   it('Ohjaa käyttäjän polkuun /hakukohderyhmapalvelu/hakukohderyhmien-hallinta', () => {
@@ -138,6 +150,18 @@ describe('Hakukohderyhmäpalvelu', () => {
       'have.text',
       'Hakukohderyhmien hallinta',
     )
+  })
+  describe('Lokalisointi', () => {
+    it('Sovellus käyttää lokalisointipalvelusta haettuja tekstejä', () => {
+      cy.fixture('hakukohderyhmapalvelu/get-translations-fi.json').then(
+        translations => {
+          cy.get(hh.haunHakutoimintoTitleSelector).should(
+            'have.text',
+            translations[0].value,
+          )
+        },
+      )
+    })
   })
   describe('Haun hakutoiminto', () => {
     it('Näyttää haun hakutoiminnon', () => {

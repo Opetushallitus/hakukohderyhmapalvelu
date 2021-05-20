@@ -33,6 +33,14 @@
    (s/optional-key :sv) s/Str
    (s/optional-key :en) s/Str})
 
+(s/defschema Translation
+  {s/Keyword LocalizedString})
+
+(s/defschema Translations
+  {:translations {:yleiset Translation
+                  :haun-asetukset Translation
+                  :hakukohderyhma Translation}})
+
 (s/defschema Hakukohde
   (st/merge
     api-schemas/Hakukohde
@@ -143,6 +151,7 @@
   (st/merge ActivePanel
             Alert
             Lang
+            Translations
             Requests
             HakukohderyhmaPalvelu
             Haut

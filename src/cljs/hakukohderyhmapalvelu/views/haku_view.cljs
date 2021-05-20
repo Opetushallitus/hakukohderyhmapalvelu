@@ -21,9 +21,9 @@
         selected-option (subscribe [haku-subs/haku-selected-haku-as-option])
         is-selected (reagent/atom false)
         is-loading (subscribe [haku-subs/haku-is-loading])
-        title-text (subscribe [:translation :haku/haku])
-        label-text (subscribe [:translation :haku/show-all-haut])
-        placeholder-text (subscribe [:translation :haku/haku-search-placeholder])
+        title-text (subscribe [:translation :hakukohderyhma/haku])
+        label-text (subscribe [:translation :hakukohderyhma/nayta-myos-paattyneet])
+        placeholder-text (subscribe [:translation :hakukohderyhma/haun-nimi])
         on-change (fn [_]
                     (swap! is-selected not)
                     (dispatch [haku-events/get-haut @is-selected]))
@@ -32,7 +32,7 @@
     (fn []
       [:div (stylefy/use-style {:grid-area "haku-search" :margin-bottom "2px"} {:cypressid "haku-search-cypress"})
        [:div (stylefy/use-style {:margin-bottom "10px"})
-        [:span @title-text]
+        [:span {:cypressid "haku-search-title"} @title-text]
         [:div (stylefy/use-style {:float "right"})
          [checkbox/checkbox-with-label {:id        "haku-search-checkbox"
                                         :checked?  @is-selected
@@ -72,8 +72,8 @@
 (defn hakukohteet-container []
   (let [hakukohteet (subscribe [haku-subs/haku-hakukohteet-as-options])
         hakukohteet-is-empty (subscribe [haku-subs/haku-hakukohteet-is-empty])
-        hakukohteet-label (subscribe [:translation :haku/hakukohteet])
-        hakukohteet-search-placeholder (subscribe [:translation :haku/hakukohteet-search-placeholder])
+        hakukohteet-label (subscribe [:translation :hakukohderyhma/hakukohteet])
+        hakukohteet-search-placeholder (subscribe [:translation :hakukohderyhma/nimi-tai-organisaatio])
         selected-hakukohteet (subscribe [haku-subs/haku-selected-hakukohteet])
         selected-hakukohderyhma (subscribe [hakukohderyhma-subs/selected-hakukohderyhma])
         haku-lisarajaimet-visible (subscribe [haku-subs/haku-lisarajaimet-visible])

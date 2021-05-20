@@ -1,22 +1,23 @@
 (ns hakukohderyhmapalvelu.db
-  (:require [hakukohderyhmapalvelu.routes :as routes]))
+  (:require [hakukohderyhmapalvelu.routes :as routes]
+            [hakukohderyhmapalvelu.i18n.translations :as translations]))
 
 (def default-lisarajain-filters
   [{:id      "koulutustyypit-filter"
-    :label   :haku/lisarajain-koulutustyypit
+    :label   :hakukohderyhma/lisarajain-koulutustyypit
     :path    [:koulutustyypit]
     :type    :select
     :pred-fn (fn [val coll] (some #(= val %) coll))
     :value   nil
     :options []}
    {:id      "sora-filter"
-    :label   :haku/lisarajain-sora-hakukohde
+    :label   :hakukohderyhma/sora-hakukohteet
     :path    [:sora :tila]
     :type    :boolean
     :pred-fn #(= "aktiivinen" %)
     :value   false}
    {:id      "kaksoistutkinto-filter"
-    :label   :haku/lisarajain-kaksoistutkinto
+    :label   :hakukohderyhma/lisarajain-kaksoistutkinto
     :path    [:toinenAsteOnkoKaksoistutkinto]
     :type    :boolean
     :pred-fn true?
@@ -29,6 +30,7 @@
    :alert                             {:message ""}
    :requests                          #{}
    :lang                              :fi
+   :translations                      translations/local-translations
    :hakukohderyhma                    {:persisted               []
                                        :input-visibility        {:create-active?                false
                                                                  :rename-active?                false

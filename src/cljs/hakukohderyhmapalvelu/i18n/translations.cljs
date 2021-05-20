@@ -1,93 +1,43 @@
 (ns hakukohderyhmapalvelu.i18n.translations)
 
-(def haun-asetukset-translations
-  {:haun-asetukset/title
-   {:fi "Haun asetukset"}
-   :haun-asetukset/hakukohteiden-maara-rajoitettu
-   {:fi "Hakutoiveiden määrä rajoitettu"}
-   :haun-asetukset/hakukohteiden-maara
-   {:fi "Hakutoiveiden enimmäismäärä"}
-   :haun-asetukset/jarjestetyt-hakutoiveet
-   {:fi "Hakutoiveiden priorisointi"}
-   :haun-asetukset/useita-hakemuksia
-   {:fi "Vain yksi hakemus -rajoitus"}
-   :haun-asetukset/hakijakohtainen-paikan-vastaanottoaika
-   {:fi "Hakijakohtainen paikan vastaanottoaika (vrk)"}
-   :haun-asetukset/paikan-vastaanotto-paattyy
-   {:fi "Hakijan paikan vastaanotto päättyy"}
-   :haun-asetukset/hakukierros-paattyy
-   {:fi "Hakukierros päättyy"}
-   :haun-asetukset/sijoittelu
-   {:fi "Haussa käytetään sijoittelua"}
-   :haun-asetukset/valintatulokset-valmiina-viimeistaan
-   {:fi "Valintatulokset valmiina viimeistään"}
-   :haun-asetukset/varasijasaannot-astuvat-voimaan
-   {:fi "Varasijasäännöt astuvat voimaan"}
-   :haun-asetukset/varasijataytto-paattyy
-   {:fi "Varasijatäyttö päättyy"}
-   :haun-asetukset/input-date-describedby
-   {:fi "Syötä tähän kenttään päivämäärästä ja kellonajasta muodostuvan arvon päivämäärä"}
-   :haun-asetukset/input-time-describedby
-   {:fi "Syötä tähän kenttään päivämäärästä ja kellonajasta muodostuvan arvon kellonaika"}})
-
-(def common-translations
-  {:application-periods
-   {:fi "Hakuajat"}
-   :application-form
-   {:fi "Hakulomake"}
-   :cancel
-   {:fi "Peruuta"}
-   :confirm-delete
-   {:fi "Vahvista poisto"}
-   :modify-form
-   {:fi "muokkaa lomaketta"}
-   :modify-haku
-   {:fi "muokkaa hakua"}
-   :required-legend
-   {:fi "* merkityt kentät ovat pakollisia"}
-   :save
-   {:fi "Tallenna"}
-   :no-selectable-items
-   {:fi "Valittavia kohteita ei löytynyt"}})
-
-(def hakukohderyhma-translations
-  {:haku/haku
-   {:fi "Haku"}
-   :haku/haku-search-placeholder
-   {:fi "Haun nimi"}
-   :haku/show-all-haut
-   {:fi "Näytä myös päättyneet"}
-   :haku/hakukohteet
-   {:fi "Hakukohteet"}
-   :haku/hakukohteet-search-placeholder
-   {:fi "Nimi tai organisaatio"}
-   :hakukohderyhma/poista-ryhmasta
-   {:fi "Poista ryhmästä"}
-   :hakukohderyhma/liita-ryhmaan
-   {:fi "Liitä ryhmään"}
-   :hakukohderyhma/valitse-kaikki
-   {:fi "Valitse kaikki"}
-   :hakukohderyhma/poista-valinnat
-   {:fi "Poista valinnat"}
-   :hakukohderyhma/luo-uusi-ryhma
-   {:fi "Luo uusi ryhmä"}
-   :hakukohderyhma/muokkaa-ryhmaa
-   {:fi "Muokkaa ryhmää"}
-   :hakukohderyhma/hakukohderyhma-nimi
-   {:fi "Hakukohderyhmän nimi"}
-   :hakukohderyhma/hakukohderyhma-käytössä-viesti
-   {:fi "Hakukohderyhmä on käytössä hakulomakkeella ja sitä ei voi poistaa."}
-   :haku/lisarajaimet
-   {:fi "Lisäsuodattimet"}
-   :haku/lisarajain-kaksoistutkinto
-   {:fi "Hakukohteella mahdollisuus kaksoistutkintoon"}
-   :haku/lisarajain-koulutustyypit
-   {:fi "Koulutustyypit"}
-   :haku/lisarajain-sora-hakukohde
-   {:fi "SORA -hakukohteet"}})
-
-(def translations
-  (merge
-    hakukohderyhma-translations
-    haun-asetukset-translations
-    common-translations))
+(def local-translations
+  {:yleiset        {:ei-valittavia-kohteita {:fi "Valittavia kohteita ei löytynyt"}
+                    :vahvista-poisto        {:fi "Vahvista poisto"}
+                    :peruuta                {:fi "Peruuta"}
+                    :hakulomake             {:fi "Hakulomake"}
+                    :tallenna               {:fi "Tallenna"}
+                    :hakuajat               {:fi "Hakuajat"}
+                    :muokkaa-lomaketta      {:fi "Muokkaa lomaketta"}
+                    :muokkaa-hakua          {:fi "Muokkaa hakua"}
+                    :pakolliset-kentat      {:fi "* merkityt kentät ovat pakollisia"}}
+   :haun-asetukset {:valintatulokset-valmiina-viimeistaan   {:fi "Valintatulokset valmiina viimeistään"}
+                    :useita-hakemuksia                      {:fi "Vain yksi hakemus -rajoitus"}
+                    :haun-asetukset                         {:fi "Haun asetukset"}
+                    :hakukohteiden-enimmaismaara            {:fi "Hakutoiveiden enimmäismäärä"}
+                    :hakukierros-paattyy                    {:fi "Hakukierros päättyy"}
+                    :varasijataytto-paattyy                 {:fi "Varasijatäyttö päättyy"}
+                    :hakukohteiden-maara-rajoitettu         {:fi "Hakutoiveiden määrä rajoitettu"}
+                    :jarjestetyt-hakutoiveet                {:fi "Hakutoiveiden priorisointi"}
+                    :varasijasaannot-astuvat-voimaan        {:fi "Varasijasäännöt astuvat voimaan"}
+                    :paikan-vastaanotto-paattyy             {:fi "Hakijan paikan vastaanotto päättyy"}
+                    :hakijakohtainen-paikan-vastaanottoaika {:fi "Hakijakohtainen paikan vastaanottoaika (vrk)"}
+                    :syota-kellonaika                       {:fi "Syötä tähän kenttään päivämäärästä ja kellonajasta muodostuvan arvon kellonaika"}
+                    :syota-paivamaara                       {:fi "Syötä tähän kenttään päivämäärästä ja kellonajasta muodostuvan arvon päivämäärä"}
+                    :sijoittelu                             {:fi "Haussa käytetään sijoittelua"}}
+   :hakukohderyhma {:haku                       {:fi "Haku"}
+                    :lisarajain-kaksoistutkinto {:fi "Hakukohteella mahdollisuus kaksoistutkintoon"}
+                    :lisarajain-koulutustyypit  {:fi "Koulutustyypit"}
+                    :nimi-tai-organisaatio      {:fi "Nimi tai organisaatio"}
+                    :poista-valinnat            {:fi "Poista valinnat"}
+                    :valitse-kaikki             {:fi "Valitse kaikki"}
+                    :luo-uusi-ryhma             {:fi "Luo uusi ryhmä"}
+                    :hakukohteet                {:fi "Hakukohteet"}
+                    :nayta-myos-paattyneet      {:fi "Näytä myös päättyneet"}
+                    :lisarajaimet               {:fi "Lisäsuodattimet"}
+                    :hakukohderyhma-nimi        {:fi "Hakukohderyhmän nimi"}
+                    :haun-nimi                  {:fi "Haun nimi"}
+                    :hakukohderyhma-kaytossa    {:fi "Hakukohderyhmä on käytössä hakulomakkeella ja sitä ei voi poistaa."}
+                    :liita-ryhmaan              {:fi "Liitä ryhmään"}
+                    :sora-hakukohteet           {:fi "SORA -hakukohteet"}
+                    :muokkaa-ryhmaa             {:fi "Muokkaa ryhmää"}
+                    :poista-ryhmasta            {:fi "Poista ryhmästä"}}})

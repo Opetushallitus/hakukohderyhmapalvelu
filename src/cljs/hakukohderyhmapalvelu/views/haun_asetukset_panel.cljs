@@ -108,7 +108,7 @@
         label-id    (str id-prefix "-label")
         checked?    @(re-frame/subscribe [:haun-asetukset/haun-asetus haku-oid haun-asetus-key])
         disabled?   @(re-frame/subscribe [:haun-asetukset/haun-asetukset-disabled? haku-oid])
-        label       @(re-frame/subscribe [:translation haun-asetus-key])
+        label       @(re-frame/subscribe [:translation :haun-asetukset/hakukohteiden-maara-rajoitettu])
         checkbox-fn (case type
                       :checkbox c/checkbox
                       :slider c/checkbox-slider)]
@@ -136,7 +136,7 @@
         enabled?                 @(re-frame/subscribe [:haun-asetukset/haun-asetus haku-oid checkbox-haun-asetus-key])
         text-input-id            (str id-prefix "-input")
         text-input-label-id      (str id-prefix "-input-label")
-        text-input-label         @(re-frame/subscribe [:translation :haun-asetukset/hakukohteiden-maara])
+        text-input-label         @(re-frame/subscribe [:translation :haun-asetukset/hakukohteiden-enimmaismaara])
         disabled?                @(re-frame/subscribe [:haun-asetukset/haun-asetukset-disabled? haku-oid])
         value                    @(re-frame/subscribe [:haun-asetukset/haun-asetus haku-oid :haun-asetukset/hakukohteiden-maara-rajoitus])]
     [:<>
@@ -178,8 +178,8 @@
         time-picker-id      (str id-prefix "-time-picker")
         date-describedby-id (str date-picker-id "-describedby")
         time-describedby-id (str time-picker-id "-describedby")
-        date-describedby    @(re-frame/subscribe [:translation :haun-asetukset/input-date-describedby])
-        time-describedby    @(re-frame/subscribe [:translation :haun-asetukset/input-time-describedby])
+        date-describedby    @(re-frame/subscribe [:translation :haun-asetukset/syota-paivamaara])
+        time-describedby    @(re-frame/subscribe [:translation :haun-asetukset/syota-kellonaika])
         prev-value-prop     (atom value)
         local-date-value    (reagent/atom (get-date-value value))
         local-time-value    (reagent/atom (get-time-value value))
@@ -358,13 +358,13 @@
        (stylefy/use-style haun-asetukset-haun-tiedot-label-styles)
        [:span
         {:id hakuajat-label-id}
-        @(re-frame/subscribe [:translation :application-periods])]]
+        @(re-frame/subscribe [:translation :yleiset/hakuajat])]]
       [hakuajat haku-oid hakuajat-label-id]
       [:div
        (stylefy/use-style haun-asetukset-haun-tiedot-label-styles)
        [:span
         {:id form-name-label-id}
-        @(re-frame/subscribe [:translation :application-form])]]
+        @(re-frame/subscribe [:translation :yleiset/hakulomake])]]
       [:div
        (stylefy/use-style haun-asetukset-haun-tiedot-data-styles)
        (when form
@@ -377,14 +377,14 @@
           [a/link
            {:href             (urls/get-url :lomake-editori.editor (:key form))
             :target           "_blank"
-            :label            @(re-frame/subscribe [:translation :modify-form])
+            :label            @(re-frame/subscribe [:translation :yleiset/muokkaa-lomaketta])
             :aria-describedby form-name-id}]])]
       [:div
        (stylefy/use-style haun-asetukset-haun-tiedot-modify-styles)
        [a/link
         {:href             (urls/get-url :kouta.haku haku-oid)
          :target           "_blank"
-         :label            @(re-frame/subscribe [:translation :modify-haku])
+         :label            @(re-frame/subscribe [:translation :yleiset/muokkaa-hakua])
          :aria-describedby haku-name-id}]]]]))
 
 (defn- haun-asetukset []
@@ -436,11 +436,11 @@
      [:div
       (stylefy/use-style
         haun-asetukset-required-legend-styles)
-      @(re-frame/subscribe [:translation :required-legend])]]))
+      @(re-frame/subscribe [:translation :yleiset/pakolliset-kentat])]]))
 
 (defn haun-asetukset-panel []
   [p/panel
    {}
-   @(re-frame/subscribe [:translation :haun-asetukset/title])
+   @(re-frame/subscribe [:translation :haun-asetukset/haun-asetukset])
    [haun-asetukset]])
 
