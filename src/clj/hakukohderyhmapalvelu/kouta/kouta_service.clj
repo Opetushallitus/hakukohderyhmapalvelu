@@ -37,9 +37,18 @@
        first
        (assoc hakukohde :organisaatio)))
 
-(defn- enrich-hakukohteet-with-organisaatio [hakukohteet organisaatiot]
+(defn- set-has-valintakoe [hakukohde]
+  (assoc hakukohde
+    :hasValintakoe
+    (-> (:valintakokeet hakukohde) seq boolean)))
+
+(defn- create-internal-hakukohteet [hakukohteet organisaatiot]
   (as-> hakukohteet hakukohteet'
-        (map #(enrich-with-organisaatio % organisaatiot) hakukohteet')
+        (map
+          (comp
+            #(enrich-with-organisaatio % organisaatiot)
+            set-has-valintakoe)
+          hakukohteet')
         (st/select-schema hakukohteet' api-schemas/HakukohdeListResponse)))
 
 (defn- get-organisations-for-hakukohteet [organisaatio-service hakukohteet]
@@ -80,7 +89,7 @@
                             (authenticating-client-protocol/get kouta-authenticating-client res' schemas/HakukohdeListResponse)
                             (http/parse-and-validate res' schemas/HakukohdeListResponse))
           organisaatiot (get-organisations-for-hakukohteet organisaatio-service hakukohteet)]
-      (enrich-hakukohteet-with-organisaatio hakukohteet organisaatiot)))
+      (create-internal-hakukohteet hakukohteet organisaatiot)))
 
   (find-hakukohteet-by-oids [_ oids tarjoajat]
     (if (seq oids)
@@ -94,5 +103,5 @@
                                                                     :response-schema schemas/HakukohdeListResponse})
                               (http/parse-and-validate res' schemas/HakukohdeListResponse))
             organisaatiot (get-organisations-for-hakukohteet organisaatio-service hakukohteet)]
-        (enrich-hakukohteet-with-organisaatio hakukohteet organisaatiot))
+        (create-internal-hakukohteet hakukohteet organisaatiot))
       [])))

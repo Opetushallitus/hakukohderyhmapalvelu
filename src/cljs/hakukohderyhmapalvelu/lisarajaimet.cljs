@@ -2,13 +2,12 @@
 
 (defn- harkinnanvarainen-hakukohde? [hakukohde]
   (let [ammatillinen-koulustyyppi? #{"koulutustyyppi_1" "koulutustyyppi_4"}
-        is-ei-harkinnanvarainen nil
-        has-valintakoe nil]
+        is-ei-harkinnanvarainen nil]
     (and
       (some ammatillinen-koulustyyppi? (:koulutustyypit hakukohde))
       (or
         (not is-ei-harkinnanvarainen)
-        (not has-valintakoe)))))
+        (not (:hasValintakoe hakukohde))))))
 
 (def default-lisarajain-filters
   [{:id      "koulutustyypit-filter"
