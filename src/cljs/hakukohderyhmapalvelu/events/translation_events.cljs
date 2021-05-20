@@ -3,7 +3,8 @@
             [clojure.string :as str]
             [day8.re-frame.tracing :refer-macros [fn-traced]]
             [hakukohderyhmapalvelu.macros.event-macros :as events]
-            [hakukohderyhmapalvelu.urls :as urls]))
+            [hakukohderyhmapalvelu.urls :as urls]
+            [hakukohderyhmapalvelu.api-schemas :as api-schemas]))
 
 (def get-remote-translations :translations/get-remote-translations)
 (def handle-get-remote-translations :translations/handle-get-remote-translations)
@@ -37,5 +38,5 @@
                        :path             url
                        :search-params    [[:category "hakukohderyhmapalvelu"]
                                           [:locale (name locale)]]
-                       ;TODO response schema?
+                       :response-schema  [api-schemas/LocalizationEntity]
                        :response-handler [handle-get-remote-translations locale]}})))

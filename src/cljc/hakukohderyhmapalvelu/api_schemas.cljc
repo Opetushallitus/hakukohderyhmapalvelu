@@ -31,6 +31,14 @@
      (s/optional-key :hakuOid)              s/Str
      (s/optional-key :koulutustyypit)       [s/Str]}))
 
+(s/defschema LocalizationEntity
+  {:id       s/Int
+   :category s/Str
+   :key      s/Str
+   :locale   (s/enum "fi" "sv" "en")
+   :value    s/Str
+   s/Any     s/Any})
+
 (s/defschema Hakukohderyhma
   (st/merge Organisaatio
             {:hakukohteet [Hakukohde]}))
