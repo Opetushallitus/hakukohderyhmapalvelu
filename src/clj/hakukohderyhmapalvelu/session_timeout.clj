@@ -7,6 +7,8 @@
             [ring.util.http-response :as response]
             [schema.core :as s]))
 
+(defonce absolute-timeout (* 60 60))
+
 (s/defn ^:private create-timeout-handler
   [config :- c/HakukohderyhmaConfig]
   (fn [{:keys [uri]}]
@@ -15,14 +17,12 @@
         (response/unauthorized (json/generate-string {:redirect auth-url}))
         (response/found auth-url)))))
 
-
-(defn- timeout-options [config]
-  {:timeout         28800
+(defn- options-with-timeout [config timeout]
+  {:timeout         timeout
    :timeout-handler (create-timeout-handler config)})
 
-(s/defn create-wrap-idle-session-timeout
+(s/defn create-wrap-absolute-session-timeout
   [config :- c/HakukohderyhmaConfig]
   (fn [handler]
-    (let [options (timeout-options config)]
-      (session-timeout/wrap-idle-session-timeout handler options))))
-
+    (->> (options-with-timeout config absolute-timeout)
+         (session-timeout/wrap-absolute-session-timeout handler))))

@@ -28,6 +28,11 @@
       url
       (str (.-origin url') (.-pathname url') "?" search-params'))))
 
+(defn- redirect-to-login [response]
+  (->> (get-in response [:body :redirect])
+       (js/URL.)
+       (set! (.-href (.-location js/window)))))
+
 (defn- fetch [{:keys [url
                       method
                       redirect?
@@ -119,7 +124,10 @@
                                  (do
                                    (async/<! (do-cas-authentication))
                                    (async/<! (do-request)))
-
+                                 (and (nil? cas)
+                                      (= (:status response') 401)
+                                      (string? (get-in response' [:body :redirect])))
+                                 (redirect-to-login response')
                                  :else
                                  response'))]
         (when response-schema
