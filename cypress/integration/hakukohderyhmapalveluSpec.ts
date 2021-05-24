@@ -874,6 +874,27 @@ describe('Hakukohderyhmäpalvelu', () => {
       })
     })
   })
+  describe('Epäonnistunut HTTP-pyyntö näyttää virheen', () => {
+    it('Näytetään virhe, jos HTTP-pyyntö epäonnistuu', () => {
+      cy.login()
+      cy.get(hl.alertSelector).should('not.exist')
+      cy.get(hl.hakukohderyhmanLisaysLisaaUusiRyhmaLinkSelector).click({
+        force: true,
+      })
+      cy.get(
+        hl.hakukohderyhmanLisaysNewHakukohderyhmaNameTextInputSelector,
+      ).type('Ryhmän nimi jota ei ole mockattu')
+
+      cy.wait(500) // eslint-disable-line
+      // Waits for debounce to settle
+
+      cy.get(
+        hl.hakukohderyhmanLisaysSaveNewHakukohderyhmaButtonSelector,
+      ).click({ force: true })
+
+      cy.get(hl.alertSelector).should('exist')
+    })
+  })
 
   after('Clean up db', () => {
     cy.task('query', {

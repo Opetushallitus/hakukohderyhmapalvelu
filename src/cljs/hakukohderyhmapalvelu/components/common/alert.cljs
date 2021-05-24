@@ -3,38 +3,38 @@
             [hakukohderyhmapalvelu.components.common.svg :as svg]
             [hakukohderyhmapalvelu.events.alert-events :as alert-events]
             [hakukohderyhmapalvelu.subs.alert-subs :as alert-subs]
-            [re-frame.core :as re-frame]))
+            [re-frame.core :as re-frame]
+            [stylefy.core :as stylefy]))
 
-(def alert-style
-  {:position "fixed"
-   :right "0px"
-   :top "35px"
-   :z-index "1"
-   :font-size "12px"
-   :padding "15px"
-   :color "white"
+(def ^:private alert-style
+  {:position         "fixed"
+   :right            "0px"
+   :top              "35px"
+   :z-index          "1"
+   :padding          "15px"
+   :color            "white"
    :background-color colors/red-dark-1
-   :border-radius "4px 0px 0px 4px"
-   :display "flex"
-   :flex-direction "row"
-   :justify-content "flex-start"})
+   :border-radius    "4px 0px 0px 4px"
+   :display          "flex"
+   :flex-direction   "row"
+   :justify-content  "flex-start"})
+
+(def ^:private close-style {:margin-left "10px"
+                            :position    "relative"
+                            :cursor      "pointer"})
 
 (defn alert-icon []
   [svg/icon :alert {:width "20px" :height "20px" :margin-right "10px"} {:fill "white"}])
 
 (defn- close-button [on-close]
-  [:span {:on-click on-close
-          :style    {:margin-left "10px"
-                     :position    "relative"
-                     :bottom      "5px"
-                     :cursor      "pointer"}}
-   [svg/icon :cross {:width "8px" :height "8px"} {:fill "white" :width "8" :height "8" :view-box "0 0 18 18"}]])
+  [:span (stylefy/use-style close-style {:on-click on-close})
+   [svg/icon :cross {:width "14px" :height "14px"} {:fill "white" :width "14" :height "14" :view-box "0 0 18 18"}]])
 
 (defn alert []
   (let [message  @(re-frame/subscribe [alert-subs/alert-message])
         on-close #(re-frame/dispatch [alert-events/alert-closed])]
     (when (seq message)
-      [:div {:style alert-style}
+      [:div (stylefy/use-style alert-style {:cypressid "alert"})
        [alert-icon]
        [:span message]
        [close-button on-close]])))

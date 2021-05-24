@@ -28,6 +28,14 @@
       url
       (str (.-origin url') (.-pathname url') "?" search-params'))))
 
+(defn- redirect-to-login [response]
+  (->> (get-in response [:body :redirect])
+       (js/URL.)
+       (set! (.-href (.-location js/window)))))
+
+(defn- error-status? [status]
+  (<= 400 status 599))
+
 (defn- fetch [{:keys [url
                       method
                       redirect?
@@ -78,6 +86,7 @@
    (s/optional-key :request-schema)  s/Any
    (s/optional-key :response-schema) s/Any
    :response-handler                 [(s/one s/Keyword "handler ID") s/Any]
+   (s/optional-key :error-handler)   [(s/one s/Keyword "handler ID") s/Any]
    (s/optional-key :cas)             s/Keyword
    (s/optional-key :body)            s/Any
    (s/optional-key :search-params)   [[(s/one s/Keyword "key") (s/one s/Str "value")]]})
@@ -90,6 +99,7 @@
                          request-schema
                          response-schema
                          response-handler
+                         error-handler
                          cas
                          body
                          search-params]} :- HttpSpec]
@@ -109,7 +119,7 @@
                                               :method        :get
                                               :redirect?     true
                                               :search-params search-params})))
-            {body :body} (let [response' (async/<! (do-request))]
+            {body :body status :status} (let [response' (async/<! (do-request))]
                            (cond (and (:redirected? response')
                                       (not= method :get))
                                  (async/<! (do-request))
@@ -119,10 +129,21 @@
                                  (do
                                    (async/<! (do-cas-authentication))
                                    (async/<! (do-request)))
-
+                                 (and (nil? cas)
+                                      (= (:status response') 401)
+                                      (string? (get-in response' [:body :redirect])))
+                                 (redirect-to-login response')
                                  :else
                                  response'))]
-        (when response-schema
-          (s/validate response-schema body))
-        (re-frame/dispatch [:http/remove-http-request-id http-request-id])
-        (re-frame/dispatch (conj response-handler body))))))
+        (try
+          (when (error-status? status)
+            (throw (js/Error. (str "HTTP-request failed with status " status))))
+          (when response-schema
+            (s/validate response-schema body))
+          (re-frame/dispatch (conj response-handler body))
+          (catch js/Error e
+            (js/console.error e)
+            (when error-handler
+              (re-frame/dispatch error-handler)))
+          (finally
+            (re-frame/dispatch [:http/remove-http-request-id http-request-id])))))))

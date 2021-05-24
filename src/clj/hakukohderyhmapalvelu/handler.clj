@@ -80,7 +80,7 @@
    clj-access-logging/wrap-session-access-logging
    #(auth-middleware/with-authentication % (oph-urls/resolve-url :cas.login config))
    session-client/wrap-session-client-headers
-   (session-timeout/create-wrap-idle-session-timeout config)])
+   (session-timeout/create-wrap-absolute-session-timeout config)])
 
 (defn- integration-test-routes [{:keys [mock-dispatcher config]}]
   (when (c/integration-environment? config)
