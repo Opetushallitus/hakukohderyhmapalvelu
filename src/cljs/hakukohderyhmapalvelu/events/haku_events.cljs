@@ -5,7 +5,8 @@
             [day8.re-frame.tracing :refer-macros [fn-traced]]
             [hakukohderyhmapalvelu.haku-utils :as u]
             [hakukohderyhmapalvelu.i18n.utils :refer [sort-items-by-name koodisto->option]]
-            [hakukohderyhmapalvelu.urls :as urls]))
+            [hakukohderyhmapalvelu.urls :as urls]
+            [hakukohderyhmapalvelu.events.alert-events :as alert-events]))
 
 ;; Polut
 (def root-path [:hakukohderyhma])
@@ -82,7 +83,8 @@
                        :path             "/hakukohderyhmapalvelu/api/haku"
                        :search-params    [[:all (str is-fetch-all)]]
                        :response-schema  schemas/HaunTiedotListResponse
-                       :response-handler [handle-get-haut-response]}})))
+                       :response-handler [handle-get-haut-response]
+                       :error-handler    [alert-events/http-request-failed]}})))
 
 (events/reg-event-fx-validating
   get-koulutustyypit
@@ -101,7 +103,8 @@
                                           [:koodiTilas "HYVAKSYTTY"]
                                           [:koodiVersioSelection "LATEST"]]
                        :response-schema  schemas/KoodistoResponse
-                       :response-handler [handle-get-koulutustyypit-response]}})))
+                       :response-handler [handle-get-koulutustyypit-response]
+                       :error-handler    [alert-events/http-request-failed]}})))
 
 (events/reg-event-fx-validating
   handle-get-koulutustyypit-response
@@ -144,7 +147,8 @@
                        :http-request-id  http-request-id
                        :path             (str "/hakukohderyhmapalvelu/api/haku/" haku-oid "/hakukohde")
                        :response-schema  schemas/HakukohdeListResponse
-                       :response-handler [handle-get-hakukohteet-response haku-oid]}})))
+                       :response-handler [handle-get-hakukohteet-response haku-oid]
+                       :error-handler    [alert-events/http-request-failed]}})))
 
 (events/reg-event-db-validating
   all-hakukohde-deselected

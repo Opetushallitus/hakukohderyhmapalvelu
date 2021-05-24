@@ -27,19 +27,20 @@
   {:active-panel                      {:panel      routes/default-panel
                                        :parameters {:path  {}
                                                     :query {}}}
-   :alert                             {:message ""}
+   :alert                             {:message ""
+                                       :id      nil}
    :requests                          #{}
    :lang                              :fi
    :translations                      translations/local-translations
-   :hakukohderyhma                    {:persisted               []
-                                       :input-visibility        {:create-active?                false
-                                                                 :rename-active?                false
-                                                                 :deletion-confirmation-active? false}
-                                       :haut                    []
-                                       :hakukohteet-filter      ""
-                                       :hakukohderyhma-name-text   ""
-                                       :lisarajaimet            {:popup-visible false
-                                                                 :filters       default-lisarajain-filters}}
+   :hakukohderyhma                    {:persisted                []
+                                       :input-visibility         {:create-active?                false
+                                                                  :rename-active?                false
+                                                                  :deletion-confirmation-active? false}
+                                       :haut                     []
+                                       :hakukohteet-filter       ""
+                                       :hakukohderyhma-name-text ""
+                                       :lisarajaimet             {:popup-visible false
+                                                                  :filters       default-lisarajain-filters}}
    :haun-asetukset                    {:haut {}}
    :forms                             {}
    :ohjausparametrit                  {}

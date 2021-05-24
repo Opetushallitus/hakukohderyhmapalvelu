@@ -123,6 +123,7 @@
                        :request-schema   api-schemas/HakukohderyhmaPostRequest
                        :response-schema  api-schemas/Hakukohderyhma
                        :response-handler [hakukohderyhma-persisting-confirmed]
+                       :error-handler    [alert-events/http-request-failed]
                        :body             body}})))
 
 (events/reg-event-db-validating
@@ -154,6 +155,7 @@
                        :request-schema   api-schemas/HakukohderyhmaPutRequest
                        :response-schema  api-schemas/HakukohderyhmaResponse
                        :response-handler [hakukohderyhma-renaming-confirmed]
+                       :error-handler    [alert-events/http-request-failed]
                        :body             body}})))
 
 (events/reg-event-db-validating
@@ -187,7 +189,8 @@
                        :http-request-id  http-request-id
                        :path             (str "/hakukohderyhmapalvelu/api/hakukohderyhma/" (:oid hakukohderyhma))
                        :response-schema  api-schemas/HakukohderyhmaDeleteResponse
-                       :response-handler [handle-hakukohderyhma-deletion (:oid hakukohderyhma)]}})))
+                       :response-handler [handle-hakukohderyhma-deletion (:oid hakukohderyhma)]
+                       :error-handler    [alert-events/http-request-failed]}})))
 
 (def get-hakukohderyhmat-for-hakukohteet :hakukohderyhmien-hallinta/get-all-hakukohderyhma)
 (def handle-get-all-hakukohderyhma :hakukohderyhmien-hallinta/handle-get-all-hakukohderyhma)

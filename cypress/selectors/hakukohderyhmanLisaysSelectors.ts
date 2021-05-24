@@ -33,3 +33,5 @@ export const hakukohderyhmanPoistoCancelDeleteButtton =
 
 export const hakukohderyhmanPoistoConfirmDeleteButtton =
   'button[cypressid=hakukohderyhma-delete-confirm-button]:visible'
+
+export const alertSelector = 'div[cypressid=alert]'

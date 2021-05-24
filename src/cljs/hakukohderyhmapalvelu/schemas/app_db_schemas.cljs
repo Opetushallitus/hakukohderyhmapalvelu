@@ -23,7 +23,8 @@
      HaunAsetuksetPanel)})
 
 (s/defschema Alert
-  {:alert {:message s/Str}})
+  {:alert {:message s/Str
+           :id      (s/maybe s/Int)}})
 
 (s/defschema Lang
   {:lang (s/enum :fi)})
