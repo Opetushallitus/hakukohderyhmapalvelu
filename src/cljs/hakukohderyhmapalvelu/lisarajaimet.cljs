@@ -1,8 +1,14 @@
-(ns hakukohderyhmapalvelu.lisarajaimet)
+(ns hakukohderyhmapalvelu.lisarajaimet
+  (:require [re-frame.core :as re-frame]
+            [hakukohderyhmapalvelu.subs.haku-subs :refer [haku-lisarajaimet-ei-harkinnanvaraiset-koulutuskoodit]]))
 
 (defn- harkinnanvarainen-hakukohde? [hakukohde]
   (let [ammatillinen-koulustyyppi? #{"koulutustyyppi_1" "koulutustyyppi_4"}
-        is-ei-harkinnanvarainen nil]
+        koulutuskoodi-uri (-> hakukohde :koulutuksetKoodiUri first)
+        ei-harkinnanvaraiset-koulutuskoodit @(re-frame/subscribe [haku-lisarajaimet-ei-harkinnanvaraiset-koulutuskoodit])
+        is-ei-harkinnanvarainen (some
+                                  #(str/includes? koulutuskoodi-uri %)
+                                  ei-harkinnanvaraiset-koulutuskoodit)]
     (and
       (some ammatillinen-koulustyyppi? (:koulutustyypit hakukohde))
       (or

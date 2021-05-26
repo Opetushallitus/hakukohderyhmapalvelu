@@ -16,6 +16,7 @@
 (def haku-lisarajaimet-path (conj root-path :lisarajaimet))
 (def haku-lisarajaimet-visible-path (conj haku-lisarajaimet-path :popup-visible))
 (def haku-lisarajaimet-filters-path (conj haku-lisarajaimet-path :filters))
+(def haku-lisarajaimet-koulutuskoodit-path (conj haku-lisarajaimet-path :ei-harkinnanvaraiset-koulutuskoodit))
 
 ;; Tapahtumat
 (def get-haut :haku/get-haut)

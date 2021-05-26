@@ -22,6 +22,7 @@
 (def haku-lisarajaimet-filters :haku/lisarajaimet-filters)
 (def haku-lisarajaimet-filters-as-fns :haku/haku-lisarajaimet-filters-as-fns)
 (def haku-lisarajaimet-text :haku/haku-lisarajaimet-text)
+(def haku-lisarajaimet-ei-harkinnanvaraiset-koulutuskoodit :haku/haku-lisarajaimet-ei-harkinnanvaraiset-koulutuskoodit)
 
 (re-frame/reg-sub
   haku-haut
@@ -133,3 +134,8 @@
   (fn [[text lisarajaimet] _]
     (cond-> text
             (not-empty lisarajaimet) (str " (" (count lisarajaimet) ")"))))
+
+(re-frame/reg-sub
+  haku-lisarajaimet-ei-harkinnanvaraiset-koulutuskoodit
+  (fn [db]
+    (get-in db haku-events/haku-lisarajaimet-koulutuskoodit-path)))

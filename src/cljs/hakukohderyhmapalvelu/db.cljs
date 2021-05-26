@@ -20,7 +20,8 @@
                                        :hakukohteet-filter       ""
                                        :hakukohderyhma-name-text ""
                                        :lisarajaimet             {:popup-visible false
-                                                                  :filters       lisarajaimet/default-lisarajain-filters}}
+                                                                  :filters       lisarajaimet/default-lisarajain-filters
+                                                                  :ei-harkinnanvaraiset-koulutuskoodit []}}
    :haun-asetukset                    {:haut {}}
    :forms                             {}
    :ohjausparametrit                  {}
