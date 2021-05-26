@@ -1,6 +1,7 @@
 (ns hakukohderyhmapalvelu.lisarajaimet
   (:require [re-frame.core :as re-frame]
-            [hakukohderyhmapalvelu.subs.haku-subs :refer [haku-lisarajaimet-ei-harkinnanvaraiset-koulutuskoodit]]))
+            [hakukohderyhmapalvelu.subs.haku-subs :refer [haku-lisarajaimet-ei-harkinnanvaraiset-koulutuskoodit]]
+            [clojure.string :as str]))
 
 (defn- harkinnanvarainen-hakukohde? [hakukohde]
   (let [ammatillinen-koulustyyppi? #{"koulutustyyppi_1" "koulutustyyppi_4"}
