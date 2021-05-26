@@ -79,6 +79,7 @@
 
 (s/defschema KoodistoResponse
   [{:koodiUri s/Str
+    :koodiArvo s/Str
     :metadata [{:nimi  s/Str
                 :kieli s/Str
                 s/Any  s/Any}]

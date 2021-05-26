@@ -35,6 +35,8 @@
 (def set-haku-lisarajaimet-options :haku/set-haku-lisarajaimet-options)
 (def get-koulutustyypit :haku/get-koulutustyypit)
 (def handle-get-koulutustyypit-response :haku/handle-get-koulutustyypit-response)
+(def get-ei-harkinnanvaraiset-koulutuskoodit :haku/get-ei-harkinnanvaraiset-koulutuskoodit)
+(def handle-get-ei-harkinnanvaraiset-koulutuskoodit-response :haku/handle-get-ei-harkinnanvaraiset-koulutuskoodit)
 
 ;; Apufunktiot
 (defn- update-hakus-hakukohteet [items should-update? update-fn]
@@ -116,6 +118,26 @@
                                 (map (partial koodisto->option lang))
                                 (sort-by :label))]
                {:dispatch [set-haku-lisarajaimet-options "koulutustyypit-filter" options]})))
+
+(events/reg-event-fx-validating
+  get-ei-harkinnanvaraiset-koulutuskoodit
+  (fn-traced [{db :db}]
+             (let [http-request-id get-koulutustyypit
+                   url (str
+                         (urls/get-url :koodisto-service.baseurl)
+                         "/koodisto-service/rest/json/relaatio/sisaltyy-ylakoodit/hakulomakkeenasetukset_eiharkinnanvaraisuutta")]
+               {:db   (update db :requests (fnil conj #{}) http-request-id)
+                :http {:method           :get
+                       :http-request-id  http-request-id
+                       :path             url
+                       :response-schema  schemas/KoodistoResponse
+                       :response-handler [handle-get-ei-harkinnanvaraiset-koulutuskoodit-response]}})))
+
+(events/reg-event-db-validating
+  handle-get-ei-harkinnanvaraiset-koulutuskoodit-response
+  (fn-traced [db [response]]
+             (let [ei-harkinnanvaraiset-koulutuskoodit (map :koodiArvo response)]
+               (assoc-in db haku-lisarajaimet-koulutuskoodit-path ei-harkinnanvaraiset-koulutuskoodit))))
 
 (events/reg-event-fx-validating
   handle-get-hakukohteet-response
