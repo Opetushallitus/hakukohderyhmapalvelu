@@ -66,7 +66,8 @@
                     :type    s/Keyword
                     :value   s/Any
                     :pred-fn s/Any
-                    (s/optional-key :options) [LisarajainOption]}]})
+                    (s/optional-key :options) [LisarajainOption]}]
+   :ei-harkinnanvaraiset-koulutuskoodit [s/Str]})
 
 (s/defschema Hakukohderyhma
   (st/merge
