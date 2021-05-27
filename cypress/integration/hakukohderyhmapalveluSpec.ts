@@ -184,12 +184,20 @@ describe('Hakukohderyhmäpalvelu', () => {
       cy.get(hh.hakukohteetContainerSelector)
         .children()
         .should('have.length', 0)
-      cy.get(hh.haunHakutoimintoDivSelectorChildDivs)
-        .eq(1)
-        .type('Testihaku 3{enter}')
-        .get(hh.hakukohteetContainerSelector)
-        .children()
-        .should('have.length', 2)
+
+      cy.fixture('hakukohderyhmapalvelu/get-hakukohde-response.json').then(
+        hakukohteet => {
+          cy.get(hh.haunHakutoimintoDivSelectorChildDivs)
+            .eq(1)
+            .type('Testihaku 3{enter}')
+            .get(hh.hakukohteetContainerSelector)
+            .children()
+            .should(
+              'have.length',
+              hakukohteet.filter(h => h.oikeusHakukohteeseen).length,
+            )
+        },
+      )
 
       cy.get(hh.hakukohteetContainerSelector)
         .children()
