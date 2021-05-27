@@ -3,7 +3,6 @@
             [hakukohderyhmapalvelu.i18n.utils :as i18n-utils]
             [hakukohderyhmapalvelu.events.haku-events :as haku-events]
             [hakukohderyhmapalvelu.haku-utils :as u]
-            [hakukohderyhmapalvelu.lisarajaimet :as lisarajaimet]
             [hakukohderyhmapalvelu.subs.hakukohderyhma-subs :as hakukohderyhma-subs]))
 
 ;; Tilaukset
@@ -124,7 +123,7 @@
   haku-lisarajaimet-filters-as-fns
   (fn [db]
       (->> (get-in db haku-events/haku-lisarajaimet-filters-path)
-           (keep lisarajaimet/lisarajain->fn))))
+           (keep u/lisarajain->fn))))
 
 (re-frame/reg-sub
   haku-lisarajaimet-text

@@ -42,8 +42,3 @@
     :type    :boolean
     :pred-fn true?
     :value   false}])
-
-(defn lisarajain->fn [{:keys [type value path pred-fn]}]
-  (case type
-    :boolean (when value (fn [hk] (pred-fn (get-in hk path))))
-    :select (when value (fn [hk] (pred-fn (:value value) (get-in hk path))))))
