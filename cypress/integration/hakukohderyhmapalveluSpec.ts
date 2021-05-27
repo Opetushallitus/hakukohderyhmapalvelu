@@ -194,7 +194,7 @@ describe('Hakukohderyhmäpalvelu', () => {
             .children()
             .should(
               'have.length',
-              hakukohteet.filter(h => h.oikeusHakukohteeseen).length,
+              hakukohteet.filter((h: any) => h.oikeusHakukohteeseen).length,
             )
         },
       )
