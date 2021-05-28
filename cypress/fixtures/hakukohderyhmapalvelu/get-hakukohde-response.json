@@ -29,7 +29,8 @@
     "modified": "2021-01-05T10:01:02",
     "oikeusHakukohteeseen":  true,
     "sora": {"tila": "arkistoitu"},
-    "koulutustyypit": ["koulutustyyppi_10"]
+    "koulutustyypit": ["koulutustyyppi_10"],
+    "onkoHarkinnanvarainenKoulutus": true
   },
   {
     "oid": "1.2.4.2.1.2",
@@ -61,7 +62,8 @@
     "modified": "2021-02-05T10:01:02",
     "oikeusHakukohteeseen":  true,
     "sora": {"tila": "aktiivinen"},
-    "koulutustyypit": []
+    "koulutustyypit": [],
+    "onkoHarkinnanvarainenKoulutus": true
   },
   {
     "oid": "1.2.4.2.1.3",
@@ -93,7 +95,8 @@
     "modified": "2021-02-05T10:01:02",
     "oikeusHakukohteeseen":  false,
     "sora": {"tila": "arkistoitu"},
-    "koulutustyypit": ["koulutustyyppi_4"]
+    "koulutustyypit": ["koulutustyyppi_4"],
+    "onkoHarkinnanvarainenKoulutus": true
   },
   {
     "oid": "1.2.4.2.1.4",
@@ -125,6 +128,7 @@
     "modified": "2021-02-05T10:01:02",
     "oikeusHakukohteeseen":  false,
     "sora": {"tila": "aktiivinen"},
-    "koulutustyypit": ["koulutustyyppi_1"]
+    "koulutustyypit": ["koulutustyyppi_1"],
+    "onkoHarkinnanvarainenKoulutus": true
   }
 ]
