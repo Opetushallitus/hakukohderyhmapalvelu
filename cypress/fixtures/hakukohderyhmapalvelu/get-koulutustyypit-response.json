@@ -1,50 +1,5 @@
 [
   {
-    "koodiUri": "koulutustyyppi_1",
-    "resourceUri": "http://localhost/koodisto-service/rest/codeelement/koulutustyyppi_1",
-    "version": 1,
-    "versio": 1,
-    "koodisto": {
-      "koodistoUri": "koulutustyyppi",
-      "organisaatioOid": "1.2.246.562.10.00000000001",
-      "koodistoVersios": [
-        1
-      ]
-    },
-    "koodiArvo": "1",
-    "paivitysPvm": "2010-01-01",
-    "paivittajaOid": null,
-    "voimassaAlkuPvm": "2010-01-01",
-    "voimassaLoppuPvm": null,
-    "tila": "HYVAKSYTTY",
-    "metadata": [
-      {
-        "nimi": "yrkesinriktad grundexamen",
-        "kuvaus": "yrkesinriktad grundexamen",
-        "lyhytNimi": "yrkesinriktad grundexamen",
-        "kayttoohje": "",
-        "kasite": "",
-        "sisaltaaMerkityksen": "",
-        "eiSisallaMerkitysta": "",
-        "huomioitavaKoodi": "",
-        "sisaltaaKoodiston": "",
-        "kieli": "SV"
-      },
-      {
-        "nimi": "Ammatillinen perustutkinto",
-        "kuvaus": "Ammatillinen perustutkinto",
-        "lyhytNimi": "Ammatillinen perustutkinto",
-        "kayttoohje": "",
-        "kasite": "",
-        "sisaltaaMerkityksen": "",
-        "eiSisallaMerkitysta": "",
-        "huomioitavaKoodi": "",
-        "sisaltaaKoodiston": "",
-        "kieli": "FI"
-      }
-    ]
-  },
-  {
     "koodiUri": "koulutustyyppi_10",
     "resourceUri": "http://localhost/koodisto-service/rest/codeelement/koulutustyyppi_10",
     "version": 1,
@@ -61,7 +16,7 @@
     "paivittajaOid": null,
     "voimassaAlkuPvm": "2010-01-01",
     "voimassaLoppuPvm": null,
-    "tila": "HYVAKSYTTY",
+    "tila": "LUONNOS",
     "metadata": [
       {
         "nimi": "Vapaan sivistystyön koulutus",
@@ -90,51 +45,6 @@
     ]
   },
   {
-    "koodiUri": "koulutustyyppi_2",
-    "resourceUri": "https://localhost.hahtuvaopintopolku.fi/koodisto-service/rest/codeelement/koulutustyyppi_2",
-    "version": 1,
-    "versio": 1,
-    "koodisto": {
-      "koodistoUri": "koulutustyyppi",
-      "organisaatioOid": "1.2.246.562.10.00000000001",
-      "koodistoVersios": [
-        1
-      ]
-    },
-    "koodiArvo": "2",
-    "paivitysPvm": "2010-01-01",
-    "paivittajaOid": null,
-    "voimassaAlkuPvm": "2010-01-01",
-    "voimassaLoppuPvm": null,
-    "tila": "HYVAKSYTTY",
-    "metadata": [
-      {
-        "nimi": "Lukiokoulutus",
-        "kuvaus": "Lukiokoulutus",
-        "lyhytNimi": "Lukiokoulutus",
-        "kayttoohje": "",
-        "kasite": "",
-        "sisaltaaMerkityksen": "",
-        "eiSisallaMerkitysta": "",
-        "huomioitavaKoodi": "",
-        "sisaltaaKoodiston": "",
-        "kieli": "FI"
-      },
-      {
-        "nimi": "Gymnasiet",
-        "kuvaus": "Gymnasiet",
-        "lyhytNimi": "Gymnasiet",
-        "kayttoohje": "",
-        "kasite": "",
-        "sisaltaaMerkityksen": "",
-        "eiSisallaMerkitysta": "",
-        "huomioitavaKoodi": "",
-        "sisaltaaKoodiston": "",
-        "kieli": "SV"
-      }
-    ]
-  },
-  {
     "koodiUri": "koulutustyyppi_4",
     "resourceUri": "http://localhost/koodisto-service/rest/codeelement/koulutustyyppi_4",
     "version": 1,
@@ -151,8 +61,20 @@
     "paivittajaOid": null,
     "voimassaAlkuPvm": "2010-01-01",
     "voimassaLoppuPvm": null,
-    "tila": "HYVAKSYTTY",
+    "tila": "LUONNOS",
     "metadata": [
+      {
+        "nimi": "Ammatillinen perustutkinto erityisopetuksena",
+        "kuvaus": "Ammatillinen perustutkinto erityisopetuksena",
+        "lyhytNimi": "Ammatillinen perustutkinto erityisopetuksena",
+        "kayttoohje": "",
+        "kasite": "",
+        "sisaltaaMerkityksen": "",
+        "eiSisallaMerkitysta": "",
+        "huomioitavaKoodi": "",
+        "sisaltaaKoodiston": "",
+        "kieli": "FI"
+      },
       {
         "nimi": "Yrkesinriktad grundexamen som ordnas som specialundervisning",
         "kuvaus": "Yrkesinriktad grundexamen som ordnas som specialundervisning",
@@ -164,11 +86,179 @@
         "huomioitavaKoodi": "",
         "sisaltaaKoodiston": "",
         "kieli": "SV"
+      }
+    ]
+  },
+  {
+    "koodiUri": "koulutustyyppi_5",
+    "resourceUri": "http://localhost/koodisto-service/rest/codeelement/koulutustyyppi_5",
+    "version": 1,
+    "versio": 1,
+    "koodisto": {
+      "koodistoUri": "koulutustyyppi",
+      "organisaatioOid": "1.2.246.562.10.00000000001",
+      "koodistoVersios": [
+        1
+      ]
+    },
+    "koodiArvo": "5",
+    "paivitysPvm": "2010-01-01",
+    "paivittajaOid": null,
+    "voimassaAlkuPvm": "2010-01-01",
+    "voimassaLoppuPvm": null,
+    "tila": "LUONNOS",
+    "metadata": [
+      {
+        "nimi": "Utbildning som förbereder för arbete och ett självständigt liv",
+        "kuvaus": "",
+        "lyhytNimi": "Utbildning som förbereder för arbete och ett självständigt liv",
+        "kayttoohje": "",
+        "kasite": "",
+        "sisaltaaMerkityksen": "",
+        "eiSisallaMerkitysta": "",
+        "huomioitavaKoodi": "",
+        "sisaltaaKoodiston": "",
+        "kieli": "SV"
       },
       {
-        "nimi": "Ammatillinen perustutkinto erityisopetuksena",
-        "kuvaus": "Ammatillinen perustutkinto erityisopetuksena",
-        "lyhytNimi": "Ammatillinen perustutkinto erityisopetuksena",
+        "nimi": "Työhön ja itsenäiseen elämään valmentava koulutus (TELMA)",
+        "kuvaus": "",
+        "lyhytNimi": "TELMA",
+        "kayttoohje": "",
+        "kasite": "",
+        "sisaltaaMerkityksen": "",
+        "eiSisallaMerkitysta": "",
+        "huomioitavaKoodi": "",
+        "sisaltaaKoodiston": "",
+        "kieli": "FI"
+      }
+    ]
+  },
+  {
+    "koodiUri": "koulutustyyppi_2",
+    "resourceUri": "http://localhost/koodisto-service/rest/codeelement/koulutustyyppi_2",
+    "version": 1,
+    "versio": 1,
+    "koodisto": {
+      "koodistoUri": "koulutustyyppi",
+      "organisaatioOid": "1.2.246.562.10.00000000001",
+      "koodistoVersios": [
+        1
+      ]
+    },
+    "koodiArvo": "2",
+    "paivitysPvm": "2010-01-01",
+    "paivittajaOid": null,
+    "voimassaAlkuPvm": "2010-01-01",
+    "voimassaLoppuPvm": null,
+    "tila": "LUONNOS",
+    "metadata": [
+      {
+        "nimi": "Gymnasiet",
+        "kuvaus": "Gymnasiet",
+        "lyhytNimi": "Gymnasiet",
+        "kayttoohje": "",
+        "kasite": "",
+        "sisaltaaMerkityksen": "",
+        "eiSisallaMerkitysta": "",
+        "huomioitavaKoodi": "",
+        "sisaltaaKoodiston": "",
+        "kieli": "SV"
+      },
+      {
+        "nimi": "Lukiokoulutus",
+        "kuvaus": "Lukiokoulutus",
+        "lyhytNimi": "Lukiokoulutus",
+        "kayttoohje": "",
+        "kasite": "",
+        "sisaltaaMerkityksen": "",
+        "eiSisallaMerkitysta": "",
+        "huomioitavaKoodi": "",
+        "sisaltaaKoodiston": "",
+        "kieli": "FI"
+      }
+    ]
+  },
+  {
+    "koodiUri": "koulutustyyppi_40",
+    "resourceUri": "http://localhost/koodisto-service/rest/codeelement/koulutustyyppi_40",
+    "version": 1,
+    "versio": 1,
+    "koodisto": {
+      "koodistoUri": "koulutustyyppi",
+      "organisaatioOid": "1.2.246.562.10.00000000001",
+      "koodistoVersios": [
+        1
+      ]
+    },
+    "koodiArvo": "40",
+    "paivitysPvm": "2010-01-01",
+    "paivittajaOid": null,
+    "voimassaAlkuPvm": "2010-01-01",
+    "voimassaLoppuPvm": null,
+    "tila": "LUONNOS",
+    "metadata": [
+      {
+        "nimi": "Tutkintokoulutukseen valmentava koulutus",
+        "kuvaus": "",
+        "lyhytNimi": "TUVA",
+        "kayttoohje": "",
+        "kasite": "",
+        "sisaltaaMerkityksen": "",
+        "eiSisallaMerkitysta": "",
+        "huomioitavaKoodi": "",
+        "sisaltaaKoodiston": "",
+        "kieli": "FI"
+      }
+    ]
+  },
+  {
+    "koodiUri": "koulutustyyppi_1",
+    "resourceUri": "http://localhost/koodisto-service/rest/codeelement/koulutustyyppi_1",
+    "version": 1,
+    "versio": 1,
+    "koodisto": {
+      "koodistoUri": "koulutustyyppi",
+      "organisaatioOid": "1.2.246.562.10.00000000001",
+      "koodistoVersios": [
+        1
+      ]
+    },
+    "koodiArvo": "1",
+    "paivitysPvm": "2010-01-01",
+    "paivittajaOid": null,
+    "voimassaAlkuPvm": "2010-01-01",
+    "voimassaLoppuPvm": null,
+    "tila": "LUONNOS",
+    "metadata": [
+      {
+        "nimi": "Vocational upper secondary qualification",
+        "kuvaus": "",
+        "lyhytNimi": "",
+        "kayttoohje": "",
+        "kasite": "",
+        "sisaltaaMerkityksen": "",
+        "eiSisallaMerkitysta": "",
+        "huomioitavaKoodi": "",
+        "sisaltaaKoodiston": "",
+        "kieli": "EN"
+      },
+      {
+        "nimi": "Yrkesinriktad grundexamen",
+        "kuvaus": "Yrkesinriktad grundexamen",
+        "lyhytNimi": "Yrkesinriktad grundexamen",
+        "kayttoohje": "",
+        "kasite": "",
+        "sisaltaaMerkityksen": "",
+        "eiSisallaMerkitysta": "",
+        "huomioitavaKoodi": "",
+        "sisaltaaKoodiston": "",
+        "kieli": "SV"
+      },
+      {
+        "nimi": "Ammatillinen perustutkinto",
+        "kuvaus": "Ammatillinen perustutkinto",
+        "lyhytNimi": "Ammatillinen perustutkinto",
         "kayttoohje": "",
         "kasite": "",
         "sisaltaaMerkityksen": "",
