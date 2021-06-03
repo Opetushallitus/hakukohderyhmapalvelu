@@ -134,7 +134,7 @@
 
 (events/reg-event-fx-validating
   handle-get-user-rights-response
-  (fn-traced [{db :db} [haku-oid user-rights? response]]
+  (fn-traced [{db :db} [haku-oid user-rights? _]]
              {:db (update-in db haku-haut (partial add-user-rights-for-haku haku-oid user-rights?))}))
 
 (events/reg-event-fx-validating
