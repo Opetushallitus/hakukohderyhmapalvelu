@@ -108,7 +108,7 @@
         label-id    (str id-prefix "-label")
         checked?    @(re-frame/subscribe [:haun-asetukset/haun-asetus haku-oid haun-asetus-key])
         disabled?   @(re-frame/subscribe [:haun-asetukset/haun-asetukset-disabled? haku-oid])
-        label       @(re-frame/subscribe [:translation :haun-asetukset/hakukohteiden-maara-rajoitettu])
+        label       @(re-frame/subscribe [:translation haun-asetus-key])
         checkbox-fn (case type
                       :checkbox c/checkbox
                       :slider c/checkbox-slider)]
