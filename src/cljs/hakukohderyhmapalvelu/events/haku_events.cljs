@@ -22,7 +22,9 @@
 (def select-haku :haku/select-haku)
 (def clear-selected-haku :haku/clear-selected-haku)
 (def get-haun-hakukohteet :haku/get-haun-hakukohteet)
+(def get-user-rights :haku/get-user-rights)
 (def handle-get-hakukohteet-response :haku/handle-get-hakukohteet-response)
+(def handle-get-user-rights-response :haku/handle-get-user-rights-response)
 (def toggle-hakukohde-selection :haku/toggle-hakukohde-selection)
 (def all-hakukohde-in-view-selected :haku/select-all-hakukohde-in-view)
 (def all-hakukohde-deselected :haku/deselect-all-hakukohde)
@@ -44,6 +46,11 @@
   (update-hakus-hakukohteet haut
                             #(= (:oid %) haku-oid)
                             #(assoc % :hakukohteet hakukohteet)))
+
+(defn- add-user-rights-for-haku [haku-oid user-rights? haut]
+  (update-hakus-hakukohteet haut
+                            #(= (:oid %) haku-oid)
+                            #(assoc % :user-rights user-rights?)))
 
 (defn- edit-selected-hakus-hakukohteet [haut hakukohde-handler]
   (update-hakus-hakukohteet haut
@@ -126,6 +133,11 @@
                 :dispatch [hakukohderyhma-events/get-hakukohderyhmat-for-hakukohteet hakukohde-oids]})))
 
 (events/reg-event-fx-validating
+  handle-get-user-rights-response
+  (fn-traced [{db :db} [haku-oid user-rights? response]]
+             {:db (update-in db haku-haut (partial add-user-rights-for-haku haku-oid user-rights?))}))
+
+(events/reg-event-fx-validating
   clear-selected-haku
   (fn-traced [{db :db} _]
              {:db       (update-in db haku-haut #(map u/deselect-item %))
@@ -135,7 +147,8 @@
   select-haku
   (fn-traced [{db :db} [haku-oid]]
              {:db       (update-in db haku-haut #(map (partial u/select-item-by-oid haku-oid) %))
-              :dispatch-n [[hakukohderyhma-events/handle-get-all-hakukohderyhma []]
+              :dispatch-n [[get-user-rights haku-oid]
+                           [hakukohderyhma-events/handle-get-all-hakukohderyhma []]
                            [get-haun-hakukohteet haku-oid]]}))
 
 (events/reg-event-fx-validating
@@ -149,6 +162,17 @@
                        :response-schema  schemas/HakukohdeListResponse
                        :response-handler [handle-get-hakukohteet-response haku-oid]
                        :error-handler    [alert-events/http-request-failed]}})))
+
+(events/reg-event-fx-validating
+  get-user-rights
+  (fn-traced [{db :db} [haku-oid]]
+             (let [http-request-id get-user-rights]
+               {:db   (update db :requests (fnil conj #{}) http-request-id)
+                :http {:method           :get
+                       :http-request-id  http-request-id
+                       :path             (str "/hakukohderyhmapalvelu/api/haku/" haku-oid "/oikeudet")
+                       :response-handler [handle-get-user-rights-response haku-oid true]
+                       :error-handler    [handle-get-user-rights-response haku-oid false]}})))
 
 (events/reg-event-db-validating
   all-hakukohde-deselected

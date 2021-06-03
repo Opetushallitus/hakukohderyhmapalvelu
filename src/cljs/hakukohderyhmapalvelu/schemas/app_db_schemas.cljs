@@ -52,6 +52,7 @@
   {:oid         s/Str
    :nimi        LocalizedString
    :is-selected s/Bool
+   :user-rights (s/maybe s/Bool)
    :hakukohteet [Hakukohde]})
 
 (s/defschema LisarajainOption

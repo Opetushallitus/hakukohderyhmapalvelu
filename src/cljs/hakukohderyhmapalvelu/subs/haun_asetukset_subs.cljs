@@ -41,9 +41,10 @@
   :haun-asetukset/haun-asetukset-disabled?
   (fn [[_ haku-oid]]
     [(re-frame/subscribe [:state-query
-                          [:ohjausparametrit/save-in-progress haku-oid]])])
-  (fn [[haku-oid]]
-    (some? haku-oid)))
+                          [:ohjausparametrit/save-in-progress haku-oid]])
+     (re-frame/subscribe [:haun-asetukset/haku haku-oid])])
+  (fn [[haku-oid haun-asetukset]]
+    (or (not (-> haun-asetukset :user-rights)) (some? haku-oid))))
 
 (re-frame/reg-sub
   :haun-asetukset/form
