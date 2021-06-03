@@ -9,6 +9,7 @@
   (let [haku-oid (:haku-oid query)]
     [[:haun-asetukset/get-forms]
      [:haun-asetukset/get-haku haku-oid]
+     [:haun-asetukset/get-user-rights haku-oid]
      [:haun-asetukset/get-ohjausparametrit haku-oid]]))
 
 (defn- make-hakukohderyhmien-hallinta-dispatches [_]

@@ -117,3 +117,20 @@
               :response-handler [:haun-asetukset/get-ohjausparametrit haku-oid]
               :cas              :ohjausparametrit-service.login
               :body             body}})))
+
+
+(events/reg-event-fx-validating
+  :haun-asetukset/handle-get-user-rights-response
+  (fn-traced [{db :db} [haku-oid user-rights? _]]
+             {:db (update-in db haku-haut (partial add-user-rights-for-haku haku-oid user-rights?))}))
+
+(events/reg-event-fx-validating
+  :haun-asetukset/get-user-rights
+  (fn-traced [{db :db} [haku-oid]]
+             (let [http-request-id get-user-rights]
+               {:db   (update db :requests (fnil conj #{}) http-request-id)
+                :http {:method           :get
+                       :http-request-id  http-request-id
+                       :path             (str "/ohjausparametrit-service/api/v1/rest/parametri/authorize/" haku-oid)
+                       :response-handler [:haun-asetukset/handle-get-user-rights-response haku-oid true]
+                       :error-handler    [:haun-asetukset/handle-get-user-rights-response haku-oid false]}})))
