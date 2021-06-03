@@ -666,9 +666,6 @@ describe('Hakukohderyhmäpalvelu', () => {
         cy.get(
           hl.hakukohderyhmanLisaysRenameHakukohderyhmaTextInputSelector,
         ).should('have.attr', 'placeholder', 'Hakukohderyhmän nimi')
-        cy.get(hl.hakukohderyhmanLisaysRenameHakukohderyhmaTextInputSelector)
-          .then(el => el.val())
-          .should('be.equal', 'Testihakukohderyhmä')
         cy.get(
           hl.hakukohderyhmanLisaysSaveRenameHakukohderyhmaButtonSelector,
         ).should('be.disabled')
