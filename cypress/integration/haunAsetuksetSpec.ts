@@ -33,6 +33,14 @@ describe('Haun asetukset', () => {
         }),
       )
       .then(() =>
+        cy.mockBrowserRequest({
+          method: 'GET',
+          path: `http://localhost/ohjausparametrit-service/api/v1/rest/parametri/authorize/${hakuOid}`,
+          fixturePath: 'ohjausparametrit-service/authorize-response.json',
+          responseAlias: 'ohjausparametrit-service-authorize-response',
+        }),
+      )
+      .then(() =>
         cy.visit(`/hakukohderyhmapalvelu/haun-asetukset?hakuOid=${hakuOid}`),
       )
   })

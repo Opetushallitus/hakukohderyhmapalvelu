@@ -170,7 +170,7 @@
                {:db   (update db :requests (fnil conj #{}) http-request-id)
                 :http {:method           :get
                        :http-request-id  http-request-id
-                       :path             (str "/hakukohderyhmapalvelu/api/haku/" haku-oid "/oikeudet")
+                       :path             (str "/ohjausparametrit-service/api/v1/rest/parametri/authorize/" haku-oid)
                        :response-handler [handle-get-user-rights-response haku-oid true]
                        :error-handler    [handle-get-user-rights-response haku-oid false]}})))
 
