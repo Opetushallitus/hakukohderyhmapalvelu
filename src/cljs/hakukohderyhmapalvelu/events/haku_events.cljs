@@ -45,7 +45,7 @@
                             #(= (:oid %) haku-oid)
                             #(assoc % :hakukohteet hakukohteet)))
 
-(defn- add-user-rights-for-haku [haku-oid user-rights? haut]
+(defn add-user-rights-for-haku [haku-oid user-rights? haut]
   (update-hakus-hakukohteet haut
                             #(= (:oid %) haku-oid)
                             #(assoc % :user-rights user-rights?)))
