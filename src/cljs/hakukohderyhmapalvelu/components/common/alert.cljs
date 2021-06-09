@@ -27,7 +27,7 @@
   [svg/icon :alert {:width "20px" :height "20px" :margin-right "10px"} {:fill "white"}])
 
 (defn- close-button [on-close]
-  [:span (stylefy/use-style close-style {:on-click on-close})
+  [:span (stylefy/use-style close-style {:cypressid "alert-close" :on-click on-close})
    [svg/icon :cross {:width "14px" :height "14px"} {:fill "white" :width "14" :height "14" :view-box "0 0 18 18"}]])
 
 (defn alert []
