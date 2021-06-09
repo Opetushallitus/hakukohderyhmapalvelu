@@ -25,20 +25,21 @@
                     :syota-kellonaika                       {:fi "Syötä tähän kenttään päivämäärästä ja kellonajasta muodostuvan arvon kellonaika"}
                     :syota-paivamaara                       {:fi "Syötä tähän kenttään päivämäärästä ja kellonajasta muodostuvan arvon päivämäärä"}
                     :sijoittelu                             {:fi "Haussa käytetään sijoittelua"}}
-   :hakukohderyhma {:haku                       {:fi "Haku"}
-                    :lisarajain-kaksoistutkinto {:fi "Hakukohteella mahdollisuus kaksoistutkintoon"}
-                    :lisarajain-koulutustyypit  {:fi "Koulutustyypit"}
-                    :nimi-tai-organisaatio      {:fi "Nimi tai organisaatio"}
-                    :poista-valinnat            {:fi "Poista valinnat"}
-                    :valitse-kaikki             {:fi "Valitse kaikki"}
-                    :luo-uusi-ryhma             {:fi "Luo uusi ryhmä"}
-                    :hakukohteet                {:fi "Hakukohteet"}
-                    :nayta-myos-paattyneet      {:fi "Näytä myös päättyneet"}
-                    :lisarajaimet               {:fi "Lisäsuodattimet"}
-                    :hakukohderyhma-nimi        {:fi "Hakukohderyhmän nimi"}
-                    :haun-nimi                  {:fi "Haun nimi"}
-                    :hakukohderyhma-kaytossa    {:fi "Hakukohderyhmä on käytössä hakulomakkeella ja sitä ei voi poistaa."}
-                    :liita-ryhmaan              {:fi "Liitä ryhmään"}
-                    :sora-hakukohteet           {:fi "SORA -hakukohteet"}
-                    :muokkaa-ryhmaa             {:fi "Muokkaa ryhmää"}
-                    :poista-ryhmasta            {:fi "Poista ryhmästä"}}})
+   :hakukohderyhma {:haku                         {:fi "Haku"}
+                    :lisarajain-harkinnanvaraiset {:fi "Hakukohteella harkinnanvarainen valinta"}
+                    :lisarajain-kaksoistutkinto   {:fi "Hakukohteella mahdollisuus kaksoistutkintoon"}
+                    :lisarajain-koulutustyypit    {:fi "Koulutustyypit"}
+                    :nimi-tai-organisaatio        {:fi "Nimi tai organisaatio"}
+                    :poista-valinnat              {:fi "Poista valinnat"}
+                    :valitse-kaikki               {:fi "Valitse kaikki"}
+                    :luo-uusi-ryhma               {:fi "Luo uusi ryhmä"}
+                    :hakukohteet                  {:fi "Hakukohteet"}
+                    :nayta-myos-paattyneet        {:fi "Näytä myös päättyneet"}
+                    :lisarajaimet                 {:fi "Lisäsuodattimet"}
+                    :hakukohderyhma-nimi          {:fi "Hakukohderyhmän nimi"}
+                    :haun-nimi                    {:fi "Haun nimi"}
+                    :hakukohderyhma-kaytossa      {:fi "Hakukohderyhmä on käytössä hakulomakkeella ja sitä ei voi poistaa."}
+                    :liita-ryhmaan                {:fi "Liitä ryhmään"}
+                    :sora-hakukohteet             {:fi "SORA -hakukohteet"}
+                    :muokkaa-ryhmaa               {:fi "Muokkaa ryhmää"}
+                    :poista-ryhmasta              {:fi "Poista ryhmästä"}}})

@@ -78,7 +78,7 @@ describe('Hakukohderyhmäpalvelu - haun tiedot', () => {
     it('Hakee listauksen haun hakukohteista', () => {
       cy.request('/hakukohderyhmapalvelu/api/haku/1.2.4.1.1.1/hakukohde').then(
         ({ body }) =>
-          expect(body).to.deep.equal([
+          expect(body.slice(0, 4)).to.deep.equal([
             {
               oid: '1.2.4.2.1.1',
               nimi: { fi: 'Testi-perustutkinto' },
@@ -93,6 +93,8 @@ describe('Hakukohderyhmäpalvelu - haun tiedot', () => {
                 kayttoryhmat: [],
               },
               oikeusHakukohteeseen: true,
+              hasValintakoe: false,
+              onkoHarkinnanvarainenKoulutus: true,
               toinenAsteOnkoKaksoistutkinto: true,
               sora: { tila: 'arkistoitu' },
               koulutustyypit: ['koulutustyyppi_10'],
@@ -111,6 +113,8 @@ describe('Hakukohderyhmäpalvelu - haun tiedot', () => {
                 kayttoryhmat: [],
               },
               oikeusHakukohteeseen: true,
+              hasValintakoe: false,
+              onkoHarkinnanvarainenKoulutus: true,
               toinenAsteOnkoKaksoistutkinto: false,
               sora: { tila: 'aktiivinen' },
               koulutustyypit: [],
@@ -129,6 +133,8 @@ describe('Hakukohderyhmäpalvelu - haun tiedot', () => {
                 kayttoryhmat: [],
               },
               oikeusHakukohteeseen: false,
+              hasValintakoe: false,
+              onkoHarkinnanvarainenKoulutus: true,
               toinenAsteOnkoKaksoistutkinto: false,
               sora: { tila: 'arkistoitu' },
               koulutustyypit: ['koulutustyyppi_4'],
@@ -147,6 +153,8 @@ describe('Hakukohderyhmäpalvelu - haun tiedot', () => {
                 kayttoryhmat: [],
               },
               oikeusHakukohteeseen: false,
+              hasValintakoe: false,
+              onkoHarkinnanvarainenKoulutus: true,
               toinenAsteOnkoKaksoistutkinto: false,
               sora: { tila: 'aktiivinen' },
               koulutustyypit: ['koulutustyyppi_1'],
@@ -180,7 +188,16 @@ describe('Hakukohderyhmäpalvelu - haun tiedot', () => {
         'POST',
         '/hakukohderyhmapalvelu/api/hakukohderyhma/search/find-by-hakukohde-oids',
         {
-          oids: ['1.2.4.2.1.3', '1.2.4.2.1.4', '1.2.4.2.1.2', '1.2.4.2.1.1'],
+          oids: [
+            '1.2.4.2.1.3',
+            '1.2.4.2.1.4',
+            '1.2.4.2.1.2',
+            '1.2.4.2.1.1',
+            '1.2.4.2.1.5',
+            '1.2.4.2.1.6',
+            '1.2.4.2.1.7',
+            '1.2.4.2.1.8',
+          ],
           includeEmpty: true,
         },
       ).then(({ body }) => {
@@ -221,7 +238,16 @@ describe('Hakukohderyhmäpalvelu - haun tiedot', () => {
         'POST',
         '/hakukohderyhmapalvelu/api/hakukohderyhma/search/find-by-hakukohde-oids',
         {
-          oids: ['1.2.4.2.1.3', '1.2.4.2.1.4', '1.2.4.2.1.2', '1.2.4.2.1.1'],
+          oids: [
+            '1.2.4.2.1.3',
+            '1.2.4.2.1.4',
+            '1.2.4.2.1.2',
+            '1.2.4.2.1.1',
+            '1.2.4.2.1.5',
+            '1.2.4.2.1.6',
+            '1.2.4.2.1.7',
+            '1.2.4.2.1.8',
+          ],
           includeEmpty: false,
         },
       ).then(({ body }) => {
@@ -327,6 +353,7 @@ describe('Hakukohderyhmäpalvelu - haun tiedot', () => {
               nimi: { fi: 'Testi-perustutkinto' },
               hakuOid: '1.2.4.1.1.1',
               oikeusHakukohteeseen: true,
+              hasValintakoe: false,
               toinenAsteOnkoKaksoistutkinto: false,
               sora: { tila: 'arkistoitu' },
               organisaatio: {
@@ -344,6 +371,7 @@ describe('Hakukohderyhmäpalvelu - haun tiedot', () => {
               nimi: { fi: 'Testi-jatkotutkinto' },
               hakuOid: '1.2.4.1.1.1',
               oikeusHakukohteeseen: true,
+              hasValintakoe: false,
               toinenAsteOnkoKaksoistutkinto: false,
               sora: { tila: 'aktiivinen' },
               organisaatio: {
