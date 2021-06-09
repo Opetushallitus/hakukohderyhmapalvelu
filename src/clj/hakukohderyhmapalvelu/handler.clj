@@ -8,7 +8,6 @@
             [reitit.coercion.schema]
             [reitit.dev.pretty :as pretty]
             [reitit.ring.middleware.muuntaja :as muuntaja-middleware]
-            [reitit.ring.middleware.exception :as exception-middleware]
             [reitit.ring.middleware.parameters :as parameters-middleware]
             [reitit.ring.coercion :as coercion]
             [reitit.ring :as ring]
@@ -18,6 +17,7 @@
             [hakukohderyhmapalvelu.cas.mock.mock-authenticating-client-schemas :as mock-cas]
             [hakukohderyhmapalvelu.cas.mock.mock-dispatcher-protocol :as mock-dispatcher-protocol]
             [hakukohderyhmapalvelu.config :as c]
+            [hakukohderyhmapalvelu.exception :as exception]
             [hakukohderyhmapalvelu.hakukohderyhma.hakukohderyhma-service-protocol :as hakukohderyhma]
             [hakukohderyhmapalvelu.health-check :as health-check]
             [hakukohderyhmapalvelu.oph-url-properties :as oph-urls]
@@ -239,7 +239,7 @@
                               parameters-middleware/parameters-middleware
                               muuntaja-middleware/format-negotiate-middleware
                               muuntaja-middleware/format-response-middleware
-                              exception-middleware/exception-middleware
+                              exception/exception-middleware
                               muuntaja-middleware/format-request-middleware
                               coercion/coerce-response-middleware
                               coercion/coerce-request-middleware]}}))

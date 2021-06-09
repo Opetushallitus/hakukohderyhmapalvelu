@@ -9,14 +9,13 @@
 (defn configure-logging! [config]
   (timbre/merge-config!
     {:appenders
-                     {:println
-                      (println-appender {:stream :std-out})
-                      :file-appender
-                      (rolling-appender
-                        {:path    (str (-> config :log :base-path)
-                                       "/app_hakukohderyhmapalvelu"
-                                       (when (:hostname env) (str "_" (:hostname env))))
-                         :pattern :daily})}
+                     {:standard-out     {:enabled? false}
+                      :println          (println-appender {:stream :std-out})
+                      :rolling-appender (rolling-appender
+                                          {:path    (str (-> config :log :base-path)
+                                                         "/app_hakukohderyhmapalvelu"
+                                                         (when (:hostname env) (str "_" (:hostname env))))
+                                           :pattern :daily})}
      :middleware     [(timbre-ns-pattern-level/middleware {"com.zaxxer.hikari.HikariConfig" :debug
                                                            :all                             :info})]
      :timestamp-opts {:pattern  "yyyy-MM-dd'T'HH:mm:ss.SSSXXX"

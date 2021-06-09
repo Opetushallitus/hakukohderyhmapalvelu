@@ -8,7 +8,7 @@
                  [cheshire "5.10.0"]
                  [clj-http "3.10.3"]
                  [com.andrewmcveigh/cljs-time "0.5.2"]
-                 [com.taoensso/timbre "5.1.0"]
+                 [com.taoensso/timbre "4.10.0"]
                  [com.fzakaria/slf4j-timbre "0.3.20"]
                  [timbre-ns-pattern-level "0.1.2"]
                  [com.stuartsierra/component "1.0.0"]
