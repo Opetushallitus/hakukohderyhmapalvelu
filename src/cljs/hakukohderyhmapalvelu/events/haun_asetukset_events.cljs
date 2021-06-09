@@ -1,6 +1,7 @@
 (ns hakukohderyhmapalvelu.events.haun-asetukset-events
   (:require [hakukohderyhmapalvelu.ohjausparametrit.haun-asetukset-ohjausparametrit-mapping :as m]
             [hakukohderyhmapalvelu.macros.event-macros :as events]
+            [hakukohderyhmapalvelu.events.haku-events :refer [add-user-rights-for-haku haku-haut]]
             [hakukohderyhmapalvelu.urls :as urls]
             [day8.re-frame.tracing :refer-macros [fn-traced]]))
 
@@ -127,7 +128,7 @@
 (events/reg-event-fx-validating
   :haun-asetukset/get-user-rights
   (fn-traced [{db :db} [haku-oid]]
-             (let [http-request-id get-user-rights]
+             (let [http-request-id :haun-asetukset/get-user-rights]
                {:db   (update db :requests (fnil conj #{}) http-request-id)
                 :http {:method           :get
                        :http-request-id  http-request-id

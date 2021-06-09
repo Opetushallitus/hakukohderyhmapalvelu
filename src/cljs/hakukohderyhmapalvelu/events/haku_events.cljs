@@ -140,7 +140,7 @@
   select-haku
   (fn-traced [{db :db} [haku-oid]]
              {:db       (update-in db haku-haut #(map (partial u/select-item-by-oid haku-oid) %))
-              :dispatch-n [[get-user-rights haku-oid]
+              :dispatch-n [[:haun-asetukset/get-user-rights haku-oid]
                            [hakukohderyhma-events/handle-get-all-hakukohderyhma []]
                            [get-haun-hakukohteet haku-oid]]}))
 
