@@ -18,7 +18,6 @@
 
 (s/defschema Valintakoe
   {:id   s/Str
-   :nimi c/Nimi
    s/Any s/Any})
 
 (s/defschema Hakukohde
