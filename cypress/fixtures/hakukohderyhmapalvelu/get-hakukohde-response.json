@@ -251,7 +251,7 @@
     "liitteidenToimitusaika": "2020-02-05T11:01:02",
     "liitteidenToimitustapa": "hakijapalvelu",
     "liitteet": [],
-    "valintakokeet": [{"id":  "1.2.2.1.2.1", "nimi": {"fi":  "Mock valintakoe harkinnanvaraisuuden estämiseksi"}}],
+    "valintakokeet": [{"id":  "1.2.2.1.2.1", "tyyppi": "x", "tilaisuudet":  []}],
     "hakuajat": [],
     "muokkaaja": "1.2.8.1.2.1",
     "tarjoajat": ["1.2.9.1.2.1"],
