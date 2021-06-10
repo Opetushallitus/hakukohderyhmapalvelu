@@ -9,7 +9,7 @@
 (def ^:private alert-style
   {:position         "fixed"
    :right            "0px"
-   :top              "35px"
+   :top              "120px"
    :z-index          "1"
    :padding          "15px"
    :color            "white"
