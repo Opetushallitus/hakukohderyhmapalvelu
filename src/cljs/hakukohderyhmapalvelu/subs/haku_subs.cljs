@@ -33,7 +33,7 @@
     [(re-frame/subscribe [:lang])
      (re-frame/subscribe [haku-haut])])
   (fn [[lang haut] _]
-    (let [transform-fn (i18n-utils/create-item->option-transformer lang :nimi :oid)]
+    (let [transform-fn (i18n-utils/create-item->option-transformer lang {:label [:nimi]} :oid)]
       (map transform-fn haut))))
 
 (re-frame/reg-sub
@@ -49,7 +49,7 @@
     [(re-frame/subscribe [:lang])
      (re-frame/subscribe [haku-selected-haku])])
   (fn [[lang selected-haku] _]
-    (let [transform-fn (i18n-utils/create-item->option-transformer lang :nimi :oid)]
+    (let [transform-fn (i18n-utils/create-item->option-transformer lang {:label [:nimi]} :oid)]
       (transform-fn selected-haku))))
 
 (re-frame/reg-sub
@@ -94,7 +94,9 @@
      (re-frame/subscribe [haku-hakukohteet-not-in-hakukohderyhma])
      (re-frame/subscribe [haku-lisarajaimet-filters-as-fns])])
   (fn [[lang filter-text hakukohteet lisarajaimet] _]
-    (let [transform-fn (i18n-utils/create-item->option-transformer lang :nimi :oid #(-> % :oikeusHakukohteeseen not))]
+    (let [labels {:label     [:nimi]
+                  :sub-label [:organisaatio :nimi]}
+          transform-fn (i18n-utils/create-item->option-transformer lang labels :oid #(-> % :oikeusHakukohteeseen not))]
       (->> hakukohteet
            (filter #(u/hakukohde-includes-string? % filter-text lang))
            (filter (u/create-hakukohde-matches-all-lisarajaimet lisarajaimet))

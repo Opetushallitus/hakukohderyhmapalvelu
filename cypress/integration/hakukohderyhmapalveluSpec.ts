@@ -202,6 +202,8 @@ describe('Hakukohderyhmäpalvelu', () => {
       cy.get(hh.hakukohteetContainerSelector)
         .children()
         .eq(0)
+        .find('span')
+        .last()
         .should($el => {
           expect($el.text()).to.equal('Testi-jatkotutkinto')
         })
@@ -225,6 +227,8 @@ describe('Hakukohderyhmäpalvelu', () => {
         .get(hh.hakukohteetContainerSelector)
         .children()
         .eq(0)
+        .find('span')
+        .last()
         .should($el => {
           expect($el.text()).to.equal('Testi-perustutkinto')
         })
@@ -235,6 +239,8 @@ describe('Hakukohderyhmäpalvelu', () => {
         .get(hh.hakukohteetContainerSelector)
         .children()
         .eq(0)
+        .find('span')
+        .last()
         .should($el => {
           expect($el.text()).to.equal('Testi-perustutkinto')
         })
@@ -270,6 +276,8 @@ describe('Hakukohderyhmäpalvelu', () => {
         cy.get(hh.hakukohteetContainerSelector)
           .children()
           .eq(0)
+          .find('span')
+          .last()
           .should($el => {
             expect($el.text()).to.equal('Testi-perustutkinto')
           })
@@ -292,6 +300,8 @@ describe('Hakukohderyhmäpalvelu', () => {
         cy.get(hh.hakukohteetContainerSelector)
           .children()
           .eq(0)
+          .find('span')
+          .last()
           .should($el => {
             expect($el.text()).to.equal('Testi-jatkotutkinto')
           })
@@ -323,12 +333,16 @@ describe('Hakukohderyhmäpalvelu', () => {
         cy.get(hh.hakukohteetContainerSelector)
           .children()
           .eq(0)
+          .find('span')
+          .last()
           .should($el => {
             expect($el.text()).to.equal('xtrakohde 1')
           })
         cy.get(hh.hakukohteetContainerSelector)
           .children()
           .eq(1)
+          .find('span')
+          .last()
           .should($el => {
             expect($el.text()).to.equal('xtrakohde 2')
           })
@@ -360,6 +374,8 @@ describe('Hakukohderyhmäpalvelu', () => {
         cy.get(hh.hakukohteetContainerSelector)
           .children()
           .eq(0)
+          .find('span')
+          .last()
           .should($el => {
             expect($el.text()).to.equal('Testi-perustutkinto')
           })
@@ -421,10 +437,14 @@ describe('Hakukohderyhmäpalvelu', () => {
             .get(hh.hakukohderyhmanHakukohteetContainerSelector)
             .children()
             .eq(1)
+            .find('span')
+            .last()
             .should('have.text', hakukohteet[0].nimi.fi)
             .get(hh.hakukohderyhmanHakukohteetContainerSelector)
             .children()
             .eq(0)
+            .find('span')
+            .last()
             .should('have.text', hakukohteet[1].nimi.fi)
         },
       )

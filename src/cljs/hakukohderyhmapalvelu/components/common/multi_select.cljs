@@ -34,21 +34,37 @@
     {:color colors/gray-lighten-3
      :cursor "arrow"}))
 
+(def ^:private label-style
+  {:display       "block"
+   :line-height   "16px"
+   :margin-bottom "5px"})
+
+(def ^:private sub-label-style
+  {:display   "block"
+   :font-size "12px"
+   :color     colors/gray-lighten-1})
+
+(def ^:private sub-label-style-disabled
+  (dissoc sub-label-style :color))
+
 (s/defschema Option
   {:is-selected s/Bool
    :is-disabled s/Bool
    :label       s/Str
+   :sub-label   s/Str
    :value       s/Any})
 
-(defn- multi-select-option [select-fn {:keys [value label is-selected is-disabled]} cypressid]
+(defn- multi-select-option [select-fn {:keys [value label sub-label is-selected is-disabled]} cypressid]
   (let [style (cond
                 is-disabled option-style-disabled
                 is-selected option-style-selected
                 :else option-style)
+        sub-label-style (if is-disabled sub-label-style-disabled sub-label-style)
         on-click #(when (not is-disabled) (select-fn value))]
     [:div (stylefy/use-style style {:on-click on-click
                                     :cypressid (str cypressid "__" label (when is-selected "--selected"))})
-     label]))
+     [:span (stylefy/use-style sub-label-style) sub-label]
+     [:span (stylefy/use-style label-style) label]]))
 
 (s/defschema Props
   {:options                    [Option]

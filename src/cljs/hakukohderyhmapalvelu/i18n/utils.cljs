@@ -19,27 +19,29 @@
        (keep #(get m %))
        first))
 
-(defn- item->option [lang label-field value-field disabled? item]
+(defn- item->option [lang {:keys [label sub-label]} value-field disabled? item]
   (when (some? item)
-    (let [localized (get item label-field)
+    (let [localized-label (when label (get-in item label))
+          localized-sub-label (when sub-label (get-in item sub-label))
           value (get item value-field)
           is-selected (:is-selected item)
           is-disabled (disabled? item)]
-      (cond-> {:label       (get-with-fallback localized lang)
+      (cond-> {:label       (get-with-fallback localized-label lang)
                :value       value
                :is-selected is-selected}
-              (boolean? is-disabled) (assoc :is-disabled is-disabled)))))
+              (boolean? is-disabled) (assoc :is-disabled is-disabled)
+              (some? localized-sub-label) (assoc :sub-label (get-with-fallback localized-sub-label lang))))))
 
 (defn create-item->option-transformer
-  ([lang label value disabled?]
+  ([lang labels value disabled?]
    (partial
      item->option
      lang
-     label
+     labels
      value
      disabled?))
-  ([lang label value]
-   (create-item->option-transformer lang label value
+  ([lang labels value]
+   (create-item->option-transformer lang labels value
      (constantly nil))))
 
 (defn sort-items-by-name [lang organizations]
