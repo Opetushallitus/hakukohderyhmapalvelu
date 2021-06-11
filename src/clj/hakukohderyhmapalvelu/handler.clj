@@ -38,13 +38,19 @@
   (:import [javax.sql DataSource]))
 
 
+(defn- random-lowercase-string [n]
+  (reduce (fn [acc _] (str acc (char (+ 97 (rand-int 26))))) "" (range n)))
+
+(def ^:private cache-fingerprint (random-lowercase-string 10))
+
 (defn- create-index-handler [config]
   (let [public-config (-> config :public-config json/generate-string)
         rendered-page (selmer/render-file
                         "templates/index.html.template"
-                        {:frontend-config  public-config
-                         :front-properties (oph-urls/front-json config)
-                         :apply-raamit     (c/production-environment? config)})]
+                        {:frontend-config   public-config
+                         :front-properties  (oph-urls/front-json config)
+                         :apply-raamit      (c/production-environment? config)
+                         :cache-fingerprint cache-fingerprint})]
     (fn [_]
       (-> (response/ok rendered-page)
           (response/content-type "text/html")
