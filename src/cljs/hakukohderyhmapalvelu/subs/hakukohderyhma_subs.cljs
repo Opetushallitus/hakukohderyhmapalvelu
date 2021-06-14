@@ -32,7 +32,7 @@
     [(re-frame/subscribe [:lang])
      (re-frame/subscribe [:state-query hakukohderyhma-evts/persisted-hakukohderyhmas])])
   (fn [[lang saved-ryhmat]]
-    (let [transform-fn (i18n-utils/create-item->option-transformer lang :nimi :oid)]
+    (let [transform-fn (i18n-utils/create-item->option-transformer lang {:label [:nimi]} :oid)]
       (map transform-fn saved-ryhmat))))
 
 
@@ -50,7 +50,7 @@
      (re-frame/subscribe [selected-hakukohderyhma])])
   (fn [[lang selected-ryhma]]
     (when selected-ryhma
-      (let [transform-fn (i18n-utils/create-item->option-transformer lang :nimi :oid)]
+      (let [transform-fn (i18n-utils/create-item->option-transformer lang {:label [:nimi]} :oid)]
         (transform-fn selected-ryhma)))))
 
 (re-frame/reg-sub
@@ -66,7 +66,9 @@
     [(re-frame/subscribe [:lang])
      (re-frame/subscribe [hakukohderyhman-hakukohteet])])
   (fn [[lang hakukohteet]]
-    (let [transform-fn (i18n-utils/create-item->option-transformer lang :nimi :oid #(-> % :oikeusHakukohteeseen not))]
+    (let [labels {:label     [:nimi]
+                  :sub-label [:organisaatio :nimi]}
+          transform-fn (i18n-utils/create-item->option-transformer lang labels :oid #(-> % :oikeusHakukohteeseen not))]
       (map transform-fn hakukohteet))))
 
 (re-frame/reg-sub
