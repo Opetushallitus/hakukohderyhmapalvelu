@@ -199,6 +199,8 @@
 (def toggle-hakukohde-selection :hakukohderyhmien-hallinta/toggle-hakukohde-selection)
 (def save-hakukohderyhma-hakukohteet :hakukohderyhmien-hallinta/save-hakukohderyhma-hakukohteet)
 (def handle-save-hakukohderyhma-hakukohteet :hakukohderyhmien-hallinta/handle-save-hakukohderyhma-hakukohteet)
+(def all-hakukohde-in-selected-hakukohderyhma-selected :hakukohderyhmien-hallinta/all-hakukohde-in-selected-hakukohderyhma-selected)
+(def all-hakukohde-in-selected-hakukohderyhma-deselected :hakukohderyhmien-hallinta/all-hakukohde-in-selected-hakukohderyhma-deselected)
 
 (defn- create-hakukohderyhma-search-request [{:keys [http-request-id hakukohde-oids response-handler]}]
   {:method           :post
@@ -258,6 +260,24 @@
              (let [hakukohderyhmas (->> (get-in db persisted-hakukohderyhmas)
                                         (map #(cond-> % (:is-selected %) (update :hakukohteet (partial toggle-hakukohde oid)))))]
                (assoc-in db persisted-hakukohderyhmas hakukohderyhmas))))
+
+(events/reg-event-db-validating
+  all-hakukohde-in-selected-hakukohderyhma-selected
+  (fn-traced [db [_]]
+             (let [hakukohderyhma (selected-hakukohderyhma db)
+                   hakukohteet (:hakukohteet hakukohderyhma)
+                   hakukohteet' (map #(assoc % :is-selected (:oikeusHakukohteeseen %)) hakukohteet)
+                   hakukohderyhma' (assoc hakukohderyhma :hakukohteet hakukohteet')]
+               (update-hakukohderyhma db hakukohderyhma'))))
+
+(events/reg-event-db-validating
+  all-hakukohde-in-selected-hakukohderyhma-deselected
+  (fn-traced [db [_]]
+             (let [hakukohderyhma (selected-hakukohderyhma db)
+                   hakukohteet (:hakukohteet hakukohderyhma)
+                   hakukohteet' (map #(assoc % :is-selected false) hakukohteet)
+                   hakukohderyhma' (assoc hakukohderyhma :hakukohteet hakukohteet')]
+               (update-hakukohderyhma db hakukohderyhma'))))
 
 (events/reg-event-db-validating
   handle-save-hakukohderyhma-hakukohteet
