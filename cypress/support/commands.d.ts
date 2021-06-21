@@ -2,7 +2,7 @@
 
 type Method = 'GET' | 'POST' | 'PUT' | 'DELETE'
 
-type Service = 'organisaatio-service' | 'kouta-service'
+type Service = 'organisaatio-service' | 'kouta-service' | 'ataru-service'
 
 interface MockBackendRequestOpts {
   method: Method

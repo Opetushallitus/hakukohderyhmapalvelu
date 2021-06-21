@@ -62,3 +62,10 @@
 (s/defschema GetRyhmatResponse
   [Hakukohderyhma])
 
+(s/defschema Form
+  {(s/optional-key :id) s/Int
+   :name                c/Nimi
+   s/Any                s/Any})
+
+(s/defschema GetFormsResponse
+  {:forms [Form]})

@@ -144,6 +144,6 @@
           (catch js/Error e
             (js/console.error e)
             (when error-handler
-              (re-frame/dispatch error-handler)))
+              (re-frame/dispatch (conj error-handler body))))
           (finally
             (re-frame/dispatch [:http/remove-http-request-id http-request-id])))))))

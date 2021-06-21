@@ -872,6 +872,13 @@ describe('Hakukohderyhmäpalvelu', () => {
           )
         })
         it('Hakukohderyhmän voi poistaa', () => {
+          cy.mockBackendRequest({
+            method: 'GET',
+            path: '/lomake-editori/api/forms?hakukohderyhma-oid=1.2.2.5.2.9',
+            service: 'ataru-service',
+            responseFixture:
+              'hakukohderyhmapalvelu/ataru-empty-forms-response.json',
+          })
           cy.fixture(
             'hakukohderyhmapalvelu/get-organisaatio-ryhmat-response.json',
           ).then(ryhmat => {
@@ -919,21 +926,40 @@ describe('Hakukohderyhmäpalvelu', () => {
         })
       })
       describe('Hakukohderyhmän epäonnistunut poisto', () => {
-        before(() => {
-          //TODO when ataru check has been implemented
-          //mock routes to return `in-use` status
-        })
         it('Jos poistettava ryhmä on käytössä, käyttäjälle näytetään alert banner', () => {
-          //valitse ryhmä
-          //muokkaa ryhmää
-          //paina roskakori-nappia
-          //paina vahvista poisto- nappia
-          //assert, että roskakori on näkyvissä
-          //assert, että alert banner näkyy ja siinä oikea teksti
+          cy.mockBackendRequest({
+            method: 'GET',
+            path:
+              '/lomake-editori/api/forms?hakukohderyhma-oid=1.2.246.562.28.47149607930',
+            service: 'ataru-service',
+            responseFixture:
+              'hakukohderyhmapalvelu/ataru-non-empty-forms-response.json',
+          })
+
+          cy.get(hakukohderyhmanValintaDropdown).type(
+            'Uudelleennimetty testihakukohderyhmä{enter}',
+          )
+          cy.get(hl.hakukohderyhmanLisaysMuokkaaRyhmaaLinkSelector).click({
+            force: true,
+          })
+          cy.get(hl.hakukohderyhmanPoistoDeleteButtton).click({
+            force: true,
+          })
+          cy.login()
+          cy.get(hl.hakukohderyhmanPoistoConfirmDeleteButtton).click({
+            force: true,
+          })
+
+          cy.get(hl.alertSelector).should('exist')
+          cy.get(hl.alertSelector).contains(
+            'Hakukohderyhmä on käytössä hakulomakkeella ja sitä ei voi poistaa.',
+          )
+          cy.get(hl.hakukohderyhmanPoistoDeleteButtton).should('exist')
         })
         it('Käyttäjä voi sulkea alert bannerin', () => {
-          //paina alert bannerin sulkuruksia
-          //assert, että alert banner katoaa
+          cy.get(hl.alertSelector).should('exist')
+          cy.get(hl.alertCloseSelector).click({ force: true })
+          cy.get(hl.alertSelector).should('not.exist')
         })
       })
     })

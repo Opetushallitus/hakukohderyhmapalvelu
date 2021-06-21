@@ -406,6 +406,20 @@ describe('Hakukohderyhmäpalvelu - haun tiedot', () => {
         responseFixture:
           'hakukohderyhmapalvelu/delete-organisaatio-response.json',
       })
+      cy.mockBackendRequest({
+        method: 'GET',
+        path: '/lomake-editori/api/forms?hakukohderyhma-oid=1.2.246.562.28.001',
+        service: 'ataru-service',
+        responseFixture: 'hakukohderyhmapalvelu/get-forms-empty-response.json',
+      })
+      cy.mockBackendRequest({
+        method: 'GET',
+        path:
+          '/lomake-editori/api/forms?hakukohderyhma-oid=1.2.246.562.28.001001',
+        service: 'ataru-service',
+        responseFixture:
+          'hakukohderyhmapalvelu/get-forms-non-empty-response.json',
+      })
     })
     it('Poisto onnistuu', () => {
       cy.request(
@@ -414,6 +428,16 @@ describe('Hakukohderyhmäpalvelu - haun tiedot', () => {
       ).then(({ status, body }) => {
         expect(status).to.equal(200)
         expect(body).to.deep.equal({ status: 'deleted' })
+      })
+    })
+    it('Poisto epäonnistuu, hakukohderyhmää käytetään atarussa', () => {
+      cy.request({
+        method: 'DELETE',
+        url: '/hakukohderyhmapalvelu/api/hakukohderyhma/1.2.246.562.28.001001',
+        failOnStatusCode: false,
+      }).then(({ status, body }) => {
+        expect(status).to.equal(409)
+        expect(body).to.deep.equal({ status: 'in-use' })
       })
     })
   })

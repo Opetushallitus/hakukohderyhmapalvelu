@@ -171,7 +171,7 @@
                     :handler    (fn [{session :session {{oid :oid} :path} :parameters}]
                                   (condp = (hakukohderyhma/delete hakukohderyhma-service session oid)
                                     schema/StatusDeleted (response/ok {:status schema/StatusDeleted})
-                                    schema/StatusInUse (response/bad-request {:status schema/StatusInUse})))}}]
+                                    schema/StatusInUse (response/conflict {:status schema/StatusInUse})))}}]
          ["/hakukohteet"
           {:put {:middleware auth
                  :tags       ["Hakukohderyhmä"]
