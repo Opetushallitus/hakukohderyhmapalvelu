@@ -268,7 +268,6 @@
   [args :- MakeHandlerArgs]
   (-> (create-handler args)
       (clj-access-logging/wrap-access-logging)
-      (clj-stdout-access-logging/wrap-stdout-access-logging)
       (clj-timbre-access-logging/wrap-timbre-access-logging
         {:path (str (-> args :config :log :base-path)
                     "/access_hakukohderyhmapalvelu"
