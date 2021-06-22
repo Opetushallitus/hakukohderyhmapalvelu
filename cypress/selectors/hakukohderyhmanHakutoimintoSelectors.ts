@@ -28,6 +28,15 @@ export const hakukohteetContainerOptionSelector = (
   }]`
 }
 
+export const groupedHakukohteetContainerOptionSelector = (
+  label: string,
+  isSelected: boolean,
+): string => {
+  return `div[cypressid=hakukohderyhma-hakukohteet__${label}${
+    isSelected ? '--selected' : ''
+  }]`
+}
+
 export const hakukohderyhmanHakukohteetContainerSelector =
   'div[cypressid=hakukohderyhma-hakukohteet]'
 
@@ -40,6 +49,12 @@ export const hakukohteetLisaysButtonSelector =
 export const hakukohdeSelectAllSelector = 'button[cypressid=select-all-btn]'
 
 export const hakukohdeDeselectAllSelector = 'button[cypressid=deselect-all-btn]'
+
+export const groupedHakukohdeSelectAllSelector =
+  'button[cypressid=select-all-btn-2]'
+
+export const groupedHakukohdeDeselectAllSelector =
+  'button[cypressid=deselect-all-btn-2]'
 
 export const extraFiltersButtonSelector = 'button[cypressid=extra-filters-btn]'
 
