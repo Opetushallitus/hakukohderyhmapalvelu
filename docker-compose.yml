@@ -32,7 +32,7 @@ services:
     networks:
       hakukohderyhmapalvelu-local-network:
     ports:
-      - "15432:15432"
+      - "15935:15432"
     command: -p 15432
 networks:
   hakukohderyhmapalvelu-local-network:
