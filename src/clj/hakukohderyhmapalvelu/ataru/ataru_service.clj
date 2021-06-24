@@ -6,7 +6,8 @@
             [hakukohderyhmapalvelu.ataru.ataru-protocol :as ataru-service-protocol]
             [hakukohderyhmapalvelu.oph-url-properties :as oph-url]
             [hakukohderyhmapalvelu.schemas.organisaatio-service-schemas :as schemas]
-            [hakukohderyhmapalvelu.http :as http]))
+            [hakukohderyhmapalvelu.http :as http]
+            [taoensso.timbre :as log]))
 
 
 (defrecord AtaruService [ataru-authenticating-client config]
@@ -23,9 +24,10 @@
 
   (get-forms [_ hakukohderyhma-oid]
     (let [params (if hakukohderyhma-oid {:hakukohderyhma-oid hakukohderyhma-oid} {})
-          url (oph-url/resolve-url :ataru.forms config params)]
-      (-> (authenticating-client-protocol/get ataru-authenticating-client
-                                              url
-                                              {:response-schema schemas/GetFormsResponse})
-          (http/parse-and-validate schemas/GetFormsResponse)
-          :forms))))
+          url (oph-url/resolve-url :ataru.forms config params)
+          response (-> (authenticating-client-protocol/get ataru-authenticating-client
+                                                           url
+                                                           {:response-schema schemas/GetFormsResponse})
+                       (http/parse-and-validate schemas/GetFormsResponse))]
+      (log/info "ATARU PYYNTÖ VASTAUS " response)
+      (:forms response))))
