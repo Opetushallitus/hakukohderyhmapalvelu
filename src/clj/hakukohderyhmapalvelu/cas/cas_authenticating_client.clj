@@ -100,7 +100,7 @@
           cookie-manager      (CookieManager.)
           http-client         (-> (HttpClient/newBuilder)
                                   (.cookieHandler cookie-manager)
-                                  (.connectTimeout (Duration/ofSeconds 10))
+                                  (.connectTimeout (Duration/ofSeconds 120))
                                   (.build))
           cas-tickets-url     (create-uri :cas.tickets config)
           {:keys [username
@@ -108,9 +108,9 @@
           application-session (ApplicationSession. http-client
                                                    cookie-manager
                                                    caller-id
-                                                   (Duration/ofSeconds 10)
+                                                   (Duration/ofSeconds 120)
                                                    (CasSession. http-client
-                                                                (Duration/ofSeconds 10)
+                                                                (Duration/ofSeconds 120)
                                                                 caller-id
                                                                 cas-tickets-url
                                                                 username
