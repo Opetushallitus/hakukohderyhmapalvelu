@@ -42,8 +42,8 @@
                        (update :body json/generate-string)
                        (merge {:accept       :json
                                :content-type "application/json"})
-                       (update :connection-timeout (fnil identity 60000))
-                       (update :socket-timeout (fnil identity 60000))
+                       (update :connection-timeout (fnil identity 240000))
+                       (update :socket-timeout (fnil identity 240000))
                        (update :headers merge
                                {"Caller-Id" caller-id
                                 "CSRF"      csrf-value})
