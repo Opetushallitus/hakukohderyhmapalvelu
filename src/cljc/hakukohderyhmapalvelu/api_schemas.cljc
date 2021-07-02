@@ -33,6 +33,11 @@
      (s/optional-key :hakuOid)                       s/Str
      (s/optional-key :koulutustyypit)                [s/Str]}))
 
+(s/defschema HakukohderyhmaSettings
+  {:rajaava s/Bool
+   (s/optional-key :max-hakukohteet) (s/maybe s/Int)
+   })
+
 (s/defschema LocalizationEntity
   {:id       s/Int
    :category s/Str
@@ -43,7 +48,8 @@
 
 (s/defschema Hakukohderyhma
   (st/merge Organisaatio
-            {:hakukohteet [Hakukohde]}))
+            {:hakukohteet [Hakukohde]
+             :settings HakukohderyhmaSettings}))
 
 (s/defschema HakukohderyhmaPayload
   (st/merge

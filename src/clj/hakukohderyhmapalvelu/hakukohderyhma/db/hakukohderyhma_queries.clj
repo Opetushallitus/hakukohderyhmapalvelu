@@ -13,6 +13,7 @@
 (declare add-hakukohteet-into-hakukohderyhma!)
 (declare hakukohderyhma-by-hakukohteet-and-hakukohderyhmat)
 (declare delete-by-hakukohderyhma-oid)
+(declare settings-by-hakukohderyhma-oids)
 
 (defn hakukohde-oidit-by-hakukohderyhma-oid [db hakukohderyhma-oid]
   (->> {:oid hakukohderyhma-oid}
@@ -49,3 +50,17 @@
 
 (defn delete-hakukohderyhma [db hakukohderyhma-oid]
   (delete-by-hakukohderyhma-oid db {:oid hakukohderyhma-oid}))
+
+(defn find-settings-by-hakukohderyhma-oids
+  [db hakukohderyhma-oids]
+  (let [settings (->> {:hakukohderyhma-oids hakukohderyhma-oids}
+                      (settings-by-hakukohderyhma-oids db)
+                      (group-by :hakukohderyhma-oid))]
+    (->> hakukohderyhma-oids
+         (map (fn [hakukohderyhma-oid]
+              (if-let [matching-settings (get settings hakukohderyhma-oid)]
+                (first matching-settings)
+                {
+
+                 })
+                )))))
