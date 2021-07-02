@@ -29,6 +29,14 @@
 (defn- session-organizations [session]
   (get-in session [:identity :organizations]))
 
+(defn- apply-default-settings-if-missing
+  [hakukohderyhma]
+    (if (not (:settings hakukohderyhma))
+      (assoc hakukohderyhma :settings {:rajaava false})
+      hakukohderyhma)
+
+  )
+
 (defrecord HakukohderyhmaService [audit-logger organisaatio-service kouta-service ataru-service db]
   hakukohderyhma-protocol/HakukohderyhmaServiceProtocol
 
@@ -42,9 +50,11 @@
                     (map :oid hakukohderyhmat)
                     (map :oid hakukohteet))
             merge-fn (create-merge-hakukohderyhma-with-hakukohteet-fn hakukohderyhmat hakukohteet)
-            hakukohderyhmat-with-hakukohteet (map merge-fn joins)]
-        (cond->> hakukohderyhmat-with-hakukohteet
-                 (not include-empty) (remove #(empty? (:hakukohteet %)))))
+            hakukohderyhmat-with-hakukohteet (map merge-fn joins)
+            hakukohde-ryhmat-with-settings (map #(apply-default-settings-if-missing %) hakukohderyhmat-with-hakukohteet)]
+        (cond->> hakukohde-ryhmat-with-settings
+                 (not include-empty) (remove #(empty? (:hakukohteet %)))
+                 ))
       []))
 
   (list-hakukohderyhma-oids-by-hakukohde-oid [_ session hakukohde-oid]
@@ -59,7 +69,8 @@
                  hakukohderyhma-luonti
                  (audit/->target {:oid (:oid hkr)})
                  (audit/->changes {} hkr))
-      (assoc hkr :hakukohteet [])))
+      (assoc hkr :hakukohteet []
+                 :settings {:rajaava false})))
 
   (delete [this session hakukohderyhma-oid]
     (let [forms (ataru/get-forms ataru-service hakukohderyhma-oid)

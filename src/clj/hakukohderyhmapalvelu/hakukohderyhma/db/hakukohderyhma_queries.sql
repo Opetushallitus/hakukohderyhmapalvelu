@@ -40,3 +40,10 @@ VALUES :tuple*:hakukohderyhmat
 
 -- :name delete-by-hakukohderyhma-oid :! :n
 DELETE FROM hakukohderyhma WHERE hakukohderyhma_oid = :oid
+
+-- :name settings-by-hakukohderyhma-oids :? :*
+SELECT  s.rajaava,
+        s.hakukohderyhma_oid AS "hakukohderyhma-oid",
+        s.max_hakukohteet AS "max-hakukohteet"
+FROM hakukohderyhma_settings s
+WHERE s.hakukohderyhma_oid IN (:v*:hakukohderyhma-oids);
