@@ -47,3 +47,10 @@ SELECT  s.rajaava,
         s.max_hakukohteet AS "max-hakukohteet"
 FROM hakukohderyhma_settings s
 WHERE s.hakukohderyhma_oid IN (:v*:hakukohderyhma-oids);
+
+-- :name upsert-settings! :! :n
+INSERT INTO hakukohderyhma_settings (hakukohderyhma_oid, rajaava, max_hakukohteet)
+VALUES (:hakukohderyhma-oid, :rajaava, :max-hakukohteet)
+ON CONFLICT (hakukohderyhma_oid)
+DO
+    UPDATE SET rajaava = :rajaava, max_hakukohteet = :max-hakukohteet;

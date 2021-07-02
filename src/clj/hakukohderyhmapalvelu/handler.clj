@@ -190,7 +190,16 @@
                   :handler    (fn [{session :session {hakukohderyhma :body {oid :oid} :path} :parameters}]
                                 (if (= oid (:oid hakukohderyhma))
                                   (response/ok (hakukohderyhma/rename hakukohderyhma-service session hakukohderyhma))
-                                  (response/bad-request "Polun oid ei vastaa lähetetyn hakukohderyhmän oid:ia")))}}]]]
+                                  (response/bad-request "Polun oid ei vastaa lähetetyn hakukohderyhmän oid:ia")))}}]
+         ["/settings"
+          {:put {:middleware auth
+                  :tags       ["Hakukohderyhmä"]
+                  :summary    ["Tallentaa hakukohderyhmän asetukset"]
+                  :responses  {200 {:body s/Any}}
+                  :parameters {:path {:oid s/Str} :body schema/HakukohderyhmaSettings}
+                  :handler    (fn [{session :session {settings :body {oid :oid} :path}  :parameters}]
+                                (response/ok (hakukohderyhma/insert-or-update-settings hakukohderyhma-service session oid settings)))}}]
+         ]]
        ["/hakukohde/:oid/hakukohderyhmat"
         {:get {:middleware auth
                :tags       ["Hakukohde"]

@@ -29,6 +29,7 @@
 (def set-hakukohderyhma-name-text :hakukohderyhmien-hallinta/set-hakukohderyhma-name-text)
 (def set-deletion-confirmation-dialogue-visibility :hakukohderyhmien-hallinta/deletion-confirmation-dialogue-toggled)
 (def hakukohderyhma-toggle-rajaava :hakukohderyhmien-hallinta/hakukohderyhma-toggle-rajaava)
+(def hakukohderyhma-toggle-rajaava-confirmed :hakukohderyhmien-hallinta/hakukohderyhma-toggle-rajaava-confirmed)
 
 (defn- hide-edit-inputs [db]
   (-> db
@@ -193,13 +194,28 @@
                        :response-handler [handle-hakukohderyhma-deletion (:oid hakukohderyhma)]
                        :error-handler    [handle-hakukohderyhma-deletion (:oid hakukohderyhma)]}})))
 
-(events/reg-event-db-validating
+(events/reg-event-fx-validating
+  hakukohderyhma-toggle-rajaava-confirmed
+  (fn-traced [db [selected-ryhma-updated]]
+    (update-hakukohderyhma db selected-ryhma-updated)))
+
+(events/reg-event-fx-validating
   hakukohderyhma-toggle-rajaava
-  (fn-traced [db]
+  (fn-traced [{db :db}]
              (let [selected-ryhma (selected-hakukohderyhma db)
                    rajaava (not (get-in selected-ryhma [:settings :rajaava]))
-                   selected-ryhma-updated (assoc-in selected-ryhma [:settings :rajaava] rajaava)]
-              (update-hakukohderyhma db selected-ryhma-updated))))
+                   settings (merge {:rajaava rajaava}
+                                   (when rajaava {:max-hakukohteet 1}))
+                   selected-ryhma-updated (assoc selected-ryhma :settings settings)
+                   http-request-id hakukohderyhma-toggle-rajaava]
+               {:db   (update db :requests (fnil conj #{}) http-request-id)
+                :http {:method           :put
+                       :http-request-id  http-request-id
+                       :path             (str "/hakukohderyhmapalvelu/api/hakukohderyhma/" (:oid selected-ryhma) "/settings")
+                       :request-schema   api-schemas/HakukohderyhmaSettings
+                       :body             settings
+                       :response-handler [hakukohderyhma-toggle-rajaava-confirmed selected-ryhma-updated]
+                       :error-handler    [hakukohderyhma-toggle-rajaava-confirmed selected-ryhma-updated]}})))
 
 (def get-hakukohderyhmat-for-hakukohteet :hakukohderyhmien-hallinta/get-all-hakukohderyhma)
 (def handle-get-all-hakukohderyhma :hakukohderyhmien-hallinta/handle-get-all-hakukohderyhma)
