@@ -13,7 +13,7 @@
    :grid-area "hakukohderyhma-settings-view"})
 
 (defn- max-hakukohteet
-  []
+  [selected-ryhma]
   [:div (stylefy/use-style {:display "flex"
                             :flex-direction "row"})
    (label/label { :id "max-hakukohteet-label"
@@ -24,7 +24,7 @@
                         :required? false
                         :on-change (fn [event]
                                      (println "Muutettu numeroa " event))
-                        :value "1"
+                        :value (str (get-in selected-ryhma [:settings :max-hakukohteet]))
                         :min 1
                         :disabled? false
                         :cypressid "max-hakukohteet"
@@ -37,7 +37,6 @@
                               :flex-direction "row"})
       (checkbox/checkbox-slider {:checked?  (get-in selected-ryhma [:settings :rajaava])
                                 :cypressid "rajaava-checkbox"
-                                :disabled? false
                                 :id        "rajaava-checkbox"
                                 :aria-labelledby     "Rajaava"
                                 :on-change (fn []
@@ -48,7 +47,7 @@
                   {:margin-left "1rem"
                    :font-size "small"})]
     (when (get-in selected-ryhma [:settings :rajaava])
-      (max-hakukohteet))])
+      (max-hakukohteet selected-ryhma))])
 
 (defn hakukohderyha-settings-view
   []

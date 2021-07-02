@@ -127,6 +127,11 @@
           hakukohderyhma')
         (throw (Exception. "Hakukohteet eivät kuulu samaan hakuun.")))))
 
+  (insert-or-update-settings
+    [_ _ hakukohderyhma-oid settings]
+      (hakukohderyhma-queries/insert-or-update-settings db hakukohderyhma-oid settings)
+    )
+
   (get-hakukohteet-for-hakukohderyhma-oid [_ session hakukohderyhma-oid]
     (let [user-organisaatiot (session-organizations session)
           hakukohde-oidit (hakukohderyhma-queries/hakukohde-oidit-by-hakukohderyhma-oid db hakukohderyhma-oid)]
