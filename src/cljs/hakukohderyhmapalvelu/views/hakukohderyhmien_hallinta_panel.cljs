@@ -243,7 +243,8 @@
                                 :grid      (str "\"hakukohderyhma-select hakukohderyhma-select hakukohderyhma-select hakukohderyhma-select\" 1fr "
                                                 "\"hakukohderyhma-select hakukohderyhma-select hakukohderyhma-select hakukohderyhma-select\" 1fr "
                                                 "\"hakukohderyhma-hakukohteet hakukohderyhma-hakukohteet hakukohderyhma-hakukohteet hakukohderyhma-hakukohteet\" 20rem"
-                                                "\"hakukohderyhma-settings-view hakukohderyhma-settings-view hakukohderyhma-settings-view remove-from-group-btn\" 40px")}
+                                                "\"hakukohderyhma-settings-view hakukohderyhma-settings-view hakukohderyhma-settings-view remove-from-group-btn\" 40px"
+                                                "\"hakukohderyhma-settings-view hakukohderyhma-settings-view hakukohderyhma-settings-view . \" 40px")}
                                {:cypressid "hakukohderyhma-container"})
 
        [hakukohderyhma-select]
