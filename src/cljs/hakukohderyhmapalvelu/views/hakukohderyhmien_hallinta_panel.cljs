@@ -13,6 +13,7 @@
             [re-frame.core :refer [dispatch subscribe]]
             [reagent.core :as reagent]
             [stylefy.core :as stylefy]
+            [hakukohderyhmapalvelu.views.hakukohderyhma-settings-view :as settings-view]
             [hakukohderyhmapalvelu.styles.styles-colors :as colors]
             [hakukohderyhmapalvelu.components.common.svg :as svg]))
 
@@ -254,7 +255,8 @@
                                   :grid      (str "\"hakukohderyhma-select hakukohderyhma-select hakukohderyhma-select hakukohderyhma-select\" 1fr "
                                                   "\"hakukohderyhma-select hakukohderyhma-select hakukohderyhma-select hakukohderyhma-select\" 1fr "
                                                   "\"hakukohderyhma-hakukohteet hakukohderyhma-hakukohteet hakukohderyhma-hakukohteet hakukohderyhma-hakukohteet\" 20rem"
-                                                  "\"hakukohderyhma-buttons hakukohderyhma-buttons hakukohderyhma-buttons bottom-row-buttons\" 40px")}
+                                                  "\"hakukohderyhma-buttons hakukohderyhma-buttons hakukohderyhma-buttons bottom-row-buttons\" 40px"
+                                                  "\"hakukohderyhma-settings-view hakukohderyhma-settings-view hakukohderyhma-settings-view . \" 40px")}
                                  {:cypressid "hakukohderyhma-container"})
 
          [hakukohderyhma-select]
@@ -278,7 +280,8 @@
                      :label        @remove-from-goup-btn-text
                      :on-click     #(dispatch [hakukohderyhma-events/removed-hakukohteet-from-hakukohderyhma
                                                @selected-hakukohteet])
-                     :style-prefix "remove-from-group-btn"}]]]))))
+                     :style-prefix "remove-from-group-btn"}]]
+         [settings-view/hakukohderyha-settings-view]]))))
 
 (defn hakukohderyhmien-hallinta-panel []
   [p/panel
