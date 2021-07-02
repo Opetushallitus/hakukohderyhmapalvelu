@@ -28,6 +28,7 @@
 (def handle-hakukohderyhma-deletion :hakukohderyhmien-hallinta/hakukohderyhma-deletion-confirmed)
 (def set-hakukohderyhma-name-text :hakukohderyhmien-hallinta/set-hakukohderyhma-name-text)
 (def set-deletion-confirmation-dialogue-visibility :hakukohderyhmien-hallinta/deletion-confirmation-dialogue-toggled)
+(def hakukohderyhma-toggle-rajaava :hakukohderyhmien-hallinta/hakukohderyhma-toggle-rajaava)
 
 (defn- hide-edit-inputs [db]
   (-> db
@@ -191,6 +192,14 @@
                        :response-schema  api-schemas/HakukohderyhmaDeleteResponse
                        :response-handler [handle-hakukohderyhma-deletion (:oid hakukohderyhma)]
                        :error-handler    [handle-hakukohderyhma-deletion (:oid hakukohderyhma)]}})))
+
+(events/reg-event-db-validating
+  hakukohderyhma-toggle-rajaava
+  (fn-traced [db]
+             (let [selected-ryhma (selected-hakukohderyhma db)
+                   rajaava (not (get-in selected-ryhma [:settings :rajaava]))
+                   selected-ryhma-updated (assoc-in selected-ryhma [:settings :rajaava] rajaava)]
+              (update-hakukohderyhma db selected-ryhma-updated))))
 
 (def get-hakukohderyhmat-for-hakukohteet :hakukohderyhmien-hallinta/get-all-hakukohderyhma)
 (def handle-get-all-hakukohderyhma :hakukohderyhmien-hallinta/handle-get-all-hakukohderyhma)

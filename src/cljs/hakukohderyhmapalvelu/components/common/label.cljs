@@ -10,7 +10,9 @@
    :user-select "none"})
 
 (s/defn label
-  [{:keys [id
+  ([properties]
+    (label properties {}))
+  ([{:keys [id
            cypressid
            label
            for
@@ -18,11 +20,12 @@
                         (s/optional-key :cypressid) s/Str
                         :label                      s/Str
                         (s/optional-key :for)       s/Str
-                        (s/optional-key :hidden)    s/Bool}]
+                        (s/optional-key :hidden)    s/Bool}
+   additional-styles?]
   [:label (stylefy/use-style
-            label-styles
+            (merge label-styles additional-styles?)
             {:cypressid cypressid
              :for       for
              :id        id
              :hidden    hidden})
-   label])
+   label]))
