@@ -23,7 +23,10 @@
    [input/input-number {:input-id "max-hakukohteet"
                         :required? false
                         :on-change (fn [event]
-                                     (println "Muutettu numeroa " event))
+                                     (let [settings (:settings selected-ryhma)
+                                           updated-settings (assoc settings :max-hakukohteet (js/parseInt event 10))]
+                                          (dispatch [hakukohderyhma-events/hakukohderyhma-update-settings updated-settings])
+                                       ))
                         :value (str (get-in selected-ryhma [:settings :max-hakukohteet]))
                         :min 1
                         :disabled? false
