@@ -195,7 +195,7 @@
           {:put {:middleware auth
                   :tags       ["Hakukohderyhmä"]
                   :summary    ["Tallentaa hakukohderyhmän asetukset"]
-                  :responses  {200 {:body s/Any}}
+                  :responses  {200 {:body schema/HakukohderyhmaSettings}}
                   :parameters {:path {:oid s/Str} :body schema/HakukohderyhmaSettings}
                   :handler    (fn [{session :session {settings :body {oid :oid} :path}  :parameters}]
                                 (response/ok (hakukohderyhma/insert-or-update-settings hakukohderyhma-service session oid settings)))}}]

@@ -194,7 +194,7 @@
                        :response-handler [handle-hakukohderyhma-deletion (:oid hakukohderyhma)]
                        :error-handler    [handle-hakukohderyhma-deletion (:oid hakukohderyhma)]}})))
 
-(events/reg-event-fx-validating
+(events/reg-event-db-validating
   hakukohderyhma-toggle-rajaava-confirmed
   (fn-traced [db [selected-ryhma-updated]]
     (update-hakukohderyhma db selected-ryhma-updated)))
@@ -215,7 +215,7 @@
                        :request-schema   api-schemas/HakukohderyhmaSettings
                        :body             settings
                        :response-handler [hakukohderyhma-toggle-rajaava-confirmed selected-ryhma-updated]
-                       :error-handler    [hakukohderyhma-toggle-rajaava-confirmed selected-ryhma-updated]}})))
+                       :error-handler    [alert-events/http-request-failed]}})))
 
 (def get-hakukohderyhmat-for-hakukohteet :hakukohderyhmien-hallinta/get-all-hakukohderyhma)
 (def handle-get-all-hakukohderyhma :hakukohderyhmien-hallinta/handle-get-all-hakukohderyhma)
