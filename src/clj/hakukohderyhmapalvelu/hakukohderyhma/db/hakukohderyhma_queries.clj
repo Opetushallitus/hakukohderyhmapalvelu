@@ -16,6 +16,9 @@
 (declare settings-by-hakukohderyhma-oids)
 (declare upsert-settings!)
 
+(def initial-settings
+  {:rajaava false})
+
 (defn hakukohde-oidit-by-hakukohderyhma-oid [db hakukohderyhma-oid]
   (->> {:oid hakukohderyhma-oid}
        (hakukohteet-by-hakukohderyhma-oid db)
@@ -52,13 +55,6 @@
 (defn delete-hakukohderyhma [db hakukohderyhma-oid]
   (delete-by-hakukohderyhma-oid db {:oid hakukohderyhma-oid}))
 
-(defn insert-or-update-settings
-  [db hakukohderyhma-oid settings]
-  (let [rajaava (:rajaava settings)
-        max-hakukohteet (:max-hakukohteet settings)]
-    (upsert-settings! db {:hakukohderyhma-oid hakukohderyhma-oid :rajaava rajaava :max-hakukohteet max-hakukohteet})
-    ))
-
 (defn find-settings-by-hakukohderyhma-oids
   [db hakukohderyhma-oids]
   (let [settings (->> {:hakukohderyhma-oids hakukohderyhma-oids}
@@ -66,9 +62,15 @@
                       (group-by :hakukohderyhma-oid))]
     (->> hakukohderyhma-oids
          (map (fn [hakukohderyhma-oid]
-              (if-let [matching-settings (get settings hakukohderyhma-oid)]
-                (first matching-settings)
-                {
-
-                 })
+                (if-let [matching-settings (get settings hakukohderyhma-oid)]
+                  (dissoc (first matching-settings) :hakukohderyhma-oid)
+                  initial-settings)
                 )))))
+
+(defn insert-or-update-settings
+  [db hakukohderyhma-oid settings]
+  (with-db-transaction [tx db]
+    (let [rajaava (:rajaava settings)
+          max-hakukohteet (:max-hakukohteet settings)]
+      (upsert-settings! tx {:hakukohderyhma-oid hakukohderyhma-oid :rajaava rajaava :max-hakukohteet max-hakukohteet})
+      (first (find-settings-by-hakukohderyhma-oids tx [hakukohderyhma-oid])))))
