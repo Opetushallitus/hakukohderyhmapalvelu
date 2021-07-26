@@ -13,7 +13,7 @@
     [hakukohderyhmapalvelu.components.common.multi-select :as multi-select]
     [hakukohderyhmapalvelu.components.common.input :as input]
     [hakukohderyhmapalvelu.components.common.button :as button]
-    [hakukohderyhmapalvelu.styles.styles-colors :as colors]))
+    [hakukohderyhmapalvelu.components.common.select-all :as select-all-btns]))
 
 
 (defn haku-search []
@@ -63,36 +63,6 @@
    :grid-row 5
    :grid-column "1/4"})
 
-(def ^:private multi-selection-button-row-style
-  {:display "flex"
-   :justify-content "left"
-   :align-items "center"
-   :grid-area "multi-selection-buttons"})
-
-(defn multi-select-buttons [{:keys [cypressid
-                                    select-all-is-disabled
-                                    deselect-all-is-disabled
-                                    on-select-all
-                                    on-deselect-all
-                                    hakukohde-count]}]
-  (let [select-all-btn-text (subscribe [:translation :hakukohderyhma/valitse-kaikki])
-        deselect-all-btn-text (subscribe [:translation :hakukohderyhma/poista-valinnat])]
-    [:div (stylefy/use-style multi-selection-button-row-style)
-     [button/text-button {:cypressid    cypressid
-                          :disabled?    select-all-is-disabled
-                          :label        (str @select-all-btn-text " (" hakukohde-count ")")
-                          :on-click     on-select-all
-                          :style-prefix "select-all-btn"}]
-     [:span (stylefy/use-style {:margin "6px"
-                                :color (if (and select-all-is-disabled deselect-all-is-disabled)
-                                         colors/gray-lighten-3 colors/black)})
-      " | "]
-     [button/text-button {:cypressid    (str "de" cypressid)
-                          :disabled?    deselect-all-is-disabled
-                          :label        @deselect-all-btn-text
-                          :on-click     on-deselect-all
-                          :style-prefix "deselect-all-btn"}]]))
-
 (defn hakukohteet-container []
   (let [hakukohteet (subscribe [haku-subs/haku-hakukohteet-as-options])
         hakukohteet-is-empty (subscribe [haku-subs/haku-hakukohteet-is-empty])
@@ -130,13 +100,15 @@
                                       :select-fn #(dispatch [haku-events/toggle-hakukohde-selection %])
                                       :cypressid "hakukohteet-container"}]]
          [:div (stylefy/use-style button-row-style)
-          [multi-select-buttons
-           {:cypressid "select-all-btn"
-            :select-all-is-disabled select-all-is-disabled
+          [select-all-btns/select-all-buttons
+           {:cypressid                "select-all-btn"
+            :select-all-is-disabled   select-all-is-disabled
             :deselect-all-is-disabled deselect-all-is-disabled
-            :on-select-all #(dispatch [haku-events/all-hakukohde-in-view-selected])
-            :on-deselect-all #(dispatch [haku-events/all-hakukohde-deselected])
-            :hakukohde-count enabled-hakukohde-count}]
+            :on-select-all            #(dispatch [haku-events/all-hakukohde-in-view-selected])
+            :on-deselect-all          #(dispatch [haku-events/all-hakukohde-deselected])
+            :hakukohde-count          enabled-hakukohde-count
+            :select-all-label         @(subscribe [:translation :hakukohderyhma/valitse-kaikki])
+            :deselect-all-label       @(subscribe [:translation :hakukohderyhma/poista-valinnat])}]
           [button/button {:cypressid    "add-to-group-btn"
                           :disabled?    (or (empty? @selected-hakukohteet) (nil? @selected-hakukohderyhma))
                           :label        @add-to-group-btn-text

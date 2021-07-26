@@ -608,7 +608,7 @@ describe('Hakukohderyhmäpalvelu', () => {
     })
   })
 
-  describe('Kaikkien ryhmässä olevien hakukohteíden valitseminen kerralla', () => {
+  describe('Kaikkien ryhmässä olevien hakukohteiden valitseminen kerralla', () => {
     it('Liitä kaikki kohteet ryhmään', () => {
       cy.get(hl.hakukohderyhmanValintaDropdown).type('Suklaaryhmä{enter}')
       cy.get(hh.hakukohdeSelectAllSelector)

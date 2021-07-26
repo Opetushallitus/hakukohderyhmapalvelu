@@ -4,6 +4,7 @@
             [hakukohderyhmapalvelu.components.common.multi-select :as multi-select]
             [hakukohderyhmapalvelu.components.common.react-select :as react-select]
             [hakukohderyhmapalvelu.components.common.panel :as p]
+            [hakukohderyhmapalvelu.components.common.select-all :as select-all-btns]
             [hakukohderyhmapalvelu.styles.layout-styles :as layout]
             [hakukohderyhmapalvelu.subs.haku-subs :as haku-subs]
             [hakukohderyhmapalvelu.subs.hakukohderyhma-subs :as hakukohderyhma-subs]
@@ -263,13 +264,15 @@
                                       :cypressid "hakukohderyhma-hakukohteet"
                                       :select-fn #(dispatch [hakukohderyhma-events/toggle-hakukohde-selection %])}]]
          [:div (stylefy/use-style button-row-style)
-          [haun-tiedot-panel/multi-select-buttons
-           {:cypressid "select-all-btn-2"
-            :select-all-is-disabled select-all-is-disabled
+          [select-all-btns/select-all-buttons
+           {:cypressid                "select-all-btn-2"
+            :select-all-is-disabled   select-all-is-disabled
             :deselect-all-is-disabled deselect-all-is-disabled
-            :on-select-all #(dispatch [hakukohderyhma-events/all-hakukohde-in-selected-hakukohderyhma-selected])
-            :on-deselect-all #(dispatch [hakukohderyhma-events/all-hakukohde-in-selected-hakukohderyhma-deselected])
-            :hakukohde-count enabled-hakukohde-count}]
+            :on-select-all            #(dispatch [hakukohderyhma-events/all-hakukohde-in-selected-hakukohderyhma-selected])
+            :on-deselect-all          #(dispatch [hakukohderyhma-events/all-hakukohde-in-selected-hakukohderyhma-deselected])
+            :hakukohde-count          enabled-hakukohde-count
+            :select-all-label         @(subscribe [:translation :hakukohderyhma/valitse-kaikki])
+            :deselect-all-label       @(subscribe [:translation :hakukohderyhma/poista-valinnat])}]
           [b/button {:cypressid    "remove-from-group-btn"
                      :disabled?    (empty? @selected-hakukohteet)
                      :label        @remove-from-goup-btn-text
