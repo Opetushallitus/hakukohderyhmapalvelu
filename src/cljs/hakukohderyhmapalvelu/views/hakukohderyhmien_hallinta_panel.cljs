@@ -4,6 +4,7 @@
             [hakukohderyhmapalvelu.components.common.multi-select :as multi-select]
             [hakukohderyhmapalvelu.components.common.react-select :as react-select]
             [hakukohderyhmapalvelu.components.common.panel :as p]
+            [hakukohderyhmapalvelu.components.common.select-all :as select-all-btns]
             [hakukohderyhmapalvelu.styles.layout-styles :as layout]
             [hakukohderyhmapalvelu.subs.haku-subs :as haku-subs]
             [hakukohderyhmapalvelu.subs.hakukohderyhma-subs :as hakukohderyhma-subs]
@@ -230,33 +231,54 @@
       :style-prefix      style-prefix
       :label             "Hakukohderyhmät"}]))
 
+(def ^:private button-row-style
+  {:display "grid"
+   :grid "\"multi-selection-buttons remove-from-group-btn\" 40px"
+   :grid-gap "10px"
+   :grid-row 5
+   :grid-column "1/4"
+   :grid-area "bottom-row-buttons"})
+
 (defn- hakukohderyhma-container []
   (let [hakukohteet (subscribe [hakukohderyhma-subs/hakukohderyhman-hakukohteet-as-options])
         selected-hakukohteet (subscribe [hakukohderyhma-subs/selected-hakukohderyhmas-hakukohteet])
         remove-from-goup-btn-text (subscribe [:translation :hakukohderyhma/poista-ryhmasta])]
     (fn []
-      [:div (stylefy/use-style {:grid-area "hakukohderyhma-container"
-                                :display   "grid"
-                                :grid-gap  "10px"
-                                :margin-top "2rem"
-                                :grid      (str "\"hakukohderyhma-select hakukohderyhma-select hakukohderyhma-select hakukohderyhma-select\" 1fr "
-                                                "\"hakukohderyhma-select hakukohderyhma-select hakukohderyhma-select hakukohderyhma-select\" 1fr "
-                                                "\"hakukohderyhma-hakukohteet hakukohderyhma-hakukohteet hakukohderyhma-hakukohteet hakukohderyhma-hakukohteet\" 20rem"
-                                                "\"hakukohderyhma-buttons hakukohderyhma-buttons hakukohderyhma-buttons remove-from-group-btn\" 40px")}
-                               {:cypressid "hakukohderyhma-container"})
+      (let [enabled-hakukohde-count (count (remove :is-disabled @hakukohteet))
+            select-all-is-disabled (= enabled-hakukohde-count (count @selected-hakukohteet))
+            deselect-all-is-disabled (empty? @selected-hakukohteet)]
+        [:div (stylefy/use-style {:grid-area "hakukohderyhma-container"
+                                  :display   "grid"
+                                  :grid-gap  "10px"
+                                  :margin-top "2rem"
+                                  :grid      (str "\"hakukohderyhma-select hakukohderyhma-select hakukohderyhma-select hakukohderyhma-select\" 1fr "
+                                                  "\"hakukohderyhma-select hakukohderyhma-select hakukohderyhma-select hakukohderyhma-select\" 1fr "
+                                                  "\"hakukohderyhma-hakukohteet hakukohderyhma-hakukohteet hakukohderyhma-hakukohteet hakukohderyhma-hakukohteet\" 20rem"
+                                                  "\"hakukohderyhma-buttons hakukohderyhma-buttons hakukohderyhma-buttons bottom-row-buttons\" 40px")}
+                                 {:cypressid "hakukohderyhma-container"})
 
-       [hakukohderyhma-select]
-       [:div (stylefy/use-style {:grid-area  "hakukohderyhma-hakukohteet"
-                                 :margin-top "-2px"})
-        [multi-select/multi-select {:options   @hakukohteet
-                                    :cypressid "hakukohderyhma-hakukohteet"
-                                    :select-fn #(dispatch [hakukohderyhma-events/toggle-hakukohde-selection %])}]]
-       [b/button {:cypressid    "remove-from-group-btn"
-                  :disabled?    (empty? @selected-hakukohteet)
-                  :label        @remove-from-goup-btn-text
-                  :on-click     #(dispatch [hakukohderyhma-events/removed-hakukohteet-from-hakukohderyhma
-                                            @selected-hakukohteet])
-                  :style-prefix "remove-from-group-btn"}]])))
+         [hakukohderyhma-select]
+         [:div (stylefy/use-style {:grid-area  "hakukohderyhma-hakukohteet"
+                                   :margin-top "-2px"})
+          [multi-select/multi-select {:options   @hakukohteet
+                                      :cypressid "hakukohderyhma-hakukohteet"
+                                      :select-fn #(dispatch [hakukohderyhma-events/toggle-hakukohde-selection %])}]]
+         [:div (stylefy/use-style button-row-style)
+          [select-all-btns/select-all-buttons
+           {:cypressid                "select-all-btn-2"
+            :select-all-is-disabled   select-all-is-disabled
+            :deselect-all-is-disabled deselect-all-is-disabled
+            :on-select-all            #(dispatch [hakukohderyhma-events/all-hakukohde-in-selected-hakukohderyhma-selected])
+            :on-deselect-all          #(dispatch [hakukohderyhma-events/all-hakukohde-in-selected-hakukohderyhma-deselected])
+            :hakukohde-count          enabled-hakukohde-count
+            :select-all-label         @(subscribe [:translation :hakukohderyhma/valitse-kaikki])
+            :deselect-all-label       @(subscribe [:translation :hakukohderyhma/poista-valinnat])}]
+          [b/button {:cypressid    "remove-from-group-btn"
+                     :disabled?    (empty? @selected-hakukohteet)
+                     :label        @remove-from-goup-btn-text
+                     :on-click     #(dispatch [hakukohderyhma-events/removed-hakukohteet-from-hakukohderyhma
+                                               @selected-hakukohteet])
+                     :style-prefix "remove-from-group-btn"}]]]))))
 
 (defn hakukohderyhmien-hallinta-panel []
   [p/panel

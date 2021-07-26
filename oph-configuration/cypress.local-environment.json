@@ -2,5 +2,7 @@
   "baseUrl": "http://localhost:19030",
   "chromeWebSecurity": false,
   "experimentalNetworkStubbing": true,
-  "fixturesFolder": "cypress/fixtures"
+  "fixturesFolder": "cypress/fixtures",
+  "viewportWidth": 1200,
+  "viewportHeight": 860
 }

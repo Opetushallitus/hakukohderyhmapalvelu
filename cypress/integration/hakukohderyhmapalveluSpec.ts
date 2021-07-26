@@ -336,7 +336,7 @@ describe('Hakukohderyhmäpalvelu', () => {
           .find('span')
           .last()
           .should($el => {
-            expect($el.text()).to.equal('xtrakohde 1')
+            expect($el.text()).to.equal('xtrakohde-1')
           })
         cy.get(hh.hakukohteetContainerSelector)
           .children()
@@ -344,7 +344,7 @@ describe('Hakukohderyhmäpalvelu', () => {
           .find('span')
           .last()
           .should($el => {
-            expect($el.text()).to.equal('xtrakohde 2')
+            expect($el.text()).to.equal('xtrakohde-2')
           })
 
         cy.get(hh.extraFiltersButtonSelector).click({ force: true })
@@ -605,6 +605,58 @@ describe('Hakukohderyhmäpalvelu', () => {
           hh.hakukohteetContainerOptionSelector('Testi-jatkotutkinto', false),
         )
         .should('exist')
+    })
+  })
+
+  describe('Kaikkien ryhmässä olevien hakukohteiden valitseminen kerralla', () => {
+    it('Liitä kaikki kohteet ryhmään', () => {
+      cy.get(hl.hakukohderyhmanValintaDropdown).type('Suklaaryhmä{enter}')
+      cy.get(hh.hakukohdeSelectAllSelector)
+        .click({ force: true })
+        .login()
+        .get(hh.hakukohteetLisaysButtonSelector)
+        .click({ force: true })
+    })
+    it('Kohteet eivät ole automaattisesti valittuja kun ne lisätään ryhmään', () => {
+      cy.get(
+        hh.groupedHakukohteetContainerOptionSelector(
+          'Testi-jatkotutkinto',
+          false,
+        ),
+      )
+        .should('exist')
+        .get(
+          hh.groupedHakukohteetContainerOptionSelector(
+            'Testi-perustutkinto',
+            false,
+          ),
+        )
+        .should('exist')
+      for (let i = 1; i < 5; i += 1) {
+        cy.get(
+          hh.groupedHakukohteetContainerOptionSelector(`xtrakohde-${i}`, false),
+        ).should('exist')
+      }
+    })
+    it('Kaikki ryhmän kohteet voi valita kerralla', () => {
+      cy.get(hh.groupedHakukohdeSelectAllSelector)
+        .should('be.not.disabled')
+        .click({ force: true })
+        .should('be.disabled')
+      for (let i = 1; i < 5; i += 1) {
+        cy.get(
+          hh.groupedHakukohteetContainerOptionSelector(`xtrakohde-${i}`, true),
+        ).should('exist')
+      }
+      cy.get(hh.groupedHakukohdeDeselectAllSelector)
+        .should('be.not.disabled')
+        .click({ force: true })
+        .should('be.disabled')
+      for (let i = 1; i < 5; i += 1) {
+        cy.get(
+          hh.groupedHakukohteetContainerOptionSelector(`xtrakohde-${i}`, false),
+        ).should('exist')
+      }
     })
   })
 
