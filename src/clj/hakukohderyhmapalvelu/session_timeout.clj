@@ -7,7 +7,7 @@
             [ring.util.http-response :as response]
             [schema.core :as s]))
 
-(defonce absolute-timeout (* 1000 240))
+(defonce absolute-timeout (* 60 60))
 
 (s/defn ^:private create-timeout-handler
   [config :- c/HakukohderyhmaConfig]
