@@ -118,6 +118,20 @@ npm run lint:js
 npm run format:js
 ```
 
+### Integraatiotestit
+
+Käynnistä ensin bäkkäri komennolla
+
+```
+make start-cypress
+```
+
+Aja sen jälkeen lein testit käyttäen lokaalia konfiguraatiotiedostoa:
+
+```
+CONFIG=oph-configuration/config.cypress.local-environment.edn lein test
+```
+
 ### E2E-testit
 
 1. Mikäli et vielä ole kertaakaan valmistellut local-environment -ympäristöä, suorita ensin kohdan [vain kerran tehtävät työvaiheet](#vain-kerran-tehtävät-työvaiheet) mukaiset toimenpiteet.
