@@ -17,7 +17,6 @@
 (def ^:private haun-asetukset-grid-styles
   {:display               "grid"
    :grid-template-columns "[haun-asetukset-label] 2fr [haun-asetukset-input] 4fr [end]"
-   :grid-gap              "10px"
    :grid-auto-rows        "minmax(min-content, max-content)"})
 
 (defn- get-id-prefix [haun-asetus-key]
@@ -157,8 +156,11 @@
          {:input-component [i/input-number
                             (merge {:input-id   text-input-id
                                     :required?  true
-                                    :on-change  (fn []
-                                                  (re-frame/dispatch [:hakukohderyhmien-hallinta/hakukohderyhma-toggle-rajaava]))
+                                    :on-change  (fn [value]
+                                                  (re-frame/dispatch [:haun-asetukset/set-haun-asetus
+                                                                      haku-oid
+                                                                      :haun-asetukset/hakukohteiden-maara-rajoitus
+                                                                      value]))
                                     :aria-label text-input-label
                                     :min        1
                                     :disabled?  disabled?
