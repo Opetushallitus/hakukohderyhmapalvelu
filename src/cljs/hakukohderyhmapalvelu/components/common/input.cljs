@@ -132,7 +132,8 @@
                                (s/optional-key :aria-label)  s/Str
                                :min                          s/Int
                                (s/optional-key :disabled?)   s/Bool
-                               (s/optional-key :cypressid)   s/Str}]
+                               (s/optional-key :cypressid)   s/Str}
+       additional-styles?]
       (when (not= value @prev-prop-value)
         (reset! prev-prop-value value)
         (reset! local-value value))
@@ -140,7 +141,7 @@
                        {:min       min
                         :required? required?})]
         [:input (stylefy/use-style
-                  (cond-> input-text-styles
+                  (cond-> (merge input-text-styles additional-styles?)
                           (not (validate @local-value))
                           (merge input-text-invalid-styles))
                   (merge {:id        input-id
