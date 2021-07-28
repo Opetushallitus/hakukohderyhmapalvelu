@@ -19,6 +19,7 @@
 
 (def ^:private hakukohderyhmapalvelu-grid-styles
   {:display  "grid"
+   :align-items "start"
    :grid     (str "[haku-row-start] \"haku-search hakukohderyhma-create\" [haku-row-end]"
                   "[hakukohderyhma-row-start] \"hakukohde-search hakukohderyhma-container\" 1fr [hakukohderyhma-row-end]"
                   "/ 1fr 1fr")

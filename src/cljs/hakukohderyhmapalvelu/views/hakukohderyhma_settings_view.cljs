@@ -15,11 +15,13 @@
 (defn- max-hakukohteet
   [selected-ryhma]
   [:div (stylefy/use-style {:display "flex"
-                            :flex-direction "row"})
+                            :flex-direction "row"
+                            :align-items "center"})
    (label/label { :id "max-hakukohteet-label"
                  :label "Ryhmän hakukohteita valittavissa enintään"
                  :for "max-hakukohteet"}
-                {:font-size "x-small"})
+                {:font-size "x-small"
+                 :margin-right "0.5rem"})
    [input/input-number {:input-id "max-hakukohteet"
                         :required? false
                         :on-change (fn [event]
@@ -31,7 +33,10 @@
                         :min 1
                         :disabled? false
                         :cypressid "max-hakukohteet"
-                        }]])
+                        }
+                        {:width "3rem"
+                         :font-size "small"
+                         :height "2rem"}]])
 
 (defn- rajaava-checkbox
   [selected-ryhma]
