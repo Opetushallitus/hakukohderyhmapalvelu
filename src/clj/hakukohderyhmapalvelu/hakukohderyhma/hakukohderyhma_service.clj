@@ -30,11 +30,10 @@
   (get-in session [:identity :organizations]))
 
 (defn- apply-default-settings-if-missing
-  [hakukohderyhma]
-    (if (not (:settings hakukohderyhma))
-      (assoc hakukohderyhma :settings {:rajaava false})
-      hakukohderyhma)
-
+  [hakukohderyhma settings]
+    (if-let [matching-settings (first (filter #(= (:hakukohderyhma-oid %) (:oid hakukohderyhma)) settings))]
+      (assoc hakukohderyhma :settings (dissoc matching-settings :hakukohderyhma-oid))
+      (assoc hakukohderyhma :settings {:rajaava false}))
   )
 
 (defrecord HakukohderyhmaService [audit-logger organisaatio-service kouta-service ataru-service db]
@@ -51,7 +50,8 @@
                     (map :oid hakukohteet))
             merge-fn (create-merge-hakukohderyhma-with-hakukohteet-fn hakukohderyhmat hakukohteet)
             hakukohderyhmat-with-hakukohteet (map merge-fn joins)
-            hakukohde-ryhmat-with-settings (map #(apply-default-settings-if-missing %) hakukohderyhmat-with-hakukohteet)]
+            settings (hakukohderyhma-queries/find-settings-by-hakukohderyhma-oids db (map :oid hakukohderyhmat))
+            hakukohde-ryhmat-with-settings (map #(apply-default-settings-if-missing % settings) hakukohderyhmat-with-hakukohteet)]
         (cond->> hakukohde-ryhmat-with-settings
                  (not include-empty) (remove #(empty? (:hakukohteet %)))
                  ))

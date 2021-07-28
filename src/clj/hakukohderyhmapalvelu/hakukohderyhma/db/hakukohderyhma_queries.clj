@@ -63,7 +63,7 @@
     (->> hakukohderyhma-oids
          (map (fn [hakukohderyhma-oid]
                 (if-let [matching-settings (get settings hakukohderyhma-oid)]
-                  (dissoc (first matching-settings) :hakukohderyhma-oid)
+                  (first matching-settings)
                   initial-settings)
                 )))))
 
@@ -73,4 +73,4 @@
     (let [rajaava (:rajaava settings)
           max-hakukohteet (:max-hakukohteet settings)]
       (upsert-settings! tx {:hakukohderyhma-oid hakukohderyhma-oid :rajaava rajaava :max-hakukohteet max-hakukohteet})
-      (first (find-settings-by-hakukohderyhma-oids tx [hakukohderyhma-oid])))))
+      (dissoc (first (find-settings-by-hakukohderyhma-oids tx [hakukohderyhma-oid])) :hakukohderyhma-oid))))
