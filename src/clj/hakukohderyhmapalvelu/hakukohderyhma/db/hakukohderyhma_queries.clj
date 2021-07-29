@@ -13,6 +13,7 @@
 (declare add-hakukohteet-into-hakukohderyhma!)
 (declare hakukohderyhma-by-hakukohteet-and-hakukohderyhmat)
 (declare delete-by-hakukohderyhma-oid)
+(declare delete-settings-by-hakukohderyhma-oid)
 (declare settings-by-hakukohderyhma-oids)
 (declare upsert-settings!)
 
@@ -53,7 +54,9 @@
        (mapv :hakukohderyhma-oid)))
 
 (defn delete-hakukohderyhma [db hakukohderyhma-oid]
-  (delete-by-hakukohderyhma-oid db {:oid hakukohderyhma-oid}))
+  (with-db-transaction [tx db]
+    (delete-settings-by-hakukohderyhma-oid tx {:oid hakukohderyhma-oid})
+    (delete-by-hakukohderyhma-oid tx {:oid hakukohderyhma-oid})))
 
 (defn find-settings-by-hakukohderyhma-oids
   [db hakukohderyhma-oids]
