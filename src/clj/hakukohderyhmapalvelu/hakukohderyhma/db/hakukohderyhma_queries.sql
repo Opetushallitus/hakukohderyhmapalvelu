@@ -41,6 +41,9 @@ VALUES :tuple*:hakukohderyhmat
 -- :name delete-by-hakukohderyhma-oid :! :n
 DELETE FROM hakukohderyhma WHERE hakukohderyhma_oid = :oid
 
+-- :name delete-settings-by-hakukohderyhma-oid :! :n
+DELETE FROM hakukohderyhma_settings WHERE hakukohderyhma_oid = :oid
+
 -- :name settings-by-hakukohderyhma-oids :? :*
 SELECT  s.rajaava,
         s.hakukohderyhma_oid AS "hakukohderyhma-oid",
