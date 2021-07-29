@@ -18,7 +18,7 @@
                             :flex-direction "row"
                             :align-items "center"})
    (label/label { :id "max-hakukohteet-label"
-                 :label "Ryhmän hakukohteita valittavissa enintään"
+                 :label @(subscribe [:translation :hakukohderyhma/max-hakukohteet])
                  :for "max-hakukohteet"}
                 {:font-size "x-small"
                  :margin-right "0.5rem"})
@@ -46,11 +46,11 @@
       (checkbox/checkbox-slider {:checked?  (get-in selected-ryhma [:settings :rajaava])
                                 :cypressid "rajaava-checkbox"
                                 :id        "rajaava-checkbox"
-                                :aria-labelledby     "Rajaava"
+                                :aria-labelledby     @(subscribe [:translation :hakukohderyhma/rajaava])
                                 :on-change (fn []
                                              (dispatch [hakukohderyhma-events/hakukohderyhma-toggle-rajaava]))})
       (label/label { :id "rajaava-label"
-                   :label "Rajaava"
+                   :label @(subscribe [:translation :hakukohderyhma/rajaava])
                    :for "rajaava-checkbox"}
                   {:margin-left "1rem"
                    :font-size "small"})]
