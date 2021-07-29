@@ -33,7 +33,7 @@
   [hakukohderyhma settings]
     (if-let [matching-settings (first (filter #(= (:hakukohderyhma-oid %) (:oid hakukohderyhma)) settings))]
       (assoc hakukohderyhma :settings (dissoc matching-settings :hakukohderyhma-oid))
-      (assoc hakukohderyhma :settings {:rajaava false}))
+      (assoc hakukohderyhma :settings hakukohderyhma-queries/initial-settings))
   )
 
 (defrecord HakukohderyhmaService [audit-logger organisaatio-service kouta-service ataru-service db]
@@ -131,6 +131,12 @@
     [_ _ hakukohderyhma-oid settings]
       (hakukohderyhma-queries/insert-or-update-settings db hakukohderyhma-oid settings)
     )
+
+  (get-settings
+    [_ _ hakukohderyhma-oid]
+    (-> (hakukohderyhma-queries/find-settings-by-hakukohderyhma-oids db [hakukohderyhma-oid])
+         (first)
+         (dissoc :hakukohderyhma-oid)))
 
   (get-hakukohteet-for-hakukohderyhma-oid [_ session hakukohderyhma-oid]
     (let [user-organisaatiot (session-organizations session)
