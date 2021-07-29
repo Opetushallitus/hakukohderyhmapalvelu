@@ -256,7 +256,8 @@
                                   :grid      (str "\"hakukohderyhma-select hakukohderyhma-select hakukohderyhma-select hakukohderyhma-select\" 1fr "
                                                   "\"hakukohderyhma-select hakukohderyhma-select hakukohderyhma-select hakukohderyhma-select\" 1fr "
                                                   "\"hakukohderyhma-hakukohteet hakukohderyhma-hakukohteet hakukohderyhma-hakukohteet hakukohderyhma-hakukohteet\" 20rem"
-                                                  "\"hakukohderyhma-buttons hakukohderyhma-buttons hakukohderyhma-buttons bottom-row-buttons\" 40px"
+                                                  "\"bottom-row-buttons bottom-row-buttons bottom-row-buttons bottom-row-buttons\" 40px"
+                                                  "\"hakukohderyhma-settings-view hakukohderyhma-settings-view hakukohderyhma-settings-view . \" 40px"
                                                   "\"hakukohderyhma-settings-view hakukohderyhma-settings-view hakukohderyhma-settings-view . \" 40px")}
                                  {:cypressid "hakukohderyhma-container"})
 
