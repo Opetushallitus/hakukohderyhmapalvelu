@@ -215,6 +215,9 @@ describe('Hakukohderyhmäpalvelu - haun tiedot', () => {
             kayttoryhmat: ['kayttoryhmat_1#1'],
             tyypit: ['Ryhma'],
             hakukohteet: [],
+            settings: {
+              rajaava: false,
+            },
           },
           {
             oid: '1.2.2.5.2.9',
@@ -229,6 +232,9 @@ describe('Hakukohderyhmäpalvelu - haun tiedot', () => {
             kayttoryhmat: ['kayttoryhmat_1#1'],
             tyypit: ['Ryhma'],
             hakukohteet: [],
+            settings: {
+              rajaava: false,
+            },
           },
         ])
       })
@@ -347,6 +353,9 @@ describe('Hakukohderyhmäpalvelu - haun tiedot', () => {
           tyypit: [],
           ryhmatyypit: [],
           kayttoryhmat: [],
+          settings: {
+            rajaava: false,
+          },
           hakukohteet: [
             {
               oid: '1.2.4.2.1.1',

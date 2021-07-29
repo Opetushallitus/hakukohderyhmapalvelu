@@ -41,7 +41,8 @@
       not))
 
 (defn- truncate-database [db]
-  (jdbc/execute! db ["TRUNCATE hakukohderyhma"]))
+  (jdbc/execute! db ["TRUNCATE hakukohderyhma"])
+  (jdbc/execute! db ["TRUNCATE hakukohderyhma_settings"]))
 
 (defn with-empty-database [f]
   (truncate-database (:db @test-system))

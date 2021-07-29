@@ -118,7 +118,10 @@
         (let [updated-hakukohde-oids (hakukohderyhma-queries/update-hakukohderyhma-hakukohteet! db oid current-hakukohteet new-hakukohteet)
               all-hakukohteet (merge (group-by :oid new-hakukohteet) (group-by :oid current-hakukohteet))
               updated-hakukohteet (map #(first (get all-hakukohteet %)) updated-hakukohde-oids)
-              hakukohderyhma' (assoc hakukohderyhma :hakukohteet updated-hakukohteet)]
+              settings (hakukohderyhma-protocol/get-settings this session oid)
+              hakukohderyhma' (-> hakukohderyhma
+                                  (assoc :hakukohteet updated-hakukohteet)
+                                  (assoc :settings settings))]
           (audit/log audit-logger
                      (audit/->user session)
                      hakukohderyhma-hakukohteet-edit
