@@ -42,4 +42,7 @@
                     :liita-ryhmaan                {:fi "Liitä ryhmään"}
                     :sora-hakukohteet             {:fi "SORA -hakukohteet"}
                     :muokkaa-ryhmaa               {:fi "Muokkaa ryhmää"}
-                    :poista-ryhmasta              {:fi "Poista ryhmästä"}}})
+                    :poista-ryhmasta              {:fi "Poista ryhmästä"}
+                    :max-hakukohteet              {:fi "Ryhmän hakukohteita valittavissa enintään"}
+                    :rajaava                      {:fi "Rajaava"}}
+   })
