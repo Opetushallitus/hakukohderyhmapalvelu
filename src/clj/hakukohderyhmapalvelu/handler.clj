@@ -192,9 +192,16 @@
                                   (response/ok (hakukohderyhma/rename hakukohderyhma-service session hakukohderyhma))
                                   (response/bad-request "Polun oid ei vastaa lähetetyn hakukohderyhmän oid:ia")))}}]
          ["/settings"
+          {:get {:middleware auth
+                 :tags       ["Hakukohderyhmä", "Asetukset"]
+                 :summary    ["Hakee hakukohderyhmän asetukset"]
+                 :responses  {200 {:body schema/HakukohderyhmaSettings}}
+                 :parameters {:path {:oid s/Str}}
+                 :handler    (fn [{session :session {{oid :oid} :path}  :parameters}]
+                               (response/ok (hakukohderyhma/get-settings hakukohderyhma-service session oid)))}}
           {:put {:middleware auth
-                  :tags       ["Hakukohderyhmä"]
-                  :summary    ["Tallentaa hakukohderyhmän asetukset"]
+                  :tags       ["Hakukohderyhmä", "Asetukset"]
+                  :summary    ["Hakee hakukohderyhmän asetukset"]
                   :responses  {200 {:body schema/HakukohderyhmaSettings}}
                   :parameters {:path {:oid s/Str} :body schema/HakukohderyhmaSettings}
                   :handler    (fn [{session :session {settings :body {oid :oid} :path}  :parameters}]

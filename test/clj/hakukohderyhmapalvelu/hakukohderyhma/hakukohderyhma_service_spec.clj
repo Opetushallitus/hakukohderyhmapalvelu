@@ -72,6 +72,33 @@
                service hakukohderyhma-test-fixtures/fake-session "1.2.246.562.28.4" hakukohteet)
              expected)))))
 
+(deftest hakukohderyhma-update-settings-service-test
+  (testing "Update hakukohderyhma settings"
+    (let [service (:hakukohderyhma-service @test-system)
+          settings {:rajaava          true
+                     :max-hakukohteet 3}
+          expected {:rajaava          true
+                    :max-hakukohteet 3}]
+      (is (= (hakukohderyhma-protocol/insert-or-update-settings
+               service hakukohderyhma-test-fixtures/fake-session "1.2.246.562.28.4" settings)
+             expected)))))
+
+(deftest hakukohderyhma-fetch-settings-service-test
+  (testing "Fetches hakukohderyhma settings"
+    (let [service (:hakukohderyhma-service @test-system)
+          expected {:rajaava          true
+                    :max-hakukohteet  3}]
+      (is (= (hakukohderyhma-protocol/get-settings
+               service hakukohderyhma-test-fixtures/fake-session "1.2.246.562.28.4")
+             expected))))
+  
+  (testing "Fetches hakukohderyhma settings returning default"
+    (let [service (:hakukohderyhma-service @test-system)
+          expected {:rajaava          false}]
+      (is (= (hakukohderyhma-protocol/get-settings
+               service hakukohderyhma-test-fixtures/fake-session "1.2.246.562.28.3")
+             expected)))))
+
 (deftest hakukohderyhma-update-service-test-multiple-haku
   (testing "Update hakukohderyhma hakukohteet. Should fail due to hakukohteet are not from same haku."
     (let [service (:hakukohderyhma-service @test-system)
