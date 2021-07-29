@@ -5,6 +5,8 @@
 import * as hs from '../selectors/hakukohderyhmaPanelSelectors'
 import * as hh from '../selectors/hakukohderyhmanHakutoimintoSelectors'
 import * as hl from '../selectors/hakukohderyhmanLisaysSelectors'
+import * as ha from '../selectors/hakukohderyhmanAsetustenSelectors'
+
 import { PostHakukohderyhmaRequestFixture } from '../fixtures/hakukohderyhmapalvelu/PostHakukohderyhmaRequestFixture'
 import { PutHakukohderyhmaRequestFixture } from '../fixtures/hakukohderyhmapalvelu/PutHakukohderyhmaRequestFixture'
 import { hakukohderyhmanValintaDropdown } from '../selectors/hakukohderyhmanLisaysSelectors'
@@ -774,6 +776,16 @@ describe('Hakukohderyhmäpalvelu', () => {
         })
       })
     })
+    describe('Hakukohderyhmän asetusten muutto', () => {
+      it('Max hakukohteet eivät aluksi ole näkyvissä', () => {
+        cy.get(ha.maxHakukohteetSelector).should('not.exist')
+      })
+      it('Max hakukohteet tulee näkyviin kun asettaa rajaavan', () => {
+        cy.login()
+        cy.get(ha.rajaavaSelector).click({ force: true })
+        cy.get(ha.maxHakukohteetSelector).should('exist')
+      })
+    })
     describe('Hakukohderyhmän nimen muuttaminen', () => {
       it('Näyttää hakukohderyhmän muokkauksen tekstikentän ja muokattavan ryhmän nimen', () => {
         cy.get(hakukohderyhmanValintaDropdown).type(
@@ -1041,6 +1053,10 @@ describe('Hakukohderyhmäpalvelu', () => {
   after('Clean up db', () => {
     cy.task('query', {
       sql: 'TRUNCATE hakukohderyhma',
+    })
+
+    cy.task('query', {
+      sql: 'TRUNCATE hakukohderyhma_settings',
     })
   })
 })
