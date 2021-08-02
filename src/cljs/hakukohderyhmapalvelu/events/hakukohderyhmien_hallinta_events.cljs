@@ -205,8 +205,8 @@
   (fn-traced [{db :db}]
              (let [selected-ryhma (selected-hakukohderyhma db)
                    rajaava (not (get-in selected-ryhma [:settings :rajaava]))
-                   settings (merge {:rajaava rajaava}
-                                   (when rajaava {:max-hakukohteet 1}))
+                   settings {:rajaava rajaava
+                             :max-hakukohteet (when rajaava 1)}
                    selected-ryhma-updated (assoc selected-ryhma :settings settings)
                    http-request-id hakukohderyhma-settings-change-confirmed]
                {:db   (update db :requests (fnil conj #{}) http-request-id)

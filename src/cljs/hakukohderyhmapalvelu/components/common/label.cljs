@@ -21,9 +21,9 @@
                         :label                      s/Str
                         (s/optional-key :for)       s/Str
                         (s/optional-key :hidden)    s/Bool}
-   additional-styles?]
+   additional-styles]
   [:label (stylefy/use-style
-            (merge label-styles additional-styles?)
+            (merge label-styles additional-styles)
             {:cypressid cypressid
              :for       for
              :id        id

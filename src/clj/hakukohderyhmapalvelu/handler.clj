@@ -201,12 +201,11 @@
                                (response/ok (hakukohderyhma/get-settings hakukohderyhma-service session oid)))}
            :put {:middleware auth
                   :tags       ["Hakukohderyhmä", "Asetukset"]
-                  :summary    ["Hakee hakukohderyhmän asetukset"]
+                  :summary    ["Asettaa hakukohderyhmän asetukset"]
                   :responses  {200 {:body schema/HakukohderyhmaSettings}}
                   :parameters {:path {:oid s/Str} :body schema/HakukohderyhmaSettings}
                   :handler    (fn [{session :session {settings :body {oid :oid} :path}  :parameters}]
-                                (response/ok (hakukohderyhma/insert-or-update-settings hakukohderyhma-service session oid settings)))}}]
-         ]]
+                                (response/ok (hakukohderyhma/insert-or-update-settings hakukohderyhma-service session oid settings)))}}]]]
        ["/hakukohde/:oid/hakukohderyhmat"
         {:get {:middleware auth
                :tags       ["Hakukohde"]

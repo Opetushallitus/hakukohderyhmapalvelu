@@ -35,8 +35,7 @@
 
 (s/defschema HakukohderyhmaSettings
   {:rajaava s/Bool
-   (s/optional-key :max-hakukohteet) (s/maybe s/Int)
-   })
+   :max-hakukohteet (s/maybe s/Int)})
 
 (s/defschema LocalizationEntity
   {:id       s/Int

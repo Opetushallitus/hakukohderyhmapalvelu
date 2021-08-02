@@ -217,6 +217,7 @@ describe('Hakukohderyhmäpalvelu - haun tiedot', () => {
             hakukohteet: [],
             settings: {
               rajaava: false,
+              'max-hakukohteet': null,
             },
           },
           {
@@ -234,6 +235,7 @@ describe('Hakukohderyhmäpalvelu - haun tiedot', () => {
             hakukohteet: [],
             settings: {
               rajaava: false,
+              'max-hakukohteet': null,
             },
           },
         ])
@@ -355,6 +357,7 @@ describe('Hakukohderyhmäpalvelu - haun tiedot', () => {
           kayttoryhmat: [],
           settings: {
             rajaava: false,
+            'max-hakukohteet': null,
           },
           hakukohteet: [
             {

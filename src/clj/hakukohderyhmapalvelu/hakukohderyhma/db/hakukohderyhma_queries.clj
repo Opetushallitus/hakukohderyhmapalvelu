@@ -18,7 +18,8 @@
 (declare upsert-settings!)
 
 (def initial-settings
-  {:rajaava false})
+  {:rajaava false
+   :max-hakukohteet nil})
 
 (defn hakukohde-oidit-by-hakukohderyhma-oid [db hakukohderyhma-oid]
   (->> {:oid hakukohderyhma-oid}
@@ -67,8 +68,7 @@
          (map (fn [hakukohderyhma-oid]
                 (if-let [matching-settings (get settings hakukohderyhma-oid)]
                   (first matching-settings)
-                  initial-settings)
-                )))))
+                  initial-settings))))))
 
 (defn insert-or-update-settings
   [db hakukohderyhma-oid settings]
