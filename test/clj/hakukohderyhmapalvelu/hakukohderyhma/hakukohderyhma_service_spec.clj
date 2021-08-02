@@ -33,7 +33,8 @@
                     :parentOid    "1.2.246.562.28.01"
                     :ryhmatyypit  []
                     :tyypit       []
-                    :settings     {:rajaava          false}
+                    :settings     {:rajaava          false
+                                   :max-hakukohteet  nil}
                     :hakukohteet  [{:oid                           "1.2.246.562.20.1"
                                     :nimi                          {:fi "Hakukohde 1"}
                                     :hakuOid                       "1.2.246.562.29.1"
@@ -88,7 +89,8 @@
 
   (testing "Fetches hakukohderyhma settings returning default"
     (let [service (:hakukohderyhma-service @test-system)
-          expected {:rajaava          false}]
+          expected {:rajaava          false
+                    :max-hakukohteet  nil}]
       (is (= (hakukohderyhma-protocol/get-settings
                service hakukohderyhma-test-fixtures/fake-session "1.2.246.562.28.3")
              expected)))))

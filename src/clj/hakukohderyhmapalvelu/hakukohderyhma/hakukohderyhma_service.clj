@@ -53,8 +53,7 @@
             settings (hakukohderyhma-queries/find-settings-by-hakukohderyhma-oids db (map :oid hakukohderyhmat))
             hakukohde-ryhmat-with-settings (map #(apply-default-settings-if-missing % settings) hakukohderyhmat-with-hakukohteet)]
         (cond->> hakukohde-ryhmat-with-settings
-                 (not include-empty) (remove #(empty? (:hakukohteet %)))
-                 ))
+                 (not include-empty) (remove #(empty? (:hakukohteet %)))))
       []))
 
   (list-hakukohderyhma-oids-by-hakukohde-oid [_ session hakukohde-oid]
@@ -70,7 +69,7 @@
                  (audit/->target {:oid (:oid hkr)})
                  (audit/->changes {} hkr))
       (assoc hkr :hakukohteet []
-                 :settings {:rajaava false})))
+                 :settings hakukohderyhma-queries/initial-settings)))
 
   (delete [this session hakukohderyhma-oid]
     (let [forms (ataru/get-forms ataru-service hakukohderyhma-oid)
@@ -132,8 +131,7 @@
 
   (insert-or-update-settings
     [_ _ hakukohderyhma-oid settings]
-      (hakukohderyhma-queries/insert-or-update-settings db hakukohderyhma-oid settings)
-    )
+      (hakukohderyhma-queries/insert-or-update-settings db hakukohderyhma-oid settings))
 
   (get-settings
     [_ _ hakukohderyhma-oid]
