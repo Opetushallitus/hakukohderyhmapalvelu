@@ -89,3 +89,7 @@
                 :kieli s/Str
                 s/Any  s/Any}]
     s/Any     s/Any}])
+
+(s/defschema GroupedHakukohderyhmaResponse
+  [{:oid             s/Str
+    :hakukohderyhmat [s/Str]}])

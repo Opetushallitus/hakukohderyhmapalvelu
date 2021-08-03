@@ -57,3 +57,11 @@ VALUES (:hakukohderyhma-oid, :rajaava, :max-hakukohteet)
 ON CONFLICT (hakukohderyhma_oid)
 DO
     UPDATE SET rajaava = :rajaava, max_hakukohteet = :max-hakukohteet;
+
+-- :name grouped-hakukohderyhmas :? :*
+SELECT
+    hakukohde_oid AS "oid",
+    array_agg(hakukohderyhma_oid) AS "hakukohderyhmat"
+FROM hakukohderyhma
+WHERE hakukohde_oid IN (:v*:hakukohde-oids)
+GROUP BY hakukohde_oid;
