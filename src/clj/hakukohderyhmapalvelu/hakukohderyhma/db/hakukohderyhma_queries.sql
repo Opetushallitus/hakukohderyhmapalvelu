@@ -58,7 +58,6 @@ ON CONFLICT (hakukohderyhma_oid)
 DO
     UPDATE SET rajaava = :rajaava, max_hakukohteet = :max-hakukohteet;
 
-
 -- :name grouped-hakukohderyhmas :? :*
 SELECT
     hakukohde_oid AS "oid",

@@ -198,7 +198,7 @@
       (test-fixtures/add-row! db hkr-2-oid hk-1-oid)
       (test-fixtures/add-row! db hkr-3-oid hk-2-oid)
 
-      (->> (hakukohderyhma-protocol/group-hakukohderyhmat-by-hakukohteet service session [hk-1-oid hk-2-oid])
+      (->> (hakukohderyhma-protocol/get-hakukohderyhmat-by-hakukohteet service session [hk-1-oid hk-2-oid])
            (map #(update % :hakukohderyhmat set))
            set
            (= expected)
@@ -208,6 +208,6 @@
     (let [service (:hakukohderyhma-service @test-system)
           session hakukohderyhma-test-fixtures/fake-session]
 
-      (-> (hakukohderyhma-protocol/group-hakukohderyhmat-by-hakukohteet service session [])
+      (-> (hakukohderyhma-protocol/get-hakukohderyhmat-by-hakukohteet service session [])
           empty?
           (is "Hakukohteita ei pitäisi palautua")))))

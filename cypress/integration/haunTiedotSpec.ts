@@ -477,7 +477,7 @@ describe('Hakukohderyhmäpalvelu - haun tiedot', () => {
       cy.login()
       cy.request(
         'POST',
-        '/hakukohderyhmapalvelu/api/hakukohderyhma/search/group-by-hakukohde',
+        '/hakukohderyhmapalvelu/api/hakukohderyhma/search/by-hakukohteet',
         ['1.2.246.562.20.001', '1.2.246.562.20.002'],
       ).then(({ status, body }) => {
         expect(status).to.equal(200)
@@ -509,10 +509,9 @@ describe('Hakukohderyhmäpalvelu - haun tiedot', () => {
       cy.login()
       cy.request(
         'POST',
-        '/hakukohderyhmapalvelu/api/hakukohderyhma/search/group-by-hakukohde',
+        '/hakukohderyhmapalvelu/api/hakukohderyhma/search/by-hakukohteet',
         [],
       ).then(({ status, body }) => {
-        console.log(body)
         expect(status).to.equal(200)
         expect(body).to.deep.eq([])
       })

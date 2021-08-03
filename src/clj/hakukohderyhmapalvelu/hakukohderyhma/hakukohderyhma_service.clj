@@ -149,7 +149,7 @@
       (->> (hakukohderyhma-protocol/get-hakukohteet-for-hakukohderyhma-oid this session hakukohderyhma-oid)
            (assoc hakukohderyhma :hakukohteet))))
 
-  (group-hakukohderyhmat-by-hakukohteet [_ _ hakukohde-oids]
+  (get-hakukohderyhmat-by-hakukohteet [_ _ hakukohde-oids]
     (if-not (empty? hakukohde-oids)
-      (hakukohderyhma-queries/group-hakukohderyhma-by-hakukohteet db hakukohde-oids)
+      (hakukohderyhma-queries/get-hakukohderyhmat-by-hakukohteet db hakukohde-oids)
       [])))

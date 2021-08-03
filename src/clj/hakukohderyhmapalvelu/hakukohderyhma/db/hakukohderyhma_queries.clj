@@ -79,5 +79,5 @@
       (upsert-settings! tx {:hakukohderyhma-oid hakukohderyhma-oid :rajaava rajaava :max-hakukohteet max-hakukohteet})
       (dissoc (first (find-settings-by-hakukohderyhma-oids tx [hakukohderyhma-oid])) :hakukohderyhma-oid))))
 
-(defn group-hakukohderyhma-by-hakukohteet [db hakukohde-oids]
+(defn get-hakukohderyhmat-by-hakukohteet [db hakukohde-oids]
   (grouped-hakukohderyhmas db {:hakukohde-oids hakukohde-oids}))
