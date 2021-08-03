@@ -160,6 +160,15 @@
                  :handler    (fn [{session :session {{hakukohde-oids :oids include-empty :includeEmpty} :body} :parameters}]
                                (response/ok (hakukohderyhma/find-hakukohderyhmat-by-hakukohteet-oids
                                               hakukohderyhma-service session hakukohde-oids include-empty)))}}]
+        ["/search/group-by-hakukohde"
+         {:post {:middleware auth
+                 :tags       ["Hakukohderyhmä"]
+                 :summary    "Hakee hakukohderyhmät hakukohteittain"
+                 :response   {200 {:body schema/GroupedHakukohderyhmaResponse}}
+                 :parameters {:body [s/Str]}
+                 :handler    (fn [{session :session {hakukohde-oids :body} :parameters}]
+                               (response/ok (hakukohderyhma/group-hakukohderyhmat-by-hakukohteet
+                                              hakukohderyhma-service session hakukohde-oids)))}}]
         ["/:oid"
          [""
           {:delete {:middleware auth

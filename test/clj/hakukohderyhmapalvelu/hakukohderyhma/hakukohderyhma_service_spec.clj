@@ -180,4 +180,34 @@
       (test-fixtures/add-row! db hakukohderyhma-oid "1.2.3.4.5.6.7.8.9.10")
 
       (is (= (hakukohderyhma-protocol/delete service session hakukohderyhma-oid) expected))
-      (is (test-fixtures/has-row? db hakukohderyhma-oid)))))
+      (is (test-fixtures/has-row? db hakukohderyhma-oid))))
+
+  (testing "Hakukohderyhymien ryhmittely hakukohteiden mukaan"
+    (let [hk-1-oid "1.2.246.562.20.1"
+          hk-2-oid "1.2.246.562.20.2"
+          hkr-1-oid "1.2.246.562.28.001"
+          hkr-2-oid "1.2.246.562.28.002"
+          hkr-3-oid "1.2.246.562.28.003"
+          service (:hakukohderyhma-service @test-system)
+          session hakukohderyhma-test-fixtures/fake-session
+          db (:db @test-system)
+          expected #{{:oid hk-1-oid :hakukohderyhmat #{hkr-1-oid hkr-2-oid}}
+                     {:oid hk-2-oid :hakukohderyhmat #{hkr-3-oid}}}]
+
+      (test-fixtures/add-row! db hkr-1-oid hk-1-oid)
+      (test-fixtures/add-row! db hkr-2-oid hk-1-oid)
+      (test-fixtures/add-row! db hkr-3-oid hk-2-oid)
+
+      (->> (hakukohderyhma-protocol/group-hakukohderyhmat-by-hakukohteet service session [hk-1-oid hk-2-oid])
+           (map #(update % :hakukohderyhmat set))
+           set
+           (= expected)
+           is)))
+
+  (testing "Hakukohderyhymien ryhmittely hakukohteiden mukaan, ei hakukohteita"
+    (let [service (:hakukohderyhma-service @test-system)
+          session hakukohderyhma-test-fixtures/fake-session]
+
+      (-> (hakukohderyhma-protocol/group-hakukohderyhmat-by-hakukohteet service session [])
+          empty?
+          (is "Hakukohteita ei pitäisi palautua")))))

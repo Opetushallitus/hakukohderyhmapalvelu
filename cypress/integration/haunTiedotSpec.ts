@@ -454,6 +454,71 @@ describe('Hakukohderyhmäpalvelu - haun tiedot', () => {
     })
   })
 
+  describe('Hakukohderyhmien ryhmittely hakukohteittain', () => {
+    it('Palauttaa hakukohderyhmät ryhmiteltyinä', () => {
+      interface HakukohdeResponse {
+        oid: string
+        hakukohderyhmat: string[]
+      }
+
+      const insertRow = (hakukohdeOid: string, hakukohderyhmaOid: string) => {
+        cy.task('query', {
+          sql: `
+                INSERT INTO hakukohderyhma (hakukohde_oid, hakukohderyhma_oid)
+                VALUES ($1, $2) ON CONFLICT DO NOTHING 
+            `,
+          values: [hakukohdeOid, hakukohderyhmaOid],
+        })
+      }
+
+      insertRow('1.2.246.562.20.001', '1.2.246.562.28.00001')
+      insertRow('1.2.246.562.20.001', '1.2.246.562.28.00002')
+      insertRow('1.2.246.562.20.002', '1.2.246.562.28.00003')
+      cy.login()
+      cy.request(
+        'POST',
+        '/hakukohderyhmapalvelu/api/hakukohderyhma/search/group-by-hakukohde',
+        ['1.2.246.562.20.001', '1.2.246.562.20.002'],
+      ).then(({ status, body }) => {
+        expect(status).to.equal(200)
+
+        const sortedInner = body
+          .map((hk: HakukohdeResponse) => ({
+            ...hk,
+            hakukohderyhmat: hk.hakukohderyhmat.sort(),
+          }))
+          .sort((a: HakukohdeResponse, b: HakukohdeResponse) =>
+            a.oid > b.oid ? 1 : -1,
+          )
+
+        const expected = [
+          {
+            oid: '1.2.246.562.20.001',
+            hakukohderyhmat: ['1.2.246.562.28.00001', '1.2.246.562.28.00002'],
+          },
+          {
+            oid: '1.2.246.562.20.002',
+            hakukohderyhmat: ['1.2.246.562.28.00003'],
+          },
+        ]
+
+        expect(sortedInner).to.deep.eq(expected)
+      })
+    })
+    it('Palauttaa hakukohderyhmät ryhmiteltyinä, ei hakukohteita', () => {
+      cy.login()
+      cy.request(
+        'POST',
+        '/hakukohderyhmapalvelu/api/hakukohderyhma/search/group-by-hakukohde',
+        [],
+      ).then(({ status, body }) => {
+        console.log(body)
+        expect(status).to.equal(200)
+        expect(body).to.deep.eq([])
+      })
+    })
+  })
+
   describe('CAS-logout', () => {
     const id = uuidv4()
     const data = {

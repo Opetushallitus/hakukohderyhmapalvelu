@@ -12,4 +12,5 @@
   (get-hakukohteet-for-hakukohderyhma-oid [this session hakukohderyhma-oid])
   (get-hakukohderyhma [this session hakukohderyhma-oid])
   (insert-or-update-settings [this session hakukohderyhma-oid settings])
-  (get-settings [this session hakukohderyhma-oid]))
+  (get-settings [this session hakukohderyhma-oid])
+  (group-hakukohderyhmat-by-hakukohteet [this session hakukohteet-oids]))

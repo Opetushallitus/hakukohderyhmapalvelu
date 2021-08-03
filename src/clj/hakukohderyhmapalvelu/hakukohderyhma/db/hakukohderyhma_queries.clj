@@ -16,6 +16,7 @@
 (declare delete-settings-by-hakukohderyhma-oid)
 (declare settings-by-hakukohderyhma-oids)
 (declare upsert-settings!)
+(declare grouped-hakukohderyhmas)
 
 (def initial-settings
   {:rajaava false
@@ -77,3 +78,6 @@
           max-hakukohteet (:max-hakukohteet settings)]
       (upsert-settings! tx {:hakukohderyhma-oid hakukohderyhma-oid :rajaava rajaava :max-hakukohteet max-hakukohteet})
       (dissoc (first (find-settings-by-hakukohderyhma-oids tx [hakukohderyhma-oid])) :hakukohderyhma-oid))))
+
+(defn group-hakukohderyhma-by-hakukohteet [db hakukohde-oids]
+  (grouped-hakukohderyhmas db {:hakukohde-oids hakukohde-oids}))

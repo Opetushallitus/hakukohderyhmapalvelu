@@ -147,4 +147,9 @@
   (get-hakukohderyhma [this session hakukohderyhma-oid]
     (let [hakukohderyhma (organisaatio/get-organisaatio organisaatio-service hakukohderyhma-oid)]
       (->> (hakukohderyhma-protocol/get-hakukohteet-for-hakukohderyhma-oid this session hakukohderyhma-oid)
-           (assoc hakukohderyhma :hakukohteet)))))
+           (assoc hakukohderyhma :hakukohteet))))
+
+  (group-hakukohderyhmat-by-hakukohteet [_ _ hakukohde-oids]
+    (if-not (empty? hakukohde-oids)
+      (hakukohderyhma-queries/group-hakukohderyhma-by-hakukohteet db hakukohde-oids)
+      [])))
