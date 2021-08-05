@@ -76,6 +76,23 @@
                  {:margin-left "0.5rem"
                   :font-size   "small"})])
 
+(defn- yo-amm-autom-hakukelpoisuus-checkbox
+  [selected-ryhma]
+  [:<>
+   [:div (stylefy/use-style {:display        "flex"
+                             :flex-direction "row"})
+    (checkbox/checkbox-slider {:checked?        (get-in selected-ryhma [:settings :yo-amm-autom-hakukelpoisuus])
+                               :cypressid       "yo-amm-autom-hakukelpoisuus-checkbox"
+                               :id              "yo-amm-autom-hakukelpoisuus-checkbox"
+                               :aria-labelledby @(subscribe [:translation :hakukohderyhma/yo-amm-autom-hakukelpoisuus])
+                               :on-change       (fn []
+                                                  (dispatch [hakukohderyhma-events/hakukohderyhma-toggle-yo-amm-autom-hakukelpoisuus]))})
+    (label/label {:id    "yo-amm-autom-hakukelpoisuus-label"
+                  :label @(subscribe [:translation :hakukohderyhma/yo-amm-autom-hakukelpoisuus])
+                  :for   "yo-amm-autom-hakukelpoisuus-checkbox"}
+                 {:margin-left "1rem"
+                  :font-size   "small"})]])
+
 (defn hakukohderyha-settings-view
   []
   (let [selected-ryhma @(subscribe [hakukohderyhma-subs/selected-hakukohderyhma])]
@@ -83,4 +100,5 @@
      (when selected-ryhma
        [:<>
         (rajaava-checkbox selected-ryhma)
-        (jyemp-checkbox selected-ryhma)])]))
+        (jyemp-checkbox selected-ryhma)
+        (yo-amm-autom-hakukelpoisuus-checkbox selected-ryhma)])]))

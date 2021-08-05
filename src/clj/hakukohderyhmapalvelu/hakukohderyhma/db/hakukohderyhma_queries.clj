@@ -21,8 +21,8 @@
 (def initial-settings
   {:rajaava false
    :max-hakukohteet nil
-   :jos-ylioppilastutkinto-ei-muita-pohjakoulutusliitepyyntoja false})
-
+   :jos-ylioppilastutkinto-ei-muita-pohjakoulutusliitepyyntoja false
+   :yo-amm-autom-hakukelpoisuus false})
 (defn hakukohde-oidit-by-hakukohderyhma-oid [db hakukohderyhma-oid]
   (->> {:oid hakukohderyhma-oid}
        (hakukohteet-by-hakukohderyhma-oid db)
@@ -77,8 +77,9 @@
   (with-db-transaction [tx db]
     (let [rajaava (:rajaava settings)
           max-hakukohteet (:max-hakukohteet settings)
-          jyemp (:jos-ylioppilastutkinto-ei-muita-pohjakoulutusliitepyyntoja settings)]
-      (upsert-settings! tx {:hakukohderyhma-oid hakukohderyhma-oid :rajaava rajaava :max-hakukohteet max-hakukohteet :jos-ylioppilastutkinto-ei-muita-pohjakoulutusliitepyyntoja jyemp})
+          jyemp (:jos-ylioppilastutkinto-ei-muita-pohjakoulutusliitepyyntoja settings)
+          yo-amm-autom-hakukelpoisuus (:yo-amm-autom-hakukelpoisuus settings]
+      (upsert-settings! tx {:hakukohderyhma-oid hakukohderyhma-oid :rajaava rajaava :max-hakukohteet max-hakukohteet :jos-ylioppilastutkinto-ei-muita-pohjakoulutusliitepyyntoja jyemp :yo-amm-autom-hakukelpoisuus yo-amm-autom-hakukelpoisuus})
       (dissoc (first (find-settings-by-hakukohderyhma-oids tx [hakukohderyhma-oid])) :hakukohderyhma-oid))))
 
 (defn get-hakukohderyhmat-by-hakukohteet [db hakukohde-oids]
