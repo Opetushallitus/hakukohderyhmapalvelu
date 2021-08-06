@@ -35,7 +35,8 @@
                     :tyypit       []
                     :settings     {:rajaava          false
                                    :max-hakukohteet  nil
-                                   :jos-ylioppilastutkinto-ei-muita-pohjakoulutusliitepyyntoja false}
+                                   :jos-ylioppilastutkinto-ei-muita-pohjakoulutusliitepyyntoja false
+                                   :yo-amm-autom-hakukelpoisuus false}
                     :hakukohteet  [{:oid                           "1.2.246.562.20.1"
                                     :nimi                          {:fi "Hakukohde 1"}
                                     :hakuOid                       "1.2.246.562.29.1"
@@ -80,10 +81,12 @@
     (let [service (:hakukohderyhma-service @test-system)
           settings {:rajaava          true
                     :max-hakukohteet 3
-                    :jos-ylioppilastutkinto-ei-muita-pohjakoulutusliitepyyntoja true}
+                    :jos-ylioppilastutkinto-ei-muita-pohjakoulutusliitepyyntoja true
+                    :yo-amm-autom-hakukelpoisuus false}
           expected {:rajaava          true
                     :max-hakukohteet 3
-                    :jos-ylioppilastutkinto-ei-muita-pohjakoulutusliitepyyntoja true}]
+                    :jos-ylioppilastutkinto-ei-muita-pohjakoulutusliitepyyntoja true
+                    :yo-amm-autom-hakukelpoisuus false}]
       (is (= (hakukohderyhma-protocol/insert-or-update-settings
                service hakukohderyhma-test-fixtures/fake-session "1.2.246.562.28.4" settings)
              expected)))))
@@ -94,7 +97,8 @@
     (let [service (:hakukohderyhma-service @test-system)
           expected {:rajaava          false
                     :max-hakukohteet  nil
-                    :jos-ylioppilastutkinto-ei-muita-pohjakoulutusliitepyyntoja false}]
+                    :jos-ylioppilastutkinto-ei-muita-pohjakoulutusliitepyyntoja false
+                    :yo-amm-autom-hakukelpoisuus false}]
       (is (= (hakukohderyhma-protocol/get-settings
                service hakukohderyhma-test-fixtures/fake-session "1.2.246.562.28.3")
              expected)))))
