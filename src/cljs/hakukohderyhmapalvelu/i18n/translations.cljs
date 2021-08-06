@@ -44,5 +44,6 @@
                     :muokkaa-ryhmaa               {:fi "Muokkaa ryhmää"}
                     :poista-ryhmasta              {:fi "Poista ryhmästä"}
                     :max-hakukohteet              {:fi "Ryhmän hakukohteita valittavissa enintään"}
-                    :rajaava                      {:fi "Rajaava"}}
+                    :rajaava                      {:fi "Rajaava"}
+                    :jyemp                        {:fi "Jos Ylioppilastutkinto tai kansainvälinen ylioppilastutkinto, ei muiden tutkintojen liitepyyntöjä"}}
    })

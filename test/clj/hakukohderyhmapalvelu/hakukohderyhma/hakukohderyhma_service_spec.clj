@@ -34,7 +34,8 @@
                     :ryhmatyypit  []
                     :tyypit       []
                     :settings     {:rajaava          false
-                                   :max-hakukohteet  nil}
+                                   :max-hakukohteet  nil
+                                   :jos-ylioppilastutkinto-ei-muita-pohjakoulutusliitepyyntoja false}
                     :hakukohteet  [{:oid                           "1.2.246.562.20.1"
                                     :nimi                          {:fi "Hakukohde 1"}
                                     :hakuOid                       "1.2.246.562.29.1"
@@ -78,9 +79,11 @@
   (testing "Update hakukohderyhma settings"
     (let [service (:hakukohderyhma-service @test-system)
           settings {:rajaava          true
-                     :max-hakukohteet 3}
+                    :max-hakukohteet 3
+                    :jos-ylioppilastutkinto-ei-muita-pohjakoulutusliitepyyntoja true}
           expected {:rajaava          true
-                    :max-hakukohteet 3}]
+                    :max-hakukohteet 3
+                    :jos-ylioppilastutkinto-ei-muita-pohjakoulutusliitepyyntoja true}]
       (is (= (hakukohderyhma-protocol/insert-or-update-settings
                service hakukohderyhma-test-fixtures/fake-session "1.2.246.562.28.4" settings)
              expected)))))
@@ -90,7 +93,8 @@
   (testing "Fetches hakukohderyhma settings returning default"
     (let [service (:hakukohderyhma-service @test-system)
           expected {:rajaava          false
-                    :max-hakukohteet  nil}]
+                    :max-hakukohteet  nil
+                    :jos-ylioppilastutkinto-ei-muita-pohjakoulutusliitepyyntoja false}]
       (is (= (hakukohderyhma-protocol/get-settings
                service hakukohderyhma-test-fixtures/fake-session "1.2.246.562.28.3")
              expected)))))

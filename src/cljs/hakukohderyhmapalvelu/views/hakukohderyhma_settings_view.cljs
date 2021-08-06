@@ -56,8 +56,31 @@
    (when (get-in selected-ryhma [:settings :rajaava])
      (max-hakukohteet selected-ryhma))])
 
+(defn- jyemp-checkbox
+  [selected-ryhma]
+  [:div (stylefy/use-style {:display        "flex"
+                            :flex-direction "row"
+                            :margin-top     "1rem"})
+    (checkbox/checkbox-slider {:checked?        (get-in selected-ryhma [:settings :jos-ylioppilastutkinto-ei-muita-pohjakoulutusliitepyyntoja])
+                               :cypressid       "jyemp-checkbox"
+                               :id              "jyemp-checkbox"
+                               :aria-labelledby @(subscribe [:translation :hakukohderyhma/jyemp])
+                               :on-change       (fn []
+                                                  (let [settings (:settings selected-ryhma)
+                                                        jyemp (not (get-in selected-ryhma [:settings :jos-ylioppilastutkinto-ei-muita-pohjakoulutusliitepyyntoja]))
+                                                        updated-settings (assoc settings :jos-ylioppilastutkinto-ei-muita-pohjakoulutusliitepyyntoja jyemp)]
+                                                    (dispatch [hakukohderyhma-events/hakukohderyhma-update-settings updated-settings])))})
+    (label/label {:id    "jyemp-label"
+                  :label @(subscribe [:translation :hakukohderyhma/jyemp])
+                  :for   "jyemp-checkbox"}
+                 {:margin-left "0.5rem"
+                  :font-size   "small"})])
+
 (defn hakukohderyha-settings-view
   []
   (let [selected-ryhma @(subscribe [hakukohderyhma-subs/selected-hakukohderyhma])]
     [:div (stylefy/use-style settings-view-style {:cypressid "hakukohderyhma-settings-view"})
-     (when selected-ryhma (rajaava-checkbox selected-ryhma))]))
+     (when selected-ryhma
+       [:<>
+        (rajaava-checkbox selected-ryhma)
+        (jyemp-checkbox selected-ryhma)])]))

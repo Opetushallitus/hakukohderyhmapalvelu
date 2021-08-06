@@ -47,16 +47,17 @@ DELETE FROM hakukohderyhma_settings WHERE hakukohderyhma_oid = :oid
 -- :name settings-by-hakukohderyhma-oids :? :*
 SELECT  s.rajaava,
         s.hakukohderyhma_oid AS "hakukohderyhma-oid",
-        s.max_hakukohteet AS "max-hakukohteet"
+        s.max_hakukohteet AS "max-hakukohteet",
+        s.jos_ylioppilastutkinto_ei_muita_pohjakoulutusliitepyyntoja AS "jos-ylioppilastutkinto-ei-muita-pohjakoulutusliitepyyntoja"
 FROM hakukohderyhma_settings s
 WHERE s.hakukohderyhma_oid IN (:v*:hakukohderyhma-oids);
 
 -- :name upsert-settings! :! :n
-INSERT INTO hakukohderyhma_settings (hakukohderyhma_oid, rajaava, max_hakukohteet)
-VALUES (:hakukohderyhma-oid, :rajaava, :max-hakukohteet)
+INSERT INTO hakukohderyhma_settings (hakukohderyhma_oid, rajaava, max_hakukohteet, jos_ylioppilastutkinto_ei_muita_pohjakoulutusliitepyyntoja)
+VALUES (:hakukohderyhma-oid, :rajaava, :max-hakukohteet, :jos-ylioppilastutkinto-ei-muita-pohjakoulutusliitepyyntoja)
 ON CONFLICT (hakukohderyhma_oid)
 DO
-    UPDATE SET rajaava = :rajaava, max_hakukohteet = :max-hakukohteet;
+    UPDATE SET rajaava = :rajaava, max_hakukohteet = :max-hakukohteet, jos_ylioppilastutkinto_ei_muita_pohjakoulutusliitepyyntoja = :jos-ylioppilastutkinto-ei-muita-pohjakoulutusliitepyyntoja;
 
 -- :name grouped-hakukohderyhmas :? :*
 SELECT
