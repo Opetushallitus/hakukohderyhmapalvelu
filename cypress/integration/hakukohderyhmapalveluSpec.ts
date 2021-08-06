@@ -784,7 +784,6 @@ describe('Hakukohderyhmäpalvelu', () => {
         cy.login()
         cy.get(ha.rajaavaSelector).click({ force: true })
         cy.get(ha.maxHakukohteetSelector).should('exist')
-        cy.get(ha.yoAmmAutomHakukelpoisuusSelector).click({ force: true })
       })
     })
     describe('Hakukohderyhmän nimen muuttaminen', () => {
