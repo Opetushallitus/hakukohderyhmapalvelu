@@ -35,7 +35,8 @@
 
 (s/defschema HakukohderyhmaSettings
   {:rajaava s/Bool
-   :max-hakukohteet (s/maybe s/Int)})
+   :max-hakukohteet (s/maybe s/Int)
+   :jos-ylioppilastutkinto-ei-muita-pohjakoulutusliitepyyntoja s/Bool})
 
 (s/defschema LocalizationEntity
   {:id       s/Int

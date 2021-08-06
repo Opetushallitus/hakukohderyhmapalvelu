@@ -258,6 +258,7 @@
                                                   "\"hakukohderyhma-hakukohteet hakukohderyhma-hakukohteet hakukohderyhma-hakukohteet hakukohderyhma-hakukohteet\" 20rem"
                                                   "\"bottom-row-buttons bottom-row-buttons bottom-row-buttons bottom-row-buttons\" 40px"
                                                   "\"hakukohderyhma-settings-view hakukohderyhma-settings-view hakukohderyhma-settings-view . \" 40px"
+                                                  "\"hakukohderyhma-settings-view hakukohderyhma-settings-view hakukohderyhma-settings-view . \" 40px"
                                                   "\"hakukohderyhma-settings-view hakukohderyhma-settings-view hakukohderyhma-settings-view . \" 40px")}
                                  {:cypressid "hakukohderyhma-container"})
 
