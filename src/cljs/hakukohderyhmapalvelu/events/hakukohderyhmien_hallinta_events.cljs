@@ -29,7 +29,7 @@
 (def set-hakukohderyhma-name-text :hakukohderyhmien-hallinta/set-hakukohderyhma-name-text)
 (def set-deletion-confirmation-dialogue-visibility :hakukohderyhmien-hallinta/deletion-confirmation-dialogue-toggled)
 (def hakukohderyhma-toggle-rajaava :hakukohderyhmien-hallinta/hakukohderyhma-toggle-rajaava)
-(def hakukohderyhma-toggle-yo-amm-autom-hakukelpoisuus :hakukohderyhmien-hallinta/hakukohderyhma-toggle-yo-amm-autom-hakukelpoisuus)
+;(def hakukohderyhma-toggle-yo-amm-autom-hakukelpoisuus :hakukohderyhmien-hallinta/hakukohderyhma-toggle-yo-amm-autom-hakukelpoisuus)
 (def hakukohderyhma-settings-change-confirmed :hakukohderyhmien-hallinta/hakukohderyhma-settings-change-confirmed)
 (def hakukohderyhma-update-settings :hakukohderyhmien-hallinta/hakukohderyhma-update-settings)
 
@@ -207,27 +207,11 @@
              (let [selected-ryhma (selected-hakukohderyhma db)
                    rajaava (not (get-in selected-ryhma [:settings :rajaava]))
                    jyemp (get-in selected-ryhma [:settings :jos-ylioppilastutkinto-ei-muita-pohjakoulutusliitepyyntoja])
+                   yo-amm-autom-hakukelpoisuus (get-in selected-ryhma [:settings :yo-amm-autom-hakukelpoisuus])
                    settings {:rajaava rajaava
                              :max-hakukohteet (when rajaava 1)
                              :jos-ylioppilastutkinto-ei-muita-pohjakoulutusliitepyyntoja jyemp
                              :yo-amm-autom-hakukelpoisuus yo-amm-autom-hakukelpoisuus}
-                   selected-ryhma-updated (assoc selected-ryhma :settings settings)
-                   http-request-id hakukohderyhma-settings-change-confirmed]
-               {:db   (update db :requests (fnil conj #{}) http-request-id)
-                :http {:method           :put
-                       :http-request-id  http-request-id
-                       :path             (str "/hakukohderyhmapalvelu/api/hakukohderyhma/" (:oid selected-ryhma) "/settings")
-                       :request-schema   api-schemas/HakukohderyhmaSettings
-                       :body             settings
-                       :response-handler [hakukohderyhma-settings-change-confirmed selected-ryhma-updated]
-                       :error-handler    [alert-events/http-request-failed]}})))
-
-(events/reg-event-fx-validating
-  hakukohderyhma-toggle-yo-amm-autom-hakukelpoisuus
-  (fn-traced [{db :db}]
-             (let [selected-ryhma (selected-hakukohderyhma db)
-                   yo-amm-autom-hakukelpoisuus (not (get-in selected-ryhma [:settings :yo-amm-autom-hakukelpoisuus]))
-                   settings {:yo-amm-autom-hakukelpoisuus yo-amm-autom-hakukelpoisuus}
                    selected-ryhma-updated (assoc selected-ryhma :settings settings)
                    http-request-id hakukohderyhma-settings-change-confirmed]
                {:db   (update db :requests (fnil conj #{}) http-request-id)
