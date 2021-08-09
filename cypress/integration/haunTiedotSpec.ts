@@ -360,7 +360,7 @@ describe('Hakukohderyhmäpalvelu - haun tiedot', () => {
           settings: {
             rajaava: false,
             'max-hakukohteet': null,
-            ':jos-ylioppilastutkinto-ei-muita-pohjakoulutusliitepyyntoja': false,
+            'jos-ylioppilastutkinto-ei-muita-pohjakoulutusliitepyyntoja': false,
           },
           hakukohteet: [
             {

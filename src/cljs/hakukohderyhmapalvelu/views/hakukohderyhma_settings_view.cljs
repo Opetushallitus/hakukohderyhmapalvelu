@@ -67,7 +67,7 @@
                                :aria-labelledby @(subscribe [:translation :hakukohderyhma/jyemp])
                                :on-change       (fn []
                                                   (let [settings (:settings selected-ryhma)
-                                                        jyemp (not (get-in selected-ryhma [:settings :jos-ylioppilastutkinto-ei-muita-pohjakoulutusliitepyyntoja]))
+                                                        jyemp (not (:jos-ylioppilastutkinto-ei-muita-pohjakoulutusliitepyyntoja settings))
                                                         updated-settings (assoc settings :jos-ylioppilastutkinto-ei-muita-pohjakoulutusliitepyyntoja jyemp)]
                                                     (dispatch [hakukohderyhma-events/hakukohderyhma-update-settings updated-settings])))})
     (label/label {:id    "jyemp-label"
