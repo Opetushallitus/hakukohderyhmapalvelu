@@ -144,6 +144,9 @@
           hakukohde-oidit (hakukohderyhma-queries/hakukohde-oidit-by-hakukohderyhma-oid db hakukohderyhma-oid)]
       (kouta/find-hakukohteet-by-oids kouta-service hakukohde-oidit user-organisaatiot)))
 
+  (get-hakukohde-oids-for-hakukohderyhma-oid [_ hakukohderyhma-oid]
+    (hakukohderyhma-queries/hakukohde-oidit-by-hakukohderyhma-oid db hakukohderyhma-oid))
+
   (get-hakukohderyhma [this session hakukohderyhma-oid]
     (let [hakukohderyhma (organisaatio/get-organisaatio organisaatio-service hakukohderyhma-oid)]
       (->> (hakukohderyhma-protocol/get-hakukohteet-for-hakukohderyhma-oid this session hakukohderyhma-oid)

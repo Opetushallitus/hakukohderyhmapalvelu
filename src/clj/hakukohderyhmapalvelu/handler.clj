@@ -189,7 +189,15 @@
                  :parameters {:path {:oid s/Str} :body [schema/Hakukohde]}
                  :handler    (fn [{session :session {hakukohteet :body {oid :oid} :path} :parameters}]
                                (response/ok (hakukohderyhma/update-hakukohderyhma-hakukohteet
-                                              hakukohderyhma-service session oid hakukohteet)))}}]
+                                              hakukohderyhma-service session oid hakukohteet)))}
+           :get {:middleware auth
+                 :tags       ["Hakukohderyhmä"]
+                 :summary    ["Hakee hakukohderyhmän tiedot"]
+                 :responsens {200 {:body [s/Str]}}
+                 :parameters {:path {:oid s/Str}}
+                 :handler    (fn [{{{oid :oid} :path} :parameters}]
+                               (response/ok (hakukohderyhma/get-hakukohde-oids-for-hakukohderyhma-oid
+                                              hakukohderyhma-service oid)))}}]
          ["/rename"
           {:post {:middleware auth
                   :tags       ["Hakukohderyhmä"]
