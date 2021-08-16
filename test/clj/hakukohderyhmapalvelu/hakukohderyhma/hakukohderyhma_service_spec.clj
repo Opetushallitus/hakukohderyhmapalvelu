@@ -208,6 +208,22 @@
            (= expected)
            is)))
 
+  (testing "Hakukohdeoidien haku hakukohderyhmällä"
+    (let [hk-1-oid "1.2.246.562.20.1123"
+          hk-2-oid "1.2.246.562.20.2123"
+          hkr-oid "1.2.246.562.28.00001"
+          service (:hakukohderyhma-service @test-system)
+          db (:db @test-system)
+          expected [hk-1-oid hk-2-oid]]
+
+      (test-fixtures/add-row! db hkr-oid hk-1-oid)
+      (test-fixtures/add-row! db hkr-oid hk-2-oid)
+
+      (->> (hakukohderyhma-protocol/get-hakukohde-oids-for-hakukohderyhma-oid service hkr-oid)
+           (sort)
+           (= expected)
+           is)))
+
   (testing "Hakukohderyhymien ryhmittely hakukohteiden mukaan, ei hakukohteita"
     (let [service (:hakukohderyhma-service @test-system)
           session hakukohderyhma-test-fixtures/fake-session]
