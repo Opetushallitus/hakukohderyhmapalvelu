@@ -55,7 +55,7 @@ WHERE s.hakukohderyhma_oid IN (:v*:hakukohderyhma-oids);
 
 -- :name upsert-settings! :! :n
 INSERT INTO hakukohderyhma_settings (hakukohderyhma_oid, rajaava, max_hakukohteet, jos_ylioppilastutkinto_ei_muita_pohjakoulutusliitepyyntoja, yo_amm_autom_hakukelpoisuus)
-VALUES (:hakukohderyhma-oid, :rajaava, :max-hakukohteet, :jos-ylioppilastutkinto-ei-muita-pohjakoulutusliitepyyntoja)
+VALUES (:hakukohderyhma-oid, :rajaava, :max-hakukohteet, :jos-ylioppilastutkinto-ei-muita-pohjakoulutusliitepyyntoja, :yo-amm-autom-hakukelpoisuus)
 ON CONFLICT (hakukohderyhma_oid)
 DO
     UPDATE SET rajaava = :rajaava, max_hakukohteet = :max-hakukohteet, jos_ylioppilastutkinto_ei_muita_pohjakoulutusliitepyyntoja = :jos-ylioppilastutkinto-ei-muita-pohjakoulutusliitepyyntoja, yo_amm_autom_hakukelpoisuus = :yo-amm-autom-hakukelpoisuus;

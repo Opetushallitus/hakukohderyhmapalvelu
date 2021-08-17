@@ -78,7 +78,7 @@
     (let [rajaava (:rajaava settings)
           max-hakukohteet (:max-hakukohteet settings)
           jyemp (:jos-ylioppilastutkinto-ei-muita-pohjakoulutusliitepyyntoja settings)
-          yo-amm-autom-hakukelpoisuus (:yo-amm-autom-hakukelpoisuus settings]
+          yo-amm-autom-hakukelpoisuus (:yo-amm-autom-hakukelpoisuus settings)]
       (upsert-settings! tx {:hakukohderyhma-oid hakukohderyhma-oid :rajaava rajaava :max-hakukohteet max-hakukohteet :jos-ylioppilastutkinto-ei-muita-pohjakoulutusliitepyyntoja jyemp :yo-amm-autom-hakukelpoisuus yo-amm-autom-hakukelpoisuus})
       (dissoc (first (find-settings-by-hakukohderyhma-oids tx [hakukohderyhma-oid])) :hakukohderyhma-oid))))
 
