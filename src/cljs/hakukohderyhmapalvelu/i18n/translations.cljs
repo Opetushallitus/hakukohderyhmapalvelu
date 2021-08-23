@@ -46,5 +46,5 @@
                     :max-hakukohteet              {:fi "Ryhmän hakukohteita valittavissa enintään"}
                     :rajaava                      {:fi "Rajaava"}
                     :jyemp                        {:fi "Jos Ylioppilastutkinto tai kansainvälinen ylioppilastutkinto, ei muiden tutkintojen liitepyyntöjä"}
-                    :yo-amm-autom-hakukelpoisuus  {:fi "YO + Ammatillinen tutkinto antaa automaattisen hakukelpoisuuden"}}
+                    :yo-amm-autom-hakukelpoisuus  {:fi "YO tai Ammatillinen tutkinto antaa automaattisen hakukelpoisuuden"}}
    })

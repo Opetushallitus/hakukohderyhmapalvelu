@@ -23,6 +23,7 @@
    :max-hakukohteet nil
    :jos-ylioppilastutkinto-ei-muita-pohjakoulutusliitepyyntoja false
    :yo-amm-autom-hakukelpoisuus false})
+
 (defn hakukohde-oidit-by-hakukohderyhma-oid [db hakukohderyhma-oid]
   (->> {:oid hakukohderyhma-oid}
        (hakukohteet-by-hakukohderyhma-oid db)

@@ -29,7 +29,6 @@
 (def set-hakukohderyhma-name-text :hakukohderyhmien-hallinta/set-hakukohderyhma-name-text)
 (def set-deletion-confirmation-dialogue-visibility :hakukohderyhmien-hallinta/deletion-confirmation-dialogue-toggled)
 (def hakukohderyhma-toggle-rajaava :hakukohderyhmien-hallinta/hakukohderyhma-toggle-rajaava)
-;(def hakukohderyhma-toggle-yo-amm-autom-hakukelpoisuus :hakukohderyhmien-hallinta/hakukohderyhma-toggle-yo-amm-autom-hakukelpoisuus)
 (def hakukohderyhma-settings-change-confirmed :hakukohderyhmien-hallinta/hakukohderyhma-settings-change-confirmed)
 (def hakukohderyhma-update-settings :hakukohderyhmien-hallinta/hakukohderyhma-update-settings)
 
