@@ -90,6 +90,7 @@
      :height              "22px"
      :transition          "all 0.2s ease-in-out"
      :width               "40px"
+     :min-width           "40px"
      ::stylefy/sub-styles {:checkbox
                            {:background-color colors/white
                             :border-radius    "50%"
