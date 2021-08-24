@@ -68,8 +68,11 @@
   (fn [[lang hakukohteet]]
     (let [labels {:label     [:nimi]
                   :sub-label [:organisaatio :nimi]}
-          transform-fn (i18n-utils/create-item->option-transformer lang labels :oid #(-> % :oikeusHakukohteeseen not))]
-      (map transform-fn hakukohteet))))
+          transform-fn (i18n-utils/create-item->option-transformer lang labels :oid #(-> % :oikeusHakukohteeseen not))
+          transform-and-add-tila (fn [hakukohde] (-> hakukohde
+                                                     (transform-fn)
+                                                     (assoc :tila (:tila hakukohde))))]
+      (map transform-and-add-tila hakukohteet))))
 
 (re-frame/reg-sub
   selected-hakukohderyhmas-hakukohteet
