@@ -96,11 +96,14 @@
   (fn [[lang filter-text hakukohteet lisarajaimet] _]
     (let [labels {:label     [:nimi]
                   :sub-label [:organisaatio :nimi]}
-          transform-fn (i18n-utils/create-item->option-transformer lang labels :oid #(-> % :oikeusHakukohteeseen not))]
+          transform-fn (i18n-utils/create-item->option-transformer lang labels :oid #(-> % :oikeusHakukohteeseen not))
+          transform-and-add-tila (fn [hakukohde] (-> hakukohde
+                                                      (transform-fn)
+                                                      (assoc :tila (:tila hakukohde))))]
       (->> hakukohteet
            (filter #(u/hakukohde-includes-string? % filter-text lang))
            (filter (u/create-hakukohde-matches-all-lisarajaimet lisarajaimet))
-           (map transform-fn)
+           (map transform-and-add-tila)
            (remove :is-disabled)))))
 
 (re-frame/reg-sub

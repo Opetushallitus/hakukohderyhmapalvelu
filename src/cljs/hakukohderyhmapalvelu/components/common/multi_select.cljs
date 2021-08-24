@@ -1,7 +1,8 @@
 (ns hakukohderyhmapalvelu.components.common.multi-select
   (:require [hakukohderyhmapalvelu.styles.styles-colors :as colors]
             [stylefy.core :as stylefy]
-            [schema.core :as s]))
+            [schema.core :as s]
+            [hakukohderyhmapalvelu.components.common.material-icons :as icon]))
 
 
 (def ^:private multi-select-style
@@ -52,9 +53,10 @@
    :is-disabled s/Bool
    :label       s/Str
    :sub-label   s/Str
-   :value       s/Any})
+   :value       s/Any
+   :tila        s/Str})
 
-(defn- multi-select-option [select-fn {:keys [value label sub-label is-selected is-disabled]} cypressid]
+(defn- multi-select-option [select-fn {:keys [value label sub-label is-selected is-disabled tila]} cypressid]
   (let [style (cond
                 is-disabled option-style-disabled
                 is-selected option-style-selected
@@ -64,7 +66,10 @@
     [:div (stylefy/use-style style {:on-click on-click
                                     :cypressid (str cypressid "__" label (when is-selected "--selected"))})
      [:span (stylefy/use-style sub-label-style) sub-label]
-     [:span (stylefy/use-style label-style) label]]))
+     [:span (stylefy/use-style label-style)
+      (when (= tila "arkistoitu")
+        [icon/archived] )
+      label]]))
 
 (s/defschema Props
   {:options                    [Option]

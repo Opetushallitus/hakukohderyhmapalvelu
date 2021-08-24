@@ -27,6 +27,7 @@
    :hakuOid                                        s/Str
    :toinenAsteOnkoKaksoistutkinto                  s/Bool
    :valintakokeet                                  [Valintakoe]
+   :tila                                           s/Str
    (s/optional-key :onkoHarkinnanvarainenKoulutus) s/Bool
    (s/optional-key :oikeusHakukohteeseen)          s/Bool
    s/Any                                           s/Any})

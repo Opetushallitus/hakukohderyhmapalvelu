@@ -18,15 +18,21 @@
    :-webkit-font-smoothing  "antialiased"
    :-moz-osx-font-smoothing "grayscale"})
 
-(defn- material-icon [icon]
-  [:i (stylefy/use-style material-icon-styles)
-   icon])
+(defn- material-icon [icon additional-styles options]
+  (let [ styles (merge material-icon-styles additional-styles)]
+    [:i (stylefy/use-style styles options)
+     icon]))
 
 (defn arrow-drop-down []
-  [material-icon "arrow_drop_down"])
+  [material-icon "arrow_drop_down" {}])
 
 (defn arrow-drop-up []
-  [material-icon "arrow_drop_up"])
+  [material-icon "arrow_drop_up" {}])
+
+(defn archived []
+  [material-icon "book"
+   {:vertical-align "text-top"}
+   {:title "Arkistoitu"}])
 
 (defn done []
-  [material-icon "done"])
+  [material-icon "done" {}])
