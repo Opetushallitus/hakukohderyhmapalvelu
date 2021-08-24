@@ -1,5 +1,6 @@
 (ns hakukohderyhmapalvelu.components.common.material-icons
-  (:require [stylefy.core :as stylefy]))
+  (:require [stylefy.core :as stylefy]
+            [re-frame.core :refer [subscribe]]))
 
 (def ^:private material-icon-styles
   {:font-family             "Material Icons"
@@ -32,7 +33,7 @@
 (defn archived []
   [material-icon "book"
    {:vertical-align "text-top"}
-   {:title "Arkistoitu"}])
+   {:title @(subscribe [:translation :yleiset/arkistoitu])}])
 
 (defn done []
   [material-icon "done" {}])

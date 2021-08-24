@@ -10,7 +10,8 @@
                     :muokkaa-lomaketta      {:fi "Muokkaa lomaketta"}
                     :muokkaa-hakua          {:fi "Muokkaa hakua"}
                     :pakolliset-kentat      {:fi "* merkityt kentät ovat pakollisia"}
-                    :http-virhe             {:fi "Tietojen haku epäonnistui"}}
+                    :http-virhe             {:fi "Tietojen haku epäonnistui"}
+                    :arkistoitu             {:fi "Arkistoitu"}}
    :haun-asetukset {:valintatulokset-valmiina-viimeistaan   {:fi "Valintatulokset valmiina viimeistään"}
                     :useita-hakemuksia                      {:fi "Vain yksi hakemus -rajoitus"}
                     :haun-asetukset                         {:fi "Haun asetukset"}
