@@ -58,7 +58,8 @@
                      :toinenAsteOnkoKaksoistutkinto false
                      :oikeusHakukohteeseen          true
                      :onkoHarkinnanvarainenKoulutus true
-                     :hasValintakoe                 false}
+                     :hasValintakoe                 false
+                     :tila                          "julkaistu"}
                     {:oid                           "1.2.246.562.20.2"
                      :nimi                          {:fi "Hakukohde 2"}
                      :hakuOid                       "1.2.246.562.29.1"
@@ -66,7 +67,8 @@
                      :toinenAsteOnkoKaksoistutkinto false
                      :oikeusHakukohteeseen          true
                      :onkoHarkinnanvarainenKoulutus true
-                     :hasValintakoe                 false}]]
+                     :hasValintakoe                 false
+                     :tila                          "julkaistu"}]]
       (dispatch-mock {:method   :get
                       :path     "/kouta-internal/hakukohde/search?haku=1.2.246.562.29.1&tarjoaja=1.2.246.562.10.00000000001&all=true"
                       :service  :kouta-service
@@ -85,7 +87,8 @@
                      :toinenAsteOnkoKaksoistutkinto false
                      :oikeusHakukohteeseen          true
                      :onkoHarkinnanvarainenKoulutus true
-                     :hasValintakoe                 false}
+                     :hasValintakoe                 false
+                     :tila                          "julkaistu"}
                     {:oid                           "1.2.246.562.20.2"
                      :nimi                          {:fi "Hakukohde 2"}
                      :hakuOid                       "1.2.246.562.29.1"
@@ -93,7 +96,8 @@
                      :toinenAsteOnkoKaksoistutkinto false
                      :oikeusHakukohteeseen          true
                      :onkoHarkinnanvarainenKoulutus true
-                     :hasValintakoe                 false}]]
+                     :hasValintakoe                 false
+                     :tila                          "julkaistu"}]]
       (dispatch-mock {:method   :post
                       :path     "/kouta-internal/hakukohde/findbyoids?tarjoaja=1.2.246.562.10.00000000001"
                       :service  :kouta-service
