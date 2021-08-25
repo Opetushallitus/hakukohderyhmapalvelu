@@ -219,6 +219,7 @@ describe('Hakukohderyhmäpalvelu - haun tiedot', () => {
               rajaava: false,
               'max-hakukohteet': null,
               'jos-ylioppilastutkinto-ei-muita-pohjakoulutusliitepyyntoja': false,
+              'yo-amm-autom-hakukelpoisuus': false,
             },
           },
           {
@@ -238,6 +239,7 @@ describe('Hakukohderyhmäpalvelu - haun tiedot', () => {
               rajaava: false,
               'max-hakukohteet': null,
               'jos-ylioppilastutkinto-ei-muita-pohjakoulutusliitepyyntoja': false,
+              'yo-amm-autom-hakukelpoisuus': false,
             },
           },
         ])
@@ -361,6 +363,7 @@ describe('Hakukohderyhmäpalvelu - haun tiedot', () => {
             rajaava: false,
             'max-hakukohteet': null,
             'jos-ylioppilastutkinto-ei-muita-pohjakoulutusliitepyyntoja': false,
+            'yo-amm-autom-hakukelpoisuus': false,
           },
           hakukohteet: [
             {

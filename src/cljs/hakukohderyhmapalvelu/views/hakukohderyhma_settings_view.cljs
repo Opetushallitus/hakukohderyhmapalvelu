@@ -37,6 +37,26 @@
      :font-size "small"
      :height    "2rem"}]])
 
+(defn- yo-amm-autom-hakukelpoisuus-checkbox
+  [selected-ryhma]
+  [:<>
+   [:div (stylefy/use-style {:display        "flex"
+                             :flex-direction "row"})
+    (checkbox/checkbox-slider {:checked?        (get-in selected-ryhma [:settings :yo-amm-autom-hakukelpoisuus])
+                               :cypressid       "yo-amm-autom-hakukelpoisuus-checkbox"
+                               :id              "yo-amm-autom-hakukelpoisuus-checkbox"
+                               :aria-labelledby @(subscribe [:translation :hakukohderyhma/yo-amm-autom-hakukelpoisuus])
+                               :on-change       (fn []
+                                                  (let [settings (:settings selected-ryhma)
+                                                        updated-settings (assoc settings :yo-amm-autom-hakukelpoisuus (not (:yo-amm-autom-hakukelpoisuus settings)))]
+                                                    (dispatch [hakukohderyhma-events/hakukohderyhma-update-settings updated-settings])
+                                                    ))})
+    (label/label {:id    "yo-amm-autom-hakukelpoisuus-label"
+                  :label @(subscribe [:translation :hakukohderyhma/yo-amm-autom-hakukelpoisuus])
+                  :for   "yo-amm-autom-hakukelpoisuus-checkbox"}
+                 {:margin-left "1rem"
+                  :font-size   "small"})]])
+
 (defn- rajaava-checkbox
   [selected-ryhma]
   [:<>
@@ -83,4 +103,5 @@
      (when selected-ryhma
        [:<>
         (rajaava-checkbox selected-ryhma)
-        (jyemp-checkbox selected-ryhma)])]))
+        (jyemp-checkbox selected-ryhma)
+        (yo-amm-autom-hakukelpoisuus-checkbox selected-ryhma)])]))

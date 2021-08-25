@@ -206,9 +206,11 @@
              (let [selected-ryhma (selected-hakukohderyhma db)
                    rajaava (not (get-in selected-ryhma [:settings :rajaava]))
                    jyemp (get-in selected-ryhma [:settings :jos-ylioppilastutkinto-ei-muita-pohjakoulutusliitepyyntoja])
+                   yo-amm-autom-hakukelpoisuus (get-in selected-ryhma [:settings :yo-amm-autom-hakukelpoisuus])
                    settings {:rajaava rajaava
                              :max-hakukohteet (when rajaava 1)
-                             :jos-ylioppilastutkinto-ei-muita-pohjakoulutusliitepyyntoja jyemp}
+                             :jos-ylioppilastutkinto-ei-muita-pohjakoulutusliitepyyntoja jyemp
+                             :yo-amm-autom-hakukelpoisuus yo-amm-autom-hakukelpoisuus}
                    selected-ryhma-updated (assoc selected-ryhma :settings settings)
                    http-request-id hakukohderyhma-settings-change-confirmed]
                {:db   (update db :requests (fnil conj #{}) http-request-id)
