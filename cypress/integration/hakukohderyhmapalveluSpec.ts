@@ -253,7 +253,7 @@ describe('Hakukohderyhmäpalvelu', () => {
         cy.get(hh.hakukohteidenSuodatusInputSelector).clear()
         cy.get(hh.hakukohteetContainerSelector)
           .children()
-          .should('have.length', 6)
+          .should('have.length', 7)
 
         cy.get(hh.extraFiltersButtonSelector).click({ force: true })
         cy.get(hh.extraFilterBooleanSelector('kaksoistutkinto-filter')).should(
@@ -273,7 +273,7 @@ describe('Hakukohderyhmäpalvelu', () => {
 
         cy.get(hh.hakukohteetContainerSelector)
           .children()
-          .should('have.length', 1)
+          .should('have.length', 2)
 
         cy.get(hh.hakukohteetContainerSelector)
           .children()
@@ -316,7 +316,7 @@ describe('Hakukohderyhmäpalvelu', () => {
 
         cy.get(hh.hakukohteetContainerSelector)
           .children()
-          .should('have.length', 6)
+          .should('have.length', 7)
       })
 
       it('Suodattaa harkinnanvaraisuudella', () => {
@@ -359,7 +359,7 @@ describe('Hakukohderyhmäpalvelu', () => {
 
         cy.get(hh.hakukohteetContainerSelector)
           .children()
-          .should('have.length', 6)
+          .should('have.length', 7)
       })
 
       it('Suodattaa koulutustyypillä', () => {
@@ -371,7 +371,7 @@ describe('Hakukohderyhmäpalvelu', () => {
 
         cy.get(hh.hakukohteetContainerSelector)
           .children()
-          .should('have.length', 1)
+          .should('have.length', 2)
 
         cy.get(hh.hakukohteetContainerSelector)
           .children()
@@ -380,6 +380,14 @@ describe('Hakukohderyhmäpalvelu', () => {
           .last()
           .should($el => {
             expect($el.text()).to.equal('Testi-perustutkinto')
+          })
+        cy.get(hh.hakukohteetContainerSelector)
+          .children()
+          .eq(1)
+          .find('span')
+          .last()
+          .should($el => {
+            expect($el.text()).to.equal('bookarkistoitukohde')
           })
 
         cy.get(hh.extraFiltersButtonSelector).click({ force: true })
@@ -391,7 +399,7 @@ describe('Hakukohderyhmäpalvelu', () => {
         cy.get(hh.extraFiltersPopupClose).click({ force: true })
         cy.get(hh.hakukohteetContainerSelector)
           .children()
-          .should('have.length', 6)
+          .should('have.length', 7)
       })
 
       it('Suodattaa kaikki hakukohteet pois', () => {
@@ -414,7 +422,7 @@ describe('Hakukohderyhmäpalvelu', () => {
         cy.get(hh.extraFiltersPopupClose).click({ force: true })
         cy.get(hh.hakukohteetContainerSelector)
           .children()
-          .should('have.length', 6)
+          .should('have.length', 7)
       })
     })
   })
@@ -518,6 +526,41 @@ describe('Hakukohderyhmäpalvelu', () => {
           hh.hakukohteetContainerOptionSelector('Testi-jatkotutkinto', false),
         )
         .should('exist')
+    })
+  })
+
+  describe('Näyttää hakukohteen olevan arkistoitu', () => {
+    it('Arkistoidulla hakukohteella on ikoni', () => {
+      cy.get(hh.hakukohteidenSuodatusInputSelector)
+        .clear()
+        .type('arkisto')
+        .get(hh.hakukohteetContainerSelector)
+        .contains('bookarkistoitukohde')
+        .find('i')
+        .should('exist')
+        .get(hh.hakukohteidenSuodatusInputSelector)
+        .clear()
+    })
+
+    it('Ryhmään lisätyllä arkistoidulla hakukohteella on myös ikoni', () => {
+      cy.get(hl.hakukohderyhmanValintaDropdown)
+        .type('Suklaaryhmä{enter}')
+        .get(hh.hakukohteetContainerSelector)
+        .contains('bookarkistoitukohde')
+        .click({ force: true })
+        .get(hh.hakukohteetLisaysButtonSelector)
+        .click({ force: true })
+        .get(hh.hakukohderyhmanHakukohteetContainerSelector)
+        .children()
+        .contains('bookarkistoitukohde')
+        .find('i')
+        .should('exist')
+        .click({ force: true })
+        .get(hh.poistaRyhmastaButtonSelector)
+        .click({ force: true })
+        .get(hh.hakukohderyhmanHakukohteetContainerSelector)
+        .children()
+        .should('have.length', 0)
     })
   })
 

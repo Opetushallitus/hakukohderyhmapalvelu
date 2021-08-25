@@ -24,6 +24,7 @@
     :nimi                          {:fi "Hakukohde 1"}
     :organisaatioOid               "1.2.246.562.28.1"
     :hakuOid                       "1.2.246.562.29.1"
+    :tila                          "julkaistu"
     :toinenAsteOnkoKaksoistutkinto false
     :oikeusHakukohteeseen          true
     :valintakokeet []
@@ -32,6 +33,7 @@
     :nimi                          {:fi "Hakukohde 2"}
     :organisaatioOid               "1.2.246.562.28.2"
     :hakuOid                       "1.2.246.562.29.1"
+    :tila                          "julkaistu"
     :toinenAsteOnkoKaksoistutkinto false
     :oikeusHakukohteeseen          true
     :valintakokeet []
@@ -42,6 +44,7 @@
     :nimi                          {:fi "Hakukohde 1"}
     :organisaatioOid               "1.2.246.562.28.1"
     :hakuOid                       "1.2.246.562.29.1"
+    :tila                          "julkaistu"
     :toinenAsteOnkoKaksoistutkinto false
     :oikeusHakukohteeseen          true
     :valintakokeet []
@@ -50,6 +53,7 @@
     :nimi                          {:fi "Hakukohde 3"}
     :organisaatioOid               "1.2.246.562.28.2"
     :hakuOid                       "1.2.246.562.29.2"
+    :tila                          "arkistoitu"
     :toinenAsteOnkoKaksoistutkinto false
     :oikeusHakukohteeseen          true
     :valintakokeet []
@@ -60,6 +64,7 @@
     :nimi                          {:fi "Hakukohde 1"}
     :organisaatioOid               "1.2.246.562.28.1"
     :hakuOid                       "1.2.246.562.29.1"
+    :tila                          "arkistoitu"
     :toinenAsteOnkoKaksoistutkinto false
     :oikeusHakukohteeseen          true
     :valintakokeet []
