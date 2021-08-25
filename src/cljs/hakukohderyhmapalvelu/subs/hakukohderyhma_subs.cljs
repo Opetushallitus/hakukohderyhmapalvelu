@@ -1,7 +1,8 @@
 (ns hakukohderyhmapalvelu.subs.hakukohderyhma-subs
   (:require [re-frame.core :as re-frame]
             [hakukohderyhmapalvelu.i18n.utils :as i18n-utils]
-            [hakukohderyhmapalvelu.events.hakukohderyhmien-hallinta-events :as hakukohderyhma-evts]))
+            [hakukohderyhmapalvelu.events.hakukohderyhmien-hallinta-events :as hakukohderyhma-evts]
+            [hakukohderyhmapalvelu.components.common.material-icons :as icon]))
 
 
 (def selected-hakukohderyhma-as-option :hakukohderyhmien-hallinta/get-currently-selected-hakukohderyhma-as-option)
@@ -69,10 +70,13 @@
     (let [labels {:label     [:nimi]
                   :sub-label [:organisaatio :nimi]}
           transform-fn (i18n-utils/create-item->option-transformer lang labels :oid #(-> % :oikeusHakukohteeseen not))
-          transform-and-add-tila (fn [hakukohde] (-> hakukohde
+          add-icon (fn [option hakukohde] (if (= "arkistoitu" (:tila hakukohde))
+                                            (assoc option :icon icon/archived)
+                                            option))
+          transform-and-add-icon (fn [hakukohde] (-> hakukohde
                                                      (transform-fn)
-                                                     (assoc :tila (:tila hakukohde))))]
-      (map transform-and-add-tila hakukohteet))))
+                                                     (add-icon hakukohde)))]
+      (map transform-and-add-icon hakukohteet))))
 
 (re-frame/reg-sub
   selected-hakukohderyhmas-hakukohteet

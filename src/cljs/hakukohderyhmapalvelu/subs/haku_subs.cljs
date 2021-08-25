@@ -3,7 +3,8 @@
             [hakukohderyhmapalvelu.i18n.utils :as i18n-utils]
             [hakukohderyhmapalvelu.events.haku-events :as haku-events]
             [hakukohderyhmapalvelu.haku-utils :as u]
-            [hakukohderyhmapalvelu.subs.hakukohderyhma-subs :as hakukohderyhma-subs]))
+            [hakukohderyhmapalvelu.subs.hakukohderyhma-subs :as hakukohderyhma-subs]
+            [hakukohderyhmapalvelu.components.common.material-icons :as icon]))
 
 ;; Tilaukset
 (def haku-haut :haku/haut)
@@ -97,13 +98,16 @@
     (let [labels {:label     [:nimi]
                   :sub-label [:organisaatio :nimi]}
           transform-fn (i18n-utils/create-item->option-transformer lang labels :oid #(-> % :oikeusHakukohteeseen not))
-          transform-and-add-tila (fn [hakukohde] (-> hakukohde
+          add-icon (fn [option hakukohde] (if (= "arkistoitu" (:tila hakukohde))
+                                            (assoc option :icon icon/archived)
+                                            option))
+          transform-and-add-icon (fn [hakukohde] (-> hakukohde
                                                       (transform-fn)
-                                                      (assoc :tila (:tila hakukohde))))]
+                                                      (add-icon hakukohde)))]
       (->> hakukohteet
            (filter #(u/hakukohde-includes-string? % filter-text lang))
            (filter (u/create-hakukohde-matches-all-lisarajaimet lisarajaimet))
-           (map transform-and-add-tila)
+           (map transform-and-add-icon)
            (remove :is-disabled)))))
 
 (re-frame/reg-sub
