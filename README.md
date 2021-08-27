@@ -10,6 +10,7 @@
     * [Palvelun pysäyttäminen](#palvelun-pysäyttäminen)
     * [Palvelun logien tarkastelu](#palvelun-logien-tarkastelu)
     * [Palvelun komponenttien tilan tarkastelu](#palvelun-komponenttien-tilan-tarkastelu)
+  * [Swagger](#swagger)
 * [Testien ajaminen](#testien-ajaminen)
   * [Lint](#lint)
     * [Clojure(Script) -tiedostojen lint](#clojurescript--tiedostojen-lint)
@@ -96,6 +97,11 @@ make start-local    # Palvelun käynnistäminen
 make reload         # Palvelun uudelleenlataaminen, ei uudellenkäynnistä docker-kontteja
 make restart-local  # Palvelun uudelleenkäynnistys, uudelleenkäynnistää docker-kontit
 ```
+
+### Swagger
+Swagger UI löytyy polusta `/hakukohderyhmapalvelu/swagger/index.html`
+
+Swagger JSON löytyy polusta `/hakukohderyhmapalvelu/swagger.json` 
 
 ## Testien ajaminen
 
