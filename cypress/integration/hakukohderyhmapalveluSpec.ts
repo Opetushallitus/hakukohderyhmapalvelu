@@ -129,7 +129,7 @@ describe('Hakukohderyhmäpalvelu', () => {
     cy.mockBrowserRequest({
       method: 'GET',
       path:
-        'http://localhost/koodisto-service/rest/json/searchKoodis?koodiUris=koulutustyyppi_1&koodiUris=koulutustyyppi_2&koodiUris=koulutustyyppi_4&koodiUris=koulutustyyppi_10&koodiUris=koulutustyyppi_40&koodiTilas=HYVAKSYTTY&koodiVersioSelection=LATEST',
+        'http://localhost/koodisto-service/rest/json/searchKoodis?koodiUris=koulutustyyppi_1&koodiUris=koulutustyyppi_2&koodiUris=koulutustyyppi_4&koodiUris=koulutustyyppi_5&koodiUris=koulutustyyppi_10&koodiUris=koulutustyyppi_40&koodiUris=koulutustyyppi_41&koodiTilas=HYVAKSYTTY&koodiTilas=LUONNOS&koodiVersioSelection=LATEST',
       fixturePath: 'hakukohderyhmapalvelu/get-koulutustyypit-response.json',
       responseAlias: 'hakukohderyhmapalvelu-get-koulutustyypit-response',
     })

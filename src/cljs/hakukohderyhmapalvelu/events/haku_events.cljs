@@ -98,9 +98,12 @@
                        :search-params    [[:koodiUris "koulutustyyppi_1"]
                                           [:koodiUris "koulutustyyppi_2"]
                                           [:koodiUris "koulutustyyppi_4"]
+                                          [:koodiUris "koulutustyyppi_5"]
                                           [:koodiUris "koulutustyyppi_10"]
                                           [:koodiUris "koulutustyyppi_40"]
+                                          [:koodiUris "koulutustyyppi_41"]
                                           [:koodiTilas "HYVAKSYTTY"]
+                                          [:koodiTilas "LUONNOS"]
                                           [:koodiVersioSelection "LATEST"]]
                        :response-schema  schemas/KoodistoResponse
                        :response-handler [handle-get-koulutustyypit-response]
