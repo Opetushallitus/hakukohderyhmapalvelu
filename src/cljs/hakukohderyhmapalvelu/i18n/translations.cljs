@@ -30,6 +30,7 @@
                     :lisarajain-harkinnanvaraiset {:fi "Hakukohteella harkinnanvarainen valinta"}
                     :lisarajain-kaksoistutkinto   {:fi "Hakukohteella mahdollisuus kaksoistutkintoon"}
                     :lisarajain-koulutustyypit    {:fi "Koulutustyypit"}
+                    :lisarajain-urheilu           {:fi "Urheiluoppilaitoksien hakukohteet"}
                     :nimi-tai-organisaatio        {:fi "Nimi tai organisaatio"}
                     :poista-valinnat              {:fi "Poista valinnat"}
                     :valitse-kaikki               {:fi "Valitse kaikki"}

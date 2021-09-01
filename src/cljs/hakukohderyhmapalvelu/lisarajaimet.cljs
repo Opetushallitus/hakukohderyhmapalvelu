@@ -22,6 +22,12 @@
     :type    :boolean
     :pred-fn #(= "julkaistu" %)
     :value   false}
+   {:id      "urheilu-filter"
+    :label   :hakukohderyhma/lisarajain-urheilu
+    :path    [:jarjestaaUrheilijanAmmKoulutusta]
+    :type    :boolean
+    :pred-fn true?
+    :value   false}
    {:id      "harkinnanvaraiset-filter"
     :label   :hakukohderyhma/lisarajain-harkinnanvaraiset
     :path    []

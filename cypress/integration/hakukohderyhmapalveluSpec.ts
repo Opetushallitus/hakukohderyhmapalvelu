@@ -394,6 +394,45 @@ describe('Hakukohderyhmäpalvelu', () => {
           .should('have.length', 8)
       })
 
+      it('Suodattaa urheilijakoulutuksella', () => {
+        cy.get(hh.extraFiltersButtonSelector).click({ force: true })
+        cy.get(hh.extraFilterBooleanSelector('urheilu-filter')).click({
+          force: true,
+        })
+        cy.get(hh.extraFiltersPopupClose).click({ force: true })
+
+        cy.get(hh.hakukohteetContainerSelector)
+          .children()
+          .should('have.length', 2)
+
+        cy.get(hh.hakukohteetContainerSelector)
+          .children()
+          .eq(0)
+          .find('span')
+          .last()
+          .should($el => {
+            expect($el.text()).to.equal('TestiZ Ammatillinen harkinnanvarainen')
+          })
+        cy.get(hh.hakukohteetContainerSelector)
+          .children()
+          .eq(1)
+          .find('span')
+          .last()
+          .should($el => {
+            expect($el.text()).to.equal('xtrakohde-4')
+          })
+
+        cy.get(hh.extraFiltersButtonSelector).click({ force: true })
+        cy.get(hh.extraFilterBooleanSelector('urheilu-filter')).click({
+          force: true,
+        })
+        cy.get(hh.extraFiltersPopupClose).click({ force: true })
+
+        cy.get(hh.hakukohteetContainerSelector)
+          .children()
+          .should('have.length', 8)
+      })
+
       it('Suodattaa kaikki hakukohteet pois', () => {
         cy.get(hh.extraFiltersButtonSelector).click({ force: true })
         cy.get(hh.extraFilterSelectSelector('koulutustyypit-filter')).type(

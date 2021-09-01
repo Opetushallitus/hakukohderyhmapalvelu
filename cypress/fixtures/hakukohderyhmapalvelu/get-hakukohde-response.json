@@ -228,7 +228,8 @@
     "oikeusHakukohteeseen":  true,
     "sora": {"tila": "julkaistu"},
     "koulutustyyppikoodi": "koulutustyyppi_3",
-    "onkoHarkinnanvarainenKoulutus": true
+    "onkoHarkinnanvarainenKoulutus": true,
+    "jarjestaaUrheilijanAmmKoulutusta": false
   },
   {
     "oid": "1.2.4.2.1.8",
@@ -261,7 +262,8 @@
     "oikeusHakukohteeseen":  true,
     "sora": {"tila": "julkaistu"},
     "koulutustyyppikoodi": "koulutustyyppi_26",
-    "onkoHarkinnanvarainenKoulutus": false
+    "onkoHarkinnanvarainenKoulutus": false,
+    "jarjestaaUrheilijanAmmKoulutusta": true
   },
   {
     "oid": "1.2.4.2.1.9",
@@ -327,6 +329,7 @@
     "oikeusHakukohteeseen":  true,
     "sora": {"tila": "arkistoitu"},
     "koulutustyyppikoodi": "koulutustyyppi_26",
-    "onkoHarkinnanvarainenKoulutus": true
+    "onkoHarkinnanvarainenKoulutus": true,
+    "jarjestaaUrheilijanAmmKoulutusta": true
   }
 ]

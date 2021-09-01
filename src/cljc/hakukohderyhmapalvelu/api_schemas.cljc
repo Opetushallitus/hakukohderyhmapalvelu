@@ -24,15 +24,16 @@
 (s/defschema Hakukohde
   (st/merge
     CommonOrganisaatioEntityPayload
-    {:organisaatio                                   Organisaatio
-     :toinenAsteOnkoKaksoistutkinto                  s/Bool
-     :tila                                           (s/enum "luonnos" "julkaistu" "arkistoitu")
-     (s/optional-key :hasValintakoe)                 s/Bool
-     (s/optional-key :sora)                          SoraTieto
-     (s/optional-key :oikeusHakukohteeseen)          s/Bool
-     (s/optional-key :onkoHarkinnanvarainenKoulutus) s/Bool
-     (s/optional-key :hakuOid)                       s/Str
-     (s/optional-key :koulutustyyppikoodi)           (s/maybe s/Str)}))
+    {:organisaatio                                      Organisaatio
+     :toinenAsteOnkoKaksoistutkinto                     s/Bool
+     :tila                                              (s/enum "luonnos" "julkaistu" "arkistoitu")
+     (s/optional-key :hasValintakoe)                    s/Bool
+     (s/optional-key :sora)                             SoraTieto
+     (s/optional-key :oikeusHakukohteeseen)             s/Bool
+     (s/optional-key :onkoHarkinnanvarainenKoulutus)    s/Bool
+     (s/optional-key :hakuOid)                          s/Str
+     (s/optional-key :koulutustyyppikoodi)              (s/maybe s/Str)
+     (s/optional-key :jarjestaaUrheilijanAmmKoulutusta) s/Bool }))
 
 (s/defschema HakukohderyhmaSettings
   {:rajaava s/Bool

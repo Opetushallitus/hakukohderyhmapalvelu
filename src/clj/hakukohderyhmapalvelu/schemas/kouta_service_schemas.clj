@@ -21,17 +21,18 @@
    s/Any s/Any})
 
 (s/defschema Hakukohde
-  {:oid                                            s/Str
-   :nimi                                           c/Nimi
-   :organisaatioOid                                s/Str
-   :hakuOid                                        s/Str
-   :toinenAsteOnkoKaksoistutkinto                  s/Bool
-   :valintakokeet                                  [Valintakoe]
-   :tila                                           (s/enum "luonnos" "julkaistu" "arkistoitu")
-   (s/optional-key :onkoHarkinnanvarainenKoulutus) s/Bool
-   (s/optional-key :oikeusHakukohteeseen)          s/Bool
-   (s/optional-key :koulutustyyppikoodi)           (s/maybe s/Str)
-   s/Any                                           s/Any})
+  {:oid                                               s/Str
+   :nimi                                              c/Nimi
+   :organisaatioOid                                   s/Str
+   :hakuOid                                           s/Str
+   :toinenAsteOnkoKaksoistutkinto                     s/Bool
+   :valintakokeet                                     [Valintakoe]
+   :tila                                              (s/enum "luonnos" "julkaistu" "arkistoitu")
+   (s/optional-key :onkoHarkinnanvarainenKoulutus)    s/Bool
+   (s/optional-key :oikeusHakukohteeseen)             s/Bool
+   (s/optional-key :jarjestaaUrheilijanAmmKoulutusta) s/Bool
+   (s/optional-key :koulutustyyppikoodi)              (s/maybe s/Str)
+   s/Any                                              s/Any})
 
 (s/defschema HakukohdeListResponse
   [Hakukohde])
