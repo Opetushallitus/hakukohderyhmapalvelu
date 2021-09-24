@@ -1,17 +1,16 @@
 (ns hakukohderyhmapalvelu.lisarajaimet)
 
 (defn- harkinnanvarainen-hakukohde? [hakukohde]
-  (let [ammatillinen-koulustyyppi? #{"koulutustyyppi_1" "koulutustyyppi_4"}]
+  (let [ammatillinen-koulustyyppi? #{"koulutustyyppi_1"}]
     (and
-      (some ammatillinen-koulustyyppi? (:koulutustyypit hakukohde))
-      (or
-        (:onkoHarkinnanvarainenKoulutus hakukohde)
-        (not (:hasValintakoe hakukohde))))))
+      (= ammatillinen-koulustyyppi? (:koulutustyyppikoodi hakukohde))
+      (:onkoHarkinnanvarainenKoulutus hakukohde)
+      (not (:hasValintakoe hakukohde)))))
 
 (def default-lisarajain-filters
   [{:id      "koulutustyypit-filter"
     :label   :hakukohderyhma/lisarajain-koulutustyypit
-    :path    [:koulutustyypit]
+    :path    [:koulutustyyppikoodi]
     :type    :select
     :pred-fn (fn [val coll] (some #(= val %) coll))
     :value   nil
