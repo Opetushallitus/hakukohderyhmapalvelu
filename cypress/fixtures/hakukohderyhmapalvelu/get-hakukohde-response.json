@@ -29,7 +29,7 @@
     "modified": "2021-01-05T10:01:02",
     "oikeusHakukohteeseen":  true,
     "sora": {"tila": "arkistoitu"},
-    "koulutustyypit": ["koulutustyyppi_10"],
+    "koulutustyyppikoodi": "koulutustyyppi_10",
     "onkoHarkinnanvarainenKoulutus": true
   },
   {
@@ -62,7 +62,7 @@
     "modified": "2021-02-05T10:01:02",
     "oikeusHakukohteeseen":  true,
     "sora": {"tila": "aktiivinen"},
-    "koulutustyypit": [],
+    "koulutustyyppikoodi": null,
     "onkoHarkinnanvarainenKoulutus": true
   },
   {
@@ -95,7 +95,7 @@
     "modified": "2021-02-05T10:01:02",
     "oikeusHakukohteeseen":  false,
     "sora": {"tila": "arkistoitu"},
-    "koulutustyypit": ["koulutustyyppi_4"],
+    "koulutustyyppikoodi": "koulutustyyppi_4",
     "onkoHarkinnanvarainenKoulutus": true
   },
   {
@@ -128,7 +128,7 @@
     "modified": "2021-02-05T10:01:02",
     "oikeusHakukohteeseen":  false,
     "sora": {"tila": "aktiivinen"},
-    "koulutustyypit": ["koulutustyyppi_1"],
+    "koulutustyyppikoodi": "koulutustyyppi_1",
     "onkoHarkinnanvarainenKoulutus": true
   },
   {
@@ -161,7 +161,7 @@
     "modified": "2021-02-05T10:01:02",
     "oikeusHakukohteeseen":  true,
     "sora": {"tila": "aktiivinen"},
-    "koulutustyypit": ["koulutustyyppi_4"],
+    "koulutustyyppikoodi": "koulutustyyppi_4",
     "onkoHarkinnanvarainenKoulutus": true
   },
   {
@@ -194,7 +194,7 @@
     "modified": "2021-02-05T10:01:02",
     "oikeusHakukohteeseen":  true,
     "sora": {"tila": "aktiivinen"},
-    "koulutustyypit": ["koulutustyyppi_1"],
+    "koulutustyyppikoodi": "koulutustyyppi_1",
     "onkoHarkinnanvarainenKoulutus": false
   },
   {
@@ -227,7 +227,7 @@
     "modified": "2021-02-05T10:01:02",
     "oikeusHakukohteeseen":  true,
     "sora": {"tila": "aktiivinen"},
-    "koulutustyypit": ["koulutustyyppi_3"],
+    "koulutustyyppikoodi": "koulutustyyppi_3",
     "onkoHarkinnanvarainenKoulutus": true
   },
   {
@@ -260,7 +260,7 @@
     "modified": "2021-02-05T10:01:02",
     "oikeusHakukohteeseen":  true,
     "sora": {"tila": "aktiivinen"},
-    "koulutustyypit": ["koulutustyyppi_1"],
+    "koulutustyyppikoodi": "koulutustyyppi_1",
     "onkoHarkinnanvarainenKoulutus": false
   },
   {
@@ -293,7 +293,40 @@
     "modified": "2021-02-05T10:01:02",
     "oikeusHakukohteeseen":  true,
     "sora": {"tila": "arkistoitu"},
-    "koulutustyypit": ["koulutustyyppi_10"],
+    "koulutustyyppikoodi": "koulutustyyppi_10",
     "onkoHarkinnanvarainenKoulutus": false
+  },
+  {
+    "oid": "1.2.4.2.1.10",
+    "toteutusOid": "1.2.4.1.1.9",
+    "hakuOid": "1.2.4.1.1.1",
+    "tila": "julkaistu",
+    "nimi": {"fi": "TestiZ Ammatillinen harkinnanvarainen"},
+    "hakulomakeKuvaus": {},
+    "hakulomakeLinkki": {"fi": "http://example.com/fi", "sv": "http://example.com/sv", "en": "http://example.com/en"},
+    "kaytetaanHaunHakulomaketta": true,
+    "aloituspaikat": 100,
+    "pohjakoulutusvaatimusKoodiUrit": ["pohjakoulutusvaatimuskouta_pk#1"],
+    "muuPohjakoulutusvaatimus": {},
+    "toinenAsteOnkoKaksoistutkinto": false,
+    "kaytetaanHaunAikataulua": false,
+    "valintaperusteId": "3310c079-9516-4395-b06e-ad7037b6bbdd",
+    "yhdenPaikanSaanto": {"voimassa": false, "syy": "Ei erityistä syytä"},
+    "liitteetOnkoSamaToimitusaika": true,
+    "liitteetOnkoSamaToimitusosoite": true,
+    "liitteidenToimitusaika": "2020-02-05T11:01:02",
+    "liitteidenToimitustapa": "hakijapalvelu",
+    "liitteet": [],
+    "valintakokeet": [],
+    "hakuajat": [],
+    "muokkaaja": "1.2.8.1.2.1",
+    "tarjoajat": ["1.2.9.1.2.1"],
+    "organisaatioOid": "1.2.10.1.2.1",
+    "kielivalinta": ["fi"],
+    "modified": "2021-02-05T10:01:02",
+    "oikeusHakukohteeseen":  true,
+    "sora": {"tila": "arkistoitu"},
+    "koulutustyyppikoodi": "koulutustyyppi_1",
+    "onkoHarkinnanvarainenKoulutus": true
   }
 ]

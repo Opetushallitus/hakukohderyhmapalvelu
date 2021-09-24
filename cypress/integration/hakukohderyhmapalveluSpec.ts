@@ -253,7 +253,7 @@ describe('Hakukohderyhmäpalvelu', () => {
         cy.get(hh.hakukohteidenSuodatusInputSelector).clear()
         cy.get(hh.hakukohteetContainerSelector)
           .children()
-          .should('have.length', 7)
+          .should('have.length', 8)
 
         cy.get(hh.extraFiltersButtonSelector).click({ force: true })
         cy.get(hh.extraFilterBooleanSelector('kaksoistutkinto-filter')).should(
@@ -316,7 +316,7 @@ describe('Hakukohderyhmäpalvelu', () => {
 
         cy.get(hh.hakukohteetContainerSelector)
           .children()
-          .should('have.length', 7)
+          .should('have.length', 8)
       })
 
       it('Suodattaa harkinnanvaraisuudella', () => {
@@ -330,7 +330,7 @@ describe('Hakukohderyhmäpalvelu', () => {
 
         cy.get(hh.hakukohteetContainerSelector)
           .children()
-          .should('have.length', 2)
+          .should('have.length', 1)
 
         cy.get(hh.hakukohteetContainerSelector)
           .children()
@@ -338,15 +338,7 @@ describe('Hakukohderyhmäpalvelu', () => {
           .find('span')
           .last()
           .should($el => {
-            expect($el.text()).to.equal('xtrakohde-1')
-          })
-        cy.get(hh.hakukohteetContainerSelector)
-          .children()
-          .eq(1)
-          .find('span')
-          .last()
-          .should($el => {
-            expect($el.text()).to.equal('xtrakohde-2')
+            expect($el.text()).to.equal('TestiZ Ammatillinen harkinnanvarainen')
           })
 
         cy.get(hh.extraFiltersButtonSelector).click({ force: true })
@@ -359,7 +351,7 @@ describe('Hakukohderyhmäpalvelu', () => {
 
         cy.get(hh.hakukohteetContainerSelector)
           .children()
-          .should('have.length', 7)
+          .should('have.length', 8)
       })
 
       it('Suodattaa koulutustyypillä', () => {
@@ -399,7 +391,7 @@ describe('Hakukohderyhmäpalvelu', () => {
         cy.get(hh.extraFiltersPopupClose).click({ force: true })
         cy.get(hh.hakukohteetContainerSelector)
           .children()
-          .should('have.length', 7)
+          .should('have.length', 8)
       })
 
       it('Suodattaa kaikki hakukohteet pois', () => {
@@ -422,7 +414,7 @@ describe('Hakukohderyhmäpalvelu', () => {
         cy.get(hh.extraFiltersPopupClose).click({ force: true })
         cy.get(hh.hakukohteetContainerSelector)
           .children()
-          .should('have.length', 7)
+          .should('have.length', 8)
       })
     })
   })
