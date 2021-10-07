@@ -297,7 +297,7 @@
     "onkoHarkinnanvarainenKoulutus": false
   },
   {
-    "oid": "1.2.4.2.1.10",
+    "oid": "1.2.4.2.2.1",
     "toteutusOid": "1.2.4.1.1.9",
     "hakuOid": "1.2.4.1.1.1",
     "tila": "julkaistu",
