@@ -161,7 +161,7 @@ describe('Hakukohderyhmäpalvelu - haun tiedot', () => {
               onkoHarkinnanvarainenKoulutus: true,
               toinenAsteOnkoKaksoistutkinto: false,
               sora: { tila: 'aktiivinen' },
-              koulutustyyppikoodi: 'koulutustyyppi_1',
+              koulutustyyppikoodi: 'koulutustyyppi_26',
             },
           ]),
       )

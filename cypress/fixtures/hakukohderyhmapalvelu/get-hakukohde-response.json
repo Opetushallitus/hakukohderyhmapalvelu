@@ -128,7 +128,7 @@
     "modified": "2021-02-05T10:01:02",
     "oikeusHakukohteeseen":  false,
     "sora": {"tila": "aktiivinen"},
-    "koulutustyyppikoodi": "koulutustyyppi_1",
+    "koulutustyyppikoodi": "koulutustyyppi_26",
     "onkoHarkinnanvarainenKoulutus": true
   },
   {
@@ -194,7 +194,7 @@
     "modified": "2021-02-05T10:01:02",
     "oikeusHakukohteeseen":  true,
     "sora": {"tila": "aktiivinen"},
-    "koulutustyyppikoodi": "koulutustyyppi_1",
+    "koulutustyyppikoodi": "koulutustyyppi_26",
     "onkoHarkinnanvarainenKoulutus": false
   },
   {
@@ -260,7 +260,7 @@
     "modified": "2021-02-05T10:01:02",
     "oikeusHakukohteeseen":  true,
     "sora": {"tila": "aktiivinen"},
-    "koulutustyyppikoodi": "koulutustyyppi_1",
+    "koulutustyyppikoodi": "koulutustyyppi_26",
     "onkoHarkinnanvarainenKoulutus": false
   },
   {
@@ -326,7 +326,7 @@
     "modified": "2021-02-05T10:01:02",
     "oikeusHakukohteeseen":  true,
     "sora": {"tila": "arkistoitu"},
-    "koulutustyyppikoodi": "koulutustyyppi_1",
+    "koulutustyyppikoodi": "koulutustyyppi_26",
     "onkoHarkinnanvarainenKoulutus": true
   }
 ]

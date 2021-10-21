@@ -95,7 +95,7 @@
                 :http {:method           :get
                        :http-request-id  http-request-id
                        :path             url
-                       :search-params    [[:koodiUris "koulutustyyppi_1"]
+                       :search-params    [[:koodiUris "koulutustyyppi_26"]
                                           [:koodiUris "koulutustyyppi_2"]
                                           [:koodiUris "koulutustyyppi_4"]
                                           [:koodiUris "koulutustyyppi_5"]

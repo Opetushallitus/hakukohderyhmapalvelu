@@ -1,7 +1,7 @@
 (ns hakukohderyhmapalvelu.lisarajaimet)
 
 (defn- harkinnanvarainen-hakukohde? [hakukohde]
-  (let [ammatillinen-koulustyyppi? "koulutustyyppi_1"]
+  (let [ammatillinen-koulustyyppi? "koulutustyyppi_26"]
     (and
       (= ammatillinen-koulustyyppi? (:koulutustyyppikoodi hakukohde))
       (boolean (:onkoHarkinnanvarainenKoulutus hakukohde))
