@@ -330,7 +330,7 @@ describe('Hakukohderyhmäpalvelu', () => {
 
         cy.get(hh.hakukohteetContainerSelector)
           .children()
-          .should('have.length', 1)
+          .should('have.length', 2)
 
         cy.get(hh.hakukohteetContainerSelector)
           .children()

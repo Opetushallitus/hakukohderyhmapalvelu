@@ -4,8 +4,9 @@
   (let [ammatillinen-koulustyyppi? "koulutustyyppi_26"]
     (and
       (= ammatillinen-koulustyyppi? (:koulutustyyppikoodi hakukohde))
-      (boolean (:onkoHarkinnanvarainenKoulutus hakukohde))
-      (not (boolean (:hasValintakoe hakukohde))))))
+      (or
+        (boolean (:onkoHarkinnanvarainenKoulutus hakukohde))
+        (not (boolean (:hasValintakoe hakukohde)))))))
 
 (def default-lisarajain-filters
   [{:id      "koulutustyypit-filter"
