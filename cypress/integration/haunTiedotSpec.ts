@@ -118,7 +118,7 @@ describe('Hakukohderyhmäpalvelu - haun tiedot', () => {
               hasValintakoe: false,
               onkoHarkinnanvarainenKoulutus: true,
               toinenAsteOnkoKaksoistutkinto: false,
-              sora: { tila: 'aktiivinen' },
+              sora: { tila: 'julkaistu' },
               koulutustyyppikoodi: null,
             },
             {
@@ -160,7 +160,7 @@ describe('Hakukohderyhmäpalvelu - haun tiedot', () => {
               hasValintakoe: false,
               onkoHarkinnanvarainenKoulutus: true,
               toinenAsteOnkoKaksoistutkinto: false,
-              sora: { tila: 'aktiivinen' },
+              sora: { tila: 'julkaistu' },
               koulutustyyppikoodi: 'koulutustyyppi_26',
             },
           ]),
@@ -328,7 +328,7 @@ describe('Hakukohderyhmäpalvelu - haun tiedot', () => {
           {
             oid: '1.2.4.2.1.2',
             nimi: { fi: 'Testi-jatkotutkinto' },
-            sora: { tila: 'aktiivinen' },
+            sora: { tila: 'julkaistu' },
             hakuOid: '1.2.4.1.1.1',
             toinenAsteOnkoKaksoistutkinto: false,
             tila: 'julkaistu',
@@ -402,7 +402,7 @@ describe('Hakukohderyhmäpalvelu - haun tiedot', () => {
               oikeusHakukohteeseen: true,
               hasValintakoe: false,
               toinenAsteOnkoKaksoistutkinto: false,
-              sora: { tila: 'aktiivinen' },
+              sora: { tila: 'julkaistu' },
               tila: 'julkaistu',
               organisaatio: {
                 oid: '1.2.10.1.2.2',

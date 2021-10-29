@@ -20,7 +20,7 @@
     :label   :hakukohderyhma/sora-hakukohteet
     :path    [:sora :tila]
     :type    :boolean
-    :pred-fn #(= "aktiivinen" %)
+    :pred-fn #(= "julkaistu" %)
     :value   false}
    {:id      "harkinnanvaraiset-filter"
     :label   :hakukohderyhma/lisarajain-harkinnanvaraiset
