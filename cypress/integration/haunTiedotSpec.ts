@@ -98,7 +98,7 @@ describe('Hakukohderyhmäpalvelu - haun tiedot', () => {
               onkoHarkinnanvarainenKoulutus: true,
               toinenAsteOnkoKaksoistutkinto: true,
               sora: { tila: 'arkistoitu' },
-              koulutustyypit: ['koulutustyyppi_10'],
+              koulutustyyppikoodi: 'koulutustyyppi_10',
             },
             {
               oid: '1.2.4.2.1.2',
@@ -118,8 +118,8 @@ describe('Hakukohderyhmäpalvelu - haun tiedot', () => {
               hasValintakoe: false,
               onkoHarkinnanvarainenKoulutus: true,
               toinenAsteOnkoKaksoistutkinto: false,
-              sora: { tila: 'aktiivinen' },
-              koulutustyypit: [],
+              sora: { tila: 'julkaistu' },
+              koulutustyyppikoodi: null,
             },
             {
               oid: '1.2.4.2.1.3',
@@ -140,7 +140,7 @@ describe('Hakukohderyhmäpalvelu - haun tiedot', () => {
               onkoHarkinnanvarainenKoulutus: true,
               toinenAsteOnkoKaksoistutkinto: false,
               sora: { tila: 'arkistoitu' },
-              koulutustyypit: ['koulutustyyppi_4'],
+              koulutustyyppikoodi: 'koulutustyyppi_4',
             },
             {
               oid: '1.2.4.2.1.4',
@@ -160,8 +160,8 @@ describe('Hakukohderyhmäpalvelu - haun tiedot', () => {
               hasValintakoe: false,
               onkoHarkinnanvarainenKoulutus: true,
               toinenAsteOnkoKaksoistutkinto: false,
-              sora: { tila: 'aktiivinen' },
-              koulutustyypit: ['koulutustyyppi_1'],
+              sora: { tila: 'julkaistu' },
+              koulutustyyppikoodi: 'koulutustyyppi_26',
             },
           ]),
       )
@@ -197,6 +197,7 @@ describe('Hakukohderyhmäpalvelu - haun tiedot', () => {
             '1.2.4.2.1.4',
             '1.2.4.2.1.2',
             '1.2.4.2.1.1',
+            '1.2.4.2.2.1',
             '1.2.4.2.1.9',
             '1.2.4.2.1.5',
             '1.2.4.2.1.6',
@@ -260,6 +261,7 @@ describe('Hakukohderyhmäpalvelu - haun tiedot', () => {
             '1.2.4.2.1.4',
             '1.2.4.2.1.2',
             '1.2.4.2.1.1',
+            '1.2.4.2.2.1',
             '1.2.4.2.1.9',
             '1.2.4.2.1.5',
             '1.2.4.2.1.6',
@@ -326,7 +328,7 @@ describe('Hakukohderyhmäpalvelu - haun tiedot', () => {
           {
             oid: '1.2.4.2.1.2',
             nimi: { fi: 'Testi-jatkotutkinto' },
-            sora: { tila: 'aktiivinen' },
+            sora: { tila: 'julkaistu' },
             hakuOid: '1.2.4.1.1.1',
             toinenAsteOnkoKaksoistutkinto: false,
             tila: 'julkaistu',
@@ -400,7 +402,7 @@ describe('Hakukohderyhmäpalvelu - haun tiedot', () => {
               oikeusHakukohteeseen: true,
               hasValintakoe: false,
               toinenAsteOnkoKaksoistutkinto: false,
-              sora: { tila: 'aktiivinen' },
+              sora: { tila: 'julkaistu' },
               tila: 'julkaistu',
               organisaatio: {
                 oid: '1.2.10.1.2.2',

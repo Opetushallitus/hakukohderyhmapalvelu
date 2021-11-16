@@ -28,6 +28,8 @@ script: >-
   cp -v ./target/hakukohderyhmapalvelu.jar $DOCKER_BUILD_DIR/artifact/hakukohderyhmapalvelu.jar &&
   cp -vr ./oph-configuration $DOCKER_BUILD_DIR/config/ &&
   ./ci-tools/build/build-fatjar.sh hakukohderyhmapalvelu
+addons:
+  chrome: stable
 deploy:
   provider: script
   script: >-

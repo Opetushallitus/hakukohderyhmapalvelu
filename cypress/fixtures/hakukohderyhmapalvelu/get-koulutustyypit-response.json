@@ -213,8 +213,8 @@
     ]
   },
   {
-    "koodiUri": "koulutustyyppi_1",
-    "resourceUri": "http://localhost/koodisto-service/rest/codeelement/koulutustyyppi_1",
+    "koodiUri": "koulutustyyppi_26",
+    "resourceUri": "http://localhost/koodisto-service/rest/codeelement/koulutustyyppi_26",
     "version": 1,
     "versio": 1,
     "koodisto": {

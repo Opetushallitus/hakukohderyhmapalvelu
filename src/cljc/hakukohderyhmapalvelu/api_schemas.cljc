@@ -32,7 +32,7 @@
      (s/optional-key :oikeusHakukohteeseen)          s/Bool
      (s/optional-key :onkoHarkinnanvarainenKoulutus) s/Bool
      (s/optional-key :hakuOid)                       s/Str
-     (s/optional-key :koulutustyypit)                [s/Str]}))
+     (s/optional-key :koulutustyyppikoodi)           (s/maybe s/Str)}))
 
 (s/defschema HakukohderyhmaSettings
   {:rajaava s/Bool

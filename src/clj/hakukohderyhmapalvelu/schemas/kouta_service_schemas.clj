@@ -30,6 +30,7 @@
    :tila                                           (s/enum "luonnos" "julkaistu" "arkistoitu")
    (s/optional-key :onkoHarkinnanvarainenKoulutus) s/Bool
    (s/optional-key :oikeusHakukohteeseen)          s/Bool
+   (s/optional-key :koulutustyyppikoodi)           (s/maybe s/Str)
    s/Any                                           s/Any})
 
 (s/defschema HakukohdeListResponse
