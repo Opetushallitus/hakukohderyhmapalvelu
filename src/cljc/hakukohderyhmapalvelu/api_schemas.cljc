@@ -24,7 +24,7 @@
 (s/defschema Hakukohde
   (st/merge
     CommonOrganisaatioEntityPayload
-    {:organisaatio                                      Organisaatio
+    {:tarjoaja                                          Organisaatio
      :toinenAsteOnkoKaksoistutkinto                     s/Bool
      :tila                                              (s/enum "luonnos" "julkaistu" "arkistoitu")
      (s/optional-key :hasValintakoe)                    s/Bool

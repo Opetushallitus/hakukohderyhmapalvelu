@@ -13,6 +13,26 @@
 
 (def hakukohderyhma-keys [:oid :nimi :version :parentOid :tyypit :ryhmatyypit :kayttoryhmat])
 
+(defn call-find-by-oids
+  [config organisaatio-service-authenticating-client oid-list]
+  (if (not-empty oid-list)
+    (let [url           (oph-url/resolve-url :organisaatio-service.organisaatio.v4.findbyoids config)
+          response-body (-> (authenticating-client-protocol/post organisaatio-service-authenticating-client
+                              {:url  url
+                               :body oid-list}
+                              {:request-schema  schemas/FindByOidsRequest
+                               :response-schema schemas/FindByOidsResponse})
+                          (http/parse-and-validate schemas/FindByOidsResponse))]
+      (map #(st/select-schema % api-schemas/Organisaatio) response-body))
+    []))
+
+(defn do-chunked
+  [chunk-size f list]
+  (if (> (count list) chunk-size)
+    (let [[chunk rest] (split-at chunk-size list)]
+      (concat (f chunk) (do-chunked chunk-size f rest)))
+    (f list)))
+
 (defrecord OrganisaatioService [organisaatio-service-authenticating-client config]
   component/Lifecycle
 
@@ -44,18 +64,10 @@
                            (http/parse-and-validate schemas/Organisaatio))]
       (st/select-schema organisaatio api-schemas/Organisaatio)))
 
-
   (find-by-oids [_ oid-list]
-    (if (not-empty oid-list)
-      (let [url (oph-url/resolve-url :organisaatio-service.organisaatio.v4.findbyoids config)
-            response-body (-> (authenticating-client-protocol/post organisaatio-service-authenticating-client
-                                                                   {:url  url
-                                                                    :body oid-list}
-                                                                   {:request-schema  schemas/FindByOidsRequest
-                                                                    :response-schema schemas/FindByOidsResponse})
-                              (http/parse-and-validate schemas/FindByOidsResponse))]
-        (map #(st/select-schema % api-schemas/Organisaatio) response-body))
-      []))
+    (let [f (partial call-find-by-oids config organisaatio-service-authenticating-client)]
+      ; Organisaatio service limits requests to have at most 1000 oids
+      (do-chunked 1000 f oid-list)))
 
   (post-new-organisaatio [_ hakukohderyhma]
     (s/validate schemas/PostOrganisaatioHakukohderyhmaParameter hakukohderyhma)

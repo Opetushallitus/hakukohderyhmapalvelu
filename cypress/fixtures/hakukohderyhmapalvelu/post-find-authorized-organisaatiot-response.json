@@ -5,7 +5,7 @@
     "tyypit": [
       "organisaatiotyyppi_01"
     ],
-    "oid": "1.2.10.1.2.1",
+    "oid": "1.2.9.1.2.1",
     "nimi": {
       "fi": "Organisaatio 1"
     },
@@ -18,7 +18,7 @@
     "tyypit": [
       "organisaatiotyyppi_02"
     ],
-    "oid": "1.2.10.1.2.2",
+    "oid": "1.2.9.1.2.2",
     "nimi": {
       "fi": "Organisaatio 2"
     },

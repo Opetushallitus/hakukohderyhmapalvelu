@@ -68,7 +68,7 @@
      (re-frame/subscribe [hakukohderyhman-hakukohteet])])
   (fn [[lang hakukohteet]]
     (let [labels {:label     [:nimi]
-                  :sub-label [:organisaatio :nimi]}
+                  :sub-label [:tarjoaja :nimi]}
           transform-fn (i18n-utils/create-item->option-transformer lang labels :oid #(-> % :oikeusHakukohteeseen not))
           add-icon (fn [option hakukohde] (if (= "arkistoitu" (:tila hakukohde))
                                             (assoc option :icon icon/archived)

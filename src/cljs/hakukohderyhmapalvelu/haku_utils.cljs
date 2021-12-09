@@ -8,7 +8,7 @@
       (str/includes? string)))
 
 (defn hakukohde-includes-string? [hakukohde string lang]
-  (let [search-paths [[:organisaatio :nimi] [:nimi]]
+  (let [search-paths [[:tarjoaja :nimi] [:nimi]]
         lower-str (str/lower-case string)]
     (some #(includes-string? (get-in hakukohde %) lower-str lang) search-paths)))
 

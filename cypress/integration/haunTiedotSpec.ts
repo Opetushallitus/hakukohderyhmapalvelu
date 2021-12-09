@@ -83,8 +83,8 @@ describe('Hakukohderyhmäpalvelu - haun tiedot', () => {
               oid: '1.2.4.2.1.1',
               nimi: { fi: 'Testi-perustutkinto' },
               hakuOid: '1.2.4.1.1.1',
-              organisaatio: {
-                oid: '1.2.10.1.2.1',
+              tarjoaja: {
+                oid: '1.2.9.1.2.1',
                 nimi: { fi: 'Organisaatio 1' },
                 version: 0,
                 parentOid: '1.2.0.0.0.0.1',
@@ -104,8 +104,8 @@ describe('Hakukohderyhmäpalvelu - haun tiedot', () => {
               oid: '1.2.4.2.1.2',
               nimi: { fi: 'Testi-jatkotutkinto' },
               hakuOid: '1.2.4.1.1.1',
-              organisaatio: {
-                oid: '1.2.10.1.2.2',
+              tarjoaja: {
+                oid: '1.2.9.1.2.2',
                 nimi: { fi: 'Organisaatio 2' },
                 version: 0,
                 parentOid: '1.2.0.0.0.0.1',
@@ -125,8 +125,8 @@ describe('Hakukohderyhmäpalvelu - haun tiedot', () => {
               oid: '1.2.4.2.1.3',
               nimi: { fi: 'Testi-ei-oikeuksia' },
               hakuOid: '1.2.4.1.1.1',
-              organisaatio: {
-                oid: '1.2.10.1.2.3',
+              tarjoaja: {
+                oid: '1.2.9.1.2.3',
                 nimi: { fi: 'Organisaatio, johon käyttäjällä ei ole asiaa' },
                 version: 0,
                 parentOid: '1.2.0.0.0.0.1',
@@ -146,8 +146,8 @@ describe('Hakukohderyhmäpalvelu - haun tiedot', () => {
               oid: '1.2.4.2.1.4',
               nimi: { fi: 'Testi-ei-oikeuksia-ryhmitelty' },
               hakuOid: '1.2.4.1.1.1',
-              organisaatio: {
-                oid: '1.2.10.1.2.3',
+              tarjoaja: {
+                oid: '1.2.9.1.2.3',
                 nimi: { fi: 'Organisaatio, johon käyttäjällä ei ole asiaa' },
                 version: 0,
                 parentOid: '1.2.0.0.0.0.1',
@@ -332,8 +332,8 @@ describe('Hakukohderyhmäpalvelu - haun tiedot', () => {
             hakuOid: '1.2.4.1.1.1',
             toinenAsteOnkoKaksoistutkinto: false,
             tila: 'julkaistu',
-            organisaatio: {
-              oid: '1.2.10.1.2.2',
+            tarjoaja: {
+              oid: '1.2.9.1.2.2',
               nimi: { fi: 'Organisaatio 2' },
               version: 0,
               parentOid: '1.1.4.2.1.1',
@@ -349,8 +349,8 @@ describe('Hakukohderyhmäpalvelu - haun tiedot', () => {
             hakuOid: '1.2.4.1.1.1',
             toinenAsteOnkoKaksoistutkinto: false,
             tila: 'julkaistu',
-            organisaatio: {
-              oid: '1.2.10.1.2.1',
+            tarjoaja: {
+              oid: '1.2.9.1.2.1',
               nimi: { fi: 'Organisaatio 1' },
               version: 0,
               parentOid: '1.1.4.2.1.1',
@@ -385,8 +385,8 @@ describe('Hakukohderyhmäpalvelu - haun tiedot', () => {
               toinenAsteOnkoKaksoistutkinto: false,
               sora: { tila: 'arkistoitu' },
               tila: 'julkaistu',
-              organisaatio: {
-                oid: '1.2.10.1.2.1',
+              tarjoaja: {
+                oid: '1.2.9.1.2.1',
                 nimi: { fi: 'Organisaatio 1' },
                 version: 0,
                 parentOid: '1.2.0.0.0.0.1',
@@ -404,8 +404,8 @@ describe('Hakukohderyhmäpalvelu - haun tiedot', () => {
               toinenAsteOnkoKaksoistutkinto: false,
               sora: { tila: 'julkaistu' },
               tila: 'julkaistu',
-              organisaatio: {
-                oid: '1.2.10.1.2.2',
+              tarjoaja: {
+                oid: '1.2.9.1.2.2',
                 nimi: { fi: 'Organisaatio 2' },
                 version: 0,
                 parentOid: '1.2.0.0.0.0.1',

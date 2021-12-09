@@ -23,6 +23,7 @@
   [{:oid                           "1.2.246.562.20.1"
     :nimi                          {:fi "Hakukohde 1"}
     :organisaatioOid               "1.2.246.562.28.1"
+    :tarjoaja                      "1.2.246.562.28.1"
     :hakuOid                       "1.2.246.562.29.1"
     :tila                          "julkaistu"
     :toinenAsteOnkoKaksoistutkinto false
@@ -32,6 +33,7 @@
    {:oid                           "1.2.246.562.20.2"
     :nimi                          {:fi "Hakukohde 2"}
     :organisaatioOid               "1.2.246.562.28.2"
+    :tarjoaja                      "1.2.246.562.28.2"
     :hakuOid                       "1.2.246.562.29.1"
     :tila                          "julkaistu"
     :toinenAsteOnkoKaksoistutkinto false
@@ -43,6 +45,7 @@
   [{:oid                           "1.2.246.562.20.1"
     :nimi                          {:fi "Hakukohde 1"}
     :organisaatioOid               "1.2.246.562.28.1"
+    :tarjoaja                      "1.2.246.562.28.1"
     :hakuOid                       "1.2.246.562.29.1"
     :tila                          "julkaistu"
     :toinenAsteOnkoKaksoistutkinto false
@@ -52,6 +55,7 @@
    {:oid                           "1.2.246.562.20.3"
     :nimi                          {:fi "Hakukohde 3"}
     :organisaatioOid               "1.2.246.562.28.2"
+    :tarjoaja                      "1.2.246.562.28.2"
     :hakuOid                       "1.2.246.562.29.2"
     :tila                          "arkistoitu"
     :toinenAsteOnkoKaksoistutkinto false
@@ -63,6 +67,7 @@
   [{:oid                           "1.2.3.4.5.6.7.8.9.10"
     :nimi                          {:fi "Hakukohde 1"}
     :organisaatioOid               "1.2.246.562.28.1"
+    :tarjoaja                      "1.2.246.562.28.1"
     :hakuOid                       "1.2.246.562.29.1"
     :tila                          "arkistoitu"
     :toinenAsteOnkoKaksoistutkinto false

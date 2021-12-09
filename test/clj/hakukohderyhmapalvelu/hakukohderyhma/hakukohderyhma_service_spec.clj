@@ -40,7 +40,7 @@
                     :hakukohteet  [{:oid                           "1.2.246.562.20.1"
                                     :nimi                          {:fi "Hakukohde 1"}
                                     :hakuOid                       "1.2.246.562.29.1"
-                                    :organisaatio                  test-fixtures/organisaatio-1
+                                    :tarjoaja                      test-fixtures/organisaatio-1
                                     :toinenAsteOnkoKaksoistutkinto false
                                     :oikeusHakukohteeseen          true
                                     :onkoHarkinnanvarainenKoulutus true
@@ -49,7 +49,7 @@
                                    {:oid                           "1.2.246.562.20.2"
                                     :nimi                          {:fi "Hakukohde 2"}
                                     :hakuOid                       "1.2.246.562.29.1"
-                                    :organisaatio                  test-fixtures/organisaatio-2
+                                    :tarjoaja                      test-fixtures/organisaatio-2
                                     :toinenAsteOnkoKaksoistutkinto false
                                     :oikeusHakukohteeseen          true
                                     :onkoHarkinnanvarainenKoulutus true

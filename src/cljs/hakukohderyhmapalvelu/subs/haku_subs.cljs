@@ -96,7 +96,7 @@
      (re-frame/subscribe [haku-lisarajaimet-filters-as-fns])])
   (fn [[lang filter-text hakukohteet lisarajaimet] _]
     (let [labels {:label     [:nimi]
-                  :sub-label [:organisaatio :nimi]}
+                  :sub-label [:tarjoaja :nimi]}
           transform-fn (i18n-utils/create-item->option-transformer lang labels :oid #(-> % :oikeusHakukohteeseen not))
           add-icon (fn [option hakukohde] (if (= "arkistoitu" (:tila hakukohde))
                                             (assoc option :icon icon/archived)
