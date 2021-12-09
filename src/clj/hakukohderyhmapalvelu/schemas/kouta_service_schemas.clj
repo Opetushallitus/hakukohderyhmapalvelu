@@ -24,6 +24,7 @@
   {:oid                                               s/Str
    :nimi                                              c/Nimi
    :organisaatioOid                                   s/Str
+   :tarjoaja                                          s/Str
    :hakuOid                                           s/Str
    :toinenAsteOnkoKaksoistutkinto                     s/Bool
    :valintakokeet                                     [Valintakoe]

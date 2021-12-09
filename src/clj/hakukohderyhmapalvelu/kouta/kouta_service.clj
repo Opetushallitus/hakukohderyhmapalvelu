@@ -30,12 +30,12 @@
        (map (partial hakuaika-not-over? now))
        (some true?)))
 
-(defn- enrich-with-organisaatio [hakukohde organisaatiot]
+(defn- enrich-with-tarjoaja [hakukohde organisaatiot]
   (->> hakukohde
-       :organisaatioOid
-       (get organisaatiot)
-       first
-       (assoc hakukohde :organisaatio)))
+    :tarjoaja
+    (get organisaatiot)
+    first
+    (assoc hakukohde :tarjoaja)))
 
 (defn- set-has-valintakoe [hakukohde]
   (assoc hakukohde
@@ -46,13 +46,13 @@
   (as-> hakukohteet hakukohteet'
         (map
           (comp
-            #(enrich-with-organisaatio % organisaatiot)
+            #(enrich-with-tarjoaja % organisaatiot)
             set-has-valintakoe)
           hakukohteet')
         (st/select-schema hakukohteet' api-schemas/HakukohdeListResponse)))
 
 (defn- get-organisations-for-hakukohteet [organisaatio-service hakukohteet]
-  (->> (map :organisaatioOid hakukohteet)
+  (->> (map :tarjoaja hakukohteet)
        distinct
        (organisaatio/find-by-oids organisaatio-service)
        (group-by :oid)))
