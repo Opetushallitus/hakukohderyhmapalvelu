@@ -64,6 +64,16 @@
           "haunkohdejoukko_12#"))))
 
 (re-frame/reg-sub
+  :haun-asetukset/toinen_aste?
+  (fn [[_ haku-oid]]
+    [(re-frame/subscribe [:haun-asetukset/haku haku-oid])])
+  (fn [[haku]]
+    (and (string? (:kohdejoukkoKoodiUri haku))
+         (clojure.string/starts-with?
+           (:kohdejoukkoKoodiUri haku)
+           "haunkohdejoukko_11#")))) ;fixme tarkista
+
+(re-frame/reg-sub
   :haun-asetukset/hakuajat
   (fn [[_ haku-oid]]
     [(re-frame/subscribe [:haun-asetukset/haku haku-oid])])

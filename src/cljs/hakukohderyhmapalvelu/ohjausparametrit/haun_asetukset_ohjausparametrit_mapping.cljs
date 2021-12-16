@@ -34,7 +34,31 @@
     :PH_VSSAV
 
     :haun-asetukset/varasijataytto-paattyy
-    :PH_VSTP))
+    :PH_VSTP
+
+    :haun-asetukset/valintatulosten-julkaiseminen-hakijoille
+    :PH_VTJH
+
+    :haun-asetukset/liitteiden-muokkauksen-takaraja
+    :PH_LMT
+
+    :haun-asetukset/ilmoittautuminen-paattyy
+    :PH_IP
+
+    :haun-asetukset/automaattinen-hakukelpoisuus-paattyy
+    :PH_AHP
+
+    :haun-asetukset/harkinnanvaraisen-valinnan-paatosten-tallennus-paattyy
+    :PH_HVVPTP
+
+    :haun-asetukset/oppilaitosten-virkailijoiden-valintapalvelun-kaytto-estetty
+    :PH_OLVVPKE
+
+    :haun-asetukset/valintaesityksen-hyvaksyminen
+    :PH_VEH
+
+    :haun-asetukset/koetulosten-tallentaminen
+    :PH_KTT))
 
 (defn- parse-int [value]
   (let [i (.parseInt js/Number value 10)]

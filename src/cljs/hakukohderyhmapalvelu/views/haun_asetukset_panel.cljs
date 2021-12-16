@@ -277,6 +277,33 @@
                   datetime-local-value
                   (assoc :value datetime-local-value))])}]]))
 
+(defn- liitteiden-muokkauksen-takaraja [{:keys [haku-oid]}]
+  (let [id-prefix (get-id-prefix :haun-asetukset/liitteiden-muokkauksen-takaraja)
+        label-id  (str id-prefix "-label")
+        input-id  (str id-prefix "-input")
+        label     @(re-frame/subscribe [:translation :haun-asetukset/liitteiden-muokkauksen-takaraja])
+        disabled? @(re-frame/subscribe [:haun-asetukset/haun-asetukset-disabled? haku-oid])
+        value     @(re-frame/subscribe [:haun-asetukset/haun-asetus haku-oid :haun-asetukset/liitteiden-muokkauksen-takaraja])]
+    [:<>
+     [haun-asetukset-label
+      {:id    label-id
+       :for   input-id
+       :label label}]
+     [haun-asetukset-input
+      {:input-component [i/input-number
+                         (merge {:input-id  input-id
+                                 :required? false
+                                 :on-change (fn [value]
+                                              (re-frame/dispatch [:haun-asetukset/set-haun-asetus
+                                                                  haku-oid
+                                                                  :haun-asetukset/liitteiden-muokkauksen-takaraja
+                                                                  value]))
+                                 :min       0
+                                 :disabled? disabled?
+                                 :cypressid input-id}
+                                (when value
+                                  {:value value}))]}]]))
+
 (defn- hakijakohtainen-paikan-vastaanottoaika [{:keys [haku-oid]}]
   (let [id-prefix (get-id-prefix :haun-asetukset/hakijakohtainen-paikan-vastaanottoaika)
         label-id  (str id-prefix "-label")
@@ -391,6 +418,8 @@
   (let [haku-oid  @(re-frame/subscribe [:haun-asetukset/selected-haku-oid])
         haku      @(re-frame/subscribe [:haun-asetukset/haku haku-oid])
         lang      @(re-frame/subscribe [:lang])
+        toinen-aste? @(re-frame/subscribe [:haun-asetukset/toinen_aste? haku-oid])
+        kk? @(re-frame/subscribe [:haun-asetukset/kk? haku-oid])
         id-prefix (str "haun-asetukset-" haku-oid)
         header-id (str id-prefix "-header")
         haku-name (-> haku :nimi lang)]
@@ -432,7 +461,44 @@
         :required?               true
         :bold-left-label-margin? false}]
       [haun-asetukset-sijoittelu
-       {:haku-oid haku-oid}]]
+       {:haku-oid haku-oid}]
+      [liitteiden-muokkauksen-takaraja
+       {:haku-oid haku-oid}]
+      ;fixme placeholder for Valintatulosten julkaiseminen hakijoille (Aikaväli)
+      (when kk?
+        [haun-asetukset-date-time
+         {:haku-oid                haku-oid
+          :haun-asetus-key         :haun-asetukset/ilmoittautuminen-paattyy
+          :required?               false
+          :bold-left-label-margin? false}]
+        [haun-asetukset-date-time
+         {:haku-oid                haku-oid
+          :haun-asetus-key         :haun-asetukset/automaattinen-hakukelpoisuus-paattyy
+          :required?               false
+          :bold-left-label-margin? false}]
+        )
+      (when toinen-aste?
+        [haun-asetukset-date-time
+         {:haku-oid                haku-oid
+          :haun-asetus-key         :haun-asetukset/harkinnanvaraisen-valinnan-paatosten-tallennus-paattyy
+          :required?               false ;fixme
+          :bold-left-label-margin? false}]
+        [haun-asetukset-date-time
+         {:haku-oid                haku-oid
+          :haun-asetus-key         :haun-asetukset/oppilaitosten-virkailijoiden-valintapalvelun-kaytto-estetty
+          :required?               false ;fixme
+          :bold-left-label-margin? false}]
+        [haun-asetukset-date-time
+         {:haku-oid                haku-oid
+          :haun-asetus-key         :haun-asetukset/valintaesityksen-hyvaksyminen
+          :required?               false ;fixme
+          :bold-left-label-margin? false}]
+        [haun-asetukset-date-time
+         {:haku-oid                haku-oid
+          :haun-asetus-key         :haun-asetukset/koetulosten-tallentaminen
+          :required?               false ;fixme
+          :bold-left-label-margin? false}])
+      ]
      [:div
       (stylefy/use-style
         haun-asetukset-required-legend-styles)
