@@ -26,6 +26,9 @@
 (defn select-filtered-item [filtered? item]
   (change-filtered-item filtered? item #(assoc % :is-selected true)))
 
+(defn deselect-unfiltered-item [unfiltered? item]
+  (change-filtered-item unfiltered? item #(assoc % :is-selected false)))
+
 (defn toggle-filtered-item-selection [filtered? item]
   (change-filtered-item filtered? item #(update % :is-selected not)))
 
