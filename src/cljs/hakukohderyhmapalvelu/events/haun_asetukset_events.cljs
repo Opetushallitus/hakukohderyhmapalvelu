@@ -76,12 +76,38 @@
                 (or ohjausparametrit' {})))))
 
 (events/reg-event-fx-validating
+  :haun-asetukset/log-haun-asetus
+  (fn-traced [{db :db} [haku-oid haun-asetus-key haun-asetus-value]]
+             (let [ohjausparametri-key   (m/haun-asetus-key->ohjausparametri haun-asetus-key)
+                   ohjausparametri-value (m/haun-asetus-value->ohjausparametri-value
+                                           haun-asetus-value
+                                           haun-asetus-key)]
+               (js/console.log (str "LOG ONLY Setting value for param " ohjausparametri-key ": " ohjausparametri-value))
+               {:db                 (as-> db db'
+                                          (if (nil? ohjausparametri-value)
+                                            (update-in db' [:ohjausparametrit haku-oid]
+                                                       dissoc ohjausparametri-key)
+                                            (assoc-in db'
+                                                      [:ohjausparametrit haku-oid ohjausparametri-key]
+                                                      ohjausparametri-value))
+                                          (cond-> db'
+                                                  (not ohjausparametri-value)
+                                                  (update-in
+                                                    [:ohjausparametrit haku-oid]
+                                                    (fn [ohjausparametrit]
+                                                      (apply (partial dissoc ohjausparametrit)
+                                                             (->> haun-asetus-key
+                                                                  m/clear-keys-on-empty-value
+                                                                  (map m/haun-asetus-key->ohjausparametri)))))))})))
+
+(events/reg-event-fx-validating
   :haun-asetukset/set-haun-asetus
   (fn-traced [{db :db} [haku-oid haun-asetus-key haun-asetus-value]]
     (let [ohjausparametri-key   (m/haun-asetus-key->ohjausparametri haun-asetus-key)
           ohjausparametri-value (m/haun-asetus-value->ohjausparametri-value
                                   haun-asetus-value
                                   haun-asetus-key)]
+      (js/console.log (str "Setting value for param " ohjausparametri-key ": " ohjausparametri-value))
       {:db                 (as-> db db'
                                  (if (nil? ohjausparametri-value)
                                    (update-in db' [:ohjausparametrit haku-oid]

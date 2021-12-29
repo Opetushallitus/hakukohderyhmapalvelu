@@ -168,6 +168,58 @@
                                    (when value
                                      {:value value}))]}]])]))
 
+(defn- haun-asetukset-aikavali [{:keys [id-prefix
+                                        value]}]
+  (let [datetime-local-supported? (dl/datetime-local-supported?)
+        start-date-picker-id (str id-prefix "-start-date-picker")
+        end-date-picker-id (str id-prefix "-end-date-picker")
+        start-describedby-id (str start-date-picker-id "-describedby")
+        end-describedby-id (str end-date-picker-id "-describedby")
+        start-description @(re-frame/subscribe [:translation :haun-asetukset/aikavali-alku])
+        end-description @(re-frame/subscribe [:translation :haun-asetukset/aikavali-loppu])
+        local-start-datetime (reagent/atom (:start value))
+        local-end-datetime (reagent/atom (:end value))
+        set-aikavali (fn set-aikavali [on-change start end]
+                       (js/console.log (str "Set aikaväli, start " start ", end " end))
+                       (on-change {:start start
+                                   :end   end}))]
+    (fn [{:keys [on-change required? disabled?]}]
+      (if datetime-local-supported?
+        [:div
+         [:div
+          [l/label
+           {:id     start-describedby-id
+            :label  start-description
+            :hidden true}]
+          [i/input-datetime-local
+           (cond-> {:id        start-date-picker-id
+                    :required? required?
+                    :disabled? disabled?
+                    :on-change (fn [value]
+                                 (set-aikavali
+                                   on-change
+                                   (reset! local-start-datetime value)
+                                   @local-end-datetime))}
+                   @local-start-datetime
+                   (assoc :value @local-start-datetime))]]
+         [:div
+          [l/label
+           {:id     end-describedby-id
+            :label  end-description
+            :hidden true}]
+          [i/input-datetime-local
+           (cond-> {:id        end-date-picker-id
+                    :required? required?
+                    :disabled? disabled?
+                    :on-change (fn [value]
+                                 (set-aikavali
+                                   on-change
+                                   @local-start-datetime
+                                   (reset! local-end-datetime value)))}
+                   @local-end-datetime
+                   (assoc :value @local-end-datetime))]]]
+        [:div " (placeholder) Käytetty selainversio ei tue elementtiä!"]))))
+
 (defn- haun-asetukset-date-and-time [{:keys [id-prefix
                                              value]}]
   (let [get-date-value      (fn get-date-value [datetime-local-value]
@@ -184,6 +236,7 @@
         local-date-value    (reagent/atom (get-date-value value))
         local-time-value    (reagent/atom (get-time-value value))
         set-datetime-local  (fn set-datetime-local [on-change date-value time-value]
+                              (js/console.log (str "Set dateime local " date-value ", " time-value))
                               (cond (and (empty? date-value) (empty? time-value))
                                     (on-change "")
                                     (and (seq date-value) (seq time-value))
@@ -276,6 +329,33 @@
                    :label-id  label-id}
                   datetime-local-value
                   (assoc :value datetime-local-value))])}]]))
+
+(defn- valinnantulosten-julkaiseminen-hakijoille [{:keys [haku-oid required?]}]
+  (let [haun-asetus-key :haun-asetukset/valintatulosten-julkaiseminen-hakijoille
+        id-prefix (get-id-prefix :haun-asetukset/valintatulosten-julkaiseminen-hakijoille)
+        label-id  (str id-prefix "-label")
+        input-id  (str id-prefix "-input")
+        label     @(re-frame/subscribe [:translation :haun-asetukset/valintatulosten-julkaiseminen-hakijoille])
+        disabled? @(re-frame/subscribe [:haun-asetukset/haun-asetukset-disabled? haku-oid])
+        value     @(re-frame/subscribe [:haun-asetukset/haun-asetus haku-oid :haun-asetukset/valintatulosten-julkaiseminen-hakijoille])]
+    [:<>
+     [haun-asetukset-label
+      {:id    label-id
+       :for   input-id
+       :label label}]
+     [haun-asetukset-input
+      {:input-component [haun-asetukset-aikavali
+                         (cond-> {:on-change (fn [value]
+                                               (re-frame/dispatch [:haun-asetukset/set-haun-asetus
+                                                                   haku-oid
+                                                                   haun-asetus-key
+                                                                   value]))
+                                  :required? required?
+                                  :disabled? disabled?
+                                  :id-prefix id-prefix
+                                  :label-id  label-id}
+                                 value
+                                 (assoc :value value))]}]]))
 
 (defn- liitteiden-muokkauksen-takaraja [{:keys [haku-oid]}]
   (let [id-prefix (get-id-prefix :haun-asetukset/liitteiden-muokkauksen-takaraja)
@@ -464,7 +544,9 @@
        {:haku-oid haku-oid}]
       [liitteiden-muokkauksen-takaraja
        {:haku-oid haku-oid}]
-      ;fixme placeholder for Valintatulosten julkaiseminen hakijoille (Aikaväli)
+      [valinnantulosten-julkaiseminen-hakijoille
+       {:haku-oid haku-oid
+        :required? false}]
       (when kk?
         [haun-asetukset-date-time
          {:haku-oid                haku-oid

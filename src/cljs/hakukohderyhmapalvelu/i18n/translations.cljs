@@ -25,6 +25,8 @@
                     :hakijakohtainen-paikan-vastaanottoaika                      {:fi "Hakijakohtainen paikan vastaanottoaika (vrk)"}
                     :syota-kellonaika                                            {:fi "Syötä tähän kenttään päivämäärästä ja kellonajasta muodostuvan arvon kellonaika"}
                     :syota-paivamaara                                            {:fi "Syötä tähän kenttään päivämäärästä ja kellonajasta muodostuvan arvon päivämäärä"}
+                    :aikavali-alku                                               {:fi "Aikavälin alkuhetki"}
+                    :aikavali-loppu                                              {:fi "Aikavälin loppuhetki"}
                     :sijoittelu                                                  {:fi "Haussa käytetään sijoittelua"}
                     :valintatulosten-julkaiseminen-hakijoille                    {:fi "Valintatulosten julkaiseminen hakijoille"}
                     :liitteiden-muokkauksen-takaraja                             {:fi "Liitteiden muokkauksen takaraja"}
