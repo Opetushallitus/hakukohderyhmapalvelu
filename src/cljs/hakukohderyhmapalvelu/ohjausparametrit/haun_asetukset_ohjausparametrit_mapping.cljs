@@ -115,12 +115,12 @@
   (some-> ohjausparametrit-date :date d/long->date))
 
 (defn- ohjausparametri->aikavali [ohjausparametri]
-  (let [start (some-> (:dateStart ohjausparametri) d/long->date)
-        end (some-> (:dateEnd ohjausparametri) d/long->date )]
-    (js/console.log (str "op->av " ohjausparametri ", " {:start start
-                                                         :end   end}))
-    {:start start
-     :end   end}))
+  (let [start (long->date {:date (:dateStart ohjausparametri)})
+        end (long->date {:date (:dateEnd ohjausparametri)})
+        result {:start start
+                :end   end}]
+    (js/console.log (str "op->av " ohjausparametri ", " start ", " end))
+    result))
 
 (defn- aikavali->ohjausparametri [aikavali]
   (let [start (cond-> (:start aikavali)
@@ -130,9 +130,9 @@
                     d/iso-date-time-local-str->date
                     d/date->long)]
     (js/console.log (str "av->op " aikavali ", " {:dateStart start
-                                                  :dateEnd end}))
+                                                  :dateEnd   end}))
     {:dateStart start
-     :dateEnd end}))
+     :dateEnd   end}))
 
 
 (defn- string->int-value [s]

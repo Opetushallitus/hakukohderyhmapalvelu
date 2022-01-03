@@ -41,5 +41,11 @@
          (f/unparse date-hour-minute-formatter))
     (catch js/Error _)))
 
+(defn date->date-str [date]
+  (try
+    (->> date
+         (f/unparse date-hour-minute-formatter))
+    (catch js/Error _)))
+
 (defn long->date [long]
   (c/from-long long))
