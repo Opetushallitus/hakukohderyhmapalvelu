@@ -46,6 +46,15 @@
     (some? haku-oid)))
 
 (re-frame/reg-sub
+  :haun-asetukset/save-status
+  (fn [[_ _]]
+    [(re-frame/subscribe [:state-query
+                          [:save-status]])])
+  (fn [[state]]
+    (js/console.log (str "SAVE-STATUS " state))
+    state))
+
+(re-frame/reg-sub
   :haun-asetukset/form
   (fn [[_ haku-oid]]
     [(re-frame/subscribe [:haun-asetukset/haku haku-oid])

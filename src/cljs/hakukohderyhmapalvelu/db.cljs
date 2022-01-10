@@ -24,4 +24,6 @@
    :haun-asetukset                    {:haut {}}
    :forms                             {}
    :ohjausparametrit                  {}
+   :save-status                       {:changes-saved true
+                                       :errors []}
    :ohjausparametrit/save-in-progress #{}})

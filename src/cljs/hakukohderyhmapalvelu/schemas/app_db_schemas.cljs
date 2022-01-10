@@ -117,6 +117,10 @@
 (s/defschema OhjausparametritDate
   {:date s/Int})
 
+(s/defschema OhjausparametritSaveStatus
+  {:changes-saved s/Bool
+   :errors [s/Any]})
+
 (s/defschema HaunOhjausparametrit
   {(s/optional-key :PH_OPVP)                      (s/named
                                                     OhjausparametritDate
@@ -147,7 +151,8 @@
 
 (s/defschema HakujenOhjausparametrit
   {:ohjausparametrit                  {s/Str HaunOhjausparametrit}
-   :ohjausparametrit/save-in-progress #{s/Str}})
+   :ohjausparametrit/save-in-progress #{s/Str}
+   :save-status OhjausparametritSaveStatus})
 
 (s/defschema AppDb
   (st/merge ActivePanel

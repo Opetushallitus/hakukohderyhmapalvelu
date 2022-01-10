@@ -136,13 +136,15 @@
                                  :else
                                  response'))]
         (try
+          (js/console.log (str "handling, status " status))
           (when (error-status? status)
-            (throw (js/Error. (str "HTTP-request failed with status " status))))
+            (throw (js/Error. (str "AAA HTTP-request failed with status " status))))
           (when response-schema
             (s/validate response-schema body))
           (re-frame/dispatch (conj response-handler body))
           (catch js/Error e
             (js/console.error e)
+            (js/console.log "aa")
             (when error-handler
               (re-frame/dispatch (conj error-handler body))))
           (finally
