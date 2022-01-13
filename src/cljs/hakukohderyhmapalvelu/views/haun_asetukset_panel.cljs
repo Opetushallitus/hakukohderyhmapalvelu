@@ -588,24 +588,34 @@
           :haun-asetus-key         :haun-asetukset/koetulosten-tallentaminen
           :required?               false ;fixme
           :bold-left-label-margin? false}])
+      [haun-asetukset-label
+       {:id                      "id"
+        :label                   (when (not changes-saved?) @(re-frame/subscribe [:translation :haun-asetukset/muutoksia-ei-viela-tallennettu]))
+        :required?               false
+        :bold-left-label-margin? (not changes-saved?)}]
+      [haun-asetukset-input
+       {:input-component
+        [button/button {:cypressid    "save-ohjausparametrit"
+                        :disabled?    changes-saved?
+                        :label        @(re-frame/subscribe [:translation :haun-asetukset/tallenna])
+                        :on-click     #(re-frame/dispatch [:haun-asetukset/save-ohjausparametrit
+                                                           haku-oid])
+                        :style-prefix "save-ohjausparametrit-btn"
+                        :custom-style {:is-danger false
+                                       :float     "right"
+                                       :display   "block"
+                                       :font-size "16px"}}]}]
       ]
+     [:div
+      (when (not-empty save-errors)
+        [l/label
+         {:id    "error-info"
+          :label (str "Tallennuksessa tapahtui virhe: " (:message (first save-errors)))}
+         {:color "red"}])]
      [:div
       (stylefy/use-style
         haun-asetukset-required-legend-styles)
-      @(re-frame/subscribe [:translation :yleiset/pakolliset-kentat])]
-     [:div
-      [button/button {:cypressid    "save-ohjausparametrit"
-                      :disabled?    changes-saved?
-                      :label        "TALLENNA"
-                      :on-click #(re-frame/dispatch [:haun-asetukset/save-ohjausparametrit
-                                              haku-oid])
-                      :style-prefix "save-ohjausparametrit-btn"
-                      :custom-style {:is-danger    false
-                                     :float "center"
-                                     :display "block"
-                                     :font-size    "12px"}}]
-      (when (not changes-saved?) "Muutoksia ei vielä tallennettu")
-      (when (not-empty save-errors) (str "Tallennuksessa tapahtui virhe: " (:message (first save-errors))))]]))
+      @(re-frame/subscribe [:translation :yleiset/pakolliset-kentat])]]))
 
 (defn haun-asetukset-panel []
   [p/panel

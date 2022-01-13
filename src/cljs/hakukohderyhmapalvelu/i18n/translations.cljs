@@ -35,7 +35,9 @@
                     :harkinnanvaraisen-valinnan-paatosten-tallennus-paattyy      {:fi "Harkinnanvaraisen valinnan päätösten tallennus päättyy"}
                     :oppilaitosten-virkailijoiden-valintapalvelun-kaytto-estetty {:fi "Oppilaitosten virkailijoiden valintapalvelun käyttö estetty"}
                     :valintaesityksen-hyvaksyminen                               {:fi "Valintaesityksen hyväksyminen"}
-                    :koetulosten-tallentaminen                                   {:fi "Koetulosten tallentaminen"}}
+                    :koetulosten-tallentaminen                                   {:fi "Koetulosten tallentaminen"}
+                    :muutoksia-ei-viela-tallennettu                              {:fi "Muutoksia ei vielä tallennettu"}
+                    :tallenna                                                    {:fi "TALLENNA"}}
    :hakukohderyhma {:haku                         {:fi "Haku"}
                     :lisarajain-harkinnanvaraiset {:fi "Hakukohteella harkinnanvarainen valinta"}
                     :lisarajain-kaksoistutkinto   {:fi "Hakukohteella mahdollisuus kaksoistutkintoon"}
