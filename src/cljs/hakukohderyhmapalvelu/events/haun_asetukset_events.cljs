@@ -75,44 +75,36 @@
       (js/console.log (str "Handle get ohjausparametrit: " ohjausparametrit'))
       (-> db
           (assoc-in [:ohjausparametrit haku-oid] ohjausparametrit')
-          (update :save-status (fn [status] (assoc status :changes-saved true))))))) ;todo maybe also wipe :errors here, depending on future implementation?
+          (assoc :save-status {:changes-saved true
+                                :errors []})))))
 
 (events/reg-event-db-validating
   :haun-asetukset/handle-get-ohjausparametrit-error
-  (fn-traced [db [haku-oid ohjausparametrit]]
+  (fn-traced [db [haku-oid ohjausparametrit response-code]]
              (let [ohjausparametrit' (if-not (map? ohjausparametrit)
                                        {}
                                        ohjausparametrit)]
+               (js/console.log "Virhe haettaessa ohjausparametreja: " + ohjausparametrit)
                (-> db
                    (assoc-in [:ohjausparametrit haku-oid] ohjausparametrit')
                    (update :save-status (fn [status] (-> status
                                                          (assoc :changes-saved true)
-                                                         (update :errors (fn [errors] (conj errors {:message "Ohjausparametrien hakeminen epäonnistui!"}))))))))))
+                                                         (update :errors (fn [errors] (conj errors {:message
+                                                                                                    (str "Ohjausparametrien hakeminen haulle " haku-oid " epäonnistui"
+                                                                                                         (when response-code (str "(" response-code ")")))}))))))))))
 
-(events/reg-event-fx-validating
-  :haun-asetukset/log-haun-asetus
-  (fn-traced [{db :db} [haku-oid haun-asetus-key haun-asetus-value]]
-             (let [ohjausparametri-key   (m/haun-asetus-key->ohjausparametri haun-asetus-key)
-                   ohjausparametri-value (m/haun-asetus-value->ohjausparametri-value
-                                           haun-asetus-value
-                                           haun-asetus-key)]
-               (js/console.log (str "LOG ONLY Setting value for param " ohjausparametri-key ": " ohjausparametri-value))
-               {:db                 (as-> db db'
-                                          (if (nil? ohjausparametri-value)
-                                            (update-in db' [:ohjausparametrit haku-oid]
-                                                       dissoc ohjausparametri-key)
-                                            (assoc-in db'
-                                                      [:ohjausparametrit haku-oid ohjausparametri-key]
-                                                      ohjausparametri-value))
-                                          (cond-> db'
-                                                  (not ohjausparametri-value)
-                                                  (update-in
-                                                    [:ohjausparametrit haku-oid]
-                                                    (fn [ohjausparametrit]
-                                                      (apply (partial dissoc ohjausparametrit)
-                                                             (->> haun-asetus-key
-                                                                  m/clear-keys-on-empty-value
-                                                                  (map m/haun-asetus-key->ohjausparametri)))))))})))
+(events/reg-event-db-validating
+  :haun-asetukset/handle-save-ohjausparametrit-error
+  (fn-traced [db [haku-oid body response-code]]
+             (js/console.log "Virhe tallennettaessa ohjausparametreja: " + body)
+             (-> db
+                 (update :ohjausparametrit/save-in-progress
+                         (fnil disj #{}) haku-oid)
+                 (update :save-status (fn [status] (-> status
+                                                       (assoc :changes-saved false)
+                                                       (update :errors (fn [errors] (conj errors {:message
+                                                                                                  (str "Ohjausparametrien tallentaminen haulle " haku-oid " epäonnistui "
+                                                                                                       (when response-code (str "(" response-code ")")))})))))))))
 
 (events/reg-event-fx-validating
   :haun-asetukset/set-haun-asetus
@@ -155,5 +147,6 @@
               :method           :post
               :path             url
               :response-handler [:haun-asetukset/get-ohjausparametrit haku-oid]
+              :error-handler    [:haun-asetukset/handle-save-ohjausparametrit-error haku-oid]
               :cas              :ohjausparametrit-service.login
               :body             body}})))

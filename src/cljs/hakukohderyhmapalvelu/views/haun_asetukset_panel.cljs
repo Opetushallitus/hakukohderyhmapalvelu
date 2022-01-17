@@ -182,7 +182,6 @@
         local-start-datetime (reagent/atom orig-start)
         local-end-datetime (reagent/atom orig-end)
         set-aikavali (fn set-aikavali [on-change start end]
-                       (js/console.log (str "Set aikaväli, start " start ", end " end))
                        (on-change {:start start
                                    :end   end}))]
       (if datetime-local-supported?
@@ -503,7 +502,7 @@
         toinen-aste? @(re-frame/subscribe [:haun-asetukset/toinen_aste? haku-oid])
         kk? @(re-frame/subscribe [:haun-asetukset/kk? haku-oid])
         save-status @(re-frame/subscribe [:haun-asetukset/save-status])
-        save-errors (:errors save-status)
+        save-errors (take-last 5 (:errors save-status))
         changes-saved? (:changes-saved save-status)
         id-prefix (str "haun-asetukset-" haku-oid)
         header-id (str id-prefix "-header")
@@ -606,12 +605,14 @@
                                        :display   "block"
                                        :font-size "16px"}}]}]
       ]
-     [:div
-      (when (not-empty save-errors)
-        [l/label
-         {:id    "error-info"
-          :label (str "Tallennuksessa tapahtui virhe: " (:message (first save-errors)))}
-         {:color "red"}])]
+     (when (not-empty save-errors)
+       [:div
+        (map (fn [error]
+               [:div [l/label
+                      {:id    "error-info"
+                       :label (:message error)}
+                      {:color "red"}]])
+             save-errors)])
      [:div
       (stylefy/use-style
         haun-asetukset-required-legend-styles)

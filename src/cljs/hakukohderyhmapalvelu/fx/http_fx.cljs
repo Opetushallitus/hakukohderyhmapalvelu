@@ -138,14 +138,13 @@
         (try
           (js/console.log (str "handling, status " status))
           (when (error-status? status)
-            (throw (js/Error. (str "AAA HTTP-request failed with status " status))))
+            (throw (js/Error. (str "HTTP-request failed with status " status))))
           (when response-schema
             (s/validate response-schema body))
           (re-frame/dispatch (conj response-handler body))
           (catch js/Error e
-            (js/console.error e)
-            (js/console.log "aa")
-            (when error-handler
-              (re-frame/dispatch (conj error-handler body))))
+            (if error-handler
+              (re-frame/dispatch (conj error-handler body status))
+              (js/console.log "Caught error but no error handler specified: " + e)))
           (finally
             (re-frame/dispatch [:http/remove-http-request-id http-request-id])))))))
