@@ -2,7 +2,8 @@
   (:require [hakukohderyhmapalvelu.ohjausparametrit.haun-asetukset-ohjausparametrit-mapping :as m]
             [hakukohderyhmapalvelu.macros.event-macros :as events]
             [hakukohderyhmapalvelu.urls :as urls]
-            [day8.re-frame.tracing :refer-macros [fn-traced]]))
+            [day8.re-frame.tracing :refer-macros [fn-traced]]
+            [hakukohderyhmapalvelu.i18n.utils :as i18n-utils]))
 
 (events/reg-event-fx-validating
   :haun-asetukset/get-forms
@@ -81,30 +82,33 @@
 (events/reg-event-db-validating
   :haun-asetukset/handle-get-ohjausparametrit-error
   (fn-traced [db [haku-oid ohjausparametrit response-code]]
-             (let [ohjausparametrit' (if-not (map? ohjausparametrit)
-                                       {}
-                                       ohjausparametrit)]
+             (let [error-message (cond
+                                   (= response-code 403) (i18n-utils/get-translation (:lang db) (:translations db) :yleiset/http-403)
+                                   :else (when response-code (str "http " response-code)))]
                (js/console.log "Virhe haettaessa ohjausparametreja: " + ohjausparametrit)
                (-> db
-                   (assoc-in [:ohjausparametrit haku-oid] ohjausparametrit')
+                   (assoc-in [:ohjausparametrit haku-oid] {})
                    (update :save-status (fn [status] (-> status
                                                          (assoc :changes-saved true)
                                                          (update :errors (fn [errors] (conj errors {:message
                                                                                                     (str "Ohjausparametrien hakeminen haulle " haku-oid " epäonnistui"
-                                                                                                         (when response-code (str "(" response-code ")")))}))))))))))
+                                                                                                         (when error-message (str "(" error-message ")")))}))))))))))
 
 (events/reg-event-db-validating
   :haun-asetukset/handle-save-ohjausparametrit-error
   (fn-traced [db [haku-oid body response-code]]
-             (js/console.log "Virhe tallennettaessa ohjausparametreja: " + body)
-             (-> db
-                 (update :ohjausparametrit/save-in-progress
-                         (fnil disj #{}) haku-oid)
-                 (update :save-status (fn [status] (-> status
-                                                       (assoc :changes-saved false)
-                                                       (update :errors (fn [errors] (conj errors {:message
-                                                                                                  (str "Ohjausparametrien tallentaminen haulle " haku-oid " epäonnistui "
-                                                                                                       (when response-code (str "(" response-code ")")))})))))))))
+             (let [error-message (cond
+                                   (= response-code 403) (i18n-utils/get-translation (:lang db) (:translations db) :yleiset/http-403)
+                                   :else (when response-code (str "http " response-code)))]
+               (js/console.log "Virhe tallennettaessa ohjausparametreja: " + body)
+               (-> db
+                   (update :ohjausparametrit/save-in-progress
+                           (fnil disj #{}) haku-oid)
+                   (update :save-status (fn [status] (-> status
+                                                         (assoc :changes-saved false)
+                                                         (update :errors (fn [errors] (conj errors {:message
+                                                                                                    (str "Ohjausparametrien tallentaminen haulle " haku-oid " epäonnistui "
+                                                                                                         (when error-message (str "(" error-message ")")))}))))))))))
 
 (events/reg-event-fx-validating
   :haun-asetukset/set-haun-asetus

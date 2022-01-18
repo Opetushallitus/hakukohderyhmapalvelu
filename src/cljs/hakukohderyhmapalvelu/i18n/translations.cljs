@@ -11,7 +11,8 @@
                     :muokkaa-hakua          {:fi "Muokkaa hakua"}
                     :pakolliset-kentat      {:fi "* merkityt kentät ovat pakollisia"}
                     :http-virhe             {:fi "Tietojen haku epäonnistui"}
-                    :arkistoitu             {:fi "Arkistoitu"}}
+                    :arkistoitu             {:fi "Arkistoitu"}
+                    :http-403               {:fi "Ei oikeuksia"}}
    :haun-asetukset {:valintatulokset-valmiina-viimeistaan                        {:fi "Valintatulokset valmiina viimeistään"}
                     :useita-hakemuksia                                           {:fi "Vain yksi hakemus -rajoitus"}
                     :haun-asetukset                                              {:fi "Haun asetukset"}
