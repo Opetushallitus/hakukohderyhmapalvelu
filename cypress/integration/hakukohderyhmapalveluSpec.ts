@@ -647,7 +647,7 @@ describe('Hakukohderyhmäpalvelu', () => {
         .should('exist')
     })
 
-    it('Kaikkien valinnan poistaminen kohdistuu myös suodatuksen ulkopuolelle', () => {
+    it('Suodatuksen asettaminen poistaa valinnan hakukohteilta jotka ovat suodatuksen ulkopuolella', () => {
       cy.get(hh.hakukohdeSelectAllSelector)
         .click({ force: true })
         .get(hh.hakukohteidenSuodatusInputSelector)
@@ -655,13 +655,7 @@ describe('Hakukohderyhmäpalvelu', () => {
         .get(hh.hakukohteetContainerSelector)
         .children()
         .should('have.length', 1)
-        .get(hh.hakukohdeDeselectAllSelector)
-        .should('be.not.disabled')
-        .click({ force: true })
-        .should('be.disabled')
-        .get(
-          hh.hakukohteetContainerOptionSelector('Testi-jatkotutkinto', false),
-        )
+        .get(hh.hakukohteetContainerOptionSelector('Testi-jatkotutkinto', true))
         .should('exist')
         .get(
           hh.hakukohteetContainerOptionSelector('Testi-perustutkinto', false),
@@ -672,7 +666,8 @@ describe('Hakukohderyhmäpalvelu', () => {
         .get(hh.hakukohteidenSuodatusInputSelector)
         .clear()
         .get(hh.hakukohdeDeselectAllSelector)
-        .should('be.disabled')
+        .should('be.not.disabled')
+        .click({ force: true })
         .get(
           hh.hakukohteetContainerOptionSelector('Testi-perustutkinto', false),
         )

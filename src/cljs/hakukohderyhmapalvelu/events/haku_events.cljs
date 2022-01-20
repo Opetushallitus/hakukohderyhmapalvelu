@@ -33,6 +33,7 @@
 (def set-haku-lisarajaimet-options :haku/set-haku-lisarajaimet-options)
 (def get-koulutustyypit :haku/get-koulutustyypit)
 (def handle-get-koulutustyypit-response :haku/handle-get-koulutustyypit-response)
+(def unselect-hakukohteet-not-in-view :haku/unselect-hakukohteet-not-in-view)
 
 ;; Apufunktiot
 (defn- update-hakus-hakukohteet [items should-update? update-fn]
@@ -58,6 +59,9 @@
 
 (defn- toggle-selection-of-hakukohde [hakukohde-oid haut]
   (edit-selected-hakus-hakukohteet haut (partial u/toggle-filtered-item-selection #(= (:oid %) hakukohde-oid))))
+
+(defn- unselect-hidden-hakukohteet [not-in-view-and-is-selected? haut]
+  (edit-selected-hakus-hakukohteet haut (partial u/deselect-unfiltered-item not-in-view-and-is-selected?)))
 
 (defn- update-haku-lisarajaimet-filter [id key value-fn filters]
   (map #(cond-> % (= id (:id %)) (update key value-fn)) filters))
@@ -177,9 +181,25 @@
              (update-in db haku-haut (partial toggle-selection-of-hakukohde hakukohde-oid))))
 
 (events/reg-event-db-validating
+  unselect-hakukohteet-not-in-view
+  (fn-traced [db]
+             (let [lang (get db :lang)
+                   lisarajaimet (->> (get-in db haku-lisarajaimet-filters-path)
+                                     (keep u/lisarajain->fn))
+                   filter-str (get-in db haku-hakukohteet-filter)
+                   not-in-view-and-is-selected? #(and
+                                                   (:is-selected %)
+                                                   (not
+                                                     (and
+                                                       (apply (u/create-hakukohde-matches-all-lisarajaimet lisarajaimet) [%])
+                                                       (u/hakukohde-includes-string? % filter-str lang))))]
+               (update-in db haku-haut (partial unselect-hidden-hakukohteet not-in-view-and-is-selected?)))))
+
+(events/reg-event-fx-validating
   set-hakukohteet-filter
-  (fn-traced [db [filter-text]]
-             (assoc-in db haku-hakukohteet-filter filter-text)))
+  (fn-traced [{db :db} [filter-text]]
+             {:db (assoc-in db haku-hakukohteet-filter filter-text)
+              :dispatch [unselect-hakukohteet-not-in-view []]}))
 
 (events/reg-event-db-validating
   open-haku-lisarajaimet
@@ -191,14 +211,16 @@
   (fn-traced [db]
              (assoc-in db haku-lisarajaimet-visible-path false)))
 
-(events/reg-event-db-validating
+(events/reg-event-fx-validating
   set-haku-lisarajaimet-filter
-  (fn-traced [db [id value-fn]]
-             (->> (partial update-haku-lisarajaimet-filter id :value value-fn)
-                  (update-in db haku-lisarajaimet-filters-path))))
+  (fn-traced [{db :db} [id value-fn]]
+             {:db       (->> (partial update-haku-lisarajaimet-filter id :value value-fn)
+                             (update-in db haku-lisarajaimet-filters-path))
+              :dispatch [unselect-hakukohteet-not-in-view []]}))
 
-(events/reg-event-db-validating
+(events/reg-event-fx-validating
   set-haku-lisarajaimet-options
-  (fn-traced [db [id options]]
-             (->> (partial update-haku-lisarajaimet-filter id :options (constantly options))
-                  (update-in db haku-lisarajaimet-filters-path))))
+  (fn-traced [{db :db} [id options]]
+             {:db (->> (partial update-haku-lisarajaimet-filter id :options (constantly options))
+                       (update-in db haku-lisarajaimet-filters-path))
+              :dispatch [unselect-hakukohteet-not-in-view []]}))
