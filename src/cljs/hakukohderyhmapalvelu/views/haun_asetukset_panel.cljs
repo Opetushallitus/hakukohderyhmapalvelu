@@ -31,7 +31,7 @@
     {:padding-left   "20px"
      :padding-top    "5px"
      :padding-bottom "5px"
-     :width          "350px"}))
+     :width          "450px"}))
 
 (def ^:private haun-asetukset-haun-tiedot-styles
   {:border-left (str "1px solid " colors/gray-lighten-3)
@@ -63,7 +63,8 @@
   (merge
     haun-asetukset-grid-item-layout-styles
     {:border-left       (str "1px solid " colors/gray-lighten-3)
-     :grid-column-start "haun-asetukset-label"}))
+     :grid-column-start "haun-asetukset-label"
+     :width "350px"}))
 
 (def ^:private haun-asetukset-input-styles
   (merge
@@ -173,12 +174,11 @@
   (let [orig-start (:start value)
         orig-end (:end value)
         datetime-local-supported? (dl/datetime-local-supported?)
+        aikavali-picker-id (str id-prefix "-aikavali-picker")
         start-date-picker-id (str id-prefix "-start-date-picker")
         end-date-picker-id (str id-prefix "-end-date-picker")
-        start-describedby-id (str start-date-picker-id "-describedby")
-        end-describedby-id (str end-date-picker-id "-describedby")
-        start-description @(re-frame/subscribe [:translation :haun-asetukset/aikavali-alku])
-        end-description @(re-frame/subscribe [:translation :haun-asetukset/aikavali-loppu])
+        aikavali-describedby-id (str aikavali-picker-id "-describedby")
+        aikavali-description @(re-frame/subscribe [:translation :haun-asetukset/aikavali])
         local-start-datetime (reagent/atom orig-start)
         local-end-datetime (reagent/atom orig-end)
         set-aikavali (fn set-aikavali [on-change start end]
@@ -188,8 +188,8 @@
         [:div
          [:div
           [l/label
-           {:id     start-describedby-id
-            :label  start-description
+           {:id     aikavali-describedby-id
+            :label  aikavali-description
             :hidden true}]
           [i/input-datetime-local
            (cond-> {:id        start-date-picker-id
@@ -201,12 +201,8 @@
                                    (reset! local-start-datetime value)
                                    @local-end-datetime))}
                    @local-start-datetime
-                   (assoc :value @local-start-datetime))]]
-         [:div
-          [l/label
-           {:id     end-describedby-id
-            :label  end-description
-            :hidden true}]
+                   (assoc :value @local-start-datetime))]
+          " - "
           [i/input-datetime-local
            (cond-> {:id        end-date-picker-id
                     :required? required?
