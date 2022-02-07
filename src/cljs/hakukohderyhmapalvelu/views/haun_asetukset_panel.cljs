@@ -83,6 +83,19 @@
            (merge {:style {:border-left (str "2px solid " colors/blue-lighten-1)}}))
    component])
 
+(defn- tallenna-haun-asetukset-label [{:keys [id
+                                              label
+                                              for]}]
+  [:div
+   (stylefy/use-style (-> haun-asetukset-label-styles
+                          (dissoc :border-left)
+                          (assoc :margin-top "30px")))
+   [l/label
+    (cond-> {:id    id
+             :label label}
+            for
+            (assoc :for for))]])
+
 (defn- haun-asetukset-label [{:keys [id
                                      label
                                      for
@@ -583,24 +596,24 @@
           :haun-asetus-key         :haun-asetukset/koetulosten-tallentaminen
           :required?               false ;fixme
           :bold-left-label-margin? false}])
-      [haun-asetukset-label
+      [tallenna-haun-asetukset-label
        {:id                      "id"
-        :label                   (when (not changes-saved?) @(re-frame/subscribe [:translation :haun-asetukset/muutoksia-ei-viela-tallennettu]))
-        :required?               false
-        :bold-left-label-margin? (not changes-saved?)}]
-      [haun-asetukset-input
-       {:input-component
-        [button/button {:cypressid    "save-ohjausparametrit"
-                        :disabled?    changes-saved?
-                        :label        @(re-frame/subscribe [:translation :haun-asetukset/tallenna])
-                        :on-click     #(re-frame/dispatch [:haun-asetukset/save-ohjausparametrit
-                                                           haku-oid])
-                        :style-prefix "save-ohjausparametrit-btn"
-                        :custom-style {:is-danger false
-                                       :float     "right"
-                                       :display   "block"
-                                       :font-size "16px"}}]}]
-      ]
+        :label                   (if (not changes-saved?) @(re-frame/subscribe [:translation :haun-asetukset/muutoksia-ei-viela-tallennettu]) "")
+        :required?               false}]
+      [:div
+       [haun-asetukset-input
+        {:input-component
+         [button/button {:cypressid    "save-ohjausparametrit"
+                         :disabled?    changes-saved?
+                         :label        @(re-frame/subscribe [:translation :haun-asetukset/tallenna])
+                         :on-click     #(re-frame/dispatch [:haun-asetukset/save-ohjausparametrit
+                                                            haku-oid])
+                         :style-prefix "save-ohjausparametrit-btn"
+                         :custom-style {:is-danger  false
+                                        :float      "right"
+                                        :display    "block"
+                                        :font-size  "16px"
+                                        :margin-top "30px"}}]}]]]
      (when (not-empty save-errors)
        [:div
         (map (fn [error]
