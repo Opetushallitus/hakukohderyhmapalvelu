@@ -71,7 +71,7 @@
 
   (list-haun-tiedot [_ is-all tarjoajat]
     (let [now (LocalDateTime/now)
-          tarjoaja (str/join "," tarjoajat)
+          tarjoaja "1.2.246.562.10.00000000001" ;fixme
           url (oph-url/resolve-url :kouta-internal.haku.search config {:tarjoaja tarjoaja})
           filter-fn (if is-all identity (partial not-over? now))]
       (as-> url res'

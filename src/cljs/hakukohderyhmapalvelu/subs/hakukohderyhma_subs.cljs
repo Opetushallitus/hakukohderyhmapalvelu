@@ -9,6 +9,7 @@
 (def saved-hakukohderyhmas-as-options :hakukohderyhmien-hallinta/get-saved-hakukohderyhma-names)
 (def hakukohderyhman-hakukohteet-as-options :hakukohderyhmien-hallinta/hakukohteet-as-options)
 (def hakukohderyhman-hakukohteet :hakukohderyhmien-hallinta/hakukohderyhman-hakukohteet)
+(def hakukohderyhman-hakukohteet-prioriteettijarjestyksessa :hakukohderyhmien-hallinta/hakukohderyhman-hakukohteet-prioriteettijarjestyksessa)
 (def selected-hakukohderyhmas-hakukohteet :hakukohderyhmien-hallinta/selected-hakukohderyhmas-hakukohteet)
 (def selected-hakukohderyhma :hakukohderyhmien-hallinta/selected-hakukohderyhma)
 (def is-loading-hakukohderyhmas :hakukohderyhmien-hallinta/is-loading-hakukohderyhmas)
@@ -55,6 +56,16 @@
         (transform-fn selected-ryhma)))))
 
 (re-frame/reg-sub
+  hakukohderyhman-hakukohteet-prioriteettijarjestyksessa
+  (fn []
+    [(re-frame/subscribe [selected-hakukohderyhma])])
+  (fn [[hakukohderyhma]]
+    (let [hakukohteet (:hakukohteet hakukohderyhma)
+          prioriteettijarjestys (vec (get-in hakukohderyhma [:settings :prioriteettijarjestys]))
+          result (if (get-in hakukohderyhma [:settings :priorisoiva]) (vec (sort-by #(.indexOf prioriteettijarjestys (:oid %)) hakukohteet)) hakukohteet)]
+      result)))
+
+(re-frame/reg-sub
   hakukohderyhman-hakukohteet
   (fn []
     [(re-frame/subscribe [selected-hakukohderyhma])])
@@ -65,7 +76,7 @@
   hakukohderyhman-hakukohteet-as-options
   (fn []
     [(re-frame/subscribe [:lang])
-     (re-frame/subscribe [hakukohderyhman-hakukohteet])])
+     (re-frame/subscribe [hakukohderyhman-hakukohteet-prioriteettijarjestyksessa])])
   (fn [[lang hakukohteet]]
     (let [labels {:label     [:nimi]
                   :sub-label [:tarjoaja :nimi]}

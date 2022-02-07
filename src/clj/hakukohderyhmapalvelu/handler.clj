@@ -193,9 +193,10 @@
            :get {:middleware auth
                  :tags       ["Hakukohderyhmä"]
                  :summary    ["Hakee hakukohderyhmän tiedot"]
-                 :responsens {200 {:body [s/Str]}}
+                 :responses {200 {:body [s/Str]}}
                  :parameters {:path {:oid s/Str}}
                  :handler    (fn [{{{oid :oid} :path} :parameters}]
+                               (log/info "Get hakukohteet")
                                (response/ok (hakukohderyhma/get-hakukohde-oids-for-hakukohderyhma-oid
                                               hakukohderyhma-service oid)))}}]
          ["/rename"
@@ -240,6 +241,7 @@
                 :responses  {200 {:body schema/HaunTiedotListResponse}}
                 :parameters {:query {(s/optional-key :all) s/Bool}}
                 :handler    (fn [{session :session {{is-all :all} :query} :parameters}]
+                              (log/info (str "Getting haut, all " is-all))
                               (response/ok
                                 (hakukohderyhma/list-haun-tiedot hakukohderyhma-service session (boolean is-all))))}}]
         ["/:oid/hakukohde"
@@ -249,6 +251,7 @@
                 :responses  {200 {:body schema/HakukohdeListResponse}}
                 :parameters {:path {:oid s/Str}}
                 :handler    (fn [{session :session {{haku-oid :oid} :path} :parameters}]
+                              (log/info "Getting hakukohteiden tiedot")
                               (response/ok
                                 (hakukohderyhma/list-haun-hakukohteet hakukohderyhma-service session haku-oid)))}}]]
        (integration-test-routes args)]

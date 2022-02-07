@@ -57,24 +57,71 @@
                  {:margin-left "1rem"
                   :font-size   "small"})]])
 
+(defn- priorisoiva-checkbox
+  [selected-ryhma disabled?]
+  (let [rajaava-checked? (get-in selected-ryhma [:settings :rajaava])
+        priorisoiva-checked? (boolean (get-in selected-ryhma [:settings :priorisoiva])) ;fixme
+        ]
+    [:<>
+     [:div (stylefy/use-style {:display        "flex"
+                               :flex-direction "row"})
+      (checkbox/checkbox-slider {:checked?        priorisoiva-checked?
+                                 :cypressid       "priorisoiva-checkbox"
+                                 :id              "priorisoiva-checkbox"
+                                 :disabled?        (boolean rajaava-checked?)
+                                 :aria-labelledby @(subscribe [:translation :hakukohderyhma/priorisoiva])
+                                 :on-change       (fn []
+                                                    (dispatch [hakukohderyhma-events/hakukohderyhma-toggle-priorisoiva])
+                                                    )})
+      (label/label {:id    "priorisoiva-label"
+                    :label @(subscribe [:translation :hakukohderyhma/priorisoiva])
+                    :for   "priorisoiva-checkbox"}
+                   {:margin-left "1rem"
+                    :font-size   "small"})]]
+    )
+  )
+
+;(checkbox/checkbox-slider {:checked?        false
+;                                 :cypressid       "priorisoiva-checkbox"
+;                                 :id              "priorisoiva-checkbox"
+;                                 :disabled?        (boolean rajaava-checked?)
+;                                 :aria-labelledby @(subscribe [:translation :hakukohderyhma/priorisoiva])
+;                                 :on-change       (fn []
+;                                                    (dispatch [hakukohderyhma-events/hakukohderyhma-toggle-rajaava])
+;                                                    )})
+
 (defn- rajaava-checkbox
-  [selected-ryhma]
-  [:<>
-   [:div (stylefy/use-style {:display        "flex"
-                             :flex-direction "row"})
-    (checkbox/checkbox-slider {:checked?        (get-in selected-ryhma [:settings :rajaava])
-                               :cypressid       "rajaava-checkbox"
-                               :id              "rajaava-checkbox"
-                               :aria-labelledby @(subscribe [:translation :hakukohderyhma/rajaava])
-                               :on-change       (fn []
-                                                  (dispatch [hakukohderyhma-events/hakukohderyhma-toggle-rajaava]))})
-    (label/label {:id    "rajaava-label"
-                  :label @(subscribe [:translation :hakukohderyhma/rajaava])
-                  :for   "rajaava-checkbox"}
-                 {:margin-left "1rem"
-                  :font-size   "small"})]
-   (when (get-in selected-ryhma [:settings :rajaava])
-     (max-hakukohteet selected-ryhma))])
+  [selected-ryhma disabled?]
+  (let [rajaava-checked? (get-in selected-ryhma [:settings :rajaava])
+        priorisoiva-checked? (get-in selected-ryhma [:settings :priorisoiva])]
+    [:<>
+     [:div (stylefy/use-style {:display        "flex"
+                               :flex-direction "row"})
+      (checkbox/checkbox-slider {:checked?        rajaava-checked?
+                                 :cypressid       "rajaava-checkbox"
+                                 :id              "rajaava-checkbox"
+                                 :disabled?        (boolean priorisoiva-checked?)
+                                 :aria-labelledby @(subscribe [:translation :hakukohderyhma/rajaava])
+                                 :on-change       (fn []
+                                                    (dispatch [hakukohderyhma-events/hakukohderyhma-toggle-rajaava]))})
+      (label/label {:id    "rajaava-label"
+                    :label @(subscribe [:translation :hakukohderyhma/rajaava])
+                    :for   "rajaava-checkbox"}
+                   {:margin-left "1rem"
+                    :font-size   "small"})]
+     (when (get-in selected-ryhma [:settings :rajaava])
+       (max-hakukohteet selected-ryhma))]
+    )
+  )
+
+(defn- priorisoiva-and-rajaava-checkboxes [selected-ryhma]
+  (let [rajaava-checked? (get-in selected-ryhma [:settings :rajaava])
+        priorisoiva-checked? (get-in selected-ryhma [:settings :priorisoiva])]
+    [:div
+    (priorisoiva-checkbox selected-ryhma (not rajaava-checked?))
+    (rajaava-checkbox selected-ryhma (not priorisoiva-checked?))]
+    ))
+
 
 (defn- jyemp-checkbox
   [selected-ryhma]
@@ -102,6 +149,8 @@
     [:div (stylefy/use-style settings-view-style {:cypressid "hakukohderyhma-settings-view"})
      (when selected-ryhma
        [:<>
-        (rajaava-checkbox selected-ryhma)
+        ;(priorisoiva-checkbox selected-ryhma false)
+        ;(rajaava-checkbox selected-ryhma false)
+        (priorisoiva-and-rajaava-checkboxes selected-ryhma)
         (jyemp-checkbox selected-ryhma)
         (yo-amm-autom-hakukelpoisuus-checkbox selected-ryhma)])]))

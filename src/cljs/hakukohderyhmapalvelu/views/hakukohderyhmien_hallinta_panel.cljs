@@ -243,6 +243,9 @@
 
 (defn- hakukohderyhma-container []
   (let [hakukohteet (subscribe [hakukohderyhma-subs/hakukohderyhman-hakukohteet-as-options])
+        with-indices (map-indexed (fn [x i] (-> x
+                                              (assoc :index i)
+                                              (assoc :foo "bar"))) @hakukohteet)
         selected-hakukohteet (subscribe [hakukohderyhma-subs/selected-hakukohderyhmas-hakukohteet])
         remove-from-goup-btn-text (subscribe [:translation :hakukohderyhma/poista-ryhmasta])]
     (fn []
@@ -265,7 +268,7 @@
          [hakukohderyhma-select]
          [:div (stylefy/use-style {:grid-area  "hakukohderyhma-hakukohteet"
                                    :margin-top "-2px"})
-          [multi-select/multi-select {:options   @hakukohteet
+          [multi-select/multi-select-priorisoiva {:options   @hakukohteet
                                       :cypressid "hakukohderyhma-hakukohteet"
                                       :select-fn #(dispatch [hakukohderyhma-events/toggle-hakukohde-selection %])}]]
          [:div (stylefy/use-style button-row-style)

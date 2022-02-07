@@ -27,6 +27,7 @@
     {:tarjoaja                                          Organisaatio
      :toinenAsteOnkoKaksoistutkinto                     s/Bool
      :tila                                              (s/enum "luonnos" "julkaistu" "arkistoitu")
+     (s/optional-key :jarjestysRyhmanSisalla)           s/Int ;määrittää järjestyksen priorisoivissa hakukohderymissä
      (s/optional-key :hasValintakoe)                    s/Bool
      (s/optional-key :sora)                             SoraTieto
      (s/optional-key :oikeusHakukohteeseen)             s/Bool
@@ -37,6 +38,8 @@
 
 (s/defschema HakukohderyhmaSettings
   {:rajaava s/Bool
+   (s/optional-key :priorisoiva) s/Bool ;fixme?
+   (s/optional-key :prioriteettijarjestys) [s/Str]
    :max-hakukohteet (s/maybe s/Int)
    :jos-ylioppilastutkinto-ei-muita-pohjakoulutusliitepyyntoja s/Bool
    :yo-amm-autom-hakukelpoisuus s/Bool})

@@ -38,7 +38,7 @@
 
 (defrecord HakukohderyhmaService [audit-logger organisaatio-service kouta-service ataru-service db]
   hakukohderyhma-protocol/HakukohderyhmaServiceProtocol
-
+  ;kissa
   (find-hakukohderyhmat-by-hakukohteet-oids [_ session hakukohde-oids include-empty]
     (if-not (empty? hakukohde-oids)
       (let [user-organisaatiot (session-organizations session)
