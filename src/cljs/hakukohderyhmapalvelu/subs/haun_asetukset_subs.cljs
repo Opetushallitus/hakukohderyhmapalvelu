@@ -51,7 +51,6 @@
     [(re-frame/subscribe [:state-query
                           [:save-status]])])
   (fn [[state]]
-    (js/console.log (str "SAVE-STATUS " state))
     state))
 
 (re-frame/reg-sub
@@ -80,7 +79,7 @@
     (and (string? (:kohdejoukkoKoodiUri haku))
          (clojure.string/starts-with?
            (:kohdejoukkoKoodiUri haku)
-           "haunkohdejoukko_11#")))) ;fixme tarkista
+           "haunkohdejoukko_11#"))))
 
 (re-frame/reg-sub
   :haun-asetukset/hakuajat

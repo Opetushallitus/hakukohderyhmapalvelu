@@ -245,7 +245,6 @@
         local-date-value    (reagent/atom (get-date-value value))
         local-time-value    (reagent/atom (get-time-value value))
         set-datetime-local  (fn set-datetime-local [on-change date-value time-value]
-                              (js/console.log (str "Set dateime local " date-value ", " time-value))
                               (cond (and (empty? date-value) (empty? time-value))
                                     (on-change "")
                                     (and (seq date-value) (seq time-value))
@@ -576,25 +575,25 @@
         [haun-asetukset-date-time
          {:haku-oid                haku-oid
           :haun-asetus-key         :haun-asetukset/harkinnanvaraisen-valinnan-paatosten-tallennus-paattyy
-          :required?               false ;fixme
+          :required?               false
           :bold-left-label-margin? false}])
       (when toinen-aste?
         [haun-asetukset-date-time
          {:haku-oid                haku-oid
           :haun-asetus-key         :haun-asetukset/oppilaitosten-virkailijoiden-valintapalvelun-kaytto-estetty
-          :required?               false ;fixme
+          :required?               false
           :bold-left-label-margin? false}])
       (when toinen-aste?
         [haun-asetukset-date-time
          {:haku-oid                haku-oid
           :haun-asetus-key         :haun-asetukset/valintaesityksen-hyvaksyminen
-          :required?               false ;fixme
+          :required?               false
           :bold-left-label-margin? false}])
       (when toinen-aste?
         [haun-asetukset-date-time
          {:haku-oid                haku-oid
           :haun-asetus-key         :haun-asetukset/koetulosten-tallentaminen
-          :required?               false ;fixme
+          :required?               false
           :bold-left-label-margin? false}])
       [tallenna-haun-asetukset-label
        {:id                      "id"

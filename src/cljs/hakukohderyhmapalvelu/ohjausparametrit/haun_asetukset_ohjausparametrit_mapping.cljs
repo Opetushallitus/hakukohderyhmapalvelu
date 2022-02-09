@@ -119,7 +119,6 @@
         end (long->date {:date (:dateEnd ohjausparametri)})
         result {:start start
                 :end   end}]
-    (js/console.log (str "op->av " ohjausparametri ", " start ", " end))
     result))
 
 (defn- aikavali->ohjausparametri [aikavali]
@@ -129,8 +128,6 @@
         end (cond-> (:end aikavali)
                     d/iso-date-time-local-str->date
                     d/date->long)]
-    (js/console.log (str "av->op " aikavali ", " {:dateStart start
-                                                  :dateEnd   end}))
     {:dateStart start
      :dateEnd   end}))
 

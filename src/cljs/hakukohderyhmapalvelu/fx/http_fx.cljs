@@ -136,7 +136,6 @@
                                  :else
                                  response'))]
         (try
-          (js/console.log (str "handling, status " status))
           (when (error-status? status)
             (throw (js/Error. (str "HTTP-request failed with status " status))))
           (when response-schema

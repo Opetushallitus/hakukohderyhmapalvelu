@@ -73,7 +73,6 @@
     (let [ohjausparametrit' (if-not (map? ohjausparametrit)
                               {}
                               ohjausparametrit)]
-      (js/console.log (str "Handle get ohjausparametrit: " ohjausparametrit'))
       (-> db
           (assoc-in [:ohjausparametrit haku-oid] ohjausparametrit')
           (assoc :save-status {:changes-saved true
@@ -142,7 +141,6 @@
   (fn-traced [{db :db} [haku-oid]]
     (let [url  (urls/get-url :ohjausparametrit-service.parametri haku-oid)
           body (-> db :ohjausparametrit (get haku-oid))]
-      (js/console.log (str "SAVING OHJAUSPARAMETRIT FOR HAKU " haku-oid))
       {:db   (update db
                      :ohjausparametrit/save-in-progress
                      (fnil conj #{})
