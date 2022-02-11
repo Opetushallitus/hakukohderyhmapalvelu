@@ -46,6 +46,14 @@
     (some? haku-oid)))
 
 (re-frame/reg-sub
+  :haun-asetukset/save-status
+  (fn [[_ _]]
+    [(re-frame/subscribe [:state-query
+                          [:save-status]])])
+  (fn [[state]]
+    state))
+
+(re-frame/reg-sub
   :haun-asetukset/form
   (fn [[_ haku-oid]]
     [(re-frame/subscribe [:haun-asetukset/haku haku-oid])
@@ -62,6 +70,16 @@
          (clojure.string/starts-with?
           (:kohdejoukkoKoodiUri haku)
           "haunkohdejoukko_12#"))))
+
+(re-frame/reg-sub
+  :haun-asetukset/toinen_aste?
+  (fn [[_ haku-oid]]
+    [(re-frame/subscribe [:haun-asetukset/haku haku-oid])])
+  (fn [[haku]]
+    (and (string? (:kohdejoukkoKoodiUri haku))
+         (clojure.string/starts-with?
+           (:kohdejoukkoKoodiUri haku)
+           "haunkohdejoukko_11#"))))
 
 (re-frame/reg-sub
   :haun-asetukset/hakuajat

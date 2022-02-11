@@ -5,6 +5,7 @@
             [hakukohderyhmapalvelu.components.common.label :as l]
             [hakukohderyhmapalvelu.components.common.link :as a]
             [hakukohderyhmapalvelu.components.common.panel :as p]
+            [hakukohderyhmapalvelu.components.common.button :as button]
             [hakukohderyhmapalvelu.dates.datetime-local :as dl]
             [hakukohderyhmapalvelu.dates.date-parser :as d]
             [hakukohderyhmapalvelu.styles.styles-colors :as colors]
@@ -30,7 +31,7 @@
     {:padding-left   "20px"
      :padding-top    "5px"
      :padding-bottom "5px"
-     :width          "350px"}))
+     :width          "450px"}))
 
 (def ^:private haun-asetukset-haun-tiedot-styles
   {:border-left (str "1px solid " colors/gray-lighten-3)
@@ -62,7 +63,8 @@
   (merge
     haun-asetukset-grid-item-layout-styles
     {:border-left       (str "1px solid " colors/gray-lighten-3)
-     :grid-column-start "haun-asetukset-label"}))
+     :grid-column-start "haun-asetukset-label"
+     :width "350px"}))
 
 (def ^:private haun-asetukset-input-styles
   (merge
@@ -80,6 +82,19 @@
            bold-left-label-margin?
            (merge {:style {:border-left (str "2px solid " colors/blue-lighten-1)}}))
    component])
+
+(defn- tallenna-haun-asetukset-label [{:keys [id
+                                              label
+                                              for]}]
+  [:div
+   (stylefy/use-style (-> haun-asetukset-label-styles
+                          (dissoc :border-left)
+                          (assoc :margin-top "30px")))
+   [l/label
+    (cond-> {:id    id
+             :label label}
+            for
+            (assoc :for for))]])
 
 (defn- haun-asetukset-label [{:keys [id
                                      label
@@ -167,6 +182,52 @@
                                     :cypressid  (str id-prefix "-input")}
                                    (when value
                                      {:value value}))]}]])]))
+
+(defn- haun-asetukset-aikavali [{:keys [id-prefix value on-change required? disabled?]}]
+  (let [orig-start (:start value)
+        orig-end (:end value)
+        datetime-local-supported? (dl/datetime-local-supported?)
+        aikavali-picker-id (str id-prefix "-aikavali-picker")
+        start-date-picker-id (str id-prefix "-start-date-picker")
+        end-date-picker-id (str id-prefix "-end-date-picker")
+        aikavali-describedby-id (str aikavali-picker-id "-describedby")
+        aikavali-description @(re-frame/subscribe [:translation :haun-asetukset/aikavali])
+        local-start-datetime (reagent/atom orig-start)
+        local-end-datetime (reagent/atom orig-end)
+        set-aikavali (fn set-aikavali [on-change start end]
+                       (on-change {:start start
+                                   :end   end}))]
+      (if datetime-local-supported?
+        [:div
+         [:div
+          [l/label
+           {:id     aikavali-describedby-id
+            :label  aikavali-description
+            :hidden true}]
+          [i/input-datetime-local
+           (cond-> {:id        start-date-picker-id
+                    :required? required?
+                    :disabled? disabled?
+                    :on-change (fn [value]
+                                 (set-aikavali
+                                   on-change
+                                   (reset! local-start-datetime value)
+                                   @local-end-datetime))}
+                   @local-start-datetime
+                   (assoc :value @local-start-datetime))]
+          " - "
+          [i/input-datetime-local
+           (cond-> {:id        end-date-picker-id
+                    :required? required?
+                    :disabled? disabled?
+                    :on-change (fn [value]
+                                 (set-aikavali
+                                   on-change
+                                   @local-start-datetime
+                                   (reset! local-end-datetime value)))}
+                   @local-end-datetime
+                   (assoc :value @local-end-datetime))]]]
+        [:div "(placeholder) Käytetty selainversio ei tue elementtiä!"])))
 
 (defn- haun-asetukset-date-and-time [{:keys [id-prefix
                                              value]}]
@@ -276,6 +337,61 @@
                    :label-id  label-id}
                   datetime-local-value
                   (assoc :value datetime-local-value))])}]]))
+
+(defn- valintatulosten-julkaiseminen-hakijoille [{:keys [haku-oid required?]}]
+  (let [haun-asetus-key :haun-asetukset/valintatulosten-julkaiseminen-hakijoille
+        id-prefix (get-id-prefix haun-asetus-key)
+        label-id (str id-prefix "-label")
+        input-id (str id-prefix "-input")
+        label @(re-frame/subscribe [:translation haun-asetus-key])
+        disabled? @(re-frame/subscribe [:haun-asetukset/haun-asetukset-disabled? haku-oid])
+        orig-value @(re-frame/subscribe [:haun-asetukset/haun-asetus haku-oid haun-asetus-key])
+        parsed-orig-value {:start (some-> (get orig-value :start) d/date->date-str)
+                           :end   (some-> (get orig-value :end) d/date->date-str)}]
+    [:<>
+     [haun-asetukset-label
+      {:id    label-id
+       :for   input-id
+       :label label}]
+     [haun-asetukset-input
+      {:input-component [haun-asetukset-aikavali
+                         {:on-change (fn [value]
+                                       (re-frame/dispatch [:haun-asetukset/set-haun-asetus
+                                                           haku-oid
+                                                           haun-asetus-key
+                                                           value]))
+                          :required? required?
+                          :disabled? disabled?
+                          :id-prefix id-prefix
+                          :label-id  label-id
+                          :value parsed-orig-value}]}]]))
+
+(defn- liitteiden-muokkauksen-takaraja [{:keys [haku-oid]}]
+  (let [id-prefix (get-id-prefix :haun-asetukset/liitteiden-muokkauksen-takaraja)
+        label-id  (str id-prefix "-label")
+        input-id  (str id-prefix "-input")
+        label     @(re-frame/subscribe [:translation :haun-asetukset/liitteiden-muokkauksen-takaraja])
+        disabled? @(re-frame/subscribe [:haun-asetukset/haun-asetukset-disabled? haku-oid])
+        value     @(re-frame/subscribe [:haun-asetukset/haun-asetus haku-oid :haun-asetukset/liitteiden-muokkauksen-takaraja])]
+    [:<>
+     [haun-asetukset-label
+      {:id    label-id
+       :for   input-id
+       :label label}]
+     [haun-asetukset-input
+      {:input-component [i/input-number
+                         (merge {:input-id  input-id
+                                 :required? false
+                                 :on-change (fn [value]
+                                              (re-frame/dispatch [:haun-asetukset/set-haun-asetus
+                                                                  haku-oid
+                                                                  :haun-asetukset/liitteiden-muokkauksen-takaraja
+                                                                  value]))
+                                 :min       0
+                                 :disabled? disabled?
+                                 :cypressid input-id}
+                                (when value
+                                  {:value value}))]}]]))
 
 (defn- hakijakohtainen-paikan-vastaanottoaika [{:keys [haku-oid]}]
   (let [id-prefix (get-id-prefix :haun-asetukset/hakijakohtainen-paikan-vastaanottoaika)
@@ -391,6 +507,11 @@
   (let [haku-oid  @(re-frame/subscribe [:haun-asetukset/selected-haku-oid])
         haku      @(re-frame/subscribe [:haun-asetukset/haku haku-oid])
         lang      @(re-frame/subscribe [:lang])
+        toinen-aste? @(re-frame/subscribe [:haun-asetukset/toinen_aste? haku-oid])
+        kk? @(re-frame/subscribe [:haun-asetukset/kk? haku-oid])
+        save-status @(re-frame/subscribe [:haun-asetukset/save-status])
+        save-errors (take-last 5 (:errors save-status))
+        changes-saved? (:changes-saved save-status)
         id-prefix (str "haun-asetukset-" haku-oid)
         header-id (str id-prefix "-header")
         haku-name (-> haku :nimi lang)]
@@ -432,7 +553,74 @@
         :required?               true
         :bold-left-label-margin? false}]
       [haun-asetukset-sijoittelu
-       {:haku-oid haku-oid}]]
+       {:haku-oid haku-oid}]
+      [liitteiden-muokkauksen-takaraja
+       {:haku-oid haku-oid}]
+      [valintatulosten-julkaiseminen-hakijoille
+       {:haku-oid haku-oid
+        :required? false}]
+      (when kk?
+        [haun-asetukset-date-time
+         {:haku-oid                haku-oid
+          :haun-asetus-key         :haun-asetukset/ilmoittautuminen-paattyy
+          :required?               false
+          :bold-left-label-margin? false}])
+      (when kk?
+        [haun-asetukset-date-time
+         {:haku-oid                haku-oid
+          :haun-asetus-key         :haun-asetukset/automaattinen-hakukelpoisuus-paattyy
+          :required?               false
+          :bold-left-label-margin? false}])
+      (when toinen-aste?
+        [haun-asetukset-date-time
+         {:haku-oid                haku-oid
+          :haun-asetus-key         :haun-asetukset/harkinnanvaraisen-valinnan-paatosten-tallennus-paattyy
+          :required?               false
+          :bold-left-label-margin? false}])
+      (when toinen-aste?
+        [haun-asetukset-date-time
+         {:haku-oid                haku-oid
+          :haun-asetus-key         :haun-asetukset/oppilaitosten-virkailijoiden-valintapalvelun-kaytto-estetty
+          :required?               false
+          :bold-left-label-margin? false}])
+      (when toinen-aste?
+        [haun-asetukset-date-time
+         {:haku-oid                haku-oid
+          :haun-asetus-key         :haun-asetukset/valintaesityksen-hyvaksyminen
+          :required?               false
+          :bold-left-label-margin? false}])
+      (when toinen-aste?
+        [haun-asetukset-date-time
+         {:haku-oid                haku-oid
+          :haun-asetus-key         :haun-asetukset/koetulosten-tallentaminen
+          :required?               false
+          :bold-left-label-margin? false}])
+      [tallenna-haun-asetukset-label
+       {:id                      "id"
+        :label                   (if (not changes-saved?) @(re-frame/subscribe [:translation :haun-asetukset/muutoksia-ei-viela-tallennettu]) "")
+        :required?               false}]
+      [:div
+       [haun-asetukset-input
+        {:input-component
+         [button/button {:cypressid    "save-ohjausparametrit"
+                         :disabled?    changes-saved?
+                         :label        @(re-frame/subscribe [:translation :haun-asetukset/tallenna])
+                         :on-click     #(re-frame/dispatch [:haun-asetukset/save-ohjausparametrit
+                                                            haku-oid])
+                         :style-prefix "save-ohjausparametrit-btn"
+                         :custom-style {:is-danger  false
+                                        :float      "right"
+                                        :display    "block"
+                                        :font-size  "16px"
+                                        :margin-top "30px"}}]}]]]
+     (when (not-empty save-errors)
+       [:div
+        (map (fn [error]
+               [:div [l/label
+                      {:id    "error-info"
+                       :label (:message error)}
+                      {:color "red"}]])
+             save-errors)])
      [:div
       (stylefy/use-style
         haun-asetukset-required-legend-styles)

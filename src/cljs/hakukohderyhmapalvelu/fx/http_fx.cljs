@@ -142,8 +142,8 @@
             (s/validate response-schema body))
           (re-frame/dispatch (conj response-handler body))
           (catch js/Error e
-            (js/console.error e)
-            (when error-handler
-              (re-frame/dispatch (conj error-handler body))))
+            (if error-handler
+              (re-frame/dispatch (conj error-handler body status))
+              (js/console.log "Caught error but no error handler specified: " + e)))
           (finally
             (re-frame/dispatch [:http/remove-http-request-id http-request-id])))))))

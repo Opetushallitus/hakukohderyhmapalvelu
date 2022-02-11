@@ -34,7 +34,31 @@
     :PH_VSSAV
 
     :haun-asetukset/varasijataytto-paattyy
-    :PH_VSTP))
+    :PH_VSTP
+
+    :haun-asetukset/valintatulosten-julkaiseminen-hakijoille
+    :PH_VTJH
+
+    :haun-asetukset/liitteiden-muokkauksen-takaraja
+    :PH_LMT
+
+    :haun-asetukset/ilmoittautuminen-paattyy
+    :PH_IP
+
+    :haun-asetukset/automaattinen-hakukelpoisuus-paattyy
+    :PH_AHP
+
+    :haun-asetukset/harkinnanvaraisen-valinnan-paatosten-tallennus-paattyy
+    :PH_HVVPTP
+
+    :haun-asetukset/oppilaitosten-virkailijoiden-valintapalvelun-kaytto-estetty
+    :PH_OLVVPKE
+
+    :haun-asetukset/valintaesityksen-hyvaksyminen
+    :PH_VEH
+
+    :haun-asetukset/koetulosten-tallentaminen
+    :PH_KTT))
 
 (defn- parse-int [value]
   (let [i (.parseInt js/Number value 10)]
@@ -68,6 +92,10 @@
               ->haun-asetus-value))
        (apply comp)))
 
+(defn- aikavali-value? [haun-asetus-key _]
+  (some #{haun-asetus-key}
+        #{:haun-asetukset/valintatulosten-julkaiseminen-hakijoille}))
+
 (defn- date-value? [haun-asetus-key _]
   (some #{haun-asetus-key}
         #{:haun-asetukset/paikan-vastaanotto-paattyy
@@ -86,6 +114,24 @@
 (defn- long->date [ohjausparametrit-date]
   (some-> ohjausparametrit-date :date d/long->date))
 
+(defn- ohjausparametri->aikavali [ohjausparametri]
+  (let [start (long->date {:date (:dateStart ohjausparametri)})
+        end (long->date {:date (:dateEnd ohjausparametri)})
+        result {:start start
+                :end   end}]
+    result))
+
+(defn- aikavali->ohjausparametri [aikavali]
+  (let [start (cond-> (:start aikavali)
+                      d/iso-date-time-local-str->date
+                      d/date->long)
+        end (cond-> (:end aikavali)
+                    d/iso-date-time-local-str->date
+                    d/date->long)]
+    {:dateStart start
+     :dateEnd   end}))
+
+
 (defn- string->int-value [s]
   (when-not (empty? s)
     {:value (parse-int s)}))
@@ -95,7 +141,8 @@
     (str value)))
 
 (def ^:private ohjausparametri-value->haun-asetus-value-mappings
-  [[date-value? long->date]
+  [[aikavali-value? ohjausparametri->aikavali]
+   [date-value? long->date]
    [>0-number-value? str]
    [useita-hakemuksia? not]
    [boolean-value? true?]
@@ -111,7 +158,8 @@
     (f ohjausparametri-value)))
 
 (def ^:private haun-asetus-value->ohjausparametri-value-mappings
-  [[date-value? local-date->long]
+  [[aikavali-value? aikavali->ohjausparametri]
+   [date-value? local-date->long]
    [>0-number-value? parse-int]
    [useita-hakemuksia? not]
    [int-value? string->int-value]
