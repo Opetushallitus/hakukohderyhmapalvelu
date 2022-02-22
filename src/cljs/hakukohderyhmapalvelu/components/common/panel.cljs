@@ -12,7 +12,7 @@
 (def ^:private panel-content-style
   {:background-color colors/white
    :filter           effects/drop-shadow-effect-black
-   :padding          "15px 25px"})
+   :padding          "15px 25px 40px"})
 
 (defn panel [{:keys [cypressid]} heading contents]
   [:div (stylefy/use-style main-panel-style {:cypressid cypressid})

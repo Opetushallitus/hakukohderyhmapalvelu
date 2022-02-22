@@ -13,6 +13,7 @@
 (def selected-hakukohderyhmas-hakukohteet :hakukohderyhmien-hallinta/selected-hakukohderyhmas-hakukohteet)
 (def selected-hakukohderyhma :hakukohderyhmien-hallinta/selected-hakukohderyhma)
 (def is-loading-hakukohderyhmas :hakukohderyhmien-hallinta/is-loading-hakukohderyhmas)
+(def hakukohderyhma-is-priorisoiva :hakukohderyhmien-hallinta/hakukohderyhma-is-priorisoiva)
 
 (re-frame/reg-sub
   :hakukohderyhmien-hallinta/create-grid-visible?
@@ -61,8 +62,9 @@
     [(re-frame/subscribe [selected-hakukohderyhma])])
   (fn [[hakukohderyhma]]
     (let [hakukohteet (:hakukohteet hakukohderyhma)
+          priorisointi?  (get-in hakukohderyhma [:settings :priorisoiva])
           prioriteettijarjestys (vec (get-in hakukohderyhma [:settings :prioriteettijarjestys]))
-          result (if (get-in hakukohderyhma [:settings :priorisoiva]) (vec (sort-by #(.indexOf prioriteettijarjestys (:oid %)) hakukohteet)) hakukohteet)]
+          result (if priorisointi? (vec (sort-by #(.indexOf prioriteettijarjestys (:oid %)) hakukohteet)) hakukohteet)]
       result)))
 
 (re-frame/reg-sub
@@ -73,11 +75,20 @@
     (:hakukohteet hakukohderyhma)))
 
 (re-frame/reg-sub
+  hakukohderyhma-is-priorisoiva
+  (fn []
+    [(re-frame/subscribe [selected-hakukohderyhma])])
+  (fn [[hakukohderyhma]]
+    (get-in hakukohderyhma [:settings :priorisoiva])))
+
+(re-frame/reg-sub
   hakukohderyhman-hakukohteet-as-options
   (fn []
     [(re-frame/subscribe [:lang])
-     (re-frame/subscribe [hakukohderyhman-hakukohteet-prioriteettijarjestyksessa])])
-  (fn [[lang hakukohteet]]
+     (re-frame/subscribe [hakukohderyhman-hakukohteet-prioriteettijarjestyksessa])
+     (re-frame/subscribe [hakukohderyhma-is-priorisoiva])])
+  (fn [[lang hakukohteet priorisoiva?]]
+    ;(js/console.log (str "as options " priorisoiva))
     (let [labels {:label     [:nimi]
                   :sub-label [:tarjoaja :nimi]}
           transform-fn (i18n-utils/create-item->option-transformer lang labels :oid #(-> % :oikeusHakukohteeseen not))
@@ -86,6 +97,7 @@
                                             option))
           transform-and-add-icon (fn [hakukohde] (-> hakukohde
                                                      (transform-fn)
+                                                     (assoc :priorisointi priorisoiva?)
                                                      (add-icon hakukohde)))]
       (map transform-and-add-icon hakukohteet))))
 

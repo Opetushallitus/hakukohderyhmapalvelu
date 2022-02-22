@@ -62,6 +62,7 @@
                     :max-hakukohteet              {:fi "Ryhmän hakukohteita valittavissa enintään"}
                     :rajaava                      {:fi "Rajaava"}
                     :priorisoiva                  {:fi "Priorisoiva"}
+                    :tallenna-jarjestys           {:fi "Tallenna järjestys"}
                     :jyemp                        {:fi "Jos Ylioppilastutkinto tai kansainvälinen ylioppilastutkinto, ei muiden tutkintojen liitepyyntöjä"}
                     :yo-amm-autom-hakukelpoisuus  {:fi "YO tai Ammatillinen tutkinto antaa automaattisen hakukelpoisuuden"}}
    })

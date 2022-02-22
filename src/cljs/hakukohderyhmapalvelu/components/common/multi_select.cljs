@@ -56,9 +56,10 @@
    :label       s/Str
    :sub-label   s/Str
    :value       s/Any
+   (s/optional-key :priorisointi) s/Bool
    (s/optional-key :icon) s/Any})
 
-(defn- multi-select-option-priorisoiva [select-fn {:keys [value label sub-label is-selected is-disabled icon index is-last]} cypressid]
+(defn- multi-select-option-priorisoiva [select-fn {:keys [value label sub-label is-selected is-disabled icon index is-last priorisointi]} cypressid]
   (let [style (cond
                 is-disabled option-style-disabled
                 is-selected option-style-selected
@@ -69,21 +70,19 @@
         sub-label-style (if is-disabled sub-label-style-disabled sub-label-style)
         on-click #(when (not is-disabled) (select-fn value))
         swap-down #(swap-fn index)
-        swap-up #(swap-fn (- index 1))
-        ]
-    [:div (stylefy/use-style style {;:on-click swap-up
-                                    :cypressid (str cypressid "__" label (when is-selected "--selected"))})
+        swap-up #(swap-fn (- index 1))]
+    [:div (stylefy/use-style style {:cypressid (str cypressid "__" label (when is-selected "--selected"))})
      [:div (stylefy/use-style arrow-style)
-      [:div (stylefy/use-style arrow-style {:on-click swap-up}) (when (> index 0) (icon/arrow-drop-up))]
-      [:div (stylefy/use-style arrow-style {:on-click swap-down}) (when-not is-last (icon/arrow-drop-down)) is-last]]
+      [:div (stylefy/use-style arrow-style {:on-click swap-up}) (when (and priorisointi (> index 0)) (icon/arrow-drop-up))]
+      [:div (stylefy/use-style arrow-style {:on-click swap-down}) (when (and (not is-last)
+                                                                             priorisointi) (icon/arrow-drop-down)) is-last]]
      [:div (stylefy/use-style style {:on-click on-click
                                      :cypressid (str cypressid "__" label (when is-selected "--selected"))})
       [:span (stylefy/use-style sub-label-style) sub-label]
       [:span (stylefy/use-style label-style)
        (when icon
          [icon])
-       label]]
-     ]))
+       label]]]))
 
 (defn- multi-select-option [select-fn {:keys [value label sub-label is-selected is-disabled icon]} cypressid]
   (let [style (cond

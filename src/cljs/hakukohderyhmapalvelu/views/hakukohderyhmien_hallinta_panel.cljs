@@ -243,9 +243,6 @@
 
 (defn- hakukohderyhma-container []
   (let [hakukohteet (subscribe [hakukohderyhma-subs/hakukohderyhman-hakukohteet-as-options])
-        with-indices (map-indexed (fn [x i] (-> x
-                                              (assoc :index i)
-                                              (assoc :foo "bar"))) @hakukohteet)
         selected-hakukohteet (subscribe [hakukohderyhma-subs/selected-hakukohderyhmas-hakukohteet])
         remove-from-goup-btn-text (subscribe [:translation :hakukohderyhma/poista-ryhmasta])]
     (fn []
@@ -269,8 +266,8 @@
          [:div (stylefy/use-style {:grid-area  "hakukohderyhma-hakukohteet"
                                    :margin-top "-2px"})
           [multi-select/multi-select-priorisoiva {:options   @hakukohteet
-                                      :cypressid "hakukohderyhma-hakukohteet"
-                                      :select-fn #(dispatch [hakukohderyhma-events/toggle-hakukohde-selection %])}]]
+                                                  :cypressid "hakukohderyhma-hakukohteet"
+                                                  :select-fn #(dispatch [hakukohderyhma-events/toggle-hakukohde-selection %])}]]
          [:div (stylefy/use-style button-row-style)
           [select-all-btns/select-all-buttons
            {:cypressid                "select-all-btn-2"
@@ -287,7 +284,7 @@
                      :on-click     #(dispatch [hakukohderyhma-events/removed-hakukohteet-from-hakukohderyhma
                                                @selected-hakukohteet])
                      :style-prefix "remove-from-group-btn"}]]
-         [settings-view/hakukohderyha-settings-view]]))))
+         [settings-view/hakukohderyhma-settings-view]]))))
 
 (defn hakukohderyhmien-hallinta-panel []
   [p/panel
