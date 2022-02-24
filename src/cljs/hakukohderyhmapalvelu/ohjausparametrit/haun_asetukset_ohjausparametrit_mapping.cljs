@@ -73,7 +73,9 @@
           :haun-asetukset/sijoittelu}))
 
 (defn- int-value? [haun-asetus-key _]
-  (= haun-asetus-key :haun-asetukset/hakijakohtainen-paikan-vastaanottoaika))
+  (some #{haun-asetus-key}
+        #{:haun-asetukset/hakijakohtainen-paikan-vastaanottoaika
+          :haun-asetukset/liitteiden-muokkauksen-takaraja}))
 
 (defn- >0-number-value? [haun-asetus-key value]
   (and (= haun-asetus-key :haun-asetukset/hakukohteiden-maara-rajoitus)
@@ -102,7 +104,13 @@
           :haun-asetukset/hakukierros-paattyy
           :haun-asetukset/valintatulokset-valmiina-viimeistaan
           :haun-asetukset/varasijasaannot-astuvat-voimaan
-          :haun-asetukset/varasijataytto-paattyy}))
+          :haun-asetukset/varasijataytto-paattyy
+          :haun-asetukset/ilmoittautuminen-paattyy
+          :haun-asetukset/automaattinen-hakukelpoisuus-paattyy
+          :haun-asetukset/harkinnanvaraisen-valinnan-paatosten-tallennus-paattyy
+          :haun-asetukset/oppilaitosten-virkailijoiden-valintapalvelun-kaytto-estetty
+          :haun-asetukset/valintaesityksen-hyvaksyminen
+          :haun-asetukset/koetulosten-tallentaminen}))
 
 (defn- local-date->long [date]
   (when-not (empty? date)
