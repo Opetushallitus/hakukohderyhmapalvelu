@@ -75,7 +75,7 @@
 
 (defn- priorisoiva-checkbox
   [selected-ryhma disabled?]
-  (let [priorisoiva-checked? (boolean (get-in selected-ryhma [:settings :priorisoiva])) ;fixme
+  (let [priorisoiva-checked? (boolean (get-in selected-ryhma [:settings :priorisoiva]))
         changed? (boolean (get selected-ryhma :prioriteettijarjestys-changed))]
     [:<>
      [:div (stylefy/use-style {:display        "flex"

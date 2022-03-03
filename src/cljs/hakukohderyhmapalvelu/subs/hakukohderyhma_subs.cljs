@@ -88,7 +88,6 @@
      (re-frame/subscribe [hakukohderyhman-hakukohteet-prioriteettijarjestyksessa])
      (re-frame/subscribe [hakukohderyhma-is-priorisoiva])])
   (fn [[lang hakukohteet priorisoiva?]]
-    ;(js/console.log (str "as options " priorisoiva))
     (let [labels {:label     [:nimi]
                   :sub-label [:tarjoaja :nimi]}
           transform-fn (i18n-utils/create-item->option-transformer lang labels :oid #(-> % :oikeusHakukohteeseen not))

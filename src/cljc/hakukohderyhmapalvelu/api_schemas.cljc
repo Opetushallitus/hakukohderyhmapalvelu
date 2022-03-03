@@ -38,7 +38,7 @@
 
 (s/defschema HakukohderyhmaSettings
   {:rajaava s/Bool
-   (s/optional-key :priorisoiva) s/Bool ;fixme?
+   (s/optional-key :priorisoiva) s/Bool
    (s/optional-key :prioriteettijarjestys) [s/Str]
    :max-hakukohteet (s/maybe s/Int)
    :jos-ylioppilastutkinto-ei-muita-pohjakoulutusliitepyyntoja s/Bool
