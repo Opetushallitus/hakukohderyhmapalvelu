@@ -210,10 +210,7 @@
                    jyemp (get-in selected-ryhma [:settings :jos-ylioppilastutkinto-ei-muita-pohjakoulutusliitepyyntoja])
                    yo-amm-autom-hakukelpoisuus (get-in selected-ryhma [:settings :yo-amm-autom-hakukelpoisuus])
                    hakukohteet (vec (:hakukohteet selected-ryhma))
-                   settings-jarjestys (get-in selected-ryhma [:settings :prioriteettijarjestys])
-                   prioriteettijarjestys (if (not-empty settings-jarjestys)
-                                           settings-jarjestys
-                                           (map :oid hakukohteet))
+                   prioriteettijarjestys (map :oid hakukohteet)
                    settings {:rajaava                                                    rajaava
                              :max-hakukohteet                                            (when rajaava 1)
                              :priorisoiva                                                toggled-priorisoiva
@@ -322,9 +319,13 @@
                    unselected-hakukohteet (map #(assoc % :is-selected false) hakukohteet)
                    updated-unsorted-hakukohteet (vec (union (set current-hakukohteet) (set unselected-hakukohteet)))
                    updated-hakukohteet (sort-items-by-name (:lang db) updated-unsorted-hakukohteet)
-                   hakukohderyhma' (assoc hakukohderyhma :hakukohteet updated-hakukohteet)]
+                   hakukohderyhma' (-> hakukohderyhma
+                                       (assoc :hakukohteet updated-hakukohteet)
+                                       (assoc-in [:settings :prioriteettijarjestys] (map :oid updated-hakukohteet)))
+                   priorisoiva? (get-in hakukohderyhma [:settings :priorisoiva] false)]
                {:db       (update-hakukohderyhma db hakukohderyhma')
-                :dispatch [save-hakukohderyhma-hakukohteet (:oid hakukohderyhma) updated-hakukohteet]})))
+                :dispatch-n [[save-hakukohderyhma-hakukohteet (:oid hakukohderyhma) updated-hakukohteet]
+                             (when priorisoiva? [hakukohderyhma-toggle-priorisoiva])]})))
 
 (events/reg-event-fx-validating
   removed-hakukohteet-from-hakukohderyhma
@@ -333,9 +334,13 @@
                    oids-to-remove (set (map :oid hakukohteet))
                    current-hakukohteet (:hakukohteet hakukohderyhma)
                    updated-hakukohteet (remove #(oids-to-remove (:oid %)) current-hakukohteet)
-                   hakukohderyhma' (assoc hakukohderyhma :hakukohteet updated-hakukohteet)]
+                   hakukohderyhma' (-> hakukohderyhma
+                                       (assoc :hakukohteet updated-hakukohteet)
+                                       (assoc-in [:settings :prioriteettijarjestys] (map :oid updated-hakukohteet)))
+                   priorisoiva? (get-in hakukohderyhma [:settings :priorisoiva] false)]
                {:db       (update-hakukohderyhma db hakukohderyhma')
-                :dispatch [save-hakukohderyhma-hakukohteet (:oid hakukohderyhma) updated-hakukohteet]})))
+                :dispatch-n [[save-hakukohderyhma-hakukohteet (:oid hakukohderyhma) updated-hakukohteet]
+                             (when priorisoiva? [hakukohderyhma-toggle-priorisoiva])]})))
 
 
 (defn swap-with-next [i elems]
