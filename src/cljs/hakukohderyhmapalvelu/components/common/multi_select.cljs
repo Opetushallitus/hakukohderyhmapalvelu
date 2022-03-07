@@ -23,7 +23,6 @@
 (def ^:private option-style
   {:background-color "#fff"
    :cursor           "pointer"
-   ;:display          "block"
    :padding          "2px 4px"})
 
 (def ^:private option-style-selected

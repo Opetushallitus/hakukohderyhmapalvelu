@@ -85,7 +85,7 @@
     (let [service (:hakukohderyhma-service @test-system)
           settings {:rajaava          true
                     :max-hakukohteet 3
-                    :priorisoiva false,
+                    :priorisoiva false
                     :prioriteettijarjestys []
                     :jos-ylioppilastutkinto-ei-muita-pohjakoulutusliitepyyntoja true
                     :yo-amm-autom-hakukelpoisuus false}
