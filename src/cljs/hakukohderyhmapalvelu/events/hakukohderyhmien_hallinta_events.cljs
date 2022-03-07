@@ -29,6 +29,7 @@
 (def set-hakukohderyhma-name-text :hakukohderyhmien-hallinta/set-hakukohderyhma-name-text)
 (def set-deletion-confirmation-dialogue-visibility :hakukohderyhmien-hallinta/deletion-confirmation-dialogue-toggled)
 (def hakukohderyhma-toggle-rajaava :hakukohderyhmien-hallinta/hakukohderyhma-toggle-rajaava)
+(def hakukohderyhma-toggle-priorisoiva :hakukohderyhmien-hallinta/hakukohderyhma-toggle-priorisoiva)
 (def hakukohderyhma-settings-change-confirmed :hakukohderyhmien-hallinta/hakukohderyhma-settings-change-confirmed)
 (def hakukohderyhma-update-settings :hakukohderyhmien-hallinta/hakukohderyhma-update-settings)
 
@@ -81,18 +82,18 @@
 (events/reg-event-fx-validating
   add-new-hakukohderyhma-link-clicked
   (fn-traced [{db :db}]
-             {:db (-> db
-                      hide-edit-inputs
-                      (update-in create-input-is-active not))
+             {:db       (-> db
+                            hide-edit-inputs
+                            (update-in create-input-is-active not))
               :dispatch [set-hakukohderyhma-name-text ""]}))
 
 (events/reg-event-fx-validating
   edit-hakukohderyhma-link-clicked
   (fn-traced [{db :db} [{nimi :nimi}]]
-             {:db (-> db
-                      (assoc-in create-input-is-active false)
-                      (assoc-in deletion-confirmation-is-active false)
-                      (update-in rename-input-is-active not))
+             {:db       (-> db
+                            (assoc-in create-input-is-active false)
+                            (assoc-in deletion-confirmation-is-active false)
+                            (update-in rename-input-is-active not))
               :dispatch [set-hakukohderyhma-name-text (get-with-fallback nimi (:lang db))]}))
 
 (events/reg-event-db-validating
@@ -198,19 +199,51 @@
 (events/reg-event-db-validating
   hakukohderyhma-settings-change-confirmed
   (fn-traced [db [selected-ryhma-updated]]
-    (update-hakukohderyhma db selected-ryhma-updated)))
+             (update-hakukohderyhma db (assoc selected-ryhma-updated :prioriteettijarjestys-changed false))))
+
+(events/reg-event-fx-validating
+  hakukohderyhma-toggle-priorisoiva
+  (fn-traced [{db :db}]
+             (let [selected-ryhma (selected-hakukohderyhma db)
+                   rajaava (get-in selected-ryhma [:settings :rajaava])
+                   toggled-priorisoiva (not (get-in selected-ryhma [:settings :priorisoiva]))
+                   jyemp (get-in selected-ryhma [:settings :jos-ylioppilastutkinto-ei-muita-pohjakoulutusliitepyyntoja])
+                   yo-amm-autom-hakukelpoisuus (get-in selected-ryhma [:settings :yo-amm-autom-hakukelpoisuus])
+                   hakukohteet (vec (:hakukohteet selected-ryhma))
+                   prioriteettijarjestys (map :oid hakukohteet)
+                   settings {:rajaava                                                    rajaava
+                             :max-hakukohteet                                            (when rajaava 1)
+                             :priorisoiva                                                toggled-priorisoiva
+                             :prioriteettijarjestys                                      prioriteettijarjestys
+                             :jos-ylioppilastutkinto-ei-muita-pohjakoulutusliitepyyntoja jyemp
+                             :yo-amm-autom-hakukelpoisuus                                yo-amm-autom-hakukelpoisuus}
+                   selected-ryhma-updated (assoc selected-ryhma :settings settings)
+                   http-request-id hakukohderyhma-settings-change-confirmed]
+               {:db   (-> db
+                          (update :requests (fnil conj #{}) http-request-id))
+                :http {:method           :put
+                       :http-request-id  http-request-id
+                       :path             (str "/hakukohderyhmapalvelu/api/hakukohderyhma/" (:oid selected-ryhma) "/settings")
+                       :request-schema   api-schemas/HakukohderyhmaSettings
+                       :body             settings
+                       :response-handler [hakukohderyhma-settings-change-confirmed selected-ryhma-updated]
+                       :error-handler    [alert-events/http-request-failed]}})))
 
 (events/reg-event-fx-validating
   hakukohderyhma-toggle-rajaava
   (fn-traced [{db :db}]
              (let [selected-ryhma (selected-hakukohderyhma db)
-                   rajaava (not (get-in selected-ryhma [:settings :rajaava]))
+                   toggled-rajaava (not (get-in selected-ryhma [:settings :rajaava]))
+                   priorisoiva (get-in selected-ryhma [:settings :priorisoiva])
+                   settings-jarjestys (get-in selected-ryhma [:settings :prioriteettijarjestys])
                    jyemp (get-in selected-ryhma [:settings :jos-ylioppilastutkinto-ei-muita-pohjakoulutusliitepyyntoja])
                    yo-amm-autom-hakukelpoisuus (get-in selected-ryhma [:settings :yo-amm-autom-hakukelpoisuus])
-                   settings {:rajaava rajaava
-                             :max-hakukohteet (when rajaava 1)
+                   settings {:rajaava                                                    toggled-rajaava
+                             :max-hakukohteet                                            (when toggled-rajaava 1)
+                             :priorisoiva                                                priorisoiva
+                             :prioriteettijarjestys                                      settings-jarjestys
                              :jos-ylioppilastutkinto-ei-muita-pohjakoulutusliitepyyntoja jyemp
-                             :yo-amm-autom-hakukelpoisuus yo-amm-autom-hakukelpoisuus}
+                             :yo-amm-autom-hakukelpoisuus                                yo-amm-autom-hakukelpoisuus}
                    selected-ryhma-updated (assoc selected-ryhma :settings settings)
                    http-request-id hakukohderyhma-settings-change-confirmed]
                {:db   (update db :requests (fnil conj #{}) http-request-id)
@@ -222,6 +255,7 @@
                        :response-handler [hakukohderyhma-settings-change-confirmed selected-ryhma-updated]
                        :error-handler    [alert-events/http-request-failed]}})))
 
+;generic save for updating settings
 (events/reg-event-fx-validating
   hakukohderyhma-update-settings
   (fn-traced [{db :db} [settings]]
@@ -241,6 +275,7 @@
 (def handle-get-all-hakukohderyhma :hakukohderyhmien-hallinta/handle-get-all-hakukohderyhma)
 (def added-hakukohteet-to-hakukohderyhma :hakukohderyhmien-hallinta/add-hakukohteet-to-hakukohderyhma)
 (def removed-hakukohteet-from-hakukohderyhma :hakukohderyhmien-hallinta/remove-hakukohteet-from-hakukohderyhma)
+(def swap-hakukohtees :hakukohderyhmien-hallinta/swap-hakukohtees)
 (def toggle-hakukohde-selection :hakukohderyhmien-hallinta/toggle-hakukohde-selection)
 (def save-hakukohderyhma-hakukohteet :hakukohderyhmien-hallinta/save-hakukohderyhma-hakukohteet)
 (def handle-save-hakukohderyhma-hakukohteet :hakukohderyhmien-hallinta/handle-save-hakukohderyhma-hakukohteet)
@@ -284,9 +319,13 @@
                    unselected-hakukohteet (map #(assoc % :is-selected false) hakukohteet)
                    updated-unsorted-hakukohteet (vec (union (set current-hakukohteet) (set unselected-hakukohteet)))
                    updated-hakukohteet (sort-items-by-name (:lang db) updated-unsorted-hakukohteet)
-                   hakukohderyhma' (assoc hakukohderyhma :hakukohteet updated-hakukohteet)]
+                   hakukohderyhma' (-> hakukohderyhma
+                                       (assoc :hakukohteet updated-hakukohteet)
+                                       (assoc-in [:settings :prioriteettijarjestys] (map :oid updated-hakukohteet)))
+                   priorisoiva? (get-in hakukohderyhma [:settings :priorisoiva] false)]
                {:db       (update-hakukohderyhma db hakukohderyhma')
-                :dispatch [save-hakukohderyhma-hakukohteet (:oid hakukohderyhma) updated-hakukohteet]})))
+                :dispatch-n [[save-hakukohderyhma-hakukohteet (:oid hakukohderyhma) updated-hakukohteet]
+                             (when priorisoiva? [hakukohderyhma-toggle-priorisoiva])]})))
 
 (events/reg-event-fx-validating
   removed-hakukohteet-from-hakukohderyhma
@@ -295,9 +334,39 @@
                    oids-to-remove (set (map :oid hakukohteet))
                    current-hakukohteet (:hakukohteet hakukohderyhma)
                    updated-hakukohteet (remove #(oids-to-remove (:oid %)) current-hakukohteet)
-                   hakukohderyhma' (assoc hakukohderyhma :hakukohteet updated-hakukohteet)]
+                   hakukohderyhma' (-> hakukohderyhma
+                                       (assoc :hakukohteet updated-hakukohteet)
+                                       (assoc-in [:settings :prioriteettijarjestys] (map :oid updated-hakukohteet)))
+                   priorisoiva? (get-in hakukohderyhma [:settings :priorisoiva] false)]
                {:db       (update-hakukohderyhma db hakukohderyhma')
-                :dispatch [save-hakukohderyhma-hakukohteet (:oid hakukohderyhma) updated-hakukohteet]})))
+                :dispatch-n [[save-hakukohderyhma-hakukohteet (:oid hakukohderyhma) updated-hakukohteet]
+                             (when priorisoiva? [hakukohderyhma-toggle-priorisoiva])]})))
+
+
+(defn swap-with-next [i elems]
+  (let [next-i (+ i 1)]
+    (if (and (>= i 0)
+             (< next-i (count elems)))
+      (let [elems (vec elems)
+            e1 (nth elems i)
+            e2 (nth elems next-i)]
+        (-> elems
+            (assoc i e2)
+            (assoc next-i e1)
+            (seq)))
+      elems)))
+
+(defn update-prioriteettijarjestys [hakukohderyhma i]
+  (-> hakukohderyhma
+      (update-in [:settings :prioriteettijarjestys] (partial swap-with-next i))
+      (assoc :prioriteettijarjestys-changed true)))
+
+(events/reg-event-db-validating
+  swap-hakukohtees
+  (fn-traced [db [i]]
+             (let [hakukohderyhmas (->> (get-in db persisted-hakukohderyhmas)
+                                        (map #(cond-> % (:is-selected %) (update-prioriteettijarjestys i))))]
+               (assoc-in db persisted-hakukohderyhmas hakukohderyhmas))))
 
 (events/reg-event-db-validating
   toggle-hakukohde-selection

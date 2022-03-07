@@ -35,6 +35,8 @@
                     :tyypit       []
                     :settings     {:rajaava          false
                                    :max-hakukohteet  nil
+                                   :priorisoiva false
+                                   :prioriteettijarjestys []
                                    :jos-ylioppilastutkinto-ei-muita-pohjakoulutusliitepyyntoja false
                                    :yo-amm-autom-hakukelpoisuus false}
                     :hakukohteet  [{:oid                           "1.2.246.562.20.1"
@@ -83,10 +85,14 @@
     (let [service (:hakukohderyhma-service @test-system)
           settings {:rajaava          true
                     :max-hakukohteet 3
+                    :priorisoiva false
+                    :prioriteettijarjestys []
                     :jos-ylioppilastutkinto-ei-muita-pohjakoulutusliitepyyntoja true
                     :yo-amm-autom-hakukelpoisuus false}
           expected {:rajaava          true
                     :max-hakukohteet 3
+                    :priorisoiva false
+                    :prioriteettijarjestys []
                     :jos-ylioppilastutkinto-ei-muita-pohjakoulutusliitepyyntoja true
                     :yo-amm-autom-hakukelpoisuus false}]
       (is (= (hakukohderyhma-protocol/insert-or-update-settings
@@ -99,6 +105,8 @@
     (let [service (:hakukohderyhma-service @test-system)
           expected {:rajaava          false
                     :max-hakukohteet  nil
+                    :priorisoiva      false
+                    :prioriteettijarjestys []
                     :jos-ylioppilastutkinto-ei-muita-pohjakoulutusliitepyyntoja false
                     :yo-amm-autom-hakukelpoisuus false}]
       (is (= (hakukohderyhma-protocol/get-settings

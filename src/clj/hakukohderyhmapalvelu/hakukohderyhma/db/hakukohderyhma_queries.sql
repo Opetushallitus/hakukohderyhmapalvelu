@@ -49,16 +49,23 @@ SELECT  s.rajaava,
         s.hakukohderyhma_oid AS "hakukohderyhma-oid",
         s.max_hakukohteet AS "max-hakukohteet",
         s.jos_ylioppilastutkinto_ei_muita_pohjakoulutusliitepyyntoja AS "jos-ylioppilastutkinto-ei-muita-pohjakoulutusliitepyyntoja",
-        s.yo_amm_autom_hakukelpoisuus AS "yo-amm-autom-hakukelpoisuus"
+        s.yo_amm_autom_hakukelpoisuus AS "yo-amm-autom-hakukelpoisuus",
+        s.priorisoiva,
+        s.prioriteettijarjestys
 FROM hakukohderyhma_settings s
 WHERE s.hakukohderyhma_oid IN (:v*:hakukohderyhma-oids);
 
 -- :name upsert-settings! :! :n
-INSERT INTO hakukohderyhma_settings (hakukohderyhma_oid, rajaava, max_hakukohteet, jos_ylioppilastutkinto_ei_muita_pohjakoulutusliitepyyntoja, yo_amm_autom_hakukelpoisuus)
-VALUES (:hakukohderyhma-oid, :rajaava, :max-hakukohteet, :jos-ylioppilastutkinto-ei-muita-pohjakoulutusliitepyyntoja, :yo-amm-autom-hakukelpoisuus)
+INSERT INTO hakukohderyhma_settings (hakukohderyhma_oid, rajaava, max_hakukohteet, jos_ylioppilastutkinto_ei_muita_pohjakoulutusliitepyyntoja, yo_amm_autom_hakukelpoisuus, priorisoiva, prioriteettijarjestys)
+VALUES (:hakukohderyhma-oid, :rajaava, :max-hakukohteet, :jos-ylioppilastutkinto-ei-muita-pohjakoulutusliitepyyntoja, :yo-amm-autom-hakukelpoisuus, :priorisoiva, :prioriteettijarjestys::jsonb)
 ON CONFLICT (hakukohderyhma_oid)
 DO
-    UPDATE SET rajaava = :rajaava, max_hakukohteet = :max-hakukohteet, jos_ylioppilastutkinto_ei_muita_pohjakoulutusliitepyyntoja = :jos-ylioppilastutkinto-ei-muita-pohjakoulutusliitepyyntoja, yo_amm_autom_hakukelpoisuus = :yo-amm-autom-hakukelpoisuus;
+    UPDATE SET rajaava = :rajaava,
+               max_hakukohteet = :max-hakukohteet,
+               jos_ylioppilastutkinto_ei_muita_pohjakoulutusliitepyyntoja = :jos-ylioppilastutkinto-ei-muita-pohjakoulutusliitepyyntoja,
+               yo_amm_autom_hakukelpoisuus = :yo-amm-autom-hakukelpoisuus,
+               priorisoiva = :priorisoiva,
+               prioriteettijarjestys = :prioriteettijarjestys::jsonb;
 
 -- :name grouped-hakukohderyhmas :? :*
 SELECT

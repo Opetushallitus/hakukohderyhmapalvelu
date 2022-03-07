@@ -438,7 +438,7 @@ describe('Hakukohderyhmäpalvelu', () => {
         cy.get(hh.extraFilterSelectSelector('koulutustyypit-filter')).type(
           'Lukiokoulutus{enter}',
         )
-        cy.get(hh.extraFiltersPopupClose).click({ force: true })
+        cy.get(hh.extraFiltersButtonSelector).click({ force: true })
 
         cy.get(hh.hakukohteetContainerSelector)
           .children()
@@ -533,7 +533,7 @@ describe('Hakukohderyhmäpalvelu', () => {
         .get(hh.hakukohderyhmanHakukohteetContainerSelector)
         .children()
         .each(el => {
-          cy.wrap(el).click({ force: true })
+          cy.wrap(el.children().get(1)).click({ force: true })
         })
         .get(hh.poistaRyhmastaButtonSelector)
         .click({ force: true })

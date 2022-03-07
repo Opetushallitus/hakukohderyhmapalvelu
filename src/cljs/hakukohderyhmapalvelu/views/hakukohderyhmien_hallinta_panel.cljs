@@ -265,9 +265,9 @@
          [hakukohderyhma-select]
          [:div (stylefy/use-style {:grid-area  "hakukohderyhma-hakukohteet"
                                    :margin-top "-2px"})
-          [multi-select/multi-select {:options   @hakukohteet
-                                      :cypressid "hakukohderyhma-hakukohteet"
-                                      :select-fn #(dispatch [hakukohderyhma-events/toggle-hakukohde-selection %])}]]
+          [multi-select/multi-select-priorisoiva {:options   @hakukohteet
+                                                  :cypressid "hakukohderyhma-hakukohteet"
+                                                  :select-fn #(dispatch [hakukohderyhma-events/toggle-hakukohde-selection %])}]]
          [:div (stylefy/use-style button-row-style)
           [select-all-btns/select-all-buttons
            {:cypressid                "select-all-btn-2"
@@ -284,7 +284,7 @@
                      :on-click     #(dispatch [hakukohderyhma-events/removed-hakukohteet-from-hakukohderyhma
                                                @selected-hakukohteet])
                      :style-prefix "remove-from-group-btn"}]]
-         [settings-view/hakukohderyha-settings-view]]))))
+         [settings-view/hakukohderyhma-settings-view]]))))
 
 (defn hakukohderyhmien-hallinta-panel []
   [p/panel

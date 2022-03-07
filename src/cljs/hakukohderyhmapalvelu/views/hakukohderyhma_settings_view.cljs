@@ -1,5 +1,6 @@
 (ns hakukohderyhmapalvelu.views.hakukohderyhma-settings-view
   (:require [hakukohderyhmapalvelu.components.common.input :as input]
+            [hakukohderyhmapalvelu.components.common.button :as button]
             [stylefy.core :as stylefy]
             [hakukohderyhmapalvelu.components.common.checkbox :as checkbox]
             [hakukohderyhmapalvelu.subs.hakukohderyhma-subs :as hakukohderyhma-subs]
@@ -57,24 +58,72 @@
                  {:margin-left "1rem"
                   :font-size   "small"})]])
 
+(defn- save-button [selected-ryhma]
+  [:div (stylefy/use-style {:display        "flex"
+                            :flex-direction "row"})
+   [button/button {:cypressid    "save-asetukset"
+                   :disabled?    false
+                   :label        @(subscribe [:translation :hakukohderyhma/tallenna-jarjestys])
+                   :on-click      (fn []
+                                    (let [settings (:settings selected-ryhma)]
+                                      (js/console.log (str "Saving settings: " selected-ryhma))
+                                      (dispatch [hakukohderyhma-events/hakukohderyhma-update-settings settings])))
+                   :style-prefix "save-asetukset-btn"
+                   :custom-style {:is-danger  false
+                                  :margin-left "15px"
+                                  }}]])
+
+(defn- priorisoiva-checkbox
+  [selected-ryhma disabled?]
+  (let [priorisoiva-checked? (boolean (get-in selected-ryhma [:settings :priorisoiva]))
+        changed? (boolean (get selected-ryhma :prioriteettijarjestys-changed))]
+    [:<>
+     [:div (stylefy/use-style {:display        "flex"
+                               :flex-direction "row"})
+      (checkbox/checkbox-slider {:checked?        priorisoiva-checked?
+                                 :cypressid       "priorisoiva-checkbox"
+                                 :id              "priorisoiva-checkbox"
+                                 :disabled?        disabled?
+                                 :aria-labelledby @(subscribe [:translation :hakukohderyhma/priorisoiva])
+                                 :on-change       (fn []
+                                                    (dispatch [hakukohderyhma-events/hakukohderyhma-toggle-priorisoiva]))})
+      (label/label {:id    "priorisoiva-label"
+                    :label @(subscribe [:translation :hakukohderyhma/priorisoiva])
+                    :for   "priorisoiva-checkbox"}
+                   {:margin-left "1rem"
+                    :font-size   "small"})
+      (when (and priorisoiva-checked? changed?) (save-button selected-ryhma))]]))
+
 (defn- rajaava-checkbox
-  [selected-ryhma]
-  [:<>
-   [:div (stylefy/use-style {:display        "flex"
-                             :flex-direction "row"})
-    (checkbox/checkbox-slider {:checked?        (get-in selected-ryhma [:settings :rajaava])
-                               :cypressid       "rajaava-checkbox"
-                               :id              "rajaava-checkbox"
-                               :aria-labelledby @(subscribe [:translation :hakukohderyhma/rajaava])
-                               :on-change       (fn []
-                                                  (dispatch [hakukohderyhma-events/hakukohderyhma-toggle-rajaava]))})
-    (label/label {:id    "rajaava-label"
-                  :label @(subscribe [:translation :hakukohderyhma/rajaava])
-                  :for   "rajaava-checkbox"}
-                 {:margin-left "1rem"
-                  :font-size   "small"})]
-   (when (get-in selected-ryhma [:settings :rajaava])
-     (max-hakukohteet selected-ryhma))])
+  [selected-ryhma disabled?]
+  (let [rajaava-checked? (get-in selected-ryhma [:settings :rajaava])]
+    [:<>
+     [:div (stylefy/use-style {:display        "flex"
+                               :flex-direction "row"
+                               :margin-top "1em"})
+      (checkbox/checkbox-slider {:checked?        rajaava-checked?
+                                 :cypressid       "rajaava-checkbox"
+                                 :id              "rajaava-checkbox"
+                                 :disabled?        disabled?
+                                 :aria-labelledby @(subscribe [:translation :hakukohderyhma/rajaava])
+                                 :on-change       (fn []
+                                                    (dispatch [hakukohderyhma-events/hakukohderyhma-toggle-rajaava]))})
+      (label/label {:id    "rajaava-label"
+                    :label @(subscribe [:translation :hakukohderyhma/rajaava])
+                    :for   "rajaava-checkbox"}
+                   {:margin-left "1rem"
+                    :font-size   "small"})]
+     (when (get-in selected-ryhma [:settings :rajaava])
+       (max-hakukohteet selected-ryhma))]
+    )
+  )
+
+(defn- priorisoiva-and-rajaava-checkboxes [selected-ryhma]
+  (let [rajaava-checked? (boolean (get-in selected-ryhma [:settings :rajaava]))
+        priorisoiva-checked? (boolean (get-in selected-ryhma [:settings :priorisoiva]))]
+    [:div
+     (priorisoiva-checkbox selected-ryhma rajaava-checked?)
+     (rajaava-checkbox selected-ryhma priorisoiva-checked?)]))
 
 (defn- jyemp-checkbox
   [selected-ryhma]
@@ -96,12 +145,12 @@
                  {:margin-left "0.5rem"
                   :font-size   "small"})])
 
-(defn hakukohderyha-settings-view
+(defn hakukohderyhma-settings-view
   []
   (let [selected-ryhma @(subscribe [hakukohderyhma-subs/selected-hakukohderyhma])]
     [:div (stylefy/use-style settings-view-style {:cypressid "hakukohderyhma-settings-view"})
      (when selected-ryhma
        [:<>
-        (rajaava-checkbox selected-ryhma)
+        (priorisoiva-and-rajaava-checkboxes selected-ryhma)
         (jyemp-checkbox selected-ryhma)
         (yo-amm-autom-hakukelpoisuus-checkbox selected-ryhma)])]))

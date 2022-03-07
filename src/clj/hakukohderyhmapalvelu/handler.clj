@@ -193,7 +193,7 @@
            :get {:middleware auth
                  :tags       ["Hakukohderyhmä"]
                  :summary    ["Hakee hakukohderyhmän tiedot"]
-                 :responsens {200 {:body [s/Str]}}
+                 :responses {200 {:body [s/Str]}}
                  :parameters {:path {:oid s/Str}}
                  :handler    (fn [{{{oid :oid} :path} :parameters}]
                                (response/ok (hakukohderyhma/get-hakukohde-oids-for-hakukohderyhma-oid
