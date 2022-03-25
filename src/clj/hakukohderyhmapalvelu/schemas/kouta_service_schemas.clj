@@ -29,7 +29,7 @@
    :toinenAsteOnkoKaksoistutkinto                     s/Bool
    :valintakokeet                                     [Valintakoe]
    :tila                                              (s/enum "luonnos" "julkaistu" "arkistoitu")
-   (s/optional-key :onkoHarkinnanvarainenKoulutus)    s/Bool
+   (s/optional-key :salliikoHakukohdeHarkinnanvaraisuudenKysymisen)    s/Bool
    (s/optional-key :oikeusHakukohteeseen)             s/Bool
    (s/optional-key :jarjestaaUrheilijanAmmKoulutusta) s/Bool
    (s/optional-key :koulutustyyppikoodi)              (s/maybe s/Str)

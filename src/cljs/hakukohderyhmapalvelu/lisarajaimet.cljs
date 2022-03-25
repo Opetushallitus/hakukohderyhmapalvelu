@@ -5,7 +5,7 @@
     (and
       (= ammatillinen-koulustyyppi? (:koulutustyyppikoodi hakukohde))
       (or
-        (boolean (:onkoHarkinnanvarainenKoulutus hakukohde))
+        (boolean (:salliikoHakukohdeHarkinnanvaraisuudenKysymisen hakukohde))
         (not (boolean (:hasValintakoe hakukohde)))))))
 
 (def default-lisarajain-filters
