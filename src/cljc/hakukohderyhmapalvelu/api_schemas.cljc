@@ -31,7 +31,7 @@
      (s/optional-key :hasValintakoe)                    s/Bool
      (s/optional-key :sora)                             SoraTieto
      (s/optional-key :oikeusHakukohteeseen)             s/Bool
-     (s/optional-key :onkoHarkinnanvarainenKoulutus)    s/Bool
+     (s/optional-key :salliikoHakukohdeHarkinnanvaraisuudenKysymisen)    s/Bool
      (s/optional-key :hakuOid)                          s/Str
      (s/optional-key :koulutustyyppikoodi)              (s/maybe s/Str)
      (s/optional-key :jarjestaaUrheilijanAmmKoulutusta) s/Bool }))

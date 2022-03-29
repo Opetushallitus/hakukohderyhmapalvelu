@@ -29,7 +29,7 @@
     :toinenAsteOnkoKaksoistutkinto false
     :oikeusHakukohteeseen          true
     :valintakokeet []
-    :onkoHarkinnanvarainenKoulutus true}
+    :salliikoHakukohdeHarkinnanvaraisuudenKysymisen true}
    {:oid                           "1.2.246.562.20.2"
     :nimi                          {:fi "Hakukohde 2"}
     :organisaatioOid               "1.2.246.562.28.2"
@@ -39,7 +39,7 @@
     :toinenAsteOnkoKaksoistutkinto false
     :oikeusHakukohteeseen          true
     :valintakokeet []
-    :onkoHarkinnanvarainenKoulutus true}])
+    :salliikoHakukohdeHarkinnanvaraisuudenKysymisen true}])
 
 (def kouta-hakukohteet-response-1-3
   [{:oid                           "1.2.246.562.20.1"
@@ -51,7 +51,7 @@
     :toinenAsteOnkoKaksoistutkinto false
     :oikeusHakukohteeseen          true
     :valintakokeet []
-    :onkoHarkinnanvarainenKoulutus true}
+    :salliikoHakukohdeHarkinnanvaraisuudenKysymisen true}
    {:oid                           "1.2.246.562.20.3"
     :nimi                          {:fi "Hakukohde 3"}
     :organisaatioOid               "1.2.246.562.28.2"
@@ -61,7 +61,7 @@
     :toinenAsteOnkoKaksoistutkinto false
     :oikeusHakukohteeseen          true
     :valintakokeet []
-    :onkoHarkinnanvarainenKoulutus true}])
+    :salliikoHakukohdeHarkinnanvaraisuudenKysymisen true}])
 
 (def kouta-hakukohteet-response-for-delete
   [{:oid                           "1.2.3.4.5.6.7.8.9.10"
@@ -73,4 +73,4 @@
     :toinenAsteOnkoKaksoistutkinto false
     :oikeusHakukohteeseen          true
     :valintakokeet []
-    :onkoHarkinnanvarainenKoulutus true}])
+    :salliikoHakukohdeHarkinnanvaraisuudenKysymisen true}])

@@ -57,7 +57,7 @@
                      :tarjoaja                      test-fixtures/organisaatio-1
                      :toinenAsteOnkoKaksoistutkinto false
                      :oikeusHakukohteeseen          true
-                     :onkoHarkinnanvarainenKoulutus true
+                     :salliikoHakukohdeHarkinnanvaraisuudenKysymisen true
                      :hasValintakoe                 false
                      :tila                          "julkaistu"}
                     {:oid                           "1.2.246.562.20.2"
@@ -66,7 +66,7 @@
                      :tarjoaja                      test-fixtures/organisaatio-2
                      :toinenAsteOnkoKaksoistutkinto false
                      :oikeusHakukohteeseen          true
-                     :onkoHarkinnanvarainenKoulutus true
+                     :salliikoHakukohdeHarkinnanvaraisuudenKysymisen true
                      :hasValintakoe                 false
                      :tila                          "julkaistu"}]]
       (dispatch-mock {:method   :get
@@ -86,7 +86,7 @@
                      :tarjoaja                      test-fixtures/organisaatio-1
                      :toinenAsteOnkoKaksoistutkinto false
                      :oikeusHakukohteeseen          true
-                     :onkoHarkinnanvarainenKoulutus true
+                     :salliikoHakukohdeHarkinnanvaraisuudenKysymisen true
                      :hasValintakoe                 false
                      :tila                          "julkaistu"}
                     {:oid                           "1.2.246.562.20.2"
@@ -95,7 +95,7 @@
                      :tarjoaja                      test-fixtures/organisaatio-2
                      :toinenAsteOnkoKaksoistutkinto false
                      :oikeusHakukohteeseen          true
-                     :onkoHarkinnanvarainenKoulutus true
+                     :salliikoHakukohdeHarkinnanvaraisuudenKysymisen true
                      :hasValintakoe                 false
                      :tila                          "julkaistu"}]]
       (dispatch-mock {:method   :post
