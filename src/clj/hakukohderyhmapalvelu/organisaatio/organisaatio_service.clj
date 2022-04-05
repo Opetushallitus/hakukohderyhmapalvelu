@@ -74,16 +74,17 @@
     (let [url           (oph-url/resolve-url :organisaatio-service.organisaatio.v4 config)
           parent-oid    (-> config :oph-organisaatio-oid)
           body          (merge hakukohderyhma
-                               {:parentOid    parent-oid})
-          response-body (-> (authenticating-client-protocol/post organisaatio-service-authenticating-client
-                                                                 {:url  url
-                                                                  :body body}
-                                                                 {:request-schema  schemas/PostNewOrganisaatioRequest
-                                                                  :response-schema schemas/PostNewOrganisaatioResponse})
-                            (http/parse-and-validate schemas/PostNewOrganisaatioResponse))]
-      (-> response-body
-          :organisaatio
-          (st/select-schema api-schemas/Organisaatio))))
+                               {:parentOid    parent-oid})]
+      (log/info (str "Creating new hakukohderyhmä to organisaatiopalvelu. Request body: " body))
+      (let [response-body-unparsed (-> (authenticating-client-protocol/post organisaatio-service-authenticating-client
+                                                                   {:url  url
+                                                                    :body body}
+                                                                   {:request-schema  schemas/PostNewOrganisaatioRequest
+                                                                    :response-schema schemas/PostNewOrganisaatioResponse}))]
+        (log/info (str "Creating new hakukohderyhmä to organisaatiopalvelu. Response body: " response-body-unparsed))
+        (-> (http/parse-and-validate response-body-unparsed schemas/PostNewOrganisaatioResponse)
+            :organisaatio
+            (st/select-schema api-schemas/Organisaatio)))))
 
   (put-organisaatio [_ hakukohderyhma]
     (s/validate api-schemas/HakukohderyhmaPutRequest hakukohderyhma)
