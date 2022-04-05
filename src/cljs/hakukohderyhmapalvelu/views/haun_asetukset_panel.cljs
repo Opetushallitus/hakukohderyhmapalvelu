@@ -346,8 +346,8 @@
         label @(re-frame/subscribe [:translation haun-asetus-key])
         disabled? @(re-frame/subscribe [:haun-asetukset/haun-asetukset-disabled? haku-oid])
         orig-value @(re-frame/subscribe [:haun-asetukset/haun-asetus haku-oid haun-asetus-key])
-        parsed-orig-value {:start (some-> (get orig-value :start) d/date->date-str)
-                           :end   (some-> (get orig-value :end) d/date->date-str)}]
+        parsed-orig-value {:start (some-> (get orig-value :start) d/date->iso-date-time-local-str)
+                           :end   (some-> (get orig-value :end) d/date->iso-date-time-local-str)}]
     [:<>
      [haun-asetukset-label
       {:id    label-id
