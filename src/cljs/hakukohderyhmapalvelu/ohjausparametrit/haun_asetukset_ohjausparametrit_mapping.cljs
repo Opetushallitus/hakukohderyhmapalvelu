@@ -1,6 +1,9 @@
 (ns hakukohderyhmapalvelu.ohjausparametrit.haun-asetukset-ohjausparametrit-mapping
   (:require [hakukohderyhmapalvelu.dates.date-parser :as d]))
 
+(defn log [& args]
+  (.apply js/console.log js/console (to-array args)))
+
 (defn haun-asetus-key->ohjausparametri [haun-asetus-key]
   (case haun-asetus-key
     :haun-asetukset/hakukohteiden-maara-rajoitettu
@@ -122,11 +125,18 @@
 (defn- long->date [ohjausparametrit-date]
   (some-> ohjausparametrit-date :date d/long->date))
 
+(defn- long->iso-date-time-local-str [ohjausparametrit-long]
+  (log (str "Long: " ohjausparametrit-long))
+  (when-not (empty? ohjausparametrit-long)
+    (d/date->iso-date-time-local-str (d/long->date ohjausparametrit-long))))
+
 (defn- ohjausparametri->aikavali [ohjausparametri]
-  (let [start (long->date {:date (:dateStart ohjausparametri)})
-        end (long->date {:date (:dateEnd ohjausparametri)})
+  (let [start (long->iso-date-time-local-str (:dateStart ohjausparametri))
+        end (long->iso-date-time-local-str (:dateEnd ohjausparametri))
         result {:start start
                 :end   end}]
+    (log (str "Ohjausparametri: " ohjausparametri))
+    (log (str "Aikavali: " result))
     result))
 
 (defn- aikavali->ohjausparametri [aikavali]
