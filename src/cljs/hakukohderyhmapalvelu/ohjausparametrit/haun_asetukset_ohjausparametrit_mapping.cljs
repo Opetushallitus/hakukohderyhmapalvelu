@@ -112,11 +112,14 @@
           :haun-asetukset/valintaesityksen-hyvaksyminen
           :haun-asetukset/koetulosten-tallentaminen}))
 
+(defn- local->long [date]
+  (-> date
+      d/iso-date-time-local-str->date
+      d/date->long))
+
 (defn- local-date->long [date]
   (when-not (empty? date)
-    (let [date' (-> date
-                    d/iso-date-time-local-str->date
-                    d/date->long)]
+    (let [date' (local->long date)]
       {:date date'})))
 
 (defn- long->date [ohjausparametrit-date]
@@ -131,11 +134,11 @@
 
 (defn- aikavali->ohjausparametri [aikavali]
   (let [start (cond-> (:start aikavali)
-                      d/iso-date-time-local-str->date
-                      d/date->long)
+                      date-value?
+                      local->long)
         end (cond-> (:end aikavali)
-                    d/iso-date-time-local-str->date
-                    d/date->long)]
+                    date-value?
+                    local->long)]
     {:dateStart start
      :dateEnd   end}))
 
