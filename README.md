@@ -57,6 +57,18 @@ Tämä on suositeltu tapa ajaa palvelua paikallisesti. Tässä ohjeessa oletetaa
 
 Käynnistetty palvelu on käytettävissä osoitteessa (http://localhost:9030/hakukohderyhmapalvelu).
 
+Avaa selain CORS-tietoturvattomassa moodissa. Esimerkiksi Canaryllä:
+
+```
+open -a Google\ Chrome\ Canary --args --disable-web-security --user-data-dir=$HOME/chromedev
+```
+
+Canaryn asennus Brew:llä:
+
+```
+brew tap homebrew/cask-versions && brew install --cask google-chrome-canary
+```
+
 Kun ajat palvelua, käynnistä aina ensin SSH-yhteys käyttämääsi ympäristöön. Oletuksena se on `pallero`:
 
 ```
