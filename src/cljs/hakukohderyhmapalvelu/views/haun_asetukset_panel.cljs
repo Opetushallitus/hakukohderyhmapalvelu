@@ -338,9 +338,8 @@
                   datetime-local-value
                   (assoc :value datetime-local-value))])}]]))
 
-(defn- valintatulosten-julkaiseminen-hakijoille [{:keys [haku-oid required?]}]
-  (let [haun-asetus-key :haun-asetukset/valintatulosten-julkaiseminen-hakijoille
-        id-prefix (get-id-prefix haun-asetus-key)
+(defn- haun-asetus-aikavali-container [{:keys [haku-oid required? haun-asetus-key]}]
+  (let [id-prefix (get-id-prefix haun-asetus-key)
         label-id (str id-prefix "-label")
         input-id (str id-prefix "-input")
         label @(re-frame/subscribe [:translation haun-asetus-key])
@@ -560,9 +559,10 @@
        {:haku-oid haku-oid}]
       [liitteiden-muokkauksen-takaraja
        {:haku-oid haku-oid}]
-      [valintatulosten-julkaiseminen-hakijoille
-       {:haku-oid haku-oid
-        :required? false}]
+      [haun-asetus-aikavali-container
+       {:haku-oid         haku-oid
+        :required?        false
+        :haun-asetus-key  :haun-asetukset/valintatulosten-julkaiseminen-hakijoille}]
       (when kk?
         [haun-asetukset-date-time
          {:haku-oid                haku-oid
@@ -582,11 +582,10 @@
           :required?               false
           :bold-left-label-margin? false}])
       (when toinen-aste?
-        [haun-asetukset-date-time
+        [haun-asetus-aikavali-container
          {:haku-oid                haku-oid
-          :haun-asetus-key         :haun-asetukset/oppilaitosten-virkailijoiden-valintapalvelun-kaytto-estetty
           :required?               false
-          :bold-left-label-margin? false}])
+          :haun-asetus-key         :haun-asetukset/oppilaitosten-virkailijoiden-valintapalvelun-kaytto-estetty}])
       (when toinen-aste?
         [haun-asetukset-date-time
          {:haku-oid                haku-oid
