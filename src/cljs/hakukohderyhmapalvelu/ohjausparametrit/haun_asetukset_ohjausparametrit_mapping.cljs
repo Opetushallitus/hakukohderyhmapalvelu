@@ -96,7 +96,8 @@
 
 (defn- aikavali-value? [haun-asetus-key _]
   (some #{haun-asetus-key}
-        #{:haun-asetukset/valintatulosten-julkaiseminen-hakijoille}))
+        #{:haun-asetukset/valintatulosten-julkaiseminen-hakijoille
+          :haun-asetukset/oppilaitosten-virkailijoiden-valintapalvelun-kaytto-estetty}))
 
 (defn- date-value? [haun-asetus-key _]
   (some #{haun-asetus-key}
@@ -108,7 +109,6 @@
           :haun-asetukset/ilmoittautuminen-paattyy
           :haun-asetukset/automaattinen-hakukelpoisuus-paattyy
           :haun-asetukset/harkinnanvaraisen-valinnan-paatosten-tallennus-paattyy
-          :haun-asetukset/oppilaitosten-virkailijoiden-valintapalvelun-kaytto-estetty
           :haun-asetukset/valintaesityksen-hyvaksyminen
           :haun-asetukset/koetulosten-tallentaminen}))
 
