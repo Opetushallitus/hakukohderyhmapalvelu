@@ -31,8 +31,9 @@
   [material-icon "arrow_drop_up" {}])
 
 (defn archived []
-  [material-icon "book"
-   {:vertical-align "text-top"}
+  [material-icon "archive"
+   {:vertical-align "text-top"
+    :font-family "Material Icons Outlined"}
    {:title @(subscribe [:translation :yleiset/arkistoitu])}])
 
 (defn done []
