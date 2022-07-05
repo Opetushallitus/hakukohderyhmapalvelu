@@ -15,6 +15,7 @@
 (def hakukohderyhma-luonti (audit/->operation "HakukohderyhmaLuonti"))
 (def hakukohderyhma-uudelleennimeaminen (audit/->operation "HakukohderyhmaUudelleennimeaminen"))
 (def hakukohderyhma-hakukohteet-edit (audit/->operation "HakukohderyhmaLiitosMuokkaus"))
+(def hakukohderyhma-settings-edit (audit/->operation "HakukohderyhmaAsetusMuokkaus"))
 (def hakukohderyhma-poisto (audit/->operation "HakukohderyhmaPoisto"))
 
 (defn- create-merge-hakukohderyhma-with-hakukohteet-fn [hakukohderyhmat hakukohteet]
@@ -111,6 +112,7 @@
           new-hakukohteet (kouta/find-hakukohteet-by-oids kouta-service hakukohde-oidit user-organisaatiot)
           hakukohderyhma (hakukohderyhma-protocol/get-hakukohderyhma this session oid)
           current-hakukohteet (:hakukohteet hakukohderyhma)
+          current-hk-oids (map :oid current-hakukohteet)
           distinct-haut (distinct (map :hakuOid new-hakukohteet))]
       (if (< (count distinct-haut) 2)                       ;; Hakukohteet kuuluvat samaan hakuun
         (let [updated-hakukohde-oids (hakukohderyhma-queries/update-hakukohderyhma-hakukohteet! db oid current-hakukohteet new-hakukohteet)
@@ -124,13 +126,19 @@
                      (audit/->user session)
                      hakukohderyhma-hakukohteet-edit
                      (audit/->target {:oid oid})
-                     (audit/->changes hakukohderyhma hakukohderyhma'))
+                     (audit/->oidChanges current-hk-oids updated-hakukohde-oids))
           hakukohderyhma')
         (throw (Exception. "Hakukohteet eivät kuulu samaan hakuun.")))))
 
   (insert-or-update-settings
-    [_ _ hakukohderyhma-oid settings]
-      (hakukohderyhma-queries/insert-or-update-settings db hakukohderyhma-oid settings))
+    [this session hakukohderyhma-oid settings]
+    (let [current-settings (:settings (hakukohderyhma-protocol/get-hakukohderyhma this session hakukohderyhma-oid))]
+      (audit/log audit-logger
+                 (audit/->user session)
+                 hakukohderyhma-settings-edit
+                 (audit/->target {:oid hakukohderyhma-oid})
+                 (audit/->changes current-settings settings))
+      (hakukohderyhma-queries/insert-or-update-settings db hakukohderyhma-oid settings)))
 
   (get-settings
     [_ _ hakukohderyhma-oid]
