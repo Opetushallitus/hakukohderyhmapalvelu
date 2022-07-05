@@ -118,6 +118,7 @@
         (let [updated-hakukohde-oids (hakukohderyhma-queries/update-hakukohderyhma-hakukohteet! db oid current-hakukohteet new-hakukohteet)
               all-hakukohteet (merge (group-by :oid new-hakukohteet) (group-by :oid current-hakukohteet))
               updated-hakukohteet (map #(first (get all-hakukohteet %)) updated-hakukohde-oids)
+              updated-oids (map :oid updated-hakukohteet)
               settings (hakukohderyhma-protocol/get-settings this session oid)
               hakukohderyhma' (-> hakukohderyhma
                                   (assoc :hakukohteet updated-hakukohteet)
@@ -126,13 +127,15 @@
                      (audit/->user session)
                      hakukohderyhma-hakukohteet-edit
                      (audit/->target {:oid oid})
-                     (audit/->oidChanges current-hk-oids updated-hakukohde-oids))
+                     (audit/->oidChanges current-hk-oids updated-oids))
           hakukohderyhma')
         (throw (Exception. "Hakukohteet eivät kuulu samaan hakuun.")))))
 
   (insert-or-update-settings
-    [this session hakukohderyhma-oid settings]
-    (let [current-settings (:settings (hakukohderyhma-protocol/get-hakukohderyhma this session hakukohderyhma-oid))]
+    [_ session hakukohderyhma-oid settings]
+    (let [current-settings (-> (hakukohderyhma-queries/find-settings-by-hakukohderyhma-oids db [hakukohderyhma-oid])
+                               (first)
+                               (dissoc :hakukohderyhma-oid))]
       (audit/log audit-logger
                  (audit/->user session)
                  hakukohderyhma-settings-edit
