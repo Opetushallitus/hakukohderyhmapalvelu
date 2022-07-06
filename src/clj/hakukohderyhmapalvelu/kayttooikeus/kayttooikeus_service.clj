@@ -9,15 +9,19 @@
   {:palvelu "HAKUKOHDERYHMAPALVELU"
    :oikeus  "CRUD"})
 
+(defn- hakukohderyhmapalvelu-allowed-orgs [orgs]
+  (vec (filter #(contains? (set (:kayttooikeudet %)) hakukohderyhmapalvelu-crud-permission) orgs)))
+
 (s/defn has-permission [virkailija :- kayttooikeus-protocol/Virkailija
                         permission :- kayttooikeus-protocol/Kayttooikeus]
   (let [permissions (set (mapcat :kayttooikeudet (:organisaatiot virkailija)))]
     (contains? permissions permission)))
 
 (defn- virkailija-with-hakukohderyhma-permission [response]
-  (when-let [virkailija (first (http/parse-and-validate response [kayttooikeus-protocol/Virkailija]))]
-    (if (has-permission virkailija hakukohderyhmapalvelu-crud-permission)
-      virkailija
+  (let [virkailija (first (http/parse-and-validate response [kayttooikeus-protocol/Virkailija]))
+        virkailija-with-hakukohderyhma-access (update virkailija :organisaatiot hakukohderyhmapalvelu-allowed-orgs)]
+    (if (not-empty (:organisaatiot virkailija-with-hakukohderyhma-access))
+      virkailija-with-hakukohderyhma-access
       (throw (new RuntimeException
                   (str "No required permission found for username " (:username virkailija)))))))
 
