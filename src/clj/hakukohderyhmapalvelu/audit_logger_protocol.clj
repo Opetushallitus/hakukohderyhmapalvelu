@@ -58,13 +58,13 @@
 (s/defn ->oidChanges [old-oids new-oids]
   (let [[removed-oids added-oids _] (diff (set old-oids) (set new-oids))
         builder (new Changes$Builder)]
-    (log/info (str "transforming oid changes - " (string/join removed-oids ",") ", " (count removed-oids) " - " (count added-oids) ",  " (string/join added-oids ",") ""))
+    (log/info (str "transforming oid changes - " (string/join "," removed-oids) ", " (count removed-oids) " - " (count added-oids) ",  " (string/join "," added-oids) ""))
     (.build
       (cond-> builder
               (not-empty removed-oids)
-              (.removed "removedHakukohdeOids" (string/join removed-oids ","))
+              (.removed "removedHakukohdeOids" (string/join "," removed-oids))
               (not-empty added-oids)
-              (.added "addedHakukohdeOids" (string/join added-oids ","))))))
+              (.added "addedHakukohdeOids" (string/join "," added-oids))))))
 
 (s/defn ->changes [old-object :- ChangedObject
                    new-object :- ChangedObject]
