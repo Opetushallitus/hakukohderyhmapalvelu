@@ -5,7 +5,9 @@
             [hakukohderyhmapalvelu.organisaatio.organisaatio-protocol :as organisaatio]
             [hakukohderyhmapalvelu.ataru.ataru-protocol :as ataru]
             [hakukohderyhmapalvelu.kouta.kouta-protocol :as kouta]
-            [hakukohderyhmapalvelu.api-schemas :as api-schemas]))
+            [clojure.data :refer [diff]]
+            [hakukohderyhmapalvelu.api-schemas :as api-schemas]
+            [taoensso.timbre :as log]))
 
 (def hakukohderyhmapalvelu-ryhmatyyppi "ryhmatyypit_6#1")
 (def default-hakukohderyhma {:tyypit       ["Ryhma"]
@@ -36,6 +38,34 @@
       (assoc hakukohderyhma :settings (dissoc matching-settings :hakukohderyhma-oid))
       (assoc hakukohderyhma :settings hakukohderyhma-queries/initial-settings))
   )
+
+;Auditloggerin kentillä on maksimipituus, kts. fi.vm.sade.auditlog.audit.
+;Jaetaan tarvittaessa oidit useammalle logiriville.
+(defn- logPartitionedOidChanges [audit-logger session hakukohderyhma-oid old-oids new-oids]
+        (let [[removed-oids added-oids _] (diff (set old-oids) (set new-oids))
+              removed-parts (partition 80 80 nil removed-oids)
+              added-parts (partition 80 80 nil added-oids)
+              user (audit/->user session)
+              target (audit/->target {:oid hakukohderyhma-oid})]
+          (log/info (str "Logging partitioned changes for " (count old-oids) "old oids and " (count new-oids) "new oids"))
+          (doseq [added-part added-parts]
+            (when (not-empty added-part)
+              (let [changes (audit/->buildChanges added-part true)]
+                (log/info (str "Logging partitioned ADD: " added-part))
+                (audit/log audit-logger
+                           user
+                           hakukohderyhma-hakukohteet-edit
+                           target
+                           changes))))
+          (doseq [removed-part removed-parts]
+            (when (not-empty removed-part)
+              (let [changes (audit/->buildChanges removed-part false)]
+                (log/info (str "Logging partitioned REMOVE: " removed-part))
+                (audit/log audit-logger
+                           user
+                           hakukohderyhma-hakukohteet-edit
+                           target
+                           changes))))))
 
 (defrecord HakukohderyhmaService [audit-logger organisaatio-service kouta-service ataru-service db]
   hakukohderyhma-protocol/HakukohderyhmaServiceProtocol
@@ -118,16 +148,12 @@
         (let [updated-hakukohde-oids (hakukohderyhma-queries/update-hakukohderyhma-hakukohteet! db oid current-hakukohteet new-hakukohteet)
               all-hakukohteet (merge (group-by :oid new-hakukohteet) (group-by :oid current-hakukohteet))
               updated-hakukohteet (map #(first (get all-hakukohteet %)) updated-hakukohde-oids)
-              updated-oids (map :oid updated-hakukohteet)
+              updated-hk-oids (map :oid updated-hakukohteet)
               settings (hakukohderyhma-protocol/get-settings this session oid)
               hakukohderyhma' (-> hakukohderyhma
                                   (assoc :hakukohteet updated-hakukohteet)
                                   (assoc :settings settings))]
-          (audit/log audit-logger
-                     (audit/->user session)
-                     hakukohderyhma-hakukohteet-edit
-                     (audit/->target {:oid oid})
-                     (audit/->oidChanges current-hk-oids updated-oids))
+          (logPartitionedOidChanges audit-logger session oid current-hk-oids updated-hk-oids)
           hakukohderyhma')
         (throw (Exception. "Hakukohteet eivät kuulu samaan hakuun.")))))
 

@@ -55,6 +55,14 @@
               [[(if (keyword? k) (name k) k) (str v)]]))
           (if (sequential? o) (map-indexed vector o) o)))
 
+(s/defn ->buildChanges [oids add?]
+  (let [builder (new Changes$Builder)
+        value (string/join "," oids)]
+    (log/info (str "Buildchanges for oids: " oids " - add " add?))
+    (.build (if add?
+              (.added builder "addedHakukohdeOids" value)
+              (.removed builder "removedHakukohdeOids" value)))))
+
 (s/defn ->oidChanges [old-oids new-oids]
   (let [[removed-oids added-oids _] (diff (set old-oids) (set new-oids))
         builder (new Changes$Builder)]
