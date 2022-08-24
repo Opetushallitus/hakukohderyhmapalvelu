@@ -2,8 +2,7 @@
   (:require [hakukohderyhmapalvelu.authentication.schema :as auth-schema]
             [schema.core :as s]
             [clojure.data :refer [diff]]
-            [clojure.string :as string]
-            [taoensso.timbre :as log])
+            [clojure.string :as string])
   (:import [fi.vm.sade.auditlog
             User
             Operation
@@ -58,7 +57,6 @@
 (s/defn ->buildChanges [oids add?]
   (let [builder (new Changes$Builder)
         value (string/join "," oids)]
-    (log/info (str "Buildchanges for oids: " oids " - add " add?))
     (.build (if add?
               (.added builder "addedHakukohdeOids" value)
               (.removed builder "removedHakukohdeOids" value)))))
@@ -66,7 +64,6 @@
 (s/defn ->oidChanges [old-oids new-oids]
   (let [[removed-oids added-oids _] (diff (set old-oids) (set new-oids))
         builder (new Changes$Builder)]
-    (log/info (str "transforming oid changes - " (string/join "," removed-oids) ", " (count removed-oids) " - " (count added-oids) ",  " (string/join "," added-oids) ""))
     (.build
       (cond-> builder
               (not-empty removed-oids)

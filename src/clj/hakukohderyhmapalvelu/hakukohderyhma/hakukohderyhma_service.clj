@@ -6,8 +6,7 @@
             [hakukohderyhmapalvelu.ataru.ataru-protocol :as ataru]
             [hakukohderyhmapalvelu.kouta.kouta-protocol :as kouta]
             [clojure.data :refer [diff]]
-            [hakukohderyhmapalvelu.api-schemas :as api-schemas]
-            [taoensso.timbre :as log]))
+            [hakukohderyhmapalvelu.api-schemas :as api-schemas]))
 
 (def hakukohderyhmapalvelu-ryhmatyyppi "ryhmatyypit_6#1")
 (def default-hakukohderyhma {:tyypit       ["Ryhma"]
@@ -47,11 +46,9 @@
               added-parts (partition 80 80 nil added-oids)
               user (audit/->user session)
               target (audit/->target {:oid hakukohderyhma-oid})]
-          (log/info (str "Logging partitioned changes for " (count old-oids) "old oids and " (count new-oids) "new oids"))
           (doseq [added-part added-parts]
             (when (not-empty added-part)
               (let [changes (audit/->buildChanges added-part true)]
-                (log/info (str "Logging partitioned ADD: " added-part))
                 (audit/log audit-logger
                            user
                            hakukohderyhma-hakukohteet-edit
@@ -60,7 +57,6 @@
           (doseq [removed-part removed-parts]
             (when (not-empty removed-part)
               (let [changes (audit/->buildChanges removed-part false)]
-                (log/info (str "Logging partitioned REMOVE: " removed-part))
                 (audit/log audit-logger
                            user
                            hakukohderyhma-hakukohteet-edit
