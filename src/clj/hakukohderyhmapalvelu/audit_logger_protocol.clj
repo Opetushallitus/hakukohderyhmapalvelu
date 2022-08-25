@@ -1,6 +1,8 @@
 (ns hakukohderyhmapalvelu.audit-logger-protocol
   (:require [hakukohderyhmapalvelu.authentication.schema :as auth-schema]
-            [schema.core :as s])
+            [schema.core :as s]
+            [clojure.data :refer [diff]]
+            [clojure.string :as string])
   (:import [fi.vm.sade.auditlog
             User
             Operation
@@ -51,6 +53,23 @@
                    (object->fields-and-values v))
               [[(if (keyword? k) (name k) k) (str v)]]))
           (if (sequential? o) (map-indexed vector o) o)))
+
+(s/defn ->buildChanges [oids add?]
+  (let [builder (new Changes$Builder)
+        value (string/join "," oids)]
+    (.build (if add?
+              (.added builder "addedHakukohdeOids" value)
+              (.removed builder "removedHakukohdeOids" value)))))
+
+(s/defn ->oidChanges [old-oids new-oids]
+  (let [[removed-oids added-oids _] (diff (set old-oids) (set new-oids))
+        builder (new Changes$Builder)]
+    (.build
+      (cond-> builder
+              (not-empty removed-oids)
+              (.removed "removedHakukohdeOids" (string/join "," removed-oids))
+              (not-empty added-oids)
+              (.added "addedHakukohdeOids" (string/join "," added-oids))))))
 
 (s/defn ->changes [old-object :- ChangedObject
                    new-object :- ChangedObject]

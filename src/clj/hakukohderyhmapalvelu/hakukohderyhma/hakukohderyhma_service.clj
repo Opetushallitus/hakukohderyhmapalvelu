@@ -5,6 +5,7 @@
             [hakukohderyhmapalvelu.organisaatio.organisaatio-protocol :as organisaatio]
             [hakukohderyhmapalvelu.ataru.ataru-protocol :as ataru]
             [hakukohderyhmapalvelu.kouta.kouta-protocol :as kouta]
+            [clojure.data :refer [diff]]
             [hakukohderyhmapalvelu.api-schemas :as api-schemas]))
 
 (def hakukohderyhmapalvelu-ryhmatyyppi "ryhmatyypit_6#1")
@@ -15,6 +16,7 @@
 (def hakukohderyhma-luonti (audit/->operation "HakukohderyhmaLuonti"))
 (def hakukohderyhma-uudelleennimeaminen (audit/->operation "HakukohderyhmaUudelleennimeaminen"))
 (def hakukohderyhma-hakukohteet-edit (audit/->operation "HakukohderyhmaLiitosMuokkaus"))
+(def hakukohderyhma-settings-edit (audit/->operation "HakukohderyhmaAsetusMuokkaus"))
 (def hakukohderyhma-poisto (audit/->operation "HakukohderyhmaPoisto"))
 
 (defn- create-merge-hakukohderyhma-with-hakukohteet-fn [hakukohderyhmat hakukohteet]
@@ -35,6 +37,31 @@
       (assoc hakukohderyhma :settings (dissoc matching-settings :hakukohderyhma-oid))
       (assoc hakukohderyhma :settings hakukohderyhma-queries/initial-settings))
   )
+
+;Auditloggerin kentillä on maksimipituus, kts. fi.vm.sade.auditlog.audit.
+;Jaetaan tarvittaessa oidit useammalle logiriville.
+(defn- logPartitionedOidChanges [audit-logger session hakukohderyhma-oid old-oids new-oids]
+        (let [[removed-oids added-oids _] (diff (set old-oids) (set new-oids))
+              removed-parts (partition 80 80 nil removed-oids)
+              added-parts (partition 80 80 nil added-oids)
+              user (audit/->user session)
+              target (audit/->target {:oid hakukohderyhma-oid})]
+          (doseq [added-part added-parts]
+            (when (not-empty added-part)
+              (let [changes (audit/->buildChanges added-part true)]
+                (audit/log audit-logger
+                           user
+                           hakukohderyhma-hakukohteet-edit
+                           target
+                           changes))))
+          (doseq [removed-part removed-parts]
+            (when (not-empty removed-part)
+              (let [changes (audit/->buildChanges removed-part false)]
+                (audit/log audit-logger
+                           user
+                           hakukohderyhma-hakukohteet-edit
+                           target
+                           changes))))))
 
 (defrecord HakukohderyhmaService [audit-logger organisaatio-service kouta-service ataru-service db]
   hakukohderyhma-protocol/HakukohderyhmaServiceProtocol
@@ -111,26 +138,32 @@
           new-hakukohteet (kouta/find-hakukohteet-by-oids kouta-service hakukohde-oidit user-organisaatiot)
           hakukohderyhma (hakukohderyhma-protocol/get-hakukohderyhma this session oid)
           current-hakukohteet (:hakukohteet hakukohderyhma)
+          current-hk-oids (map :oid current-hakukohteet)
           distinct-haut (distinct (map :hakuOid new-hakukohteet))]
       (if (< (count distinct-haut) 2)                       ;; Hakukohteet kuuluvat samaan hakuun
         (let [updated-hakukohde-oids (hakukohderyhma-queries/update-hakukohderyhma-hakukohteet! db oid current-hakukohteet new-hakukohteet)
               all-hakukohteet (merge (group-by :oid new-hakukohteet) (group-by :oid current-hakukohteet))
               updated-hakukohteet (map #(first (get all-hakukohteet %)) updated-hakukohde-oids)
+              updated-hk-oids (map :oid updated-hakukohteet)
               settings (hakukohderyhma-protocol/get-settings this session oid)
               hakukohderyhma' (-> hakukohderyhma
                                   (assoc :hakukohteet updated-hakukohteet)
                                   (assoc :settings settings))]
-          (audit/log audit-logger
-                     (audit/->user session)
-                     hakukohderyhma-hakukohteet-edit
-                     (audit/->target {:oid oid})
-                     (audit/->changes hakukohderyhma hakukohderyhma'))
+          (logPartitionedOidChanges audit-logger session oid current-hk-oids updated-hk-oids)
           hakukohderyhma')
         (throw (Exception. "Hakukohteet eivät kuulu samaan hakuun.")))))
 
   (insert-or-update-settings
-    [_ _ hakukohderyhma-oid settings]
-      (hakukohderyhma-queries/insert-or-update-settings db hakukohderyhma-oid settings))
+    [_ session hakukohderyhma-oid settings]
+    (let [current-settings (-> (hakukohderyhma-queries/find-settings-by-hakukohderyhma-oids db [hakukohderyhma-oid])
+                               (first)
+                               (dissoc :hakukohderyhma-oid))]
+      (audit/log audit-logger
+                 (audit/->user session)
+                 hakukohderyhma-settings-edit
+                 (audit/->target {:oid hakukohderyhma-oid})
+                 (audit/->changes current-settings settings))
+      (hakukohderyhma-queries/insert-or-update-settings db hakukohderyhma-oid settings)))
 
   (get-settings
     [_ _ hakukohderyhma-oid]
