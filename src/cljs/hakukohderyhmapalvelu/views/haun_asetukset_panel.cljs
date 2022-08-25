@@ -424,30 +424,28 @@
                                   {:value value}))]}]]))
 
 (defn- haun-asetukset-sijoittelu [{:keys [haku-oid]}]
-  (let [sijoittelu? @(re-frame/subscribe [:haun-asetukset/haun-asetus haku-oid :haun-asetukset/sijoittelu])
-        kk?         @(re-frame/subscribe [:haun-asetukset/kk? haku-oid])]
-    (cond-> [:<>
-             [haun-asetukset-checkbox
-              {:haku-oid                haku-oid
-               :haun-asetus-key         :haun-asetukset/sijoittelu
-               :type                    :checkbox
-               :bold-left-label-margin? sijoittelu?}]]
-            sijoittelu?
-            (into [[haun-asetukset-date-time
-                    {:haku-oid                haku-oid
-                     :haun-asetus-key         :haun-asetukset/valintatulokset-valmiina-viimeistaan
-                     :required?               kk?
-                     :bold-left-label-margin? true}]
-                   [haun-asetukset-date-time
-                    {:haku-oid                haku-oid
-                     :haun-asetus-key         :haun-asetukset/varasijasaannot-astuvat-voimaan
-                     :required?               kk?
-                     :bold-left-label-margin? true}]
-                   [haun-asetukset-date-time
-                    {:haku-oid                haku-oid
-                     :haun-asetus-key         :haun-asetukset/varasijataytto-paattyy
-                     :required?               false
-                     :bold-left-label-margin? true}]]))))
+  (let [sijoittelu? @(re-frame/subscribe [:haun-asetukset/haun-asetus haku-oid :haun-asetukset/sijoittelu])]
+    [:<>
+     [haun-asetukset-checkbox
+      {:haku-oid                haku-oid
+       :haun-asetus-key         :haun-asetukset/sijoittelu
+       :type                    :checkbox
+       :bold-left-label-margin? sijoittelu?}]
+     [haun-asetukset-date-time
+      {:haku-oid                haku-oid
+       :haun-asetus-key         :haun-asetukset/valintatulokset-valmiina-viimeistaan
+       :required?               sijoittelu?
+       :bold-left-label-margin? true}]
+     [haun-asetukset-date-time
+      {:haku-oid                haku-oid
+       :haun-asetus-key         :haun-asetukset/varasijasaannot-astuvat-voimaan
+       :required?               sijoittelu?
+       :bold-left-label-margin? true}]
+     [haun-asetukset-date-time
+      {:haku-oid                haku-oid
+       :haun-asetus-key         :haun-asetukset/varasijataytto-paattyy
+       :required?               false
+       :bold-left-label-margin? true}]]))
 
 (defn- hakuajat [haku-oid hakuajat-label-id]
   (let [hakuajat @(re-frame/subscribe [:haun-asetukset/hakuajat haku-oid])]

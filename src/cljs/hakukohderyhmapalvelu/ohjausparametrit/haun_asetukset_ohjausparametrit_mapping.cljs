@@ -186,10 +186,6 @@
 
 (defn clear-keys-on-empty-value [haun-asetus-key]
   (case haun-asetus-key
-    :haun-asetukset/sijoittelu
-    [:haun-asetukset/valintatulokset-valmiina-viimeistaan
-     :haun-asetukset/varasijasaannot-astuvat-voimaan
-     :haun-asetukset/varasijataytto-paattyy]
     :haun-asetukset/hakukohteiden-maara-rajoitettu
     [:haun-asetukset/hakukohteiden-maara-rajoitus]
     []))
