@@ -28,7 +28,7 @@
    :hakuOid                                           s/Str
    :toinenAsteOnkoKaksoistutkinto                     s/Bool
    :valintakokeet                                     [Valintakoe]
-   :tila                                              (s/enum "luonnos" "julkaistu" "arkistoitu")
+   :tila                                              (s/enum "tallennettu" "julkaistu" "arkistoitu")
    (s/optional-key :salliikoHakukohdeHarkinnanvaraisuudenKysymisen)    s/Bool
    (s/optional-key :oikeusHakukohteeseen)             s/Bool
    (s/optional-key :jarjestaaUrheilijanAmmKoulutusta) s/Bool
