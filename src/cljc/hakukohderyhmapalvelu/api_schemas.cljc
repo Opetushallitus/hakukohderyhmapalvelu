@@ -26,7 +26,7 @@
     CommonOrganisaatioEntityPayload
     {:tarjoaja                                          Organisaatio
      :toinenAsteOnkoKaksoistutkinto                     s/Bool
-     :tila                                              (s/enum "luonnos" "julkaistu" "arkistoitu")
+     :tila                                              (s/enum "tallennettu" "julkaistu" "arkistoitu")
      (s/optional-key :priorisointi) s/Bool
      (s/optional-key :hasValintakoe)                    s/Bool
      (s/optional-key :sora)                             SoraTieto
