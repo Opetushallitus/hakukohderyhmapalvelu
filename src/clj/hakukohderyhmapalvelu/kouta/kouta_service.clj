@@ -44,7 +44,8 @@
 (defn- set-has-paasy-ja-soveltuvuuskoe [hakukohde]
   (assoc hakukohde
     :hasPaasyJaSoveltuvuuskoe
-    (->> (:valintakokeet hakukohde)
+    (->> (concat (:valintakokeet hakukohde)
+                 (:valintaperusteValintakokeet hakukohde))
          (filter #(or (= paasy-ja-soveltuvuuskoe (:tyyppi %))
                       (str/starts-with? (:tyyppi %)
                                         paasy-ja-soveltuvuuskoe-with-version)))
