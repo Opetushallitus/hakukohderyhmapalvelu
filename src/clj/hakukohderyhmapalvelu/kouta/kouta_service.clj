@@ -37,17 +37,26 @@
     first
     (assoc hakukohde :tarjoaja)))
 
-(defn- set-has-valintakoe [hakukohde]
+(def ^:private paasy-ja-soveltuvuuskoe "valintakokeentyyppi_1")
+(def ^:private paasy-ja-soveltuvuuskoe-with-version
+  (str paasy-ja-soveltuvuuskoe "#"))
+
+(defn- set-has-paasy-ja-soveltuvuuskoe [hakukohde]
   (assoc hakukohde
-    :hasValintakoe
-    (-> (:valintakokeet hakukohde) seq boolean)))
+    :hasPaasyJaSoveltuvuuskoe
+    (->> (:valintakokeet hakukohde)
+         (filter #(or (= paasy-ja-soveltuvuuskoe (:tyyppi %))
+                      (str/starts-with? (:tyyppi %)
+                                        paasy-ja-soveltuvuuskoe-with-version)))
+         seq
+         boolean)))
 
 (defn- create-internal-hakukohteet [hakukohteet organisaatiot]
   (as-> hakukohteet hakukohteet'
         (map
           (comp
             #(enrich-with-tarjoaja % organisaatiot)
-            set-has-valintakoe)
+            set-has-paasy-ja-soveltuvuuskoe)
           hakukohteet')
         (st/select-schema hakukohteet' api-schemas/HakukohdeListResponse)))
 
