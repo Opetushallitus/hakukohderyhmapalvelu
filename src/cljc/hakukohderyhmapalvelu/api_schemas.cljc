@@ -28,7 +28,7 @@
      :toinenAsteOnkoKaksoistutkinto                     s/Bool
      :tila                                              (s/enum "tallennettu" "julkaistu" "arkistoitu")
      (s/optional-key :priorisointi) s/Bool
-     (s/optional-key :hasValintakoe)                    s/Bool
+     (s/optional-key :hasPaasyJaSoveltuvuuskoe)         s/Bool
      (s/optional-key :sora)                             SoraTieto
      (s/optional-key :oikeusHakukohteeseen)             s/Bool
      (s/optional-key :salliikoHakukohdeHarkinnanvaraisuudenKysymisen)    s/Bool

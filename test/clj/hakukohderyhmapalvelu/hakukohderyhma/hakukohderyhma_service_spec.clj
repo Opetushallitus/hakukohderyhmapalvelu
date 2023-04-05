@@ -46,7 +46,7 @@
                                     :toinenAsteOnkoKaksoistutkinto false
                                     :oikeusHakukohteeseen          true
                                     :salliikoHakukohdeHarkinnanvaraisuudenKysymisen true
-                                    :hasValintakoe                 false
+                                    :hasPaasyJaSoveltuvuuskoe      false
                                     :tila                          "julkaistu"}
                                    {:oid                           "1.2.246.562.20.2"
                                     :nimi                          {:fi "Hakukohde 2"}
@@ -55,7 +55,7 @@
                                     :toinenAsteOnkoKaksoistutkinto false
                                     :oikeusHakukohteeseen          true
                                     :salliikoHakukohdeHarkinnanvaraisuudenKysymisen true
-                                    :hasValintakoe                 false
+                                    :hasPaasyJaSoveltuvuuskoe      false
                                     :tila                          "julkaistu"}]}]
       (dispatch-mock {:method   :get
                       :path     "/organisaatio-service/rest/organisaatio/v4/1.2.246.562.28.4"
