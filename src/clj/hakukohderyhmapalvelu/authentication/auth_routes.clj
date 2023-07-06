@@ -16,7 +16,7 @@
             [schema.core :as s]
             [taoensso.timbre :as log])
   (:import javax.sql.DataSource
-           (fi.vm.sade.utils.cas CasLogout)))
+           [fi.vm.sade.javautils.nio.cas CasLogout]))
 
 (defprotocol AuthRoutesSource
   (login [this ticket request])
@@ -59,7 +59,8 @@
 
 (defn- cas-initiated-logout [session-store logout-request]
   (log/info "cas-initiated logout")
-  (let [ticket (CasLogout/parseTicketFromLogoutRequest logout-request)]
+  (let [ticket (-> (CasLogout.)
+                   (.parseTicketFromLogoutRequest logout-request))]
     (log/info "logging out ticket" ticket)
     (if (.isEmpty ticket)
       (log/error "Could not parse ticket from CAS request" logout-request)
