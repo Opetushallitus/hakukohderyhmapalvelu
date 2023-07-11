@@ -12,8 +12,7 @@
            [org.asynchttpclient Response]))
 
 
-(def auth-fail-status #{302 401})
-(def error-status #{500 400})
+(def retry-auth-codes #{302 401})
 
 (defn- process-response [^Response response]
   {:status         (.getStatusCode response)
@@ -43,7 +42,7 @@
     cas-client))
 
 (defn execute-request-and-validate [^CasClient cas-client method url body response-schema]
-  (let [response (-> (.executeBlocking cas-client (json-request method url body)) ;todo use executeAndRetryWithCleanSessionOnStatusCodesBlocking for 401 ja 302, blocking method needs to be added to java-cas
+  (let [response (-> (.executeAndRetryWithCleanSessionOnStatusCodesBlocking cas-client (json-request method url body) retry-auth-codes)
                      (process-response))
         {response-body   :body
          response-status :status} response]
