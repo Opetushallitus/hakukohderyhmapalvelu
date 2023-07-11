@@ -66,7 +66,7 @@
   (post [this {:keys [url body]} {:keys [request-schema response-schema]}]
     (execute-request-and-validate (:cas-client this) "post" url body response-schema))
 
-  (get [this url response-schema]
+  (get [this url {:keys [request-schema response-schema]}]
     (execute-request-and-validate (:cas-client this) "get" url nil response-schema))
 
   (http-put [this
@@ -74,5 +74,5 @@
              {:keys [request-schema response-schema]}]
     (execute-request-and-validate (:cas-client this) "put" url body response-schema))
 
-  (delete [this url response-schema]
+  (delete [this url {:keys [request-schema response-schema]}]
     (execute-request-and-validate (:cas-client this) "delete" url nil response-schema)))
