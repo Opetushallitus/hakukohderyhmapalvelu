@@ -28,23 +28,12 @@
       (.setUrl url))
     (.build request-builder)))
 
-
-
-(defn execute-request-and-validate [^CasClient cas-client method url body response-schema]
-  (let [response (-> (.executeAndRetryWithCleanSessionOnStatusCodesBlocking cas-client (json-request method url body) retry-auth-codes)
-                     (process-response))
-        {response-body   :body
-         response-status :status} response]
-    (log/info "Got response with status" response-status "from" url ":" response-body)
-    (cond
-      (= 200 response-status)
-      (let [response-json (json/parse-string response-body true)]
-        (when response-schema
-          (s/validate response-schema response-json))
-        response-json)
-
-      :else
-      (log/error (str "Error when making " method " request to " url ": " response-status ", " response-body)))))
+(defn execute-json-request [^CasClient cas-client ^String method url body]
+  (let [request (json-request method url body)
+        response (-> (.executeAndRetryWithCleanSessionOnStatusCodesBlocking cas-client request retry-auth-codes)
+                         (process-response))]
+    (log/info method "Got response with status for" method "to" url ":" (:status response))
+    response))
 
 (defrecord CasAuthenticatingClient [config service]
   component/Lifecycle
@@ -63,16 +52,18 @@
       :cas-client nil))
 
   cas-authenticating-protocol/CasAuthenticatingClientProtocol
-  (post [this {:keys [url body]} {:keys [request-schema response-schema]}]
-    (execute-request-and-validate (:cas-client this) "post" url body response-schema))
+  (post [this {:keys [url body]}]
+    (log/info "POST" url)
+    (execute-json-request (:cas-client this) "POST" url body))
 
-  (get [this url {:keys [request-schema response-schema]}]
-    (execute-request-and-validate (:cas-client this) "get" url nil response-schema))
+  (http-get [this url]
+    (log/info "GET" url)
+    (execute-json-request (:cas-client this) "GET" url nil))
 
-  (http-put [this
-             {:keys [url body]}
-             {:keys [request-schema response-schema]}]
-    (execute-request-and-validate (:cas-client this) "put" url body response-schema))
+  (http-put [this {:keys [url body]}]
+    (log/info "PUT" url)
+    (execute-json-request (:cas-client this) "PUT" url body))
 
-  (delete [this url {:keys [request-schema response-schema]}]
-    (execute-request-and-validate (:cas-client this) "delete" url nil response-schema)))
+  (delete [this url]
+    (log/info "DELETE" url)
+    (execute-json-request (:cas-client this) "DELETE" url nil)))

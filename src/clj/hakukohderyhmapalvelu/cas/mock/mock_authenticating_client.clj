@@ -21,13 +21,14 @@
    (if-let [{expected-method :method
              expected-path   :path
              expected-body   :request
-             mock-response   :response} response]
+             mock-response   :response
+             expected-status :status} response]
      (let [method-errors (validate-method expected-method method)
            path-errors (validate-path expected-path url)
            body-errors (when body (validate-body expected-body body))
            errors (remove nil? [method-errors path-errors body-errors])]
        (if (empty? errors)
-         {:status 200 :body (json/generate-string mock-response)}
+         {:status (or expected-status 200) :body (json/generate-string mock-response)}
          (throw (Exception. (format "Hakukohderyhmäpalvelun taustajärjestelmä yritti tehdä määritysten vastaisen HTTP-kutsun:\n\n%s" (clojure.string/join "\n" errors))))))
      (throw (Exception. (format "Hakukohderyhmäpalvelun taustajärjestelmä yritti lähettää määrittämättömän HTTP-kutsun osoitteeseen %s datalla %s" url (prn-str body)))))))
 
@@ -35,18 +36,18 @@
 (defrecord MockedCasClient [request-map]
   cas-protocol/CasAuthenticatingClientProtocol
 
-  (get [_ url _]
+  (http-get [_ url]
     (-> (get-in @request-map [:get url])
         (validate url :get)))
 
-  (post [_ {:keys [url body]} _]
+  (post [_ {:keys [url body]}]
     (-> (get-in @request-map [:post url (hash body)])
         (validate url :post body)))
 
-  (http-put [_ {:keys [url body]} _]
+  (http-put [_ {:keys [url body]}]
     (-> (get-in @request-map [:put url (hash body)])
         (validate url :put body)))
 
-  (delete [_ url _]
+  (delete [_ url]
     (-> (get-in @request-map [:delete url])
         (validate url :delete))))

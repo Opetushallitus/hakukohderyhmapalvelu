@@ -41,5 +41,6 @@
       (dispatch-mock {:method   :delete
                       :path     "/organisaatio-service/rest/organisaatio/v4/1.2.246.562.28.001"
                       :service  :organisaatio-service
-                      :response nil})
+                      :response nil
+                      :status 500})
       (is (thrown? Exception (organisaatio-protocol/delete-organisaatio service oid))))))

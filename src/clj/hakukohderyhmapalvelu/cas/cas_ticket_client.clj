@@ -24,7 +24,6 @@
   (validate-service-ticket [this ticket]
     (log/info "Validating service ticket" ticket)
     (let [username (.validateServiceTicketWithVirkailijaUsernameBlocking ^CasClient (:cas-client this) (:service-parameter this) ticket)]
-      ;todo, pitäiskö vielä tsekkailla jotain sisältöjä ja/tai kääräistä try-catchiin?
       [username ticket])))
 
 (defrecord FakeCasTicketClient []

@@ -7,7 +7,7 @@
 
 (defn create-cas-client [config service-url session-cookie-name]
   (let [{username :username
-         password :password} config
+         password :password} (-> config :cas)
         cas-url (-> config :cas :url)
         caller-id (-> config
                        :oph-organisaatio-oid
