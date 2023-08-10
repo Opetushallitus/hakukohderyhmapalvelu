@@ -13,7 +13,6 @@
             [clojure.string :as str])
   (:import (java.time LocalDateTime)))
 
-
 (defn- local-date-time? [dt]
   (instance? LocalDateTime dt))
 
@@ -85,7 +84,7 @@
           url (oph-url/resolve-url :kouta-internal.haku.search config {:tarjoaja tarjoaja})
           filter-fn (if is-all identity (partial not-over? now))]
       (as-> url res'
-            (authenticating-client-protocol/get kouta-authenticating-client res' schemas/HaunTiedotListResponse)
+            (authenticating-client-protocol/http-get kouta-authenticating-client res')
             (http/parse-and-validate res' schemas/HaunTiedotListResponse)
             (filter filter-fn res')
             (st/select-schema res' api-schemas/HaunTiedotListResponse))))
@@ -96,7 +95,7 @@
                                                                             :tarjoaja tarjoaja
                                                                             :all      "true"})
           hakukohteet (as-> url res'
-                            (authenticating-client-protocol/get kouta-authenticating-client res' schemas/HakukohdeListResponse)
+                            (authenticating-client-protocol/http-get kouta-authenticating-client res')
                             (http/parse-and-validate res' schemas/HakukohdeListResponse))
           organisaatiot (get-organisations-for-hakukohteet organisaatio-service hakukohteet)]
       (create-internal-hakukohteet hakukohteet organisaatiot)))
@@ -108,9 +107,7 @@
             hakukohteet (as-> url res'
                               (authenticating-client-protocol/post kouta-authenticating-client
                                                                    {:url  res'
-                                                                    :body oids}
-                                                                   {:request-schema  [s/Str]
-                                                                    :response-schema schemas/HakukohdeListResponse})
+                                                                    :body oids})
                               (http/parse-and-validate res' schemas/HakukohdeListResponse))
             organisaatiot (get-organisations-for-hakukohteet organisaatio-service hakukohteet)]
         (create-internal-hakukohteet hakukohteet organisaatiot))

@@ -2,7 +2,7 @@
   (:refer-clojure :exclude [get]))
 
 (defprotocol CasAuthenticatingClientProtocol
-  (post [this opts schemas])
-  (get [this url response-schema])
-  (http-put [this opts schemas])
-  (delete [this url response-schema]))
+  (post [this opts])
+  (http-get [this url])
+  (http-put [this opts])
+  (delete [this url]))

@@ -7,6 +7,7 @@
                         :port          5432}
  :cas                  {:username "cas_username"
                         :password "cas_password"
+                        :url "cas_url"
                         :services {:organisaatio-service  {:service-url-property :cas.service.organisaatio-service
                                                            :session-cookie-name  "SESSION"}
                                    :kayttooikeus          {:service-url-property :cas.service.kayttooikeus-service

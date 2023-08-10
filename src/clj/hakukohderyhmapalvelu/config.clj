@@ -14,6 +14,7 @@
                           :port          s/Int}
    :cas                  {:username s/Str
                           :password s/Str
+                          :url s/Str
                           :services {:organisaatio-service  {:service-url-property s/Keyword
                                                              :session-cookie-name  s/Str}
                                      :kayttooikeus          {:service-url-property s/Keyword

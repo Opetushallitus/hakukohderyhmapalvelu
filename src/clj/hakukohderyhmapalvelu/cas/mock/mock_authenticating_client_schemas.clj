@@ -6,4 +6,5 @@
    :path                     s/Str
    :service                  (s/enum :organisaatio-service :kouta-service :ataru-service)
    (s/optional-key :request) s/Any
-   :response                 s/Any})
+   :response                 s/Any
+   (s/optional-key :status)  s/Int})

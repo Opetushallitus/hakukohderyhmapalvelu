@@ -25,23 +25,16 @@
       (throw (new RuntimeException
                   (str "No required permission found for username " (:username virkailija)))))))
 
-
 (defrecord HttpKayttooikeusService [kayttooikeus-authenticating-client config]
 
   kayttooikeus-protocol/KayttooikeusService
   (virkailija-by-username [_ username]
     (let [url      (url/resolve-url :kayttooikeus-service.kayttooikeus.kayttaja config {:username username})
-          response (authenticating-client/get kayttooikeus-authenticating-client url [kayttooikeus-protocol/Virkailija])
-          {:keys [status body]} response]
-      (if (= 200 status)
-        (if-let [virkailija (virkailija-with-hakukohderyhma-permission response)]
-          virkailija
-          (throw (new RuntimeException
-                      (str "No virkailija found by username " username))))
+          response (authenticating-client/http-get kayttooikeus-authenticating-client url)]
+      (if-let [virkailija (virkailija-with-hakukohderyhma-permission response)]
+        virkailija
         (throw (new RuntimeException
-                    (str "Could not get virkailija by username " username
-                         ", status: " status
-                         ", body: " body)))))))
+                    (str "No virkailija found by username " username)))))))
 
 (def fake-virkailija-value
   {"1.2.246.562.11.11111111111"

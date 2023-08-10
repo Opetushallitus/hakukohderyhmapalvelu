@@ -14,9 +14,8 @@
                  [com.stuartsierra/component "1.0.0"]
                  [org.flywaydb/flyway-core "7.0.2"]
                  [fi.vm.sade/auditlogger "9.0.0-SNAPSHOT"]
-                 [fi.vm.sade.java-utils/java-cas "0.6.2-SNAPSHOT"]
+                 [fi.vm.sade.java-utils/java-cas "1.1.0-SNAPSHOT"]
                  [fi.vm.sade.java-utils/java-properties "0.1.0-SNAPSHOT"]
-                 [fi.vm.sade/scala-cas_2.12 "2.2.2.1-SNAPSHOT"]
                  [oph/clj-access-logging "1.0.0-SNAPSHOT"]
                  [oph/clj-stdout-access-logging "1.0.0-SNAPSHOT"]
                  [oph/clj-timbre-access-logging "1.0.0-SNAPSHOT"]
@@ -104,4 +103,7 @@
                  ["snapshots" {:url      "https://artifactory.opintopolku.fi/artifactory/oph-sade-snapshot-local"
                                :releases {:update :never}}]
                  ["ext-snapshots" {:url      "https://artifactory.opintopolku.fi/artifactory/ext-snapshot-local"
-                                   :releases {:update :never}}]])
+                                   :releases {:update :never}}]
+                 ["github" {:url "https://maven.pkg.github.com/Opetushallitus/packages"
+                            :username "private-token"
+                            :password :env/GITHUB_TOKEN}]])

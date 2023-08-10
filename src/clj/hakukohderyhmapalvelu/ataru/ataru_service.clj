@@ -24,8 +24,6 @@
   (get-forms [_ hakukohderyhma-oid]
     (let [params (if hakukohderyhma-oid {:hakukohderyhma-oid hakukohderyhma-oid} {})
           url (oph-url/resolve-url :ataru.forms config params)]
-      (-> (authenticating-client-protocol/get ataru-authenticating-client
-                                              url
-                                              {:response-schema schemas/GetFormsResponse})
+      (-> (authenticating-client-protocol/http-get ataru-authenticating-client url)
           (http/parse-and-validate schemas/GetFormsResponse)
           :forms))))
