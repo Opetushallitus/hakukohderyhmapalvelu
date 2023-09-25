@@ -85,7 +85,7 @@
     :tila                          "julkaistu"
     :toinenAsteOnkoKaksoistutkinto false
     :oikeusHakukohteeseen          true
-    :valintakokeet [{:tyyppi "valintakokeentyyppi_1"}]
+    :valintakokeet [{:tyyppi "valintakokeentyyppi_1" :id "1.2.342.2.1"}]
     :salliikoHakukohdeHarkinnanvaraisuudenKysymisen true}
    {:oid                           "1.2.246.562.20.2"
     :nimi                          {:fi "Hakukohde 2"}
@@ -96,7 +96,7 @@
     :toinenAsteOnkoKaksoistutkinto false
     :oikeusHakukohteeseen          true
     :valintakokeet []
-    :valintaperusteValintakokeet [{:tyyppi "valintakokeentyyppi_10"}]
+    :valintaperusteValintakokeet [{:tyyppi "valintakokeentyyppi_10" :id "1.2.342.2.2"}]
     :salliikoHakukohdeHarkinnanvaraisuudenKysymisen true}
    {:oid                           "1.2.246.562.20.3"
     :nimi                          {:fi "Hakukohde 3"}
@@ -107,5 +107,5 @@
     :toinenAsteOnkoKaksoistutkinto false
     :oikeusHakukohteeseen          true
     :valintakokeet []
-    :valintaperusteValintakokeet [{:tyyppi "valintakokeentyyppi_2"}]
+    :valintaperusteValintakokeet [{:tyyppi "valintakokeentyyppi_2" :id "1.2.342.2.3"}]
     :salliikoHakukohdeHarkinnanvaraisuudenKysymisen true}])

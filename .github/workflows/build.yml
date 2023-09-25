@@ -42,7 +42,7 @@ jobs:
         run: |
           git clone https://github.com/Opetushallitus/ci-tools.git
           source ci-tools/common/setup-tools.sh
-          npm install
+          npm ci
           ./bin/cibuild.sh run-all-tests-and-create-uberjar
           lein with-profile prod uberjar
           export BASE_IMAGE="baseimage-fatjar-openjdk11:master"

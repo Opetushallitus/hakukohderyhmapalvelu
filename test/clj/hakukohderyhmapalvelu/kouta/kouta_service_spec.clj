@@ -121,20 +121,22 @@
     (dispatch-mock {:method   :post
                     :path     "/kouta-internal/hakukohde/findbyoids?tarjoaja=1.2.246.562.10.00000000001"
                     :service  :kouta-service
-                    :request  ["1.2.246.562.20.1" "1.2.246.562.20.2"]
+                    :request  ["1.2.246.562.20.1" "1.2.246.562.20.2" "1.2.246.562.20.3"]
                     :response kouta-test-fixtures/kouta-hakukohteet-with-kokeet-response})
     (dispatch-mock {:method   :post
                     :path     "/organisaatio-service/rest/organisaatio/v4/findbyoids"
                     :service  :organisaatio-service
                     :request  ["1.2.246.562.28.1" "1.2.246.562.28.2"]
                     :response organisaatio-test-fixtures/organisaatiot-response})
-    (is (= ["1.2.246.562.20.1" "1.2.246.562.20.1"]
-           (->> (kouta-service-protocol/find-hakukohteet-by-oids
-                  (:kouta-service @test-system)
-                  ["1.2.246.562.20.1" "1.2.246.562.20.2" "1.2.246.562.20.3"]
-                  tarjoajat)
-                (filter :hasPaasyJaSoveltuvuuskoe)
-                (map :oid))))
+    (let [expected ["1.2.246.562.20.1" "1.2.246.562.20.2"]
+          results (->> (kouta-service-protocol/find-hakukohteet-by-oids
+                         (:kouta-service @test-system)
+                         ["1.2.246.562.20.1" "1.2.246.562.20.2" "1.2.246.562.20.3"]
+                         tarjoajat)
+                       (filter :hasPaasyJaSoveltuvuuskoe)
+                       (map :oid)
+                       vec)]
+      (is (= expected results))))
 
   (testing "Find hakukohteet by empty oids"
     (let [expected []]
