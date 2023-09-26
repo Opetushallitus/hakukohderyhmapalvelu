@@ -10,6 +10,7 @@ jobs:
   test_and_build_and_deploy:
     runs-on: ubuntu-latest
 
+
     steps:
       - uses: actions/checkout@v3
 
@@ -33,6 +34,18 @@ jobs:
       - uses: szenius/set-timezone@v1.0
         with:
           timezoneLinux: "Europe/Helsinki"
+
+      # Remove following in the future (and update script in package.json), it installs chrome version 116 as the current 117 has bug
+      - uses: browser-actions/setup-chrome@v1
+        with:
+            chrome-version: 1160321
+        id: setup-chrome
+      - run: |
+          echo Installed chromium version: ${{ steps.setup-chrome.outputs.chrome-version }}
+          echo Installed chromium path: ${{ steps.setup-chrome.outputs.chrome-path }}
+          which chromium
+          chromium --version
+          
 
       - name: Build and test and deploy
         env:
