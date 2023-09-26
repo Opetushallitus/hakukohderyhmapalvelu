@@ -85,7 +85,7 @@
     :tila                          "julkaistu"
     :toinenAsteOnkoKaksoistutkinto false
     :oikeusHakukohteeseen          true
-    :valintakokeet [{:tyyppi "valintakokeentyyppi_1" :id "1.2.342.2.1"}]
+    :valintakokeet [{:tyyppi "valintakokeentyyppi_1#3" :id "1.2.342.2.1"}]
     :salliikoHakukohdeHarkinnanvaraisuudenKysymisen true}
    {:oid                           "1.2.246.562.20.2"
     :nimi                          {:fi "Hakukohde 2"}

@@ -37,13 +37,11 @@
     (assoc hakukohde :tarjoaja)))
 
 (def ^:private paasy-ja-soveltuvuuskoe ["valintakokeentyyppi_1", "valintakokeentyyppi_10"])
-(def ^:private paasy-ja-soveltuvuuskoe-with-version
-  (map #(str % "#") paasy-ja-soveltuvuuskoe))
 
 (defn- is-paasy-ja-soveltuvuuskoe?
   [kokeentyyppi]
-  (or (some #(= % kokeentyyppi) paasy-ja-soveltuvuuskoe)
-      (some #(str/starts-with? kokeentyyppi %) paasy-ja-soveltuvuuskoe-with-version)))
+  (and (some? kokeentyyppi)
+       (some #(= % (first (str/split kokeentyyppi #"#"))) paasy-ja-soveltuvuuskoe)))
 
 (defn- set-has-paasy-ja-soveltuvuuskoe [hakukohde]
   (assoc hakukohde
