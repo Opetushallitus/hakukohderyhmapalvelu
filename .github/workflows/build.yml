@@ -53,6 +53,14 @@ jobs:
           ./ci-tools/github-build/upload-image.sh hakukohderyhmapalvelu
           ./ci-tools/common/clean-docker-build-dir.sh
 
+      - name: Archive test results
+        if: success() || failure()
+        uses: actions/upload-artifact@v3
+        with:
+          name: test-snapshots
+          path: cypress/screenshots
+          retention-days: 4
+
       - uses: actions/cache@v3
         id: restore-build
         with:
