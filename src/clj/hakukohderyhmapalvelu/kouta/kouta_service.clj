@@ -36,19 +36,19 @@
     first
     (assoc hakukohde :tarjoaja)))
 
-(def ^:private paasy-ja-soveltuvuuskoe ["valintakokeentyyppi_1", "valintakokeentyyppi_10"])
+(def ^:private paasy-ja-soveltuvuuskoe-oma-koe "valintakokeentyyppi_10")
 
-(defn- is-paasy-ja-soveltuvuuskoe?
+(defn- is-paasy-ja-soveltuvuuskoe-oma-koe?
   [kokeentyyppi]
   (and (some? kokeentyyppi)
-       (some #(= % (first (str/split kokeentyyppi #"#"))) paasy-ja-soveltuvuuskoe)))
+       (= paasy-ja-soveltuvuuskoe-oma-koe (first (str/split kokeentyyppi #"#")))))
 
 (defn- set-has-paasy-ja-soveltuvuuskoe [hakukohde]
   (assoc hakukohde
-    :hasPaasyJaSoveltuvuuskoe
+    :hasPaasyJaSoveltuvuuskoeOma
     (->> (concat (:valintakokeet hakukohde)
                  (:valintaperusteValintakokeet hakukohde))
-         (filter #(is-paasy-ja-soveltuvuuskoe? (:tyyppi %)))
+         (filter #(is-paasy-ja-soveltuvuuskoe-oma-koe? (:tyyppi %)))
          seq
          boolean)))
 

@@ -61,7 +61,7 @@
                      :toinenAsteOnkoKaksoistutkinto false
                      :oikeusHakukohteeseen          true
                      :salliikoHakukohdeHarkinnanvaraisuudenKysymisen true
-                     :hasPaasyJaSoveltuvuuskoe      false
+                     :hasPaasyJaSoveltuvuuskoeOma   false
                      :tila                          "julkaistu"}
                     {:oid                           "1.2.246.562.20.2"
                      :nimi                          {:fi "Hakukohde 2"}
@@ -70,7 +70,7 @@
                      :toinenAsteOnkoKaksoistutkinto false
                      :oikeusHakukohteeseen          true
                      :salliikoHakukohdeHarkinnanvaraisuudenKysymisen true
-                     :hasPaasyJaSoveltuvuuskoe      false
+                     :hasPaasyJaSoveltuvuuskoeOma   false
                      :tila                          "julkaistu"}]]
       (dispatch-mock {:method   :get
                       :path     "/kouta-internal/hakukohde/search?haku=1.2.246.562.29.1&tarjoaja=1.2.246.562.10.00000000001&all=true"
@@ -91,7 +91,7 @@
                      :toinenAsteOnkoKaksoistutkinto false
                      :oikeusHakukohteeseen          true
                      :salliikoHakukohdeHarkinnanvaraisuudenKysymisen true
-                     :hasPaasyJaSoveltuvuuskoe      false
+                     :hasPaasyJaSoveltuvuuskoeOma   false
                      :tila                          "julkaistu"}
                     {:oid                           "1.2.246.562.20.2"
                      :nimi                          {:fi "Hakukohde 2"}
@@ -100,7 +100,7 @@
                      :toinenAsteOnkoKaksoistutkinto false
                      :oikeusHakukohteeseen          true
                      :salliikoHakukohdeHarkinnanvaraisuudenKysymisen true
-                     :hasPaasyJaSoveltuvuuskoe      false
+                     :hasPaasyJaSoveltuvuuskoeOma   false
                      :tila                          "julkaistu"}]]
       (dispatch-mock {:method   :post
                       :path     "/kouta-internal/hakukohde/findbyoids?tarjoaja=1.2.246.562.10.00000000001"
@@ -117,7 +117,7 @@
                         ["1.2.246.562.20.1" "1.2.246.562.20.2"]
                         tarjoajat)))))
 
-  (testing "Find hakukohteet with hasPaasyJaSoveltuvuuskoe"
+  (testing "Find hakukohteet with hasPaasyJaSoveltuvuuskoeOma"
     (dispatch-mock {:method   :post
                     :path     "/kouta-internal/hakukohde/findbyoids?tarjoaja=1.2.246.562.10.00000000001"
                     :service  :kouta-service
@@ -128,12 +128,12 @@
                     :service  :organisaatio-service
                     :request  ["1.2.246.562.28.1" "1.2.246.562.28.2"]
                     :response organisaatio-test-fixtures/organisaatiot-response})
-    (let [expected ["1.2.246.562.20.1" "1.2.246.562.20.2"]
+    (let [expected ["1.2.246.562.20.2"]
           results (->> (kouta-service-protocol/find-hakukohteet-by-oids
                          (:kouta-service @test-system)
                          ["1.2.246.562.20.1" "1.2.246.562.20.2" "1.2.246.562.20.3"]
                          tarjoajat)
-                       (filter :hasPaasyJaSoveltuvuuskoe)
+                       (filter :hasPaasyJaSoveltuvuuskoeOma)
                        (map :oid)
                        vec)]
       (is (= expected results))))
