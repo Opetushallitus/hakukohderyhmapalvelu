@@ -252,7 +252,7 @@
     "liitteidenToimitusaika": "2020-02-05T11:01:02",
     "liitteidenToimitustapa": "hakijapalvelu",
     "liitteet": [],
-    "valintakokeet": [{"id": "1.2.2.1.2.1", "tyyppi": "valintakokeentyyppi_1#1", "tilaisuudet":  []}],
+    "valintakokeet": [{"id": "1.2.2.1.2.1", "tyyppi": "valintakokeentyyppi_10#1", "tilaisuudet":  []}],
     "hakuajat": [],
     "muokkaaja": "1.2.8.1.2.1",
     "tarjoaja": "1.2.9.1.2.3",

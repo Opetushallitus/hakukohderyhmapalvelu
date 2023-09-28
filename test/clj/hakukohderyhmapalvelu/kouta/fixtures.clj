@@ -63,6 +63,7 @@
     :valintakokeet []
     :salliikoHakukohdeHarkinnanvaraisuudenKysymisen true}])
 
+
 (def kouta-hakukohteet-response-for-delete
   [{:oid                           "1.2.3.4.5.6.7.8.9.10"
     :nimi                          {:fi "Hakukohde 1"}
@@ -73,4 +74,38 @@
     :toinenAsteOnkoKaksoistutkinto false
     :oikeusHakukohteeseen          true
     :valintakokeet []
+    :salliikoHakukohdeHarkinnanvaraisuudenKysymisen true}])
+
+(def kouta-hakukohteet-with-kokeet-response
+  [{:oid                           "1.2.246.562.20.1"
+    :nimi                          {:fi "Hakukohde 1"}
+    :organisaatioOid               "1.2.246.562.28.1"
+    :tarjoaja                      "1.2.246.562.28.1"
+    :hakuOid                       "1.2.246.562.29.1"
+    :tila                          "julkaistu"
+    :toinenAsteOnkoKaksoistutkinto false
+    :oikeusHakukohteeseen          true
+    :valintakokeet [{:tyyppi "valintakokeentyyppi_1#3" :id "1.2.342.2.1"}]
+    :salliikoHakukohdeHarkinnanvaraisuudenKysymisen true}
+   {:oid                           "1.2.246.562.20.2"
+    :nimi                          {:fi "Hakukohde 2"}
+    :organisaatioOid               "1.2.246.562.28.2"
+    :tarjoaja                      "1.2.246.562.28.2"
+    :hakuOid                       "1.2.246.562.29.1"
+    :tila                          "julkaistu"
+    :toinenAsteOnkoKaksoistutkinto false
+    :oikeusHakukohteeseen          true
+    :valintakokeet []
+    :valintaperusteValintakokeet [{:tyyppi "valintakokeentyyppi_10" :id "1.2.342.2.2"}]
+    :salliikoHakukohdeHarkinnanvaraisuudenKysymisen true}
+   {:oid                           "1.2.246.562.20.3"
+    :nimi                          {:fi "Hakukohde 3"}
+    :organisaatioOid               "1.2.246.562.28.2"
+    :tarjoaja                      "1.2.246.562.28.2"
+    :hakuOid                       "1.2.246.562.29.1"
+    :tila                          "julkaistu"
+    :toinenAsteOnkoKaksoistutkinto false
+    :oikeusHakukohteeseen          true
+    :valintakokeet []
+    :valintaperusteValintakokeet [{:tyyppi "valintakokeentyyppi_2" :id "1.2.342.2.3"}]
     :salliikoHakukohdeHarkinnanvaraisuudenKysymisen true}])
