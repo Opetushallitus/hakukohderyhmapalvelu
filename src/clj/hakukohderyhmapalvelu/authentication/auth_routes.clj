@@ -100,6 +100,7 @@
 
   (login [this ticket request]
     (try
+      (log/info (str "Recieved service ticket for validation: " ticket))
       (if-let [[username _] (cas-ticket-client-protocol/validate-service-ticket cas-ticket-validator ticket)]
         (let [redirect-url (or (get-in request [:session :original-url])
                                (:hakukohderyhmapalvelu-url this))
