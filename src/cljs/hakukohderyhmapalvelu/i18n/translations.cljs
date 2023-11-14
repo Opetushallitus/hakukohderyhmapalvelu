@@ -16,6 +16,7 @@
    :haun-asetukset {:valintatulokset-valmiina-viimeistaan                        {:fi "Valintatulokset valmiina viimeistään"}
                     :useita-hakemuksia                                           {:fi "Vain yksi hakemus -rajoitus"}
                     :haun-asetukset                                              {:fi "Haun asetukset"}
+                    :synteettiset-hakemukset                                     {:fi "Haussa käytetään synteettisiä hakemuksia"}
                     :hakukohteiden-enimmaismaara                                 {:fi "Hakutoiveiden enimmäismäärä"}
                     :hakukierros-paattyy                                         {:fi "Hakukierros päättyy"}
                     :varasijataytto-paattyy                                      {:fi "Varasijatäyttö päättyy"}
