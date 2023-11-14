@@ -12,6 +12,9 @@
     :haun-asetukset/jarjestetyt-hakutoiveet
     :jarjestetytHakutoiveet
 
+    :haun-asetukset/synteettiset-hakemukset
+    :synteettisetHakemukset
+
     :haun-asetukset/useita-hakemuksia
     :useitaHakemuksia
 
@@ -69,6 +72,7 @@
   (some #{haun-asetus-key}
         #{:haun-asetukset/hakukohteiden-maara-rajoitettu
           :haun-asetukset/jarjestetyt-hakutoiveet
+          :haun-asetukset/synteettiset-hakemukset
           :haun-asetukset/useita-hakemuksia
           :haun-asetukset/sijoittelu}))
 

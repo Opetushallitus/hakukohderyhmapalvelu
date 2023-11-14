@@ -541,6 +541,12 @@
         :haun-asetus-key         :haun-asetukset/useita-hakemuksia
         :type                    :slider
         :bold-left-label-margin? false}]
+      (when kk?
+        [haun-asetukset-checkbox
+         {:haku-oid                haku-oid
+          :haun-asetus-key         :haun-asetukset/synteettiset-hakemukset
+          :type                    :slider
+          :bold-left-label-margin? false}])
       [hakijakohtainen-paikan-vastaanottoaika
        {:haku-oid haku-oid}]
       [haun-asetukset-date-time
