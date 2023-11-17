@@ -15,6 +15,9 @@
     :haun-asetukset/synteettiset-hakemukset
     :synteettisetHakemukset
 
+    :haun-asetukset/synteettisen-hakemuksen-lomakeavain
+    :synteettisetLomakeavain
+
     :haun-asetukset/useita-hakemuksia
     :useitaHakemuksia
 

@@ -13,7 +13,11 @@
             [hakukohderyhmapalvelu.urls :as urls]
             [reagent.core :as reagent]
             [re-frame.core :as re-frame]
-            [stylefy.core :as stylefy]))
+            [stylefy.core :as stylefy]
+            [hakukohderyhmapalvelu.config :as conf]))
+
+(def default-synthetic-application-form-key
+  (:synthetic-application-form-key conf/config))
 
 (def ^:private haun-asetukset-grid-styles
   {:display               "grid"
@@ -117,7 +121,8 @@
 (defn- haun-asetukset-checkbox [{:keys [haku-oid
                                         haun-asetus-key
                                         type
-                                        bold-left-label-margin?]}]
+                                        bold-left-label-margin?
+                                        on-change]}]
   (let [id-prefix   (get-id-prefix haun-asetus-key)
         checkbox-id (str id-prefix "-checkbox")
         label-id    (str id-prefix "-label")
@@ -141,7 +146,8 @@
                                              (re-frame/dispatch [:haun-asetukset/set-haun-asetus
                                                                  haku-oid
                                                                  haun-asetus-key
-                                                                 (not checked?)]))
+                                                                 (not checked?)])
+                                             (when (some? on-change) (on-change (not checked?))))
                           :aria-labelledby label-id
                           :cypressid       checkbox-id}]}]]))
 
@@ -423,6 +429,46 @@
                                 (when value
                                   {:value value}))]}]]))
 
+(defn- synteettisen-hakemuksen-lomakeavain [{:keys [haku-oid]}]
+  (let [id-prefix (get-id-prefix :haun-asetukset/synteettisen-hakemuksen-lomakeavain)
+        label-id  (str id-prefix "-label")
+        input-id  (str id-prefix "-input")
+        label     @(re-frame/subscribe [:translation :haun-asetukset/synteettisen-hakemuksen-lomakeavain])
+        value     (re-frame/subscribe [:haun-asetukset/haun-asetus haku-oid :haun-asetukset/synteettisen-hakemuksen-lomakeavain])]
+    [:<>
+     [haun-asetukset-label
+      {:id    label-id
+       :for   input-id
+       :label label}]
+     [haun-asetukset-input
+      {:input-component [i/input-text
+                         (merge {:input-id  input-id
+                                 :placeholder ""
+                                 :aria-label ""
+                                 :on-change (fn [value]
+                                              (re-frame/dispatch [:haun-asetukset/set-haun-asetus
+                                                                  haku-oid
+                                                                  :haun-asetukset/synteettisen-hakemuksen-lomakeavain
+                                                                  value]))
+                                 :is-disabled true
+                                 :cypressid input-id}
+                                (when value
+                                  {:value value}))]}]]))
+
+(defn- synteettiset-hakemukset [{:keys [haku-oid]}]
+  [haun-asetukset-checkbox
+   {:haku-oid                haku-oid
+    :haun-asetus-key         :haun-asetukset/synteettiset-hakemukset
+    :type                    :slider
+    :on-change               (fn [checked?]
+                               (re-frame/dispatch [:haun-asetukset/set-haun-asetus
+                                                   haku-oid
+                                                   :haun-asetukset/synteettisen-hakemuksen-lomakeavain
+                                                   (if checked?
+                                                     default-synthetic-application-form-key
+                                                     nil)]))
+    :bold-left-label-margin? false}])
+
 (defn- haun-asetukset-sijoittelu [{:keys [haku-oid]}]
   (let [sijoittelu? @(re-frame/subscribe [:haun-asetukset/haun-asetus haku-oid :haun-asetukset/sijoittelu])]
     [:<>
@@ -542,11 +588,11 @@
         :type                    :slider
         :bold-left-label-margin? false}]
       (when kk?
-        [haun-asetukset-checkbox
-         {:haku-oid                haku-oid
-          :haun-asetus-key         :haun-asetukset/synteettiset-hakemukset
-          :type                    :slider
-          :bold-left-label-margin? false}])
+        [synteettiset-hakemukset
+         {:haku-oid haku-oid}])
+      (when kk?
+        [synteettisen-hakemuksen-lomakeavain
+         {:haku-oid haku-oid}])
       [hakijakohtainen-paikan-vastaanottoaika
        {:haku-oid haku-oid}]
       [haun-asetukset-date-time
