@@ -97,6 +97,7 @@
 
 (s/defschema HaunAsetukset
   {:nimi                               LocalizedString
+   (s/optional-key :hakulomaketyyppi)  s/Str
    (s/optional-key :hakulomakeAtaruId) s/Str
    :kohdejoukkoKoodiUri                KoodiUri
    :hakuajat                           [Hakuaika]})

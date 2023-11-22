@@ -113,7 +113,6 @@
   (fn [[_ haku-oid]]
     [(re-frame/subscribe [:haun-asetukset/haku haku-oid])])
   (fn [[haku]]
-    (boolean
-     (some
-      ongoing-period?
-      (:hakuajat haku)))))
+    (or
+     (not (contains? #{"ei sähköistä" "muu"} (:hakulomaketyyppi haku)))
+     (boolean (some ongoing-period? (:hakuajat haku))))))

@@ -44,6 +44,7 @@
                  response
                  [:nimi
                   :hakulomakeAtaruId
+                  :hakulomaketyyppi
                   :kohdejoukkoKoodiUri
                   :hakuajat])]
       (assoc-in db
