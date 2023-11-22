@@ -113,6 +113,7 @@
   (fn [[_ haku-oid]]
     [(re-frame/subscribe [:haun-asetukset/haku haku-oid])])
   (fn [[haku]]
-    (some
-     ongoing-period?
-     (:hakuajat haku))))
+    (boolean
+     (some
+      ongoing-period?
+      (:hakuajat haku)))))

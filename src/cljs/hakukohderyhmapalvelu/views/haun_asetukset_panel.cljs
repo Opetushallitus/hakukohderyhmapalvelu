@@ -122,6 +122,7 @@
                                         haun-asetus-key
                                         type
                                         bold-left-label-margin?
+                                        additional-disabled?
                                         on-change]}]
   (let [id-prefix   (get-id-prefix haun-asetus-key)
         checkbox-id (str id-prefix "-checkbox")
@@ -141,7 +142,7 @@
       {:input-component [checkbox-fn
                          {:id              checkbox-id
                           :checked?        checked?
-                          :disabled?       disabled?
+                          :disabled?       (or disabled? additional-disabled?)
                           :on-change       (fn []
                                              (re-frame/dispatch [:haun-asetukset/set-haun-asetus
                                                                  haku-oid
@@ -461,7 +462,7 @@
      {:haku-oid                haku-oid
       :haun-asetus-key         :haun-asetukset/synteettiset-hakemukset
       :type                    :slider
-      :disabled?               disabled?
+      :additional-disabled?    disabled?
       :on-change               (fn [checked?]
                                  (re-frame/dispatch [:haun-asetukset/set-haun-asetus
                                                      haku-oid
