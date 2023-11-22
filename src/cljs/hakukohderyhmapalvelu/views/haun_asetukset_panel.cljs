@@ -456,18 +456,20 @@
                                   {:value value}))]}]]))
 
 (defn- synteettiset-hakemukset [{:keys [haku-oid]}]
-  [haun-asetukset-checkbox
-   {:haku-oid                haku-oid
-    :haun-asetus-key         :haun-asetukset/synteettiset-hakemukset
-    :type                    :slider
-    :on-change               (fn [checked?]
-                               (re-frame/dispatch [:haun-asetukset/set-haun-asetus
-                                                   haku-oid
-                                                   :haun-asetukset/synteettisen-hakemuksen-lomakeavain
-                                                   (if checked?
-                                                     default-synthetic-application-form-key
-                                                     nil)]))
-    :bold-left-label-margin? false}])
+  (let [disabled? @(re-frame/subscribe [:haun-asetukset/synteettiset-hakemukset-disabled? haku-oid])]
+    [haun-asetukset-checkbox
+     {:haku-oid                haku-oid
+      :haun-asetus-key         :haun-asetukset/synteettiset-hakemukset
+      :type                    :slider
+      :disabled?               disabled?
+      :on-change               (fn [checked?]
+                                 (re-frame/dispatch [:haun-asetukset/set-haun-asetus
+                                                     haku-oid
+                                                     :haun-asetukset/synteettisen-hakemuksen-lomakeavain
+                                                     (if checked?
+                                                       default-synthetic-application-form-key
+                                                       nil)]))
+      :bold-left-label-margin? false}]))
 
 (defn- haun-asetukset-sijoittelu [{:keys [haku-oid]}]
   (let [sijoittelu? @(re-frame/subscribe [:haun-asetukset/haun-asetus haku-oid :haun-asetukset/sijoittelu])]

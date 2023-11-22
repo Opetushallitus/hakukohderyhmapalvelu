@@ -1,14 +1,30 @@
 (ns hakukohderyhmapalvelu.subs.haun-asetukset-subs
   (:require [hakukohderyhmapalvelu.ohjausparametrit.haun-asetukset-ohjausparametrit-mapping :as m]
             [cljs-time.format :as f]
+            [cljs-time.core :as time]
             [clojure.string]
             [re-frame.core :as re-frame]))
 
+(def datetime-in-fmt
+  (f/formatter "yyyy-MM-dd'T'HH:mm:ss"))
+
+(defn- iso->localtime
+  [s]
+  (f/parse-local datetime-in-fmt s))
+
 (defn- iso->finnish
   [s]
-  (let [in-fmt  (f/formatter "yyyy-MM-dd'T'HH:mm:ss")
-        out-fmt (f/formatter "dd.MM.yyyy 'klo' HH.mm.ss")]
-    (f/unparse-local out-fmt (f/parse-local in-fmt s))))
+  (let [out-fmt (f/formatter "dd.MM.yyyy 'klo' HH.mm.ss")]
+    (f/unparse-local out-fmt (f/parse-local datetime-in-fmt s))))
+
+(defn- ongoing-period?
+  [hakuaika]
+  (let [now (time/time-now)
+        alkaa (iso->localtime (:alkaa hakuaika))
+        paattyy (when (:paattyy hakuaika) (iso->localtime (:paattyy hakuaika)))]
+    (if (nil? paattyy)
+      (or (time/before? alkaa now) (time/equal? alkaa now))
+      (time/within? alkaa paattyy now))))
 
 (re-frame/reg-sub
   :haun-asetukset/selected-haku-oid
@@ -91,3 +107,12 @@
                    (when (:paattyy hakuaika)
                      {:paattyy (iso->finnish (:paattyy hakuaika))})))
           (:hakuajat haku))))
+
+(re-frame/reg-sub
+  :haun-asetukset/synteettiset-hakemukset-disabled?
+  (fn [[_ haku-oid]]
+    [(re-frame/subscribe [:haun-asetukset/haku haku-oid])])
+  (fn [[haku]]
+    (some
+     ongoing-period?
+     (:hakuajat haku))))
