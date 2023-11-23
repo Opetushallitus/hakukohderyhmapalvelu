@@ -5,6 +5,8 @@
             [clojure.string]
             [re-frame.core :as re-frame]))
 
+(def superuser-right "APP_HAKUKOHDERYHMAPALVELU_CRUD_1.2.246.562.10.00000000001")
+
 (def datetime-in-fmt
   (f/formatter "yyyy-MM-dd'T'HH:mm:ss"))
 
@@ -109,10 +111,20 @@
           (:hakuajat haku))))
 
 (re-frame/reg-sub
+ :haun-asetukset/is-superuser?
+ (fn []
+   [(re-frame/subscribe [:state-query [:user-groups]])])
+ (fn [[user-groups]]
+   (some #(= superuser-right %) user-groups)))
+
+(re-frame/reg-sub
   :haun-asetukset/synteettiset-hakemukset-disabled?
   (fn [[_ haku-oid]]
-    [(re-frame/subscribe [:haun-asetukset/haku haku-oid])])
-  (fn [[haku]]
-    (or
-     (not (contains? #{"ei sähköistä" "muu"} (:hakulomaketyyppi haku)))
-     (boolean (some ongoing-period? (:hakuajat haku))))))
+    [(re-frame/subscribe [:haun-asetukset/haku haku-oid])
+     (re-frame/subscribe [:haun-asetukset/is-superuser?])])
+  (fn [[haku is-superuser?]]
+    (if is-superuser?
+      false
+      (or
+       (not (contains? #{"ei sähköistä" "muu"} (:hakulomaketyyppi haku)))
+       (boolean (some ongoing-period? (:hakuajat haku)))))))

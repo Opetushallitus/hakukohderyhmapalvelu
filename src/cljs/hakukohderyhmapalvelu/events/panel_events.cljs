@@ -8,6 +8,7 @@
 (defn- make-haun-asetukset-dispatches [{:keys [query]}]
   (let [haku-oid (:haku-oid query)]
     [[:haun-asetukset/get-forms]
+     [:haun-asetukset/get-user-rights]
      [:haun-asetukset/get-haku haku-oid]
      [:haun-asetukset/get-ohjausparametrit haku-oid]]))
 
