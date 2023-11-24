@@ -123,7 +123,7 @@
    :errors [s/Any]})
 
 (s/defschema UserRights
-  {:user-rights [s/Str]})
+  {(s/optional-key :user-rights) [s/Str]})
 
 (s/defschema HaunOhjausparametrit
   {(s/optional-key :PH_OPVP)                      (s/named
