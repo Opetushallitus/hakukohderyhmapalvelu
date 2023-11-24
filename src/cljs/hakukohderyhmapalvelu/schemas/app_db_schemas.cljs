@@ -122,8 +122,8 @@
   {:changes-saved s/Bool
    :errors [s/Any]})
 
-(s/defschema UserRights
-  {(s/optional-key :user-rights) [s/Str]})
+(s/defschema UserGroups
+  {(s/optional-key :user-groups) [s/Str]})
 
 (s/defschema HaunOhjausparametrit
   {(s/optional-key :PH_OPVP)                      (s/named
@@ -170,4 +170,4 @@
             Haut
             Forms
             HakujenOhjausparametrit
-            UserRights))
+            UserGroups))
