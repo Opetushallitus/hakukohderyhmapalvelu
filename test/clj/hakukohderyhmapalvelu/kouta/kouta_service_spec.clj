@@ -32,6 +32,25 @@
                       :response kouta-test-fixtures/kouta-haun-tiedot-response})
       (is (= expected (kouta-service-protocol/list-haun-tiedot (:kouta-service @test-system) false tarjoajat false)) "Kutsu ei vastaa oletettua")))
 
+  {:oid      "1.2.246.562.29.555"
+   :nimi     {:fi "Toisen asteen yhteishaku 2038"}
+   :hakuajat [{:alkaa "2038-01-03T00:00:00"}]
+   :kohdejoukkoKoodiUri "haunkohdejoukko_11#1"}
+  (testing "List haut, active, superuser"
+    (let [expected [{:oid  "1.2.246.562.29.2"
+                     :nimi {:fi "Tulevaisuuden haku"}}
+                    {:oid  "1.2.246.562.29.3"
+                     :nimi {:fi "Nykyhetkellä voimassa"}}
+                    {:oid  "1.2.246.562.29.4"
+                     :nimi {:fi "Nykyhetkellä voimassa oleva jatkuva"}}
+                    {:oid "1.2.246.562.29.555"
+                     :nimi {:fi "Toisen asteen yhteishaku 2038"}}]]
+      (dispatch-mock {:method   :get
+                      :path     "/kouta-internal/haku/search?tarjoaja=1.2.246.562.10.00000000001"
+                      :service  :kouta-service
+                      :response kouta-test-fixtures/kouta-haun-tiedot-response})
+      (is (= expected (kouta-service-protocol/list-haun-tiedot (:kouta-service @test-system) false tarjoajat true)) "Kutsu ei vastaa oletettua")))
+
   (testing "List haut, all"
     (let [expected [{:oid  "1.2.246.562.29.1"
                      :nimi {:fi "Päättynyt haku"}}
