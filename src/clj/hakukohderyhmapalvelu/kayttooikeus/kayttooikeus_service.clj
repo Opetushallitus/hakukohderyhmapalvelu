@@ -9,6 +9,8 @@
   {:palvelu "HAKUKOHDERYHMAPALVELU"
    :oikeus  "CRUD"})
 
+(def oph-organisaatio-oid "1.2.246.562.10.00000000001")
+
 (defn- hakukohderyhmapalvelu-allowed-orgs [orgs]
   (vec (filter #(contains? (set (:kayttooikeudet %)) hakukohderyhmapalvelu-crud-permission) orgs)))
 
@@ -17,11 +19,15 @@
   (let [permissions (set (mapcat :kayttooikeudet (:organisaatiot virkailija)))]
     (contains? permissions permission)))
 
+(defn has-oph-org? [virkailija]
+  (some? (not-empty (filter #(= oph-organisaatio-oid (:organisaatioOid %)) (:organisaatiot virkailija)))))
+
 (defn- virkailija-with-hakukohderyhma-permission [response]
   (let [virkailija (first (http/parse-and-validate response [kayttooikeus-protocol/Virkailija]))
-        virkailija-with-hakukohderyhma-access (update virkailija :organisaatiot hakukohderyhmapalvelu-allowed-orgs)]
+        virkailija-with-hakukohderyhma-access (update virkailija :organisaatiot hakukohderyhmapalvelu-allowed-orgs)
+        superuser? (has-oph-org? virkailija-with-hakukohderyhma-access)]
     (if (not-empty (:organisaatiot virkailija-with-hakukohderyhma-access))
-      virkailija-with-hakukohderyhma-access
+      (assoc virkailija-with-hakukohderyhma-access :superuser superuser?)
       (throw (new RuntimeException
                   (str "No required permission found for username " (:username virkailija)))))))
 

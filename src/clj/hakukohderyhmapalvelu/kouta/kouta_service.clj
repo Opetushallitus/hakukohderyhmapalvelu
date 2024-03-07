@@ -10,7 +10,8 @@
             [schema.core :as s]
             [schema-tools.core :as st]
             [hakukohderyhmapalvelu.config :as c]
-            [clojure.string :as str])
+            [clojure.string :as str]
+            [taoensso.timbre :as log])
   (:import (java.time LocalDateTime)))
 
 (defn- local-date-time? [dt]
@@ -79,15 +80,19 @@
 
   kouta-service-protocol/KoutaServiceProtocol
 
-  (list-haun-tiedot [_ is-all tarjoajat]
+  (list-haun-tiedot [_ is-all tarjoajat superuser?]
     (let [now (LocalDateTime/now)
           tarjoaja (str/join "," tarjoajat)
           url (oph-url/resolve-url :kouta-internal.haku.search config {:tarjoaja tarjoaja})
-          filter-fn (if is-all identity (partial not-over? now))]
+          filter-fn (if is-all identity (partial not-over? now))
+          filter-2nd-yhteishaku-fn (fn [haku] (or superuser?
+                                                  (not= "haunkohdejoukko_11" (first (clojure.string/split (or (:kohdejoukkoKoodiUri haku) "") #"#")))))]
+      (log/info (str "List haun tiedot for tarjoajat" tarjoajat ", superuser?" superuser?))
       (as-> url res'
             (authenticating-client-protocol/http-get kouta-authenticating-client res')
             (http/parse-and-validate res' schemas/HaunTiedotListResponse)
             (filter filter-fn res')
+            (filter filter-2nd-yhteishaku-fn res')
             (st/select-schema res' api-schemas/HaunTiedotListResponse))))
 
   (list-haun-hakukohteet [_ haku-oid tarjoajat]

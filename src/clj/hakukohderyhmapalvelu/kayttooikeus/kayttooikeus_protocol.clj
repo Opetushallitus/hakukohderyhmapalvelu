@@ -10,10 +10,11 @@
    :kayttooikeudet  [Kayttooikeus]})
 
 (s/defschema Virkailija
-  {:oidHenkilo     s/Str
-   :username       s/Str
-   :kayttajaTyyppi s/Str
-   :organisaatiot  [KayttooikeudetOrganisaatiossa]})
+  {:oidHenkilo                 s/Str
+   :username                   s/Str
+   :kayttajaTyyppi             s/Str
+   :organisaatiot              [KayttooikeudetOrganisaatiossa]
+   (s/optional-key :superuser) s/Bool})
 
 (defprotocol KayttooikeusService
   (virkailija-by-username [this username]))

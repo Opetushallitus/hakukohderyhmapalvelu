@@ -125,8 +125,9 @@
       renamed-hkr))
 
   (list-haun-tiedot [_ session is-all]
-    (let [user-organisaatiot (session-organizations session)]
-      (kouta/list-haun-tiedot kouta-service is-all user-organisaatiot)))
+    (let [user-organisaatiot (session-organizations session)
+          superuser? (:superuser session)]
+      (kouta/list-haun-tiedot kouta-service is-all user-organisaatiot superuser?)))
 
   (list-haun-hakukohteet [_ session haku-oid]
     (let [user-organisaatiot (session-organizations session)]
