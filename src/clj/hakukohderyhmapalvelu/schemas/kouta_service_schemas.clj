@@ -8,9 +8,10 @@
    (s/optional-key :paattyy) LocalDateTime})
 
 (s/defschema HaunTiedot
-  {:oid      s/Str
-   :nimi     c/Nimi
-   :hakuajat [Hakuaika]
+  {:oid                 s/Str
+   :nimi                c/Nimi
+   :hakuajat            [Hakuaika]
+   :kohdejoukkoKoodiUri s/Str
    s/Any     s/Any})
 
 (s/defschema HaunTiedotListResponse

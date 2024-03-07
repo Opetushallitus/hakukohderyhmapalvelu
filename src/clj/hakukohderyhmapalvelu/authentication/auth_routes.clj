@@ -27,14 +27,16 @@
 
 (defn- merged-session [request response virkailija]
   (let [organisaatiot (map :organisaatioOid (:organisaatiot virkailija))
+        superuser? (boolean (:superuser virkailija))
         request-session (:session request)
         response-session (:session response)]
     (-> response-session
         (merge (select-keys request-session [:key :user-agent]))
-        (assoc-in [:identity :organizations] organisaatiot))))
+        (assoc-in [:identity :organizations] organisaatiot)
+        (assoc :superuser superuser?))))
 
 (defn- login-succeeded [organisaatio-service audit-logger request response virkailija henkilo username ticket]
-  (log/info "user" username "logged in")
+  (log/info "user" username "logged in. Superuser?" (:superuser virkailija))
   (let [session (merged-session request response virkailija)
         henkilo-oid (:oidHenkilo henkilo)]
     (s/validate (p/extends-class-pred organisaatio-protocol/OrganisaatioServiceProtocol) organisaatio-service)
