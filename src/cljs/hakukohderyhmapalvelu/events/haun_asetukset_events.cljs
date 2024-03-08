@@ -3,7 +3,25 @@
             [hakukohderyhmapalvelu.macros.event-macros :as events]
             [hakukohderyhmapalvelu.urls :as urls]
             [day8.re-frame.tracing :refer-macros [fn-traced]]
-            [hakukohderyhmapalvelu.i18n.utils :as i18n-utils]))
+            [hakukohderyhmapalvelu.i18n.utils :as i18n-utils]
+            [clojure.string :as str]))
+
+(events/reg-event-fx-validating
+ :haun-asetukset/get-user-rights
+ (fn-traced [_ _]
+            (let [url (urls/get-url :kayttooikeus-service.me)]
+              {:http {:http-request-id  :haun-asetukset/get-user-rights
+                      :method           :get
+                      :path             url
+                      :response-handler [:haun-asetukset/handle-get-user-rights]
+                      :body             {}}})))
+
+(events/reg-event-db-validating
+ :haun-asetukset/handle-get-user-rights
+ (fn-traced [db [response]]
+            (->> (:groups response)
+                 (filter (fn [right] (str/starts-with? right "APP_HAKUKOHDERYHMAPALVELU")))
+                 (assoc db :user-groups))))
 
 (events/reg-event-fx-validating
   :haun-asetukset/get-forms
@@ -44,6 +62,7 @@
                  response
                  [:nimi
                   :hakulomakeAtaruId
+                  :hakulomaketyyppi
                   :kohdejoukkoKoodiUri
                   :hakuajat])]
       (assoc-in db

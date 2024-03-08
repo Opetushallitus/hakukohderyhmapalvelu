@@ -3,10 +3,11 @@
 
 (s/defschema PublicConfig
   {:environment   (s/enum
-                    :production
-                    :development
-                    :it)
+                   :production
+                   :development
+                   :it)
    :default-panel (s/enum
-                    :panel/hakukohderyhmien-hallinta
-                    :panel/haun-asetukset)
-   :caller-id     s/Str})
+                   :panel/hakukohderyhmien-hallinta
+                   :panel/haun-asetukset)
+   :caller-id     s/Str
+   :synthetic-application-form-key s/Str})

@@ -23,4 +23,5 @@
  :oph-organisaatio-oid "1.2.246.562.10.00000000001"
  :public-config        {:environment   :it
                         :default-panel :panel/hakukohderyhmien-hallinta
-                        :caller-id     "1.2.246.562.10.00000000001.hakukohderyhmapalvelu.frontend"}}
+                        :caller-id     "1.2.246.562.10.00000000001.hakukohderyhmapalvelu.frontend"
+                        :synthetic-application-form-key "c1748e22-548a-4b1f-9ddf-f0c3d0ee820a"}}

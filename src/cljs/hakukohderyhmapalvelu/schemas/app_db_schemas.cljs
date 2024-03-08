@@ -97,6 +97,7 @@
 
 (s/defschema HaunAsetukset
   {:nimi                               LocalizedString
+   (s/optional-key :hakulomaketyyppi)  s/Str
    (s/optional-key :hakulomakeAtaruId) s/Str
    :kohdejoukkoKoodiUri                KoodiUri
    :hakuajat                           [Hakuaika]})
@@ -120,6 +121,9 @@
 (s/defschema OhjausparametritSaveStatus
   {:changes-saved s/Bool
    :errors [s/Any]})
+
+(s/defschema UserGroups
+  {(s/optional-key :user-groups) [s/Str]})
 
 (s/defschema HaunOhjausparametrit
   {(s/optional-key :PH_OPVP)                      (s/named
@@ -145,6 +149,8 @@
    (s/optional-key :hakutoiveidenEnimmaismaara)   s/Int
    (s/optional-key :useitaHakemuksia)             s/Bool
    (s/optional-key :sijoittelu)                   s/Bool
+   (s/optional-key :synteettisetHakemukset)       s/Bool
+   (s/optional-key :synteettisetLomakeavain)      s/Str
    (s/optional-key :__modified__)                 s/Int
    (s/optional-key :__modifiedBy__)               s/Str
    s/Any s/Any})
@@ -163,4 +169,5 @@
             HakukohderyhmaPalvelu
             Haut
             Forms
-            HakujenOhjausparametrit))
+            HakujenOhjausparametrit
+            UserGroups))
