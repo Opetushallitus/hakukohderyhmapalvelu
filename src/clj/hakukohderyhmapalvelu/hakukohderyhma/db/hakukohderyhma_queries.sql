@@ -74,3 +74,36 @@ SELECT
 FROM hakukohderyhma
 WHERE hakukohde_oid IN (:v*:hakukohde-oids)
 GROUP BY hakukohde_oid;
+
+-- :name find-hakukohderyhma-oids-by-timerange
+SELECT DISTINCT (oid) FROM (
+  SELECT hakukohderyhma_oid AS oid FROM hakukohderyhma
+    WHERE created_at BETWEEN :start::timestamptz AND :end::timestamptz
+  UNION
+  SELECT hakukohderyhma_oid AS oid FROM hakukohderyhma_settings
+    WHERE created_at BETWEEN :start::timestamptz AND :end::timestamptz
+    OR updated_at BETWEEN :start::timestamptz AND :end::timestamptz
+) oids;
+
+-- :name find-hakukohderyhma-oids-by-timelimit
+SELECT DISTINCT (oid) FROM (
+  SELECT hakukohderyhma_oid AS oid FROM hakukohderyhma WHERE created_at < :end::timestamptz
+UNION
+SELECT hakukohderyhma_oid AS oid FROM hakukohderyhma_settings WHERE created_at < :end::timestamptz
+    OR updated_at < :end::timestamptz
+) oids;
+
+-- :name list-hakukohteet-and-settings-in-db :? :*
+WITH hakukohteet AS (
+    SELECT hakukohderyhma_oid, ARRAY_REMOVE(ARRAY_AGG(hakukohde_oid), NULL) AS hakukohde_oids
+    FROM hakukohderyhma GROUP BY hakukohderyhma_oid
+)
+SELECT h.hakukohderyhma_oid AS "hakukohderyhma-oid", h.hakukohde_oids AS "hakukohde-oids",
+       s.rajaava,
+       s.max_hakukohteet AS "max-hakukohteet",
+       s.jos_ylioppilastutkinto_ei_muita_pohjakoulutusliitepyyntoja AS "jos-ylioppilastutkinto-ei-muita-pohjakoulutusliitepyyntoja",
+       s.yo_amm_autom_hakukelpoisuus AS "yo-amm-autom-hakukelpoisuus",
+       s.priorisoiva,
+       s.prioriteettijarjestys
+FROM hakukohteet h LEFT JOIN hakukohderyhma_settings s ON s.hakukohderyhma_oid = h.hakukohderyhma_oid
+WHERE h.hakukohderyhma_oid IN (:v*:hakukohderyhma-oids);

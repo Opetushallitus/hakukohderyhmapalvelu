@@ -63,6 +63,15 @@
                            target
                            changes))))))
 
+(defn- assoc-if-exists
+  ([dest source key]
+    (assoc-if-exists dest source key false))
+  ([dest source key is-vector]
+    (let [val (get source key)]
+      (if (not (nil? val))
+       (assoc dest key (if is-vector (vec val) val))
+       dest))))
+
 (defrecord HakukohderyhmaService [audit-logger organisaatio-service kouta-service ataru-service db]
   hakukohderyhma-protocol/HakukohderyhmaServiceProtocol
   (find-hakukohderyhmat-by-hakukohteet-oids [_ session hakukohde-oids include-empty]
@@ -188,4 +197,26 @@
   (get-hakukohderyhmat-by-hakukohteet [_ _ hakukohde-oids]
     (if-not (empty? hakukohde-oids)
       (hakukohderyhma-queries/get-hakukohderyhmat-by-hakukohteet db hakukohde-oids)
-      [])))
+      []))
+
+  (get-hakukohderyhma-oid-chunks-by-timerange [_ _ start-datetime end-datetime]
+    (if-not (nil? start-datetime)
+      (map :oid (hakukohderyhma-queries/find-new-or-changed-hakukohderyhma-oids-by-timerange db start-datetime end-datetime))
+      (map :oid (hakukohderyhma-queries/find-new-or-changed-hakukohderyhma-oids-by-timelimit db end-datetime))))
+
+  (list-hakukohteet-and-settings [_ _ hakukohderyhma-oids]
+    (let [hakukohderyhmat-raw (hakukohderyhma-queries/list-hakukohteet-and-settings db hakukohderyhma-oids)
+          create-object ( fn [raw] (-> {}
+                                       (assoc :hakukohderyhma-oid (:hakukohderyhma-oid raw))
+                                       (assoc :hakukohde-oids (vec (:hakukohde-oids raw)))
+                                       (assoc :settings (-> {}
+                                                            (assoc-if-exists raw :rajaava)
+                                                            (assoc-if-exists raw :max-hakukohteet)
+                                                            (assoc-if-exists raw :yo-amm-autom-hakukelpoisuus)
+                                                            (assoc-if-exists
+                                                              raw
+                                                              :jos-ylioppilastutkinto-ei-muita-pohjakoulutusliitepyyntoja)
+                                                            (assoc-if-exists raw :priorisoiva)
+                                                            (assoc-if-exists raw :prioriteettijarjestys true)))))
+          ryhma-objects (map create-object hakukohderyhmat-raw)]
+      ryhma-objects)))

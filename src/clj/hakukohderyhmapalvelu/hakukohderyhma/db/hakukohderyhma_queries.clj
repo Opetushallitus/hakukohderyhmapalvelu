@@ -17,6 +17,9 @@
 (declare settings-by-hakukohderyhma-oids)
 (declare upsert-settings!)
 (declare grouped-hakukohderyhmas)
+(declare find-hakukohderyhma-oids-by-timerange)
+(declare find-hakukohderyhma-oids-by-timelimit)
+(declare list-hakukohteet-and-settings-in-db)
 
 (def initial-settings
   {:rajaava false
@@ -95,3 +98,15 @@
 
 (defn get-hakukohderyhmat-by-hakukohteet [db hakukohde-oids]
   (grouped-hakukohderyhmas db {:hakukohde-oids hakukohde-oids}))
+
+(defn find-new-or-changed-hakukohderyhma-oids-by-timerange
+  [db start-datetime end-datetime]
+  (find-hakukohderyhma-oids-by-timerange db {:start start-datetime :end end-datetime}))
+
+(defn find-new-or-changed-hakukohderyhma-oids-by-timelimit
+  [db end-datetime]
+  (find-hakukohderyhma-oids-by-timelimit db {:end end-datetime}))
+
+(defn list-hakukohteet-and-settings
+  [db hakukohderyhma-oids]
+  (list-hakukohteet-and-settings-in-db db hakukohderyhma-oids))

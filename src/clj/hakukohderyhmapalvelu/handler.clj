@@ -23,6 +23,7 @@
             [hakukohderyhmapalvelu.oph-url-properties :as oph-urls]
             [hakukohderyhmapalvelu.schemas.class-pred :as p]
             [hakukohderyhmapalvelu.session-timeout :as session-timeout]
+            [hakukohderyhmapalvelu.siirtotiedosto.siirtotiedosto-protocol :as siirtotiedosto]
             [clj-access-logging]
             [clj-stdout-access-logging]
             [clj-timbre-access-logging]
@@ -34,7 +35,10 @@
             [schema.core :as s]
             [selmer.parser :as selmer]
             [taoensso.timbre :as log]
-            [muuntaja.core :as m])
+            [muuntaja.core :as m]
+            [clj-time.core :as t]
+            [clj-time.format :as f]
+            [clojure.string :refer [blank?]])
   (:import [javax.sql DataSource]))
 
 
@@ -79,6 +83,7 @@
    :health-checker                   (p/extends-class-pred health-check/HealthChecker)
    :auth-routes-source               (p/extends-class-pred auth-routes/AuthRoutesSource)
    :hakukohderyhma-service           s/Any
+   :siirtotiedosto-service           s/Any
    (s/optional-key :mock-dispatcher) (p/extends-class-pred mock-dispatcher-protocol/MockDispatcherProtocol)})
 
 (defn auth-middleware [config db]
@@ -87,6 +92,21 @@
    #(auth-middleware/with-authentication % (oph-urls/resolve-url :cas.login config))
    session-client/wrap-session-client-headers
    (session-timeout/create-wrap-absolute-session-timeout config)])
+
+(def datetime-format "yyyy-MM-dd'T'HH:mm:ss")
+(def datetime-parser (f/formatter datetime-format (t/default-time-zone)))
+
+(defn- parseDatetime
+  ([datetimeStr fieldDesc]
+   (parseDatetime datetimeStr fieldDesc nil))
+  ([datetimeStr fieldDesc default]
+   (if-not (nil? datetimeStr)
+     (try (f/parse datetime-parser datetimeStr)
+          (catch java.lang.IllegalArgumentException _
+            (response/bad-request!
+              {:msg  (str "Illegal " fieldDesc " '" datetimeStr "', allowed format: '" datetime-format "'")})))
+     default
+     )))
 
 (defn- integration-test-routes [{:keys [mock-dispatcher config]}]
   (when (c/integration-environment? config)
@@ -103,7 +123,8 @@
                          (.reset-mocks mock-dispatcher)
                          (response/ok {}))}}]]))
 
-(defn- routes [{:keys [health-checker config db auth-routes-source hakukohderyhma-service] :as args}]
+(defn- routes [{:keys [health-checker config db auth-routes-source hakukohderyhma-service siirtotiedosto-service]
+                :as args}]
   (let [auth (auth-middleware config db)]
     [["/"
       {:get {:no-doc  true
@@ -142,6 +163,35 @@
                           (-> (health-check/check-health health-checker)
                               response/ok
                               (response/content-type "text/html")))}}]
+       ["/siirtotiedosto"
+        {:get {                                             ;:middleware auth
+               :tags        ["Siirtotiedosto"]
+               :summary     "Tallentaa annetulla aikavälillä luodut tai muokatut hakukohderyhmät siirtotiedostoon"
+               :responses   {200 {:body schema/SiirtotiedostoResponse}
+                             400 {:body s/Str}}
+               :parameters  {:query {(s/optional-key :start-datetime) (s/maybe s/Str)
+                                     (s/optional-key :end-datetime) (s/maybe s/Str)}}
+               :handler    (fn [{session :session {{startDatetime :start-datetime
+                                                    endDatetime   :end-datetime} :query} :parameters}]
+                             (let [start (parseDatetime startDatetime "startDatetime")
+                                   end (parseDatetime endDatetime "endDatetime" (t/now))
+                                   chunk-size (-> config
+                                                  :siirtotiedosto
+                                                  :max-kohderyhmacount-in-file)
+                                   all-oids (hakukohderyhma/get-hakukohderyhma-oid-chunks-by-timerange
+                                              hakukohderyhma-service
+                                              session
+                                              start
+                                              end)
+                                   create-siirtotiedosto (fn [oid-chunk] (->> {:hakukohderyhma-oids oid-chunk}
+                                                                              (hakukohderyhma/list-hakukohteet-and-settings
+                                                                              hakukohderyhma-service session)
+                                                                              (siirtotiedosto/create-siirtotiedosto siirtotiedosto-service)
+                                                                              ))
+                                   s3-keys (map create-siirtotiedosto (partition chunk-size chunk-size nil all-oids))]
+                             (response/ok {:keys s3-keys
+                                           :count (count all-oids)
+                                           :success true})))}}]
        ["/hakukohderyhma"
         [""
          {:post {:middleware auth
@@ -223,6 +273,9 @@
                   :parameters {:path {:oid s/Str} :body schema/HakukohderyhmaSettings}
                   :handler    (fn [{session :session {settings :body {oid :oid} :path}  :parameters}]
                                 (response/ok (hakukohderyhma/insert-or-update-settings hakukohderyhma-service session oid settings)))}}]]]
+
+
+
        ["/hakukohde/:oid/hakukohderyhmat"
         {:get {:middleware auth
                :tags       ["Hakukohde"]

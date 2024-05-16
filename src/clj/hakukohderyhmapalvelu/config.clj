@@ -28,7 +28,11 @@
    :urls                 {:virkailija-baseurl        s/Str
                           :hakukohderyhmapalvelu-url s/Str}
    :oph-organisaatio-oid s/Str
-   :public-config        public/PublicConfig})
+   :public-config        public/PublicConfig
+   :siirtotiedosto       {:aws-region s/Str
+                          :s3-bucket s/Str
+                          :s3-target-role-arn s/Str
+                          :max-kohderyhmacount-in-file s/Int}})
 
 (defn- report-error [^Throwable e message]
   (.println System/err message)

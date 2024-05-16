@@ -16,7 +16,8 @@
             [hakukohderyhmapalvelu.organisaatio.organisaatio-service :as organisaatio-service]
             [hakukohderyhmapalvelu.kouta.kouta-service :as kouta-service]
             [hakukohderyhmapalvelu.ataru.ataru-service :as ataru-service]
-            [hakukohderyhmapalvelu.server :as http]))
+            [hakukohderyhmapalvelu.server :as http]
+            [hakukohderyhmapalvelu.siirtotiedosto.siirtotiedosto-service :as siirtotiedosto-service]))
 
 (defn hakukohderyhmapalvelu-system [config]
   (let [it-profile?       (c/integration-environment? config)
@@ -61,15 +62,22 @@
                                                   :organisaatio-service
                                                   :audit-logger])
 
+                           :siirtotiedosto-service (component/using
+                                                     (siirtotiedosto-service/map->SiirtotiedostoService
+                                                       {:config config})
+                                                     [])
+
                            :http-server (component/using
                                           (http/map->HttpServer {:config config})
                                           (cond-> [:db
                                                    :migrations
                                                    :health-checker
                                                    :hakukohderyhma-service
+                                                   :siirtotiedosto-service
                                                    :auth-routes-source]
                                                   it-profile?
                                                   (conj :mock-dispatcher)))]
+
         production-system [:organisaatio-service-authenticating-client (authenticating-client/map->CasAuthenticatingClient {:service :organisaatio-service
                                                                                                                             :config  config})
 
