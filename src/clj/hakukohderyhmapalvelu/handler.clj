@@ -37,8 +37,7 @@
             [taoensso.timbre :as log]
             [muuntaja.core :as m]
             [clj-time.core :as t]
-            [clj-time.format :as f]
-            [clojure.string :refer [blank?]])
+            [clj-time.format :as f])
   (:import [javax.sql DataSource]))
 
 
