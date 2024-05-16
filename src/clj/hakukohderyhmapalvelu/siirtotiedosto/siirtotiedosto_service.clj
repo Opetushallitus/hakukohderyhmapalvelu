@@ -4,7 +4,6 @@
             [schema.core :as s]
             [cheshire.core :as json]
             [clojure.java.io :refer [input-stream]]
-            [hakukohderyhmapalvelu.config :as c]
             [taoensso.timbre :as log])
   (:import (fi.vm.sade.valinta.dokumenttipalvelu SiirtotiedostoPalvelu)))
 
