@@ -31,5 +31,5 @@
       (try (. (.saveSiirtotiedosto (:siirtotiedosto-client this) "hakukohderyhmapalvelu" "ryhma" "" stream 2) key)
            (catch Exception e
              (log/error (str "Transform file creation failed: " (.getMessage e)))
-             ""
+             (throw e)
              )))))

@@ -163,7 +163,7 @@
                               response/ok
                               (response/content-type "text/html")))}}]
        ["/siirtotiedosto"
-        {:get {                                             ;:middleware auth
+        {:get {:middleware auth
                :tags        ["Siirtotiedosto"]
                :summary     "Tallentaa annetulla aikavälillä luodut tai muokatut hakukohderyhmät siirtotiedostoon"
                :responses   {200 {:body schema/SiirtotiedostoResponse}
