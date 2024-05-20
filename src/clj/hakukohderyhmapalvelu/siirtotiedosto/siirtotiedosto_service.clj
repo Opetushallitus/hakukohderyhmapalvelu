@@ -25,10 +25,18 @@
     this)
 
   siirtotiedosto-protocol/SiirtotiedostoProtocol
-  (create-siirtotiedosto [this ryhmat]
+  (create-siirtotiedosto [this executionId executionSubId ryhmat]
     (let [json (json/generate-string ryhmat)
           stream (input-stream (.getBytes json))]
-      (try (. (.saveSiirtotiedosto (:siirtotiedosto-client this) "hakukohderyhmapalvelu" "ryhma" "" stream 2) key)
+      (try (. (.saveSiirtotiedosto
+                (:siirtotiedosto-client this)
+                "hakukohderyhmapalvelu"
+                "ryhma"
+                ""
+                executionId
+                executionSubId
+                stream
+                2) key)
            (catch Exception e
              (log/error (str "Transform file creation failed: " (.getMessage e)))
              (throw e)

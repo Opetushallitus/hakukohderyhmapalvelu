@@ -109,4 +109,4 @@
 
 (defn list-hakukohteet-and-settings
   [db hakukohderyhma-oids]
-  (list-hakukohteet-and-settings-in-db db hakukohderyhma-oids))
+  (list-hakukohteet-and-settings-in-db db {:hakukohderyhma-oids hakukohderyhma-oids}))

@@ -23,7 +23,6 @@
             [hakukohderyhmapalvelu.oph-url-properties :as oph-urls]
             [hakukohderyhmapalvelu.schemas.class-pred :as p]
             [hakukohderyhmapalvelu.session-timeout :as session-timeout]
-            [hakukohderyhmapalvelu.siirtotiedosto.siirtotiedosto-protocol :as siirtotiedosto]
             [clj-access-logging]
             [clj-stdout-access-logging]
             [clj-timbre-access-logging]
@@ -82,7 +81,6 @@
    :health-checker                   (p/extends-class-pred health-check/HealthChecker)
    :auth-routes-source               (p/extends-class-pred auth-routes/AuthRoutesSource)
    :hakukohderyhma-service           s/Any
-   :siirtotiedosto-service           s/Any
    (s/optional-key :mock-dispatcher) (p/extends-class-pred mock-dispatcher-protocol/MockDispatcherProtocol)})
 
 (defn auth-middleware [config db]
@@ -122,7 +120,7 @@
                          (.reset-mocks mock-dispatcher)
                          (response/ok {}))}}]]))
 
-(defn- routes [{:keys [health-checker config db auth-routes-source hakukohderyhma-service siirtotiedosto-service]
+(defn- routes [{:keys [health-checker config db auth-routes-source hakukohderyhma-service]
                 :as args}]
   (let [auth (auth-middleware config db)]
     [["/"
@@ -174,23 +172,12 @@
                                                     endDatetime   :end-datetime} :query} :parameters}]
                              (let [start (parseDatetime startDatetime "startDatetime")
                                    end (parseDatetime endDatetime "endDatetime" (t/now))
-                                   chunk-size (-> config
-                                                  :siirtotiedosto
-                                                  :max-kohderyhmacount-in-file)
-                                   all-oids (hakukohderyhma/get-hakukohderyhma-oid-chunks-by-timerange
-                                              hakukohderyhma-service
-                                              session
-                                              start
-                                              end)
-                                   create-siirtotiedosto (fn [oid-chunk] (->> {:hakukohderyhma-oids oid-chunk}
-                                                                              (hakukohderyhma/list-hakukohteet-and-settings
-                                                                              hakukohderyhma-service session)
-                                                                              (siirtotiedosto/create-siirtotiedosto siirtotiedosto-service)
-                                                                              ))
-                                   s3-keys (map create-siirtotiedosto (partition chunk-size chunk-size nil all-oids))]
-                             (response/ok {:keys s3-keys
-                                           :count (count all-oids)
-                                           :success true})))}}]
+                                   max-kohderyhmacount-in-file (-> config
+                                                                   :siirtotiedosto
+                                                                   :max-kohderyhmacount-in-file)]
+                             (response/ok
+                               (hakukohderyhma/create-siirtotiedostot
+                                 hakukohderyhma-service session start end max-kohderyhmacount-in-file))))}}]
        ["/hakukohderyhma"
         [""
          {:post {:middleware auth

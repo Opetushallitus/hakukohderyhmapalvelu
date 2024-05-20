@@ -41,12 +41,18 @@
                                             (kouta-service/map->KoutaService {:config config})
                                             [:kouta-authenticating-client :organisaatio-service])
 
+                           :siirtotiedosto-service (component/using
+                                                     (siirtotiedosto-service/map->SiirtotiedostoService
+                                                       {:config config})
+                                                     [])
+
                            :hakukohderyhma-service (component/using
                                                     (hakukohderyhma-service/map->HakukohderyhmaService {})
                                                     [:audit-logger
                                                      :organisaatio-service
                                                      :kouta-service
                                                      :ataru-service
+                                                     :siirtotiedosto-service
                                                      :db])
 
                            :health-checker (component/using
@@ -62,10 +68,6 @@
                                                   :organisaatio-service
                                                   :audit-logger])
 
-                           :siirtotiedosto-service (component/using
-                                                     (siirtotiedosto-service/map->SiirtotiedostoService
-                                                       {:config config})
-                                                     [])
 
                            :http-server (component/using
                                           (http/map->HttpServer {:config config})
@@ -73,7 +75,6 @@
                                                    :migrations
                                                    :health-checker
                                                    :hakukohderyhma-service
-                                                   :siirtotiedosto-service
                                                    :auth-routes-source]
                                                   it-profile?
                                                   (conj :mock-dispatcher)))]
