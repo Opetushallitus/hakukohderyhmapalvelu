@@ -50,8 +50,6 @@ jobs:
         env:
           GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
         run: |
-          git clone https://github.com/Opetushallitus/ci-tools.git
-          source ci-tools/common/setup-tools.sh
           npm ci
           ./bin/cibuild.sh run-all-tests-and-create-uberjar
           lein with-profile prod uberjar  
