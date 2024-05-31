@@ -67,12 +67,12 @@
 
 (defn- assoc-if-exists
   ([dest source key]
-    (assoc-if-exists dest source key false))
-  ([dest source key is-vector]
+    (assoc-if-exists dest source key identity))
+  ([dest source key modifier]
     (let [val (get source key)]
-      (if (not (nil? val))
-       (assoc dest key (if is-vector (vec val) val))
-       dest))))
+      (if (nil? val)
+       dest
+       (assoc dest key (modifier val))))))
 
 (defn- get-hakukohderyhma-oids-by-timerange
   [db start-datetime end-datetime]
