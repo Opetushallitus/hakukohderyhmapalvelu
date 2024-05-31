@@ -94,7 +94,7 @@
                                                                raw
                                                                :jos-ylioppilastutkinto-ei-muita-pohjakoulutusliitepyyntoja)
                                                              (assoc-if-exists raw :priorisoiva)
-                                                             (assoc-if-exists raw :prioriteettijarjestys true)))))
+                                                             (assoc-if-exists raw :prioriteettijarjestys vec)))))
            ryhma-objects (map create-object hakukohderyhmat-raw)]
        ryhma-objects))
 
