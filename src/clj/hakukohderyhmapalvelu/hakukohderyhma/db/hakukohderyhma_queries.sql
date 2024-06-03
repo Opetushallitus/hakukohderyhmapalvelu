@@ -78,32 +78,29 @@ GROUP BY hakukohde_oid;
 -- :name find-hakukohderyhma-oids-by-timerange
 SELECT DISTINCT (oid) FROM (
   SELECT hakukohderyhma_oid AS oid FROM hakukohderyhma
-    WHERE created_at BETWEEN :start::timestamptz AND :end::timestamptz
+    WHERE created_at >= :start::timestamptz AND created_at < :end::timestamptz
   UNION
   SELECT hakukohderyhma_oid AS oid FROM hakukohderyhma_settings
-    WHERE created_at BETWEEN :start::timestamptz AND :end::timestamptz
-    OR updated_at BETWEEN :start::timestamptz AND :end::timestamptz
-) oids;
-
--- :name find-hakukohderyhma-oids-by-timelimit
-SELECT DISTINCT (oid) FROM (
-  SELECT hakukohderyhma_oid AS oid FROM hakukohderyhma WHERE created_at < :end::timestamptz
-UNION
-SELECT hakukohderyhma_oid AS oid FROM hakukohderyhma_settings WHERE created_at < :end::timestamptz
-    OR updated_at < :end::timestamptz
+    WHERE created_at >= :start::timestamptz AND created_at < :end::timestamptz
+    OR updated_at >= :start::timestamptz AND updated_at < :end::timestamptz
 ) oids;
 
 -- :name list-hakukohteet-and-settings-in-db :? :*
 WITH hakukohteet AS (
-    SELECT hakukohderyhma_oid, ARRAY_REMOVE(ARRAY_AGG(hakukohde_oid), NULL) AS hakukohde_oids
+    SELECT hakukohderyhma_oid, ARRAY_REMOVE(ARRAY_AGG(hakukohde_oid), NULL) AS hakukohde_oids,
+           MAX(created_at) AS created_at
     FROM hakukohderyhma GROUP BY hakukohderyhma_oid
 )
-SELECT h.hakukohderyhma_oid AS "hakukohderyhma-oid", h.hakukohde_oids AS "hakukohde-oids",
+SELECT h.hakukohderyhma_oid AS "hakukohderyhma-oid",
+       h.hakukohde_oids AS "hakukohde-oids",
+       h.created_at AS "ryhma-created-at",
        s.rajaava,
        s.max_hakukohteet AS "max-hakukohteet",
        s.jos_ylioppilastutkinto_ei_muita_pohjakoulutusliitepyyntoja AS "jos-ylioppilastutkinto-ei-muita-pohjakoulutusliitepyyntoja",
        s.yo_amm_autom_hakukelpoisuus AS "yo-amm-autom-hakukelpoisuus",
        s.priorisoiva,
-       s.prioriteettijarjestys
+       s.prioriteettijarjestys,
+       s.created_at AS "setting-created-at",
+       s.updated_at AS "setting-updated-at"
 FROM hakukohteet h LEFT JOIN hakukohderyhma_settings s ON s.hakukohderyhma_oid = h.hakukohderyhma_oid
 WHERE h.hakukohderyhma_oid IN (:v*:hakukohderyhma-oids);

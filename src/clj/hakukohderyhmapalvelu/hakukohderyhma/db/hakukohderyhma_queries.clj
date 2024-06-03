@@ -18,16 +18,15 @@
 (declare upsert-settings!)
 (declare grouped-hakukohderyhmas)
 (declare find-hakukohderyhma-oids-by-timerange)
-(declare find-hakukohderyhma-oids-by-timelimit)
 (declare list-hakukohteet-and-settings-in-db)
 
 (def initial-settings
-  {:rajaava false
-   :max-hakukohteet nil
-   :priorisoiva false
-   :prioriteettijarjestys []
+  {:rajaava                                                    false
+   :max-hakukohteet                                            nil
+   :priorisoiva                                                false
+   :prioriteettijarjestys                                      []
    :jos-ylioppilastutkinto-ei-muita-pohjakoulutusliitepyyntoja false
-   :yo-amm-autom-hakukelpoisuus false})
+   :yo-amm-autom-hakukelpoisuus                                false})
 
 (defn hakukohde-oidit-by-hakukohderyhma-oid [db hakukohderyhma-oid]
   (->> {:oid hakukohderyhma-oid}
@@ -64,8 +63,8 @@
 
 (defn delete-hakukohderyhma [db hakukohderyhma-oid]
   (with-db-transaction [tx db]
-    (delete-settings-by-hakukohderyhma-oid tx {:oid hakukohderyhma-oid})
-    (delete-by-hakukohderyhma-oid tx {:oid hakukohderyhma-oid})))
+                       (delete-settings-by-hakukohderyhma-oid tx {:oid hakukohderyhma-oid})
+                       (delete-by-hakukohderyhma-oid tx {:oid hakukohderyhma-oid})))
 
 (defn find-settings-by-hakukohderyhma-oids
   [db hakukohderyhma-oids]
@@ -81,31 +80,27 @@
 (defn insert-or-update-settings
   [db hakukohderyhma-oid settings]
   (with-db-transaction [tx db]
-    (let [rajaava (:rajaava settings)
-          max-hakukohteet (:max-hakukohteet settings)
-          priorisoiva (boolean (:priorisoiva settings)) ;fixme
-          prioriteettijarjestys (get settings :prioriteettijarjestys [])
-          jyemp (:jos-ylioppilastutkinto-ei-muita-pohjakoulutusliitepyyntoja settings)
-          yo-amm-autom-hakukelpoisuus (:yo-amm-autom-hakukelpoisuus settings)]
-      (upsert-settings! tx {:hakukohderyhma-oid hakukohderyhma-oid
-                            :rajaava rajaava
-                            :max-hakukohteet max-hakukohteet
-                            :jos-ylioppilastutkinto-ei-muita-pohjakoulutusliitepyyntoja jyemp
-                            :yo-amm-autom-hakukelpoisuus yo-amm-autom-hakukelpoisuus
-                            :priorisoiva priorisoiva
-                            :prioriteettijarjestys prioriteettijarjestys})
-      (dissoc (first (find-settings-by-hakukohderyhma-oids tx [hakukohderyhma-oid])) :hakukohderyhma-oid))))
+                       (let [rajaava (:rajaava settings)
+                             max-hakukohteet (:max-hakukohteet settings)
+                             priorisoiva (boolean (:priorisoiva settings)) ;fixme
+                             prioriteettijarjestys (get settings :prioriteettijarjestys [])
+                             jyemp (:jos-ylioppilastutkinto-ei-muita-pohjakoulutusliitepyyntoja settings)
+                             yo-amm-autom-hakukelpoisuus (:yo-amm-autom-hakukelpoisuus settings)]
+                         (upsert-settings! tx {:hakukohderyhma-oid                                         hakukohderyhma-oid
+                                               :rajaava                                                    rajaava
+                                               :max-hakukohteet                                            max-hakukohteet
+                                               :jos-ylioppilastutkinto-ei-muita-pohjakoulutusliitepyyntoja jyemp
+                                               :yo-amm-autom-hakukelpoisuus                                yo-amm-autom-hakukelpoisuus
+                                               :priorisoiva                                                priorisoiva
+                                               :prioriteettijarjestys                                      prioriteettijarjestys})
+                         (dissoc (first (find-settings-by-hakukohderyhma-oids tx [hakukohderyhma-oid])) :hakukohderyhma-oid))))
 
 (defn get-hakukohderyhmat-by-hakukohteet [db hakukohde-oids]
   (grouped-hakukohderyhmas db {:hakukohde-oids hakukohde-oids}))
 
 (defn find-new-or-changed-hakukohderyhma-oids-by-timerange
   [db start-datetime end-datetime]
-  (find-hakukohderyhma-oids-by-timerange db {:start start-datetime :end end-datetime}))
-
-(defn find-new-or-changed-hakukohderyhma-oids-by-timelimit
-  [db end-datetime]
-  (find-hakukohderyhma-oids-by-timelimit db {:end end-datetime}))
+  (map :oid (find-hakukohderyhma-oids-by-timerange db {:start start-datetime :end end-datetime})))
 
 (defn list-hakukohteet-and-settings
   [db hakukohderyhma-oids]
