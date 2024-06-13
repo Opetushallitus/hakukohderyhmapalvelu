@@ -101,3 +101,8 @@
 (s/defschema GroupedHakukohderyhmaResponse
   [{:oid             s/Str
     :hakukohderyhmat [s/Str]}])
+
+(s/defschema SiirtotiedostoResponse
+  {:keys [s/Str]
+   :count s/Int
+   :success s/Bool})

@@ -24,4 +24,8 @@
  :public-config        {:environment   {{ hakukohderyhmapalvelu_environment | default(':development') }}
                         :default-panel :panel/hakukohderyhmien-hallinta
                         :caller-id     "{{hakukohderyhmapalvelu_frontend_caller_id | default('1.2.246.562.10.00000000001.hakukohderyhmapalvelu.frontend')}}"
-                        :synthetic-application-form-key "{{ hakukohderyhmapalvelu_synthetic_application_form_key | default('c1748e22-548a-4b1f-9ddf-f0c3d0ee820a') }}"}}
+                        :synthetic-application-form-key "{{ hakukohderyhmapalvelu_synthetic_application_form_key | default('c1748e22-548a-4b1f-9ddf-f0c3d0ee820a') }}"}
+ :siirtotiedosto       {:aws-region "{{ aws_region }}"
+                        :s3-bucket "{{ ovara_siirtotiedosto_s3_bucket }}"
+                        :s3-target-role-arn "{{ ovara_siirtotiedosto_s3_target_role_arn }}"
+                        :max-kohderyhmacount-in-file {{ hakukohderyhmapalvelu_max_hakukohderyhmacount_in_file }}}}

@@ -42,7 +42,8 @@
                  [thheller/shadow-cljs "2.11.23"]
                  [yogthos/config "1.1.7"]
                  [environ "1.2.0"]
-                 [oph/clj-timbre-auditlog "0.1.0-SNAPSHOT"]]
+                 [oph/clj-timbre-auditlog "0.1.0-SNAPSHOT"]
+                 [fi.vm.sade.dokumenttipalvelu/dokumenttipalvelu "6.12-SNAPSHOT"]]
 
   :plugins [[lein-ancient "0.6.15"]
             [lein-shell "0.5.0"]]

@@ -11,7 +11,7 @@
     <url>https://github.com/Opetushallitus/hakukohderyhmapalvelu</url>
     <connection>scm:git:git://github.com/Opetushallitus/hakukohderyhmapalvelu.git</connection>
     <developerConnection>scm:git:ssh://git@github.com/Opetushallitus/hakukohderyhmapalvelu.git</developerConnection>
-    <tag>ef0868e7298e3f311bf4a2701be4a20faba74032</tag>
+    <tag>dc6fbf406a42c57ce2a70418ce568b51577c1a37</tag>
   </scm>
   <build>
     <sourceDirectory>src/clj</sourceDirectory>
@@ -338,6 +338,11 @@
       <groupId>oph</groupId>
       <artifactId>clj-timbre-auditlog</artifactId>
       <version>0.1.0-SNAPSHOT</version>
+    </dependency>
+    <dependency>
+      <groupId>fi.vm.sade.dokumenttipalvelu</groupId>
+      <artifactId>dokumenttipalvelu</artifactId>
+      <version>6.12-SNAPSHOT</version>
     </dependency>
     <dependency>
       <groupId>binaryage</groupId>

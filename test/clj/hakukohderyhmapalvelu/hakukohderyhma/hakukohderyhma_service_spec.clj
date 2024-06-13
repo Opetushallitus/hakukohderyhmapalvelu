@@ -9,6 +9,8 @@
                                                                            add-row!
                                                                            has-row?]]
             [hakukohderyhmapalvelu.api-schemas :as api-schemas]
+            [clj-time.format :as f]
+            [clj-time.core :as t]
             [hakukohderyhmapalvelu.ataru.fixtures :as ataru-test-fixtures]))
 
 
@@ -245,3 +247,20 @@
       (-> (hakukohderyhma-protocol/get-hakukohderyhmat-by-hakukohteet service session [])
           empty?
           (is "Hakukohteita ei pitäisi palautua")))))
+  (deftest hakukohderyhma-simple-test
+    (let [datetime-parser (f/formatter "yyyy-MM-dd'T'HH:mm:ss" (t/default-time-zone))
+          latest (f/parse datetime-parser "2024-05-1T16:00:00")
+          second (f/parse datetime-parser "2024-05-1T12:00:00")
+          oldest (f/parse datetime-parser "2024-05-1T11:00:00")
+          db-row {:foo "bar"
+                  :setting-updated-at second
+                  :setting-created-at latest
+                  :ryhma-created-at oldest}]
+    (testing "viimeisimmän aikaleiman haku"
+      (is (= (str latest) (hakukohderyhmapalvelu.hakukohderyhma.hakukohderyhma-service/resolve-last-modified db-row))))
+    (testing "nil-arvoja ei huomioida"
+      (is (= (str second) (hakukohderyhmapalvelu.hakukohderyhma.hakukohderyhma-service/resolve-last-modified
+                      (assoc db-row :setting-created-at nil)))))
+    (testing "palautetaan nil jos rivillä ei yhtään arvoa"
+      (is (= "" (hakukohderyhmapalvelu.hakukohderyhma.hakukohderyhma-service/resolve-last-modified
+                      (assoc db-row :setting-updated-at nil :setting-created-at nil :ryhma-created-at nil)))))))

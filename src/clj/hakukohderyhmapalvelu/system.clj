@@ -16,7 +16,8 @@
             [hakukohderyhmapalvelu.organisaatio.organisaatio-service :as organisaatio-service]
             [hakukohderyhmapalvelu.kouta.kouta-service :as kouta-service]
             [hakukohderyhmapalvelu.ataru.ataru-service :as ataru-service]
-            [hakukohderyhmapalvelu.server :as http]))
+            [hakukohderyhmapalvelu.server :as http]
+            [hakukohderyhmapalvelu.siirtotiedosto.siirtotiedosto-service :as siirtotiedosto-service]))
 
 (defn hakukohderyhmapalvelu-system [config]
   (let [it-profile?       (c/integration-environment? config)
@@ -40,12 +41,18 @@
                                             (kouta-service/map->KoutaService {:config config})
                                             [:kouta-authenticating-client :organisaatio-service])
 
+                           :siirtotiedosto-service (component/using
+                                                     (siirtotiedosto-service/map->SiirtotiedostoService
+                                                       {:config config})
+                                                     [])
+
                            :hakukohderyhma-service (component/using
                                                     (hakukohderyhma-service/map->HakukohderyhmaService {})
                                                     [:audit-logger
                                                      :organisaatio-service
                                                      :kouta-service
                                                      :ataru-service
+                                                     :siirtotiedosto-service
                                                      :db])
 
                            :health-checker (component/using
@@ -61,6 +68,7 @@
                                                   :organisaatio-service
                                                   :audit-logger])
 
+
                            :http-server (component/using
                                           (http/map->HttpServer {:config config})
                                           (cond-> [:db
@@ -70,6 +78,7 @@
                                                    :auth-routes-source]
                                                   it-profile?
                                                   (conj :mock-dispatcher)))]
+
         production-system [:organisaatio-service-authenticating-client (authenticating-client/map->CasAuthenticatingClient {:service :organisaatio-service
                                                                                                                             :config  config})
 

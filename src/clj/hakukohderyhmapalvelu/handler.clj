@@ -34,7 +34,9 @@
             [schema.core :as s]
             [selmer.parser :as selmer]
             [taoensso.timbre :as log]
-            [muuntaja.core :as m])
+            [muuntaja.core :as m]
+            [clj-time.core :as t]
+            [clj-time.format :as f])
   (:import [javax.sql DataSource]))
 
 
@@ -88,6 +90,18 @@
    session-client/wrap-session-client-headers
    (session-timeout/create-wrap-absolute-session-timeout config)])
 
+(def datetime-format "yyyy-MM-dd'T'HH:mm:ss")
+(def datetime-parser (f/formatter datetime-format (t/default-time-zone)))
+
+(defn- parse-datetime
+  [datetime-str field-desc default]
+  (if datetime-str
+    (try (f/parse datetime-parser datetime-str)
+         (catch java.lang.IllegalArgumentException _
+           (response/bad-request!
+             {:msg (str "Illegal " field-desc " '" datetime-str "', allowed format: '" datetime-format "'")})))
+    default))
+
 (defn- integration-test-routes [{:keys [mock-dispatcher config]}]
   (when (c/integration-environment? config)
     ["/mock"
@@ -103,7 +117,8 @@
                          (.reset-mocks mock-dispatcher)
                          (response/ok {}))}}]]))
 
-(defn- routes [{:keys [health-checker config db auth-routes-source hakukohderyhma-service] :as args}]
+(defn- routes [{:keys [health-checker config db auth-routes-source hakukohderyhma-service]
+                :as   args}]
   (let [auth (auth-middleware config db)]
     [["/"
       {:get {:no-doc  true
@@ -142,6 +157,24 @@
                           (-> (health-check/check-health health-checker)
                               response/ok
                               (response/content-type "text/html")))}}]
+       ["/siirtotiedosto"
+        {:get {:middleware auth
+               :tags       ["Siirtotiedosto"]
+               :summary    "Tallentaa annetulla aikavälillä luodut tai muokatut hakukohderyhmät siirtotiedostoon"
+               :responses  {200 {:body schema/SiirtotiedostoResponse}
+                            400 {:body s/Str}}
+               :parameters {:query {(s/optional-key :start-datetime) (s/maybe s/Str)
+                                    (s/optional-key :end-datetime)   (s/maybe s/Str)}}
+               :handler    (fn [{session :session {{start-datetime :start-datetime
+                                                    end-datetime   :end-datetime} :query} :parameters}]
+                             (let [start (parse-datetime start-datetime "startDatetime" (t/epoch))
+                                   end (parse-datetime end-datetime "endDatetime" (t/now))
+                                   max-kohderyhmacount-in-file (-> config
+                                                                   :siirtotiedosto
+                                                                   :max-kohderyhmacount-in-file)]
+                               (response/ok
+                                 (hakukohderyhma/create-siirtotiedostot
+                                   hakukohderyhma-service session start end max-kohderyhmacount-in-file))))}}]
        ["/hakukohderyhma"
         [""
          {:post {:middleware auth
@@ -193,7 +226,7 @@
            :get {:middleware auth
                  :tags       ["Hakukohderyhmä"]
                  :summary    ["Hakee hakukohderyhmän tiedot"]
-                 :responses {200 {:body [s/Str]}}
+                 :responses  {200 {:body [s/Str]}}
                  :parameters {:path {:oid s/Str}}
                  :handler    (fn [{{{oid :oid} :path} :parameters}]
                                (response/ok (hakukohderyhma/get-hakukohde-oids-for-hakukohderyhma-oid
@@ -214,15 +247,18 @@
                  :summary    ["Hakee hakukohderyhmän asetukset"]
                  :responses  {200 {:body schema/HakukohderyhmaSettings}}
                  :parameters {:path {:oid s/Str}}
-                 :handler    (fn [{session :session {{oid :oid} :path}  :parameters}]
+                 :handler    (fn [{session :session {{oid :oid} :path} :parameters}]
                                (response/ok (hakukohderyhma/get-settings hakukohderyhma-service session oid)))}
            :put {:middleware auth
-                  :tags       ["Hakukohderyhmä", "Asetukset"]
-                  :summary    ["Asettaa hakukohderyhmän asetukset"]
-                  :responses  {200 {:body schema/HakukohderyhmaSettings}}
-                  :parameters {:path {:oid s/Str} :body schema/HakukohderyhmaSettings}
-                  :handler    (fn [{session :session {settings :body {oid :oid} :path}  :parameters}]
-                                (response/ok (hakukohderyhma/insert-or-update-settings hakukohderyhma-service session oid settings)))}}]]]
+                 :tags       ["Hakukohderyhmä", "Asetukset"]
+                 :summary    ["Asettaa hakukohderyhmän asetukset"]
+                 :responses  {200 {:body schema/HakukohderyhmaSettings}}
+                 :parameters {:path {:oid s/Str} :body schema/HakukohderyhmaSettings}
+                 :handler    (fn [{session :session {settings :body {oid :oid} :path} :parameters}]
+                               (response/ok (hakukohderyhma/insert-or-update-settings hakukohderyhma-service session oid settings)))}}]]]
+
+
+
        ["/hakukohde/:oid/hakukohderyhmat"
         {:get {:middleware auth
                :tags       ["Hakukohde"]

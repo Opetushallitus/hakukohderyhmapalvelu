@@ -5,8 +5,10 @@
             [hakukohderyhmapalvelu.organisaatio.organisaatio-protocol :as organisaatio]
             [hakukohderyhmapalvelu.ataru.ataru-protocol :as ataru]
             [hakukohderyhmapalvelu.kouta.kouta-protocol :as kouta]
+            [hakukohderyhmapalvelu.siirtotiedosto.siirtotiedosto-protocol :as siirtotiedosto]
             [clojure.data :refer [diff]]
-            [hakukohderyhmapalvelu.api-schemas :as api-schemas]))
+            [hakukohderyhmapalvelu.api-schemas :as api-schemas])
+  (:import java.util.UUID))
 
 (def hakukohderyhmapalvelu-ryhmatyyppi "ryhmatyypit_6#1")
 (def default-hakukohderyhma {:tyypit       ["Ryhma"]
@@ -33,37 +35,79 @@
 
 (defn- apply-default-settings-if-missing
   [hakukohderyhma settings]
-    (if-let [matching-settings (first (filter #(= (:hakukohderyhma-oid %) (:oid hakukohderyhma)) settings))]
-      (assoc hakukohderyhma :settings (dissoc matching-settings :hakukohderyhma-oid))
-      (assoc hakukohderyhma :settings hakukohderyhma-queries/initial-settings))
+  (if-let [matching-settings (first (filter #(= (:hakukohderyhma-oid %) (:oid hakukohderyhma)) settings))]
+    (assoc hakukohderyhma :settings (dissoc matching-settings :hakukohderyhma-oid))
+    (assoc hakukohderyhma :settings hakukohderyhma-queries/initial-settings))
   )
 
 ;Auditloggerin kentillä on maksimipituus, kts. fi.vm.sade.auditlog.audit.
 ;Jaetaan tarvittaessa oidit useammalle logiriville.
 (defn- logPartitionedOidChanges [audit-logger session hakukohderyhma-oid old-oids new-oids]
-        (let [[removed-oids added-oids _] (diff (set old-oids) (set new-oids))
-              removed-parts (partition 80 80 nil removed-oids)
-              added-parts (partition 80 80 nil added-oids)
-              user (audit/->user session)
-              target (audit/->target {:oid hakukohderyhma-oid})]
-          (doseq [added-part added-parts]
-            (when (not-empty added-part)
-              (let [changes (audit/->buildChanges added-part true)]
-                (audit/log audit-logger
-                           user
-                           hakukohderyhma-hakukohteet-edit
-                           target
-                           changes))))
-          (doseq [removed-part removed-parts]
-            (when (not-empty removed-part)
-              (let [changes (audit/->buildChanges removed-part false)]
-                (audit/log audit-logger
-                           user
-                           hakukohderyhma-hakukohteet-edit
-                           target
-                           changes))))))
+  (let [[removed-oids added-oids _] (diff (set old-oids) (set new-oids))
+        removed-parts (partition 80 80 nil removed-oids)
+        added-parts (partition 80 80 nil added-oids)
+        user (audit/->user session)
+        target (audit/->target {:oid hakukohderyhma-oid})]
+    (doseq [added-part added-parts]
+      (when (not-empty added-part)
+        (let [changes (audit/->buildChanges added-part true)]
+          (audit/log audit-logger
+                     user
+                     hakukohderyhma-hakukohteet-edit
+                     target
+                     changes))))
+    (doseq [removed-part removed-parts]
+      (when (not-empty removed-part)
+        (let [changes (audit/->buildChanges removed-part false)]
+          (audit/log audit-logger
+                     user
+                     hakukohderyhma-hakukohteet-edit
+                     target
+                     changes))))))
 
-(defrecord HakukohderyhmaService [audit-logger organisaatio-service kouta-service ataru-service db]
+(defn- assoc-if-exists
+  ([dest source key]
+   (assoc-if-exists dest source key identity))
+  ([dest source key modifier]
+   (let [val (get source key)]
+     (if (nil? val)
+       dest
+       (assoc dest key (modifier val))))))
+
+(defn- get-hakukohderyhma-oids-by-timerange
+  [db start-datetime end-datetime]
+  (hakukohderyhma-queries/find-new-or-changed-hakukohderyhma-oids-by-timerange db start-datetime end-datetime))
+
+(defn resolve-last-modified
+  [raw]
+  (let [datetimes-sorted (sort (filter #(not (nil? %)) [(:ryhma-created-at raw)
+                                                        (:setting-created-at raw)
+                                                        (:setting-updated-at raw)]))
+        latest (last datetimes-sorted)]
+    (if latest
+      (str latest)
+      "")))
+
+(defn- list-hakukohteet-and-settings
+  [db hakukohderyhma-oids]
+  (let [hakukohderyhmat-raw (hakukohderyhma-queries/list-hakukohteet-and-settings db hakukohderyhma-oids)
+        create-object (fn [raw] (-> {}
+                                    (assoc :hakukohderyhma-oid (:hakukohderyhma-oid raw))
+                                    (assoc :hakukohde-oids (vec (:hakukohde-oids raw)))
+                                    (assoc :last-modified (resolve-last-modified raw))
+                                    (assoc :settings (-> {}
+                                                         (assoc-if-exists raw :rajaava)
+                                                         (assoc-if-exists raw :max-hakukohteet)
+                                                         (assoc-if-exists raw :yo-amm-autom-hakukelpoisuus)
+                                                         (assoc-if-exists
+                                                           raw
+                                                           :jos-ylioppilastutkinto-ei-muita-pohjakoulutusliitepyyntoja)
+                                                         (assoc-if-exists raw :priorisoiva)
+                                                         (assoc-if-exists raw :prioriteettijarjestys vec)))))
+        ryhma-objects (map create-object hakukohderyhmat-raw)]
+    ryhma-objects))
+
+(defrecord HakukohderyhmaService [audit-logger organisaatio-service kouta-service ataru-service siirtotiedosto-service db]
   hakukohderyhma-protocol/HakukohderyhmaServiceProtocol
   (find-hakukohderyhmat-by-hakukohteet-oids [_ session hakukohde-oids include-empty]
     (if-not (empty? hakukohde-oids)
@@ -169,8 +213,8 @@
   (get-settings
     [_ _ hakukohderyhma-oid]
     (-> (hakukohderyhma-queries/find-settings-by-hakukohderyhma-oids db [hakukohderyhma-oid])
-         (first)
-         (dissoc :hakukohderyhma-oid)))
+        (first)
+        (dissoc :hakukohderyhma-oid)))
 
   (get-hakukohteet-for-hakukohderyhma-oid [_ session hakukohderyhma-oid]
     (let [user-organisaatiot (session-organizations session)
@@ -188,4 +232,18 @@
   (get-hakukohderyhmat-by-hakukohteet [_ _ hakukohde-oids]
     (if-not (empty? hakukohde-oids)
       (hakukohderyhma-queries/get-hakukohderyhmat-by-hakukohteet db hakukohde-oids)
-      [])))
+      []))
+
+  (create-siirtotiedostot [_ _ start-datetime end-datetime max-kohderyhmacount-in-file]
+    (let [all-oids (get-hakukohderyhma-oids-by-timerange db start-datetime end-datetime)
+          execution-id (str (UUID/randomUUID))
+          partitions (partition-all max-kohderyhmacount-in-file all-oids)
+          create-siirtotiedosto (fn [oid-chunk sub-exec-id] (->> oid-chunk
+                                                                 (list-hakukohteet-and-settings db)
+                                                                 (siirtotiedosto/create-siirtotiedosto
+                                                                   siirtotiedosto-service execution-id sub-exec-id)))
+          partition-count (count partitions)
+          id-range (if (> partition-count 1) (range 1 (+ 1 partition-count)) [1])]
+      {:keys    (map #(create-siirtotiedosto %1 %2) partitions id-range)
+       :count   (count all-oids)
+       :success true})))
