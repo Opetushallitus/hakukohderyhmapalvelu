@@ -127,7 +127,7 @@
     <dependency>
       <groupId>org.clojure</groupId>
       <artifactId>clojurescript</artifactId>
-      <version>1.10.773</version>
+      <version>1.11.50</version>
       <exclusions>
         <exclusion>
           <artifactId>closure-compiler-unshaded</artifactId>
@@ -276,12 +276,12 @@
     <dependency>
       <groupId>com.fasterxml.jackson.core</groupId>
       <artifactId>jackson-core</artifactId>
-      <version>2.12.1</version>
+      <version>2.15.0</version>
     </dependency>
     <dependency>
       <groupId>com.fasterxml.jackson.core</groupId>
       <artifactId>jackson-databind</artifactId>
-      <version>2.12.1</version>
+      <version>2.15.0</version>
     </dependency>
     <dependency>
       <groupId>ring</groupId>
