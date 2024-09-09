@@ -19,6 +19,7 @@
             [hakukohderyhmapalvelu.config :as c]
             [hakukohderyhmapalvelu.exception :as exception]
             [hakukohderyhmapalvelu.hakukohderyhma.hakukohderyhma-service-protocol :as hakukohderyhma]
+            [hakukohderyhmapalvelu.siirtotiedosto.siirtotiedosto-protocol :as siirtotiedosto]
             [hakukohderyhmapalvelu.health-check :as health-check]
             [hakukohderyhmapalvelu.oph-url-properties :as oph-urls]
             [hakukohderyhmapalvelu.schemas.class-pred :as p]
@@ -117,7 +118,7 @@
                          (.reset-mocks mock-dispatcher)
                          (response/ok {}))}}]]))
 
-(defn- routes [{:keys [health-checker config db auth-routes-source hakukohderyhma-service]
+(defn- routes [{:keys [health-checker config db auth-routes-source hakukohderyhma-service siirtotiedosto-service]
                 :as   args}]
   (let [auth (auth-middleware config db)]
     [["/"
@@ -165,16 +166,16 @@
                             400 {:body s/Str}}
                :parameters {:query {(s/optional-key :start-datetime) (s/maybe s/Str)
                                     (s/optional-key :end-datetime)   (s/maybe s/Str)}}
-               :handler    (fn [{session :session {{start-datetime :start-datetime
-                                                    end-datetime   :end-datetime} :query} :parameters}]
-                             (let [start (parse-datetime start-datetime "startDatetime" (t/epoch))
-                                   end (parse-datetime end-datetime "endDatetime" (t/now))
-                                   max-kohderyhmacount-in-file (-> config
-                                                                   :siirtotiedosto
-                                                                   :max-kohderyhmacount-in-file)]
-                               (response/ok
-                                 (hakukohderyhma/create-siirtotiedostot
-                                   hakukohderyhma-service session start end max-kohderyhmacount-in-file))))}}]
+               :handler    (fn [{session :session {{window-start :start-datetime
+                                                    window-end   :end-datetime} :query} :parameters}]
+                             (if (:superuser session)
+                               (let [start (parse-datetime window-start "startDatetime" (t/epoch))
+                                     end (parse-datetime window-end "endDatetime" (t/now))]
+                                 (response/ok
+                                   (siirtotiedosto/create-siirtotiedostot-by-params
+                                     siirtotiedosto-service session {:window-start start
+                                                                     :window-end end})))
+                               (response/forbidden! "Vain rekisterinpitäjille")))}}]
        ["/hakukohderyhma"
         [""
          {:post {:middleware auth

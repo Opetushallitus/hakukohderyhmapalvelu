@@ -29,7 +29,7 @@ run-all-tests() {
 }
 
 create-uberjar() {
-  lein with-profile +prod uberjar
+  lein with-profile +prod:ovara uberjar
 }
 
 run-mocked-hakukohderyhmapalvelu() {

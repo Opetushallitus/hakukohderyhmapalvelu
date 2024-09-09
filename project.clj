@@ -89,14 +89,24 @@
                             [reloaded.repl "0.2.4"]]
              :source-paths ["dev/clj" "dev/cljs"]}
 
-   :prod    {:dependencies [[day8.re-frame/tracing-stubs "0.6.0"]]}
+   :prod    {:dependencies [[day8.re-frame/tracing-stubs "0.6.0"]]
+             :aot          [hakukohderyhmapalvelu.core]
+             :uberjar-name "hakukohderyhmapalvelu.jar"}
 
    :uberjar {:source-paths ["env/prod/clj"]
              :dependencies [[day8.re-frame/tracing-stubs "0.6.0"]]
              :omit-source  false
-             :aot          [hakukohderyhmapalvelu.core]
-             :uberjar-name "hakukohderyhmapalvelu.jar"
-             :prep-tasks   ["compile" ["frontend:prod"]]}}
+             :prep-tasks   ["compile" ["frontend:prod"]]}
+
+   ;:service-uberjar {:main hakukohderyhmapalvelu.core}
+
+   :ovara {:main hakukohderyhmapalvelu.siirtotiedosto.ajastus.siirtotiedosto-app
+           :aot  [hakukohderyhmapalvelu.siirtotiedosto.ajastus.siirtotiedosto-app]
+           :uberjar-name "ovara-hakukohderyhmapalvelu.jar"
+           :env            {:config "src/clj/hakukohderyhmapalvelu/config.edn"}}
+   }
+
+  ;lein do clean, with-profile service-uberjar:ovara uberjar
 
   :repositories [["releases" {:url           "https://artifactory.opintopolku.fi/artifactory/oph-sade-release-local"
                               :sign-releases false

@@ -257,10 +257,10 @@
                   :setting-created-at latest
                   :ryhma-created-at oldest}]
     (testing "viimeisimmän aikaleiman haku"
-      (is (= (str latest) (hakukohderyhmapalvelu.hakukohderyhma.hakukohderyhma-service/resolve-last-modified db-row))))
+      (is (= (str latest) (hakukohderyhmapalvelu.siirtotiedosto.siirtotiedosto-service/resolve-last-modified db-row))))
     (testing "nil-arvoja ei huomioida"
-      (is (= (str second) (hakukohderyhmapalvelu.hakukohderyhma.hakukohderyhma-service/resolve-last-modified
+      (is (= (str second) (hakukohderyhmapalvelu.siirtotiedosto.siirtotiedosto-service/resolve-last-modified
                       (assoc db-row :setting-created-at nil)))))
     (testing "palautetaan nil jos rivillä ei yhtään arvoa"
-      (is (= "" (hakukohderyhmapalvelu.hakukohderyhma.hakukohderyhma-service/resolve-last-modified
+      (is (= "" (hakukohderyhmapalvelu.siirtotiedosto.siirtotiedosto-service/resolve-last-modified
                       (assoc db-row :setting-updated-at nil :setting-created-at nil :ryhma-created-at nil)))))))
