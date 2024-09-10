@@ -143,8 +143,7 @@
     (apply component/system-map system)))
 
 (defn ovara-hakukohderyhmapalvelu-system [config]
-  (let [it-profile?       (c/integration-environment? config)
-        base-system       [:audit-logger (audit-logger/map->AuditLogger {:config config})
+  (let [base-system       [:audit-logger (audit-logger/map->AuditLogger {:config config})
 
                            :config config
 
@@ -158,22 +157,5 @@
                                                      (siirtotiedosto-service/map->SiirtotiedostoService
                                                        {:config config})
                                                      [:db
-                                                      :migrations])
-
-                           ;:hakukohderyhma-service (component/using
-                           ;                          (hakukohderyhma-service/map->HakukohderyhmaService {})
-                           ;                          [:audit-logger
-                           ;                           :organisaatio-service
-                           ;                           :kouta-service
-                           ;                           :ataru-service
-                           ;                           :db
-                           ;                           :config])
-                           ]
-
-        production-system []
-        mock-system       []
-        system            (into base-system ;fixme, onko tässä järkeä ovaran tapauksessa
-                                (if it-profile?
-                                  mock-system
-                                  production-system))]
-    (apply component/system-map system)))
+                                                      :migrations])]]
+    (apply component/system-map base-system)))

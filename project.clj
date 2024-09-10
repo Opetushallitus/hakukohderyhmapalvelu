@@ -60,6 +60,7 @@
                                     ".shadow-cljs"
                                     ".ts-out"]
 
+  :auto-clean false
 
   :shell {:commands {"open" {:windows ["cmd" "/c" "start"]
                              :macosx  "open"

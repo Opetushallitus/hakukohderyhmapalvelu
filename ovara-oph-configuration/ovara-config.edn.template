@@ -1,0 +1,9 @@
+{:db                   {:username      "{{ hakukohderyhmapalvelu_db_username | default('app') }}"
+                        :password      "{{ hakukohderyhmapalvelu_db_app_password }}"
+                        :database-name "{{ hakukohderyhmapalvelu_db_name | default('hakukohderyhmapalvelu') }}"
+                        :host          "{{ hakukohderyhmapalvelu_db_host }}"
+                        :port          {{ hakukohderyhmapalvelu_db_port | default('5432') }}}
+ :siirtotiedosto       {:aws-region "{{ aws_region }}"
+                        :s3-bucket "{{ ovara_siirtotiedosto_s3_bucket }}"
+                        :s3-target-role-arn "{{ ovara_siirtotiedosto_s3_target_role_arn }}"
+                        :max-kohderyhmacount-in-file {{ hakukohderyhmapalvelu_max_hakukohderyhmacount_in_file }}}}
