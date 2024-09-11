@@ -90,6 +90,9 @@ WITH hakukohteet AS (
     SELECT hakukohderyhma_oid, ARRAY_REMOVE(ARRAY_AGG(hakukohde_oid), NULL) AS hakukohde_oids,
            MAX(created_at) AS created_at
     FROM hakukohderyhma GROUP BY hakukohderyhma_oid
+    UNION
+    SELECT hakukohderyhma_oid, '{}' as hakukohde_oids, created_at FROM hakukohderyhma_settings hs
+    WHERE NOT EXISTS(SELECT 1 FROM hakukohderyhma h WHERE hs.hakukohderyhma_oid = h.hakukohderyhma_oid)
 )
 SELECT h.hakukohderyhma_oid AS "hakukohderyhma-oid",
        h.hakukohde_oids AS "hakukohde-oids",
