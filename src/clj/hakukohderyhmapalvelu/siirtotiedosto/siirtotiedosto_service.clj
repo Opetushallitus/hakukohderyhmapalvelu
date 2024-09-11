@@ -117,7 +117,7 @@
                                                                       this execution-id sub-exec-id)))
           partition-count (count partitions)
           id-range (if (> partition-count 1) (range 1 (+ 1 partition-count)) [1])]
-      {:keys    (map #(create-siirtotiedosto-fn %1 %2) partitions id-range)
+      {:keys    (doall (map #(create-siirtotiedosto-fn %1 %2) partitions id-range))
        :count   (count all-oids)
        :info    {:hakukohderyhmat (count all-oids)}
        :success true}))
