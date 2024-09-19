@@ -99,15 +99,11 @@
              :omit-source  false
              :prep-tasks   ["compile" ["frontend:prod"]]}
 
-   ;:service-uberjar {:main hakukohderyhmapalvelu.core}
-
    :ovara {:main hakukohderyhmapalvelu.siirtotiedosto.ajastus.siirtotiedosto-app
            :aot  [hakukohderyhmapalvelu.siirtotiedosto.ajastus.siirtotiedosto-app]
            :uberjar-name "ovara-hakukohderyhmapalvelu.jar"
            :env            {:config "src/clj/hakukohderyhmapalvelu/config.edn"}}
    }
-
-  ;lein do clean, with-profile service-uberjar:ovara uberjar
 
   :repositories [["releases" {:url           "https://artifactory.opintopolku.fi/artifactory/oph-sade-release-local"
                               :sign-releases false
