@@ -23,6 +23,8 @@
   (let [it-profile?       (c/integration-environment? config)
         base-system       [:audit-logger (audit-logger/map->AuditLogger {:config config})
 
+                           :config config
+
                            :db (db/map->DbPool {:config config})
 
                            :migrations (component/using
@@ -44,7 +46,7 @@
                            :siirtotiedosto-service (component/using
                                                      (siirtotiedosto-service/map->SiirtotiedostoService
                                                        {:config config})
-                                                     [])
+                                                     [:db])
 
                            :hakukohderyhma-service (component/using
                                                     (hakukohderyhma-service/map->HakukohderyhmaService {})
@@ -53,7 +55,8 @@
                                                      :kouta-service
                                                      :ataru-service
                                                      :siirtotiedosto-service
-                                                     :db])
+                                                     :db
+                                                     :config])
 
                            :health-checker (component/using
                                              (health-check/map->DbHealthChecker {})
@@ -75,6 +78,7 @@
                                                    :migrations
                                                    :health-checker
                                                    :hakukohderyhma-service
+                                                   :siirtotiedosto-service
                                                    :auth-routes-source]
                                                   it-profile?
                                                   (conj :mock-dispatcher)))]
@@ -137,3 +141,21 @@
                                   mock-system
                                   production-system))]
     (apply component/system-map system)))
+
+(defn ovara-hakukohderyhmapalvelu-system [config]
+  (let [base-system       [:audit-logger (audit-logger/map->AuditLogger {:config config})
+
+                           :config config
+
+                           :db (db/map->DbPool {:config config})
+
+                           :migrations (component/using
+                                         (migrations/map->Migrations {})
+                                         [:db])
+
+                           :siirtotiedosto-service (component/using
+                                                     (siirtotiedosto-service/map->SiirtotiedostoService
+                                                       {:config config})
+                                                     [:db
+                                                      :migrations])]]
+    (apply component/system-map base-system)))

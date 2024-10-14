@@ -56,7 +56,6 @@ jobs:
         run: |
           npm ci
           ./bin/cibuild.sh run-all-tests-and-create-uberjar
-          lein with-profile prod uberjar  
 
       - name: Archive test results
         if: success() || failure()
@@ -86,5 +85,16 @@ jobs:
       base-image: baseimage-fatjar-openjdk11:master
       configfolder: oph-configuration
       jarfile: hakukohderyhmapalvelu
+    secrets:
+      AWS_UTILITY_ROLE_ARN: ${{ secrets.AWS_OPH_UTILITY_ROLE_ARN }}
+
+  deploy-ovara-container:
+    needs: [ build ]
+    uses: Opetushallitus/.github/.github/workflows/push-scan-java-ecr.yml@main
+    with:
+      application: ovara-hakukohderyhmapalvelu
+      base-image: baseimage-fatjar-openjdk11:OK-568b
+      configfolder: ovara-oph-configuration
+      jarfile: ovara-hakukohderyhmapalvelu
     secrets:
       AWS_UTILITY_ROLE_ARN: ${{ secrets.AWS_OPH_UTILITY_ROLE_ARN }}
