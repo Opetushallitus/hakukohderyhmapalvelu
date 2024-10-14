@@ -93,7 +93,7 @@ jobs:
     uses: Opetushallitus/.github/.github/workflows/push-scan-java-ecr.yml@main
     with:
       application: ovara-hakukohderyhmapalvelu
-      base-image: baseimage-fatjar-openjdk11:OK-568b
+      base-image: baseimage-fatjar-openjdk11:master
       configfolder: ovara-oph-configuration
       jarfile: ovara-hakukohderyhmapalvelu
     secrets:
