@@ -11,7 +11,7 @@
     <url>https://github.com/Opetushallitus/hakukohderyhmapalvelu</url>
     <connection>scm:git:git://github.com/Opetushallitus/hakukohderyhmapalvelu.git</connection>
     <developerConnection>scm:git:ssh://git@github.com/Opetushallitus/hakukohderyhmapalvelu.git</developerConnection>
-    <tag>dc6fbf406a42c57ce2a70418ce568b51577c1a37</tag>
+    <tag>a3bab9b8f756af1271c9cddd3cd21a1ec5322701</tag>
   </scm>
   <build>
     <sourceDirectory>src/clj</sourceDirectory>
@@ -196,7 +196,7 @@
     <dependency>
       <groupId>fi.vm.sade.java-utils</groupId>
       <artifactId>java-cas</artifactId>
-      <version>1.1.0-SNAPSHOT</version>
+      <version>1.2.1-SNAPSHOT</version>
     </dependency>
     <dependency>
       <groupId>fi.vm.sade.java-utils</groupId>
