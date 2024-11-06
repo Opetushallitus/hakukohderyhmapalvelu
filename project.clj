@@ -1,4 +1,5 @@
 (defproject hakukohderyhmapalvelu "0.1.0-SNAPSHOT"
+  :managed-dependencies [[io.undertow/undertow-core "2.2.24.Final"]]
   :dependencies [[org.clojure/clojure "1.10.1"]
                  [org.clojure/clojurescript "1.10.773"
                   :exclusions [com.google.javascript/closure-compiler-unshaded
@@ -26,7 +27,7 @@
                  [org.clojure/core.async "1.3.610"]
                  [org.clojure/java.jdbc "0.7.11"]
                  [org.clojure/core.match "1.0.0"]
-                 [org.postgresql/postgresql "42.2.17"]
+                 [org.postgresql/postgresql "42.7.4"]
                  [com.layerware/hugsql "0.5.1"]
                  [re-frame "1.2.0"]
                  [reagent "1.0.0"]
