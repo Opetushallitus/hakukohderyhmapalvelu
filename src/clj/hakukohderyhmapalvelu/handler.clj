@@ -82,6 +82,7 @@
    :health-checker                   (p/extends-class-pred health-check/HealthChecker)
    :auth-routes-source               (p/extends-class-pred auth-routes/AuthRoutesSource)
    :hakukohderyhma-service           s/Any
+   :siirtotiedosto-service           s/Any
    (s/optional-key :mock-dispatcher) (p/extends-class-pred mock-dispatcher-protocol/MockDispatcherProtocol)})
 
 (defn auth-middleware [config db]
