@@ -105,4 +105,5 @@
 (s/defschema SiirtotiedostoResponse
   {:keys [s/Str]
    :count s/Int
+   :info s/Any
    :success s/Bool})
