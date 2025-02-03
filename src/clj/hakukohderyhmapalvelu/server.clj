@@ -18,6 +18,7 @@
                        db
                        health-checker
                        hakukohderyhma-service
+                       siirtotiedosto-service
                        mock-dispatcher
                        auth-routes-source]
   component/Lifecycle
@@ -32,6 +33,7 @@
                                              :db                     db
                                              :health-checker         health-checker
                                              :hakukohderyhma-service hakukohderyhma-service
+                                             :siirtotiedosto-service siirtotiedosto-service
                                              :auth-routes-source     auth-routes-source}
                                             (some? mock-dispatcher)
                                             (assoc :mock-dispatcher mock-dispatcher)))
