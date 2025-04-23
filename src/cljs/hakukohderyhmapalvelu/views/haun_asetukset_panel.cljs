@@ -376,6 +376,45 @@
                           :label-id  label-id
                           :value parsed-orig-value}]}]]))
 
+(defn- liitteiden-muokkauksen-hakemuskohtainen-takaraja [{:keys [haku-oid]}]
+  (let [checkbox-haun-asetus-key :haun-asetukset/liitteiden-muokkauksen-hakemuskohtainen-takaraja-kaytossa
+        id-prefix                (get-id-prefix checkbox-haun-asetus-key)
+        enabled?                 @(re-frame/subscribe [:haun-asetukset/haun-asetus haku-oid checkbox-haun-asetus-key])
+        text-input-id            (str id-prefix "-input")
+        text-input-label-id      (str id-prefix "-input-label")
+        text-input-label         @(re-frame/subscribe [:translation :haun-asetukset/liitteiden-muokkauksen-hakemuskohtainen-takaraja-paivaa])
+        disabled?                @(re-frame/subscribe [:haun-asetukset/haun-asetukset-disabled? haku-oid])
+        value                    @(re-frame/subscribe [:haun-asetukset/haun-asetus haku-oid
+                                                       :haun-asetukset/liitteiden-muokkauksen-hakemuskohtainen-takaraja-paivaa])]
+    [:<>
+     [haun-asetukset-checkbox
+      {:haku-oid                haku-oid
+       :haun-asetus-key         checkbox-haun-asetus-key
+       :type                    :slider
+       :bold-left-label-margin? enabled?}]
+     (when enabled?
+       [:<>
+        [haun-asetukset-label
+         {:id                      text-input-label-id
+          :label                   text-input-label
+          :required?               true
+          :bold-left-label-margin? true}]
+        [haun-asetukset-input
+         {:input-component [i/input-number
+                            (merge {:input-id   text-input-id
+                                    :required?  true
+                                    :on-change  (fn [value]
+                                                  (re-frame/dispatch [:haun-asetukset/set-haun-asetus
+                                                                      haku-oid
+                                                                      :haun-asetukset/liitteiden-muokkauksen-hakemuskohtainen-takaraja-paivaa
+                                                                      value]))
+                                    :aria-label text-input-label
+                                    :min        1
+                                    :disabled?  disabled?
+                                    :cypressid  (str id-prefix "-input")}
+                                   (when value
+                                     {:value value}))]}]])]))
+
 (defn- liitteiden-muokkauksen-takaraja [{:keys [haku-oid]}]
   (let [id-prefix (get-id-prefix :haun-asetukset/liitteiden-muokkauksen-takaraja)
         label-id  (str id-prefix "-label")
@@ -575,9 +614,9 @@
      [haun-tiedot haku-oid header-id]
      [:div
       (stylefy/use-style
-        haun-asetukset-grid-styles
-        {:role            "form"
-         :aria-labelledby header-id})
+       haun-asetukset-grid-styles
+       {:role            "form"
+        :aria-labelledby header-id})
       [hakukohteiden-maara-rajoitettu
        {:haku-oid haku-oid}]
       [haun-asetukset-checkbox
@@ -609,6 +648,8 @@
         :required?               true
         :bold-left-label-margin? false}]
       [haun-asetukset-sijoittelu
+       {:haku-oid haku-oid}]
+      [liitteiden-muokkauksen-hakemuskohtainen-takaraja
        {:haku-oid haku-oid}]
       [liitteiden-muokkauksen-takaraja
        {:haku-oid haku-oid}]
