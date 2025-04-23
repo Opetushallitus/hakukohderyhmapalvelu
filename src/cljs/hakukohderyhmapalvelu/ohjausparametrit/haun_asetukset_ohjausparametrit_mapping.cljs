@@ -3,6 +3,12 @@
 
 (defn haun-asetus-key->ohjausparametri [haun-asetus-key]
   (case haun-asetus-key
+    :haun-asetukset/liitteiden-muokkauksen-hakemuskohtainen-takaraja-kaytossa
+    :liitteidenMuokkauksenHakemuskohtainenTakarajaKaytossa
+
+    :haun-asetukset/liitteiden-muokkauksen-hakemuskohtainen-takaraja-paivaa
+    :liitteidenMuokkauksenHakemuskohtainenTakarajaPaivaa
+
     :haun-asetukset/hakukohteiden-maara-rajoitettu
     :hakutoiveidenMaaraRajoitettu
 
@@ -74,6 +80,7 @@
 (defn- boolean-value? [haun-asetus-key _]
   (some #{haun-asetus-key}
         #{:haun-asetukset/hakukohteiden-maara-rajoitettu
+          :haun-asetukset/liitteiden-muokkauksen-hakemuskohtainen-takaraja-kaytossa
           :haun-asetukset/jarjestetyt-hakutoiveet
           :haun-asetukset/synteettiset-hakemukset
           :haun-asetukset/useita-hakemuksia
@@ -82,7 +89,8 @@
 (defn- int-value? [haun-asetus-key _]
   (some #{haun-asetus-key}
         #{:haun-asetukset/hakijakohtainen-paikan-vastaanottoaika
-          :haun-asetukset/liitteiden-muokkauksen-takaraja}))
+          :haun-asetukset/liitteiden-muokkauksen-takaraja
+          :haun-asetukset/liitteiden-muokkauksen-hakemuskohtainen-takaraja-paivaa}))
 
 (defn- >0-number-value? [haun-asetus-key value]
   (and (= haun-asetus-key :haun-asetukset/hakukohteiden-maara-rajoitus)
@@ -195,4 +203,8 @@
   (case haun-asetus-key
     :haun-asetukset/hakukohteiden-maara-rajoitettu
     [:haun-asetukset/hakukohteiden-maara-rajoitus]
+
+    :haun-asetukset/liitteiden-muokkauksen-hakemuskohtainen-takaraja-kaytossa
+    [:haun-asetukset/liitteiden-muokkauksen-hakemuskohtainen-takaraja-paivaa]
+
     []))
