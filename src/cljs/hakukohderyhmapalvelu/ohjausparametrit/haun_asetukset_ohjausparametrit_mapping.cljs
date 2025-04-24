@@ -89,11 +89,11 @@
 (defn- int-value? [haun-asetus-key _]
   (some #{haun-asetus-key}
         #{:haun-asetukset/hakijakohtainen-paikan-vastaanottoaika
-          :haun-asetukset/liitteiden-muokkauksen-takaraja
-          :haun-asetukset/liitteiden-muokkauksen-hakemuskohtainen-takaraja-paivaa}))
+          :haun-asetukset/liitteiden-muokkauksen-takaraja}))
 
 (defn- >0-number-value? [haun-asetus-key value]
-  (and (= haun-asetus-key :haun-asetukset/hakukohteiden-maara-rajoitus)
+  (and (or (= haun-asetus-key :haun-asetukset/hakukohteiden-maara-rajoitus)
+           (= haun-asetus-key :haun-asetukset/liitteiden-muokkauksen-hakemuskohtainen-takaraja-paivaa))
        (> (parse-int value) 0)))
 
 (defn- useita-hakemuksia? [haun-asetus-key _]
