@@ -151,6 +151,8 @@
    (s/optional-key :sijoittelu)                   s/Bool
    (s/optional-key :synteettisetHakemukset)       s/Bool
    (s/optional-key :synteettisetLomakeavain)      s/Str
+   (s/optional-key :liitteidenMuokkauksenHakemuskohtainenTakarajaKaytossa) s/Bool
+   (s/optional-key :liitteidenMuokkauksenHakemuskohtainenTakarajaPaivaa) s/Int
    (s/optional-key :__modified__)                 s/Int
    (s/optional-key :__modifiedBy__)               s/Str
    s/Any s/Any})

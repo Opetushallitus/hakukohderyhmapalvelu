@@ -33,7 +33,9 @@
                     :aikavali-loppu                                              {:fi "Aikavälin loppuhetki"}
                     :sijoittelu                                                  {:fi "Haussa käytetään sijoittelua"}
                     :valintatulosten-julkaiseminen-hakijoille                    {:fi "Valintatulosten julkaiseminen hakijoille (aikaväli)"}
-                    :liitteiden-muokkauksen-takaraja                             {:fi "Liitteiden muokkauksen takaraja"}
+                    :liitteiden-muokkauksen-takaraja                             {:fi "Liitteiden muokkauksen hakukohtainen takaraja (päivää)"}
+                    :liitteiden-muokkauksen-hakemuskohtainen-takaraja-kaytossa   {:fi "Liitteiden muokkauksen hakemuskohtainen takaraja"}
+                    :liitteiden-muokkauksen-hakemuskohtainen-takaraja-paivaa     {:fi "Liitteiden muokkauksen hakemuskohtainen takaraja (päivää)"}
                     :ilmoittautuminen-paattyy                                    {:fi "Ilmoittautuminen päättyy"}
                     :automaattinen-hakukelpoisuus-paattyy                        {:fi "Automaattinen hakukelpoisuus päättyy"}
                     :harkinnanvaraisen-valinnan-paatosten-tallennus-paattyy      {:fi "Harkinnanvaraisen valinnan päätösten tallennus päättyy"}
