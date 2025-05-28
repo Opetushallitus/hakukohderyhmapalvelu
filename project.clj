@@ -86,7 +86,6 @@
   {:dev
             {:dependencies [[binaryage/devtools "1.0.2"]
                             [clj-kondo "2020.10.10"]
-                            [day8.re-frame/re-frame-10x "0.7.0"]
                             [day8.re-frame/tracing "0.6.0"]
                             [reloaded.repl "0.2.4"]]
              :source-paths ["dev/clj" "dev/cljs"]}
