@@ -38,3 +38,6 @@
 
 (defn done []
   [material-icon "done" {}])
+
+(defn radio-button-checked []
+  [material-icon "radio_button_checked" {}])

@@ -9,7 +9,7 @@
 (def ^:private radio-styles
   (merge
    (layout/flex-row-styles "center" "center")
-   {:border-radius "5px"
+   {:border-radius "50%"
     :border-width  "1px"
     :border-style  "solid"
     :color         colors/white
@@ -90,11 +90,15 @@
 
 (s/defn radio-with-label
   [{:keys [checked?
+           name
+           value
            cypressid
            disabled?
            id
            label
            on-change]} :- {:id        s/Str
+                           :name      s/Str
+                           :value     s/Str
                            :checked?  s/Bool
                            :cypressid s/Str
                            :disabled? s/Bool
@@ -104,6 +108,8 @@
     [:div (stylefy/use-style radio-with-label-styles)
      [radio
       {:aria-labelledby label-id
+       :name            name
+       :value           value
        :checked?        checked?
        :cypressid       (str cypressid "-input")
        :disabled?       disabled?

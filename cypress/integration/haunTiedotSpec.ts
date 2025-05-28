@@ -33,25 +33,50 @@ describe('Hakukohderyhmäpalvelu - haun tiedot', () => {
               sv: 'Testansökan',
               en: 'Test application',
             },
+            hakutapaKoodiUri: 'hakutapa_01#1',
           },
-          { oid: '1.2.3.4.5.2', nimi: { fi: 'Testihaku vain suomeksi' } },
-          { oid: '1.2.3.4.5.3', nimi: { fi: 'Testihaku 3' } },
+          {
+            oid: '1.2.3.4.5.2',
+            nimi: { fi: 'Testihaku vain suomeksi' },
+            hakutapaKoodiUri: 'hakutapa_03#1',
+          },
+          {
+            oid: '1.2.3.4.5.3',
+            nimi: { fi: 'Testihaku 3' },
+            hakutapaKoodiUri: 'hakutapa_01#1',
+          },
         ]),
       )
     })
     it('Hakee listauksen hauista, vain voimassaolevat haut. Testaa, että all=false oletuksena', () => {
       cy.request('/hakukohderyhmapalvelu/api/haku').then(({ body }) =>
         expect(body).to.deep.equal([
-          { oid: '1.2.3.4.5.2', nimi: { fi: 'Testihaku vain suomeksi' } },
-          { oid: '1.2.3.4.5.3', nimi: { fi: 'Testihaku 3' } },
+          {
+            oid: '1.2.3.4.5.2',
+            nimi: { fi: 'Testihaku vain suomeksi' },
+            hakutapaKoodiUri: 'hakutapa_03#1',
+          },
+          {
+            oid: '1.2.3.4.5.3',
+            nimi: { fi: 'Testihaku 3' },
+            hakutapaKoodiUri: 'hakutapa_01#1',
+          },
         ]),
       )
     })
     it('Hakee listauksen hauista, vain voimassaolevat haut.', () => {
       cy.request('/hakukohderyhmapalvelu/api/haku?all=false').then(({ body }) =>
         expect(body).to.deep.equal([
-          { oid: '1.2.3.4.5.2', nimi: { fi: 'Testihaku vain suomeksi' } },
-          { oid: '1.2.3.4.5.3', nimi: { fi: 'Testihaku 3' } },
+          {
+            oid: '1.2.3.4.5.2',
+            nimi: { fi: 'Testihaku vain suomeksi' },
+            hakutapaKoodiUri: 'hakutapa_03#1',
+          },
+          {
+            oid: '1.2.3.4.5.3',
+            nimi: { fi: 'Testihaku 3' },
+            hakutapaKoodiUri: 'hakutapa_01#1',
+          },
         ]),
       )
     })

@@ -9,6 +9,12 @@
     :haun-asetukset/liitteiden-muokkauksen-hakemuskohtainen-takaraja-paivaa
     :liitteidenMuokkauksenHakemuskohtainenTakarajaPaivaa
 
+    :haun-asetukset/liitteiden-muokkauksen-hakemuskohtainen-takaraja-kellonaika
+    :liitteidenMuokkauksenHakemuskohtainenTakarajaKellonaika
+
+    :haun-asetukset/liitteiden-muokkauksen-hakukohtainen-takaraja-kellonaika
+    :liitteidenMuokkauksenHakukohtainenTakarajaKellonaika
+
     :haun-asetukset/hakukohteiden-maara-rajoitettu
     :hakutoiveidenMaaraRajoitettu
 
@@ -205,6 +211,15 @@
     [:haun-asetukset/hakukohteiden-maara-rajoitus]
 
     :haun-asetukset/liitteiden-muokkauksen-hakemuskohtainen-takaraja-kaytossa
-    [:haun-asetukset/liitteiden-muokkauksen-hakemuskohtainen-takaraja-paivaa]
+    [:haun-asetukset/liitteiden-muokkauksen-hakemuskohtainen-takaraja-paivaa
+     :haun-asetukset/liitteiden-muokkauksen-hakemuskohtainen-takaraja-kellonaika]
+
+    []))
+
+(defn clear-keys-on-some-value [haun-asetus-key]
+  (case haun-asetus-key
+    :haun-asetukset/liitteiden-muokkauksen-hakemuskohtainen-takaraja-kaytossa
+    [:haun-asetukset/liitteiden-muokkauksen-takaraja
+     :haun-asetukset/liitteiden-muokkauksen-hakukohtainen-takaraja-kellonaika]
 
     []))
