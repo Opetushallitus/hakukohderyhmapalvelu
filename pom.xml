@@ -133,7 +133,7 @@
     <dependency>
       <groupId>org.clojure</groupId>
       <artifactId>clojurescript</artifactId>
-      <version>1.10.773</version>
+      <version>1.11.132</version>
       <exclusions>
         <exclusion>
           <artifactId>closure-compiler-unshaded</artifactId>
