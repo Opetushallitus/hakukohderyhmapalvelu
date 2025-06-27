@@ -153,8 +153,8 @@
      [haun-asetukset-input
       {:input-component [checkbox-fn
                          {:id              checkbox-id
-                          :checked?        (or checked? false)
-                          :disabled?       (or disabled? additional-disabled? false)
+                          :checked?        checked?
+                          :disabled?       (or disabled? additional-disabled?)
                           :on-change       (fn []
                                              (re-frame/dispatch [:haun-asetukset/set-haun-asetus
                                                                  haku-oid
