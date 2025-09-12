@@ -52,7 +52,8 @@
   {:oid         s/Str
    :nimi        LocalizedString
    :is-selected s/Bool
-   :hakukohteet [Hakukohde]})
+   :hakukohteet [Hakukohde]
+   :hakutapaKoodiUri s/Str})
 
 (s/defschema LisarajainOption
   {:value s/Any
@@ -100,6 +101,7 @@
    (s/optional-key :hakulomaketyyppi)  s/Str
    (s/optional-key :hakulomakeAtaruId) s/Str
    :kohdejoukkoKoodiUri                KoodiUri
+   :hakutapaKoodiUri                   s/Str
    :hakuajat                           [Hakuaika]})
 
 (s/defschema Haut
@@ -151,6 +153,10 @@
    (s/optional-key :sijoittelu)                   s/Bool
    (s/optional-key :synteettisetHakemukset)       s/Bool
    (s/optional-key :synteettisetLomakeavain)      s/Str
+   (s/optional-key :liitteidenMuokkauksenHakemuskohtainenTakarajaKaytossa) s/Bool
+   (s/optional-key :liitteidenMuokkauksenHakemuskohtainenTakarajaPaivaa) s/Int
+   (s/optional-key :liitteidenMuokkauksenHakemuskohtainenTakarajaKellonaika) s/Str
+   (s/optional-key :liitteidenMuokkauksenHakukohtainenTakarajaKellonaika) s/Str
    (s/optional-key :__modified__)                 s/Int
    (s/optional-key :__modifiedBy__)               s/Str
    s/Any s/Any})

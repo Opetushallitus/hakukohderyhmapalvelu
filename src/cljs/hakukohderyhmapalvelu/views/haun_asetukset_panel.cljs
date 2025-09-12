@@ -1,5 +1,6 @@
 (ns hakukohderyhmapalvelu.views.haun-asetukset-panel
   (:require [hakukohderyhmapalvelu.components.common.checkbox :as c]
+            [hakukohderyhmapalvelu.components.common.radio :as r]
             [hakukohderyhmapalvelu.components.common.headings :as h]
             [hakukohderyhmapalvelu.components.common.input :as i]
             [hakukohderyhmapalvelu.components.common.label :as l]
@@ -11,6 +12,7 @@
             [hakukohderyhmapalvelu.styles.styles-colors :as colors]
             [hakukohderyhmapalvelu.styles.layout-styles :as layout]
             [hakukohderyhmapalvelu.urls :as urls]
+            [clojure.string :as string]
             [reagent.core :as reagent]
             [re-frame.core :as re-frame]
             [stylefy.core :as stylefy]
@@ -79,12 +81,20 @@
   {:color       colors/gray-lighten-1
    :padding-top "1em"})
 
+(def ^:private haun-asetukset-indented-styles
+  (merge
+   (layout/flex-column-styles "start" "start")
+   {:margin-left "49px"}))
+
 (defn- haun-asetukset-label-container [{:keys [component
-                                               bold-left-label-margin?]}]
+                                               bold-left-label-margin?
+                                               justify-content]}]
   [:div
    (cond-> (stylefy/use-style haun-asetukset-label-styles)
            bold-left-label-margin?
-           (merge {:style {:border-left (str "2px solid " colors/blue-lighten-1)}}))
+           (merge {:style {:border-left (str "2px solid " colors/blue-lighten-1)}})
+           justify-content
+           (merge {:style {:justify-content justify-content}}))
    component])
 
 (defn- tallenna-haun-asetukset-label [{:keys [id
@@ -104,14 +114,16 @@
                                      label
                                      for
                                      required?
-                                     bold-left-label-margin?]}]
+                                     bold-left-label-margin?
+                                     justify-content]}]
   [haun-asetukset-label-container
    {:component               [l/label
                               (cond-> {:id    id
                                        :label (str label (when required? " *"))}
                                       for
                                       (assoc :for for))]
-    :bold-left-label-margin? bold-left-label-margin?}])
+    :bold-left-label-margin? bold-left-label-margin?
+    :justify-content         justify-content}])
 
 (defn- haun-asetukset-input [{:keys [input-component]}]
   [:div
@@ -151,6 +163,33 @@
                                              (when (some? on-change) (on-change (not checked?))))
                           :aria-labelledby label-id
                           :cypressid       checkbox-id}]}]]))
+
+(defn- haun-asetukset-radio-button [{:keys [haku-oid
+                                            haun-asetus-key
+                                            label-key
+                                            value
+                                            on-change
+                                            disabled?]}]
+  (let [id-prefix      (get-id-prefix haun-asetus-key)
+        radio-id       (str id-prefix "-radio-" value)
+        selected-value @(re-frame/subscribe [:haun-asetukset/haun-asetus haku-oid haun-asetus-key])
+        label          @(re-frame/subscribe [:translation  label-key])]
+    [:<>
+     [haun-asetukset-input
+      {:input-component [r/radio-with-label
+                         {:id              radio-id
+                          :name            (str haun-asetus-key)
+                          :value           value
+                          :checked?        (= value (str selected-value))
+                          :disabled?       (or @(re-frame/subscribe [:haun-asetukset/haun-asetukset-disabled? haku-oid]) disabled?)
+                          :label           (or label "<no translation>")
+                          :on-change       (fn []
+                                             (re-frame/dispatch [:haun-asetukset/set-haun-asetus
+                                                                 haku-oid
+                                                                 haun-asetus-key
+                                                                 (= "true" value)])
+                                             (when (some? on-change) (on-change value)))
+                          :cypressid       radio-id}]}]]))
 
 (defn- hakukohteiden-maara-rajoitettu [{:keys [haku-oid]}]
   (let [checkbox-haun-asetus-key :haun-asetukset/hakukohteiden-maara-rajoitettu
@@ -376,32 +415,129 @@
                           :label-id  label-id
                           :value parsed-orig-value}]}]]))
 
-(defn- liitteiden-muokkauksen-takaraja [{:keys [haku-oid]}]
-  (let [id-prefix (get-id-prefix :haun-asetukset/liitteiden-muokkauksen-takaraja)
-        label-id  (str id-prefix "-label")
-        input-id  (str id-prefix "-input")
-        label     @(re-frame/subscribe [:translation :haun-asetukset/liitteiden-muokkauksen-takaraja])
-        disabled? @(re-frame/subscribe [:haun-asetukset/haun-asetukset-disabled? haku-oid])
-        value     @(re-frame/subscribe [:haun-asetukset/haun-asetus haku-oid :haun-asetukset/liitteiden-muokkauksen-takaraja])]
+(defn- liitteiden-muokkauksen-takaraja [{:keys [haku-oid]} yhteishaku?]
+  (let [id-prefix              (get-id-prefix :haun-asetukset/liitteiden-muokkauksen-takaraja)
+        group-id               (str id-prefix "-group")
+        label-id               (str id-prefix "-label")
+        input-id               (str id-prefix "-input")
+        group-label            @(re-frame/subscribe [:translation :haun-asetukset/liitteiden-muokkauksen-takaraja])
+        input-label            @(re-frame/subscribe [:translation :haun-asetukset/liitteiden-muokkauksen-takaraja-vuorokausina])
+        disabled?              @(re-frame/subscribe [:haun-asetukset/haun-asetukset-disabled? haku-oid])
+        default-kellonaika     "15:00"
+        default-paivaa         7
+        hakemuskohtainen-raja-kaytossa?
+        @(re-frame/subscribe [:haun-asetukset/haun-asetus haku-oid :haun-asetukset/liitteiden-muokkauksen-hakemuskohtainen-takaraja-kaytossa])
+        hakukohtainen-value    @(re-frame/subscribe [:haun-asetukset/haun-asetus haku-oid :haun-asetukset/liitteiden-muokkauksen-takaraja])
+        hakukohtainen-kellonaika-value
+        @(re-frame/subscribe [:haun-asetukset/haun-asetus haku-oid :haun-asetukset/liitteiden-muokkauksen-hakukohtainen-takaraja-kellonaika])
+        hakemuskohtainen-value @(re-frame/subscribe [:haun-asetukset/haun-asetus haku-oid :haun-asetukset/liitteiden-muokkauksen-hakemuskohtainen-takaraja-paivaa])
+        hakemuskohtainen-kellonaika-value
+        @(re-frame/subscribe [:haun-asetukset/haun-asetus haku-oid :haun-asetukset/liitteiden-muokkauksen-hakemuskohtainen-takaraja-kellonaika])]
     [:<>
      [haun-asetukset-label
-      {:id    label-id
-       :for   input-id
-       :label label}]
-     [haun-asetukset-input
-      {:input-component [i/input-number
-                         (merge {:input-id  input-id
-                                 :required? false
-                                 :on-change (fn [value]
-                                              (re-frame/dispatch [:haun-asetukset/set-haun-asetus
-                                                                  haku-oid
-                                                                  :haun-asetukset/liitteiden-muokkauksen-takaraja
-                                                                  value]))
-                                 :min       0
-                                 :disabled? disabled?
-                                 :cypressid input-id}
-                                (when value
-                                  {:value value}))]}]]))
+      {:id                      label-id
+       :bold-left-label-margin? (not yhteishaku?)
+       :required?               true
+       :label                   group-label
+       :justify-content         "start"}]
+     [:div
+      (stylefy/use-style {:margin-bottom "16px"}
+      {:role            "radiogroup"
+       :id              group-id
+       :aria-labelledby label-id})
+      [haun-asetukset-radio-button
+       {:haku-oid        haku-oid
+        :disabled?       yhteishaku?
+        :label-key       :haun-asetukset/liitteiden-muokkauksen-takaraja-hakukohtainen
+        :haun-asetus-key :haun-asetukset/liitteiden-muokkauksen-hakemuskohtainen-takaraja-kaytossa
+        :value           "false"}]
+      (when (not hakemuskohtainen-raja-kaytossa?)
+        (re-frame/dispatch [:haun-asetukset/set-haun-asetus
+                            haku-oid
+                            :haun-asetukset/liitteiden-muokkauksen-takaraja
+                            (str (or hakukohtainen-value default-paivaa))])
+        (re-frame/dispatch [:haun-asetukset/set-haun-asetus
+                            haku-oid
+                            :haun-asetukset/liitteiden-muokkauksen-hakukohtainen-takaraja-kellonaika
+                            (or hakukohtainen-kellonaika-value default-kellonaika)])
+        [:div
+         (stylefy/use-style haun-asetukset-indented-styles)
+         [l/label
+          {:for   input-id
+           :label (or input-label "<translation missing>")}]
+         [:div
+          (stylefy/use-style (merge layout/vertical-align-center-styles
+                                    {:margin-bottom "8px"}))
+          [i/input-number
+           {:input-id  input-id
+            :required? false
+            :on-change (fn [value]
+                         (re-frame/dispatch [:haun-asetukset/set-haun-asetus
+                                             haku-oid
+                                             :haun-asetukset/liitteiden-muokkauksen-takaraja
+                                             value]))
+            :min       0
+            :disabled? disabled?
+            :cypressid input-id
+            :value     (str (or hakukohtainen-value default-paivaa))}
+           {:max-width    "160px"
+            :margin-right "8px"}]
+          [i/input-time
+           {:id        "time"
+            :required? false
+            :disabled? disabled?
+            :on-change (fn [value]
+                         (re-frame/dispatch [:haun-asetukset/set-haun-asetus
+                                             haku-oid
+                                             :haun-asetukset/liitteiden-muokkauksen-hakukohtainen-takaraja-kellonaika
+                                             value]))
+            :value     (or hakukohtainen-kellonaika-value default-kellonaika)}]]])
+      [haun-asetukset-radio-button
+       {:haku-oid        haku-oid
+        :disabled?       yhteishaku?
+        :label-key       :haun-asetukset/liitteiden-muokkauksen-takaraja-hakemuskohtainen
+        :haun-asetus-key :haun-asetukset/liitteiden-muokkauksen-hakemuskohtainen-takaraja-kaytossa
+        :value           "true"}]
+      (when hakemuskohtainen-raja-kaytossa?
+        (re-frame/dispatch [:haun-asetukset/set-haun-asetus
+                            haku-oid
+                            :haun-asetukset/liitteiden-muokkauksen-hakemuskohtainen-takaraja-paivaa
+                            (str (or hakemuskohtainen-value default-paivaa))])
+        (re-frame/dispatch [:haun-asetukset/set-haun-asetus
+                            haku-oid
+                            :haun-asetukset/liitteiden-muokkauksen-hakemuskohtainen-takaraja-kellonaika
+                            (or hakemuskohtainen-kellonaika-value default-kellonaika)])
+        [:div
+         (stylefy/use-style haun-asetukset-indented-styles)
+         [l/label
+          {:for   input-id
+           :label input-label}]
+         [:div
+          (stylefy/use-style layout/vertical-align-center-styles)
+          [i/input-number
+           {:input-id  input-id
+            :required? false
+            :on-change (fn [value]
+                         (re-frame/dispatch [:haun-asetukset/set-haun-asetus
+                                             haku-oid
+                                             :haun-asetukset/liitteiden-muokkauksen-hakemuskohtainen-takaraja-paivaa
+                                             value]))
+            :min       0
+            :disabled? disabled?
+            :cypressid input-id
+            :value     (str (or hakemuskohtainen-value default-paivaa))}
+           {:max-width    "160px"
+            :margin-right "8px"}]
+          [i/input-time
+           {:id        "time"
+            :required? false
+            :disabled? disabled?
+            :on-change (fn [value]
+                         (re-frame/dispatch [:haun-asetukset/set-haun-asetus
+                                             haku-oid
+                                             :haun-asetukset/liitteiden-muokkauksen-hakemuskohtainen-takaraja-kellonaika
+                                             value]))
+            :value     (or hakemuskohtainen-kellonaika-value default-kellonaika)}]]])]]))
 
 (defn- hakijakohtainen-paikan-vastaanottoaika [{:keys [haku-oid]}]
   (let [id-prefix (get-id-prefix :haun-asetukset/hakijakohtainen-paikan-vastaanottoaika)
@@ -564,7 +700,9 @@
         changes-saved? (:changes-saved save-status)
         id-prefix (str "haun-asetukset-" haku-oid)
         header-id (str id-prefix "-header")
-        haku-name (-> haku :nimi lang)]
+        haku-name (-> haku :nimi lang)
+        yhteishaku? (string/starts-with? (or (:hakutapaKoodiUri haku) "")
+                                         "hakutapa_01")]
     [:section
      [:header
       [h/heading
@@ -611,7 +749,7 @@
       [haun-asetukset-sijoittelu
        {:haku-oid haku-oid}]
       [liitteiden-muokkauksen-takaraja
-       {:haku-oid haku-oid}]
+       {:haku-oid haku-oid} yhteishaku?]
       [haun-asetus-aikavali-container
        {:haku-oid         haku-oid
         :required?        false

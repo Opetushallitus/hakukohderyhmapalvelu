@@ -6,13 +6,13 @@
             [hakukohderyhmapalvelu.urls :as urls]
             [re-frame.core :as re-frame]
             [schema.core :as s]
-            [goog.net.cookies])
+            [reagent.cookies :as rc])
   (:require-macros [cljs.core.async.macros :refer [go]]
                    [cljs.core.async.interop :refer [<p!]])
   (:import [goog.net.XhrIo]))
 
 (defn- get-cookie-value [name]
-  (.get goog.net.cookies name))
+  (rc/get (keyword name)))
 
 (defn- create-search-params [url search-params]
   (let [search-params' (-> (js/URL. url (.-href js/location))

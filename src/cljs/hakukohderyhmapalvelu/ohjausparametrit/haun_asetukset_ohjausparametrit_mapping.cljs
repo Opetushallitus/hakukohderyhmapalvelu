@@ -3,6 +3,18 @@
 
 (defn haun-asetus-key->ohjausparametri [haun-asetus-key]
   (case haun-asetus-key
+    :haun-asetukset/liitteiden-muokkauksen-hakemuskohtainen-takaraja-kaytossa
+    :liitteidenMuokkauksenHakemuskohtainenTakarajaKaytossa
+
+    :haun-asetukset/liitteiden-muokkauksen-hakemuskohtainen-takaraja-paivaa
+    :liitteidenMuokkauksenHakemuskohtainenTakarajaPaivaa
+
+    :haun-asetukset/liitteiden-muokkauksen-hakemuskohtainen-takaraja-kellonaika
+    :liitteidenMuokkauksenHakemuskohtainenTakarajaKellonaika
+
+    :haun-asetukset/liitteiden-muokkauksen-hakukohtainen-takaraja-kellonaika
+    :liitteidenMuokkauksenHakukohtainenTakarajaKellonaika
+
     :haun-asetukset/hakukohteiden-maara-rajoitettu
     :hakutoiveidenMaaraRajoitettu
 
@@ -74,6 +86,7 @@
 (defn- boolean-value? [haun-asetus-key _]
   (some #{haun-asetus-key}
         #{:haun-asetukset/hakukohteiden-maara-rajoitettu
+          :haun-asetukset/liitteiden-muokkauksen-hakemuskohtainen-takaraja-kaytossa
           :haun-asetukset/jarjestetyt-hakutoiveet
           :haun-asetukset/synteettiset-hakemukset
           :haun-asetukset/useita-hakemuksia
@@ -85,7 +98,8 @@
           :haun-asetukset/liitteiden-muokkauksen-takaraja}))
 
 (defn- >0-number-value? [haun-asetus-key value]
-  (and (= haun-asetus-key :haun-asetukset/hakukohteiden-maara-rajoitus)
+  (and (or (= haun-asetus-key :haun-asetukset/hakukohteiden-maara-rajoitus)
+           (= haun-asetus-key :haun-asetukset/liitteiden-muokkauksen-hakemuskohtainen-takaraja-paivaa))
        (> (parse-int value) 0)))
 
 (defn- useita-hakemuksia? [haun-asetus-key _]
@@ -195,4 +209,17 @@
   (case haun-asetus-key
     :haun-asetukset/hakukohteiden-maara-rajoitettu
     [:haun-asetukset/hakukohteiden-maara-rajoitus]
+
+    :haun-asetukset/liitteiden-muokkauksen-hakemuskohtainen-takaraja-kaytossa
+    [:haun-asetukset/liitteiden-muokkauksen-hakemuskohtainen-takaraja-paivaa
+     :haun-asetukset/liitteiden-muokkauksen-hakemuskohtainen-takaraja-kellonaika]
+
+    []))
+
+(defn clear-keys-on-some-value [haun-asetus-key]
+  (case haun-asetus-key
+    :haun-asetukset/liitteiden-muokkauksen-hakemuskohtainen-takaraja-kaytossa
+    [:haun-asetukset/liitteiden-muokkauksen-takaraja
+     :haun-asetukset/liitteiden-muokkauksen-hakukohtainen-takaraja-kellonaika]
+
     []))

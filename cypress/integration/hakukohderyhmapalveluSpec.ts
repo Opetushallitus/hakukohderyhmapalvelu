@@ -12,10 +12,6 @@ import { PutHakukohderyhmaRequestFixture } from '../fixtures/hakukohderyhmapalve
 import { hakukohderyhmanValintaDropdown } from '../selectors/hakukohderyhmanLisaysSelectors'
 
 describe('Hakukohderyhmäpalvelu', () => {
-  const hideReframeDebuggerWindow = () => {
-    cy.visit('/')
-    cy.get('body').type('{ctrl}h')
-  }
   const mockLocalizationRoute = (locale: string) => {
     cy.mockBrowserRequest({
       method: 'GET',
@@ -138,7 +134,10 @@ describe('Hakukohderyhmäpalvelu', () => {
     mockLocalizationRoute('sv')
     mockLocalizationRoute('en')
 
-    hideReframeDebuggerWindow()
+    cy.visit('/hakukohderyhmapalvelu/')
+    cy.get('div[cypressid=haku-search-cypress] input').type('{ctrl}h', {
+      force: true,
+    })
   })
   it('Ohjaa käyttäjän polkuun /hakukohderyhmapalvelu/hakukohderyhmien-hallinta', () => {
     cy.location().should(location => {

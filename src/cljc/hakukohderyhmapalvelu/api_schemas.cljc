@@ -6,12 +6,12 @@
 (defonce StatusDeleted "deleted")
 (defonce StatusInUse "in-use")
 
-(s/defschema CommonOrganisaatioEntityPayload
+(s/defschema CommonOidNimiEntityPayload
   {:oid  s/Str
    :nimi c/Nimi})
 
 (s/defschema Organisaatio
-  (st/merge CommonOrganisaatioEntityPayload
+  (st/merge CommonOidNimiEntityPayload
             {:version      s/Int
              :parentOid    s/Str
              :tyypit       [s/Str]
@@ -23,7 +23,7 @@
 
 (s/defschema Hakukohde
   (st/merge
-    CommonOrganisaatioEntityPayload
+   CommonOidNimiEntityPayload
     {:tarjoaja                                          Organisaatio
      :toinenAsteOnkoKaksoistutkinto                     s/Bool
      :tila                                              (s/enum "tallennettu" "julkaistu" "arkistoitu")
@@ -60,7 +60,7 @@
 
 (s/defschema HakukohderyhmaPayload
   (st/merge
-    CommonOrganisaatioEntityPayload
+   CommonOidNimiEntityPayload
     {:version s/Int}))
 
 (s/defschema HakukohderyhmaPostRequest
@@ -80,7 +80,8 @@
    :includeEmpty s/Bool})
 
 (s/defschema HaunTiedot
-  CommonOrganisaatioEntityPayload)
+  (st/merge CommonOidNimiEntityPayload
+            {(s/optional-key :hakutapaKoodiUri) s/Str}))
 
 (s/defschema HaunTiedotListResponse
   [HaunTiedot])

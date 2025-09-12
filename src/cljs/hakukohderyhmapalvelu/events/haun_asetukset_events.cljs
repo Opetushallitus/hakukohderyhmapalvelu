@@ -64,6 +64,7 @@
                   :hakulomakeAtaruId
                   :hakulomaketyyppi
                   :kohdejoukkoKoodiUri
+                  :hakutapaKoodiUri
                   :hakuajat])]
       (assoc-in db
                 [:haun-asetukset :haut haku-oid]
@@ -152,6 +153,14 @@
                                              (apply (partial dissoc ohjausparametrit)
                                                     (->> haun-asetus-key
                                                          m/clear-keys-on-empty-value
+                                                         (map m/haun-asetus-key->ohjausparametri)))))
+                                         (some? ohjausparametri-value)
+                                         (update-in
+                                           [:ohjausparametrit haku-oid]
+                                           (fn [ohjausparametrit]
+                                             (apply (partial dissoc ohjausparametrit)
+                                                    (->> haun-asetus-key
+                                                         m/clear-keys-on-some-value
                                                          (map m/haun-asetus-key->ohjausparametri)))))))
        })))
 
