@@ -1,6 +1,6 @@
 (ns hakukohderyhmapalvelu.authentication.auth-routes
-  (:require [clj-ring-db-session.authentication.login :as crdsa-login]
-            [clj-ring-db-session.session.session-store :as oph-session]
+  (:require [hakukohderyhmapalvelu.clj-ring-db-session.authentication.login :as crdsa-login]
+            [hakukohderyhmapalvelu.clj-ring-db-session.session.session-store :as oph-session]
             [com.stuartsierra.component :as component]
             [hakukohderyhmapalvelu.audit-logger-protocol :as audit]
             [hakukohderyhmapalvelu.authentication.schema :as schema]
@@ -124,4 +124,4 @@
         (cas-initiated-logout request)))
 
   (logout [_ session]
-    (crdsa-login/logout session (url/resolve-url :cas.logout config))))
+    (crdsa-login/logout (url/resolve-url :cas.logout config))))
