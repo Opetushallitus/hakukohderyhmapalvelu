@@ -1,5 +1,5 @@
 <?xml version="1.0" encoding="UTF-8"?>
-<project xmlns="http://maven.apache.org/POM/4.0.0" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:schemaLocation="http://maven.apache.org/POM/4.0.0 http://maven.apache.org/xsd/maven-4.0.0.xsd">
+<project xmlns="https://maven.apache.org/POM/4.0.0" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:schemaLocation="https://maven.apache.org/POM/4.0.0 https://maven.apache.org/xsd/maven-4.0.0.xsd">
   <modelVersion>4.0.0</modelVersion>
   <groupId>hakukohderyhmapalvelu</groupId>
   <artifactId>hakukohderyhmapalvelu</artifactId>
@@ -130,7 +130,7 @@
       <dependency>
         <groupId>commons-fileupload</groupId>
         <artifactId>commons-fileupload</artifactId>
-        <version>1.5</version>
+        <version>1.6.0</version>
       </dependency>
       <dependency>
         <groupId>com.amazonaws</groupId>
@@ -153,14 +153,9 @@
         <version>3.25.5</version>
       </dependency>
       <dependency>
-        <groupId>io.netty</groupId>
-        <artifactId>netty-codec-http2</artifactId>
-        <version>4.1.100.Final</version>
-      </dependency>
-      <dependency>
         <groupId>io.undertow</groupId>
         <artifactId>undertow-core</artifactId>
-        <version>2.3.17.Final</version>
+        <version>2.3.20.Final</version>
       </dependency>
     </dependencies>
   </dependencyManagement>
@@ -241,26 +236,6 @@
       <version>0.1.0-SNAPSHOT</version>
     </dependency>
     <dependency>
-      <groupId>oph</groupId>
-      <artifactId>clj-access-logging</artifactId>
-      <version>1.0.0-SNAPSHOT</version>
-    </dependency>
-    <dependency>
-      <groupId>oph</groupId>
-      <artifactId>clj-stdout-access-logging</artifactId>
-      <version>1.0.0-SNAPSHOT</version>
-    </dependency>
-    <dependency>
-      <groupId>oph</groupId>
-      <artifactId>clj-timbre-access-logging</artifactId>
-      <version>1.0.0-SNAPSHOT</version>
-    </dependency>
-    <dependency>
-      <groupId>oph</groupId>
-      <artifactId>clj-ring-db-cas-session</artifactId>
-      <version>0.3.0-SNAPSHOT</version>
-    </dependency>
-    <dependency>
       <groupId>hikari-cp</groupId>
       <artifactId>hikari-cp</artifactId>
       <version>2.13.0</version>
@@ -293,12 +268,17 @@
     <dependency>
       <groupId>org.postgresql</groupId>
       <artifactId>postgresql</artifactId>
-      <version>42.7.4</version>
+      <version>42.7.8</version>
     </dependency>
     <dependency>
       <groupId>com.layerware</groupId>
       <artifactId>hugsql</artifactId>
       <version>0.5.1</version>
+    </dependency>
+    <dependency>
+      <groupId>yesql</groupId>
+      <artifactId>yesql</artifactId>
+      <version>0.5.3</version>
     </dependency>
     <dependency>
       <groupId>re-frame</groupId>
@@ -318,12 +298,17 @@
     <dependency>
       <groupId>com.fasterxml.jackson.core</groupId>
       <artifactId>jackson-core</artifactId>
-      <version>2.12.7</version>
+      <version>2.15.4</version>
     </dependency>
     <dependency>
       <groupId>com.fasterxml.jackson.core</groupId>
       <artifactId>jackson-databind</artifactId>
-      <version>2.12.7.2</version>
+      <version>2.15.4</version>
+    </dependency>
+    <dependency>
+      <groupId>metosin</groupId>
+      <artifactId>ring-http-response</artifactId>
+      <version>0.9.2</version>
     </dependency>
     <dependency>
       <groupId>ring</groupId>
@@ -377,14 +362,24 @@
       <version>1.2.0</version>
     </dependency>
     <dependency>
-      <groupId>oph</groupId>
-      <artifactId>clj-timbre-auditlog</artifactId>
-      <version>0.1.0-SNAPSHOT</version>
+      <groupId>clj-time</groupId>
+      <artifactId>clj-time</artifactId>
+      <version>0.15.2</version>
+    </dependency>
+    <dependency>
+      <groupId>buddy</groupId>
+      <artifactId>buddy-auth</artifactId>
+      <version>2.2.0</version>
+    </dependency>
+    <dependency>
+      <groupId>ring</groupId>
+      <artifactId>ring</artifactId>
+      <version>1.9.1</version>
     </dependency>
     <dependency>
       <groupId>fi.vm.sade.dokumenttipalvelu</groupId>
       <artifactId>dokumenttipalvelu</artifactId>
-      <version>6.12-SNAPSHOT</version>
+      <version>6.15-SNAPSHOT</version>
     </dependency>
     <dependency>
       <groupId>day8.re-frame</groupId>
