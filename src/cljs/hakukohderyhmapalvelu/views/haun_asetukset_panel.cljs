@@ -447,11 +447,10 @@
        :aria-labelledby label-id})
       [haun-asetukset-radio-button
        {:haku-oid        haku-oid
-        :disabled?       yhteishaku?
         :label-key       :haun-asetukset/liitteiden-muokkauksen-takaraja-hakukohtainen
         :haun-asetus-key :haun-asetukset/liitteiden-muokkauksen-hakemuskohtainen-takaraja-kaytossa
         :value           "false"}]
-      (when (not hakemuskohtainen-raja-kaytossa?)
+      (when (false? hakemuskohtainen-raja-kaytossa?)
         (re-frame/dispatch [:haun-asetukset/set-haun-asetus
                             haku-oid
                             :haun-asetukset/liitteiden-muokkauksen-takaraja
@@ -498,7 +497,7 @@
         :label-key       :haun-asetukset/liitteiden-muokkauksen-takaraja-hakemuskohtainen
         :haun-asetus-key :haun-asetukset/liitteiden-muokkauksen-hakemuskohtainen-takaraja-kaytossa
         :value           "true"}]
-      (when hakemuskohtainen-raja-kaytossa?
+      (when (true? hakemuskohtainen-raja-kaytossa?)
         (re-frame/dispatch [:haun-asetukset/set-haun-asetus
                             haku-oid
                             :haun-asetukset/liitteiden-muokkauksen-hakemuskohtainen-takaraja-paivaa
@@ -698,6 +697,10 @@
         save-status @(re-frame/subscribe [:haun-asetukset/save-status])
         save-errors (take-last 5 (:errors save-status))
         changes-saved? (:changes-saved save-status)
+        all-required-filled? (and (or (not @(re-frame/subscribe [:haun-asetukset/haun-asetus haku-oid :haun-asetukset/hakukohteiden-maara-rajoitettu]))
+                                      (not (nil? @(re-frame/subscribe [:haun-asetukset/haun-asetus haku-oid :haun-asetukset/hakukohteiden-maara-rajoitus]))))
+                                  (not (nil? @(re-frame/subscribe [:haun-asetukset/haun-asetus haku-oid :haun-asetukset/hakukierros-paattyy])))
+                                  (not (nil? @(re-frame/subscribe [:haun-asetukset/haun-asetus haku-oid :haun-asetukset/liitteiden-muokkauksen-hakemuskohtainen-takaraja-kaytossa]))))
         id-prefix (str "haun-asetukset-" haku-oid)
         header-id (str id-prefix "-header")
         haku-name (-> haku :nimi lang)
@@ -791,13 +794,17 @@
           :bold-left-label-margin? false}])
       [tallenna-haun-asetukset-label
        {:id                      "id"
-        :label                   (if (not changes-saved?) @(re-frame/subscribe [:translation :haun-asetukset/muutoksia-ei-viela-tallennettu]) "")
+        :label                   (cond
+                                   (not all-required-filled?) @(re-frame/subscribe [:translation :haun-asetukset/tayta-pakolliset])
+                                   (not changes-saved?) @(re-frame/subscribe [:translation :haun-asetukset/muutoksia-ei-viela-tallennettu])
+                                   :else "")
         :required?               false}]
       [:div
        [haun-asetukset-input
         {:input-component
          [button/button {:cypressid    "save-ohjausparametrit"
-                         :disabled?    changes-saved?
+                         :disabled?    (or changes-saved?
+                                           (not all-required-filled?))
                          :label        @(re-frame/subscribe [:translation :haun-asetukset/tallenna])
                          :on-click     #(re-frame/dispatch [:haun-asetukset/save-ohjausparametrit
                                                             haku-oid])
