@@ -21,7 +21,7 @@
                  [com.stuartsierra/component "1.0.0"]
                  [org.flywaydb/flyway-core "7.0.2"]
                  [fi.vm.sade/auditlogger "9.0.0-SNAPSHOT"]
-                 [opiskelijavalinnat-utils/java-cas "1.2.4-SNAPSHOT"]
+                 [opiskelijavalinnat-utils/java-cas "2.0.0-SNAPSHOT"]
                  [fi.vm.sade.java-utils/java-properties "0.1.0-SNAPSHOT"]
                  [oph/clj-access-logging "1.0.0-SNAPSHOT"]
                  [oph/clj-stdout-access-logging "1.0.0-SNAPSHOT"]
