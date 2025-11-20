@@ -23,7 +23,7 @@
     (if (seq allowed-orgs)
       {:oidHenkilo     (.getHenkiloOid user-details)
        :username       (.getUser user-details)
-       :organisaatiot  allowed-orgs
+       :organisaatiot  (seq allowed-orgs)
        :superuser      (has-oph-org? allowed-orgs)}
       (log/warn "No required permission found for user" user-details))))
 
