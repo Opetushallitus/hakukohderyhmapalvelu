@@ -50,6 +50,7 @@
                  [buddy/buddy-auth "2.2.0"]
                  [ring "1.9.1"]
                  [fi.vm.sade.dokumenttipalvelu/dokumenttipalvelu "6.15-SNAPSHOT"]
+                 [opiskelijavalinnat-utils/clj-ring-db-cas-session "1.0.0-SNAPSHOT"]
                  [day8.re-frame/tracing "0.6.2"]]
 
   :plugins [[lein-ancient "0.6.15"]
