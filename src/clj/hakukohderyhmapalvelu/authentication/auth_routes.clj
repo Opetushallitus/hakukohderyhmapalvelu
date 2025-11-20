@@ -1,6 +1,6 @@
 (ns hakukohderyhmapalvelu.authentication.auth-routes
-  (:require [hakukohderyhmapalvelu.clj-ring-db-session.authentication.login :as crdsa-login]
-            [hakukohderyhmapalvelu.clj-ring-db-session.session.session-store :as oph-session]
+  (:require [clj-ring-db-session.authentication.login :as crdsa-login]
+            [clj-ring-db-session.session.session-store :as oph-session]
             [com.stuartsierra.component :as component]
             [hakukohderyhmapalvelu.audit-logger-protocol :as audit]
             [hakukohderyhmapalvelu.authentication.schema :as schema]

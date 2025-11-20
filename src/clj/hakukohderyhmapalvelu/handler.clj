@@ -1,8 +1,8 @@
 (ns hakukohderyhmapalvelu.handler
   (:require [cheshire.core :as json]
-            [hakukohderyhmapalvelu.clj-ring-db-session.authentication.auth-middleware :as auth-middleware]
-            [hakukohderyhmapalvelu.clj-ring-db-session.session.session-client :as session-client]
-            [hakukohderyhmapalvelu.clj-ring-db-session.session.session-store :refer [create-session-store]]
+            [clj-ring-db-session.authentication.auth-middleware :as auth-middleware]
+            [clj-ring-db-session.session.session-client :as session-client]
+            [clj-ring-db-session.session.session-store :refer [create-session-store]]
             [reitit.swagger :as swagger]
             [reitit.swagger-ui :as swagger-ui]
             [reitit.coercion.schema]
