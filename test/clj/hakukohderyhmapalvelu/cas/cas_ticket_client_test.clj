@@ -42,7 +42,7 @@
       (let [impl (client/map->CasTicketClient {})
             expected {:oidHenkilo     test-henkilo-oid
                       :username       "virkahemmo"
-                      :organisaatiot  #{test-org-oid}
+                      :organisaatiot  (seq [test-org-oid])
                       :superuser      false}]
         (is (= expected (cas-ticket-client-protocol/validate-service-ticket impl "ticket"))))))
   (testing "Palauttaa käyttäjän super-userina kun hänellä on OPH-oikeus"
@@ -50,7 +50,7 @@
       (let [impl (client/map->CasTicketClient {})
             expected {:oidHenkilo     test-henkilo-oid
                       :username       "virkahemmo"
-                      :organisaatiot  #{client/oph-organisaatio-oid test-org-oid}
+                      :organisaatiot  (seq [client/oph-organisaatio-oid test-org-oid])
                       :superuser      true}]
         (is (= expected (cas-ticket-client-protocol/validate-service-ticket impl "ticket"))))))
   (testing "Palauttaa nil, kun käyttäjältä puuttuu oikea rooli"
