@@ -6,7 +6,6 @@
             [hakukohderyhmapalvelu.authentication.schema :as schema]
             [hakukohderyhmapalvelu.cas.cas-ticket-client-protocol :as cas-ticket-client-protocol]
             [hakukohderyhmapalvelu.config :as c]
-            [hakukohderyhmapalvelu.kayttooikeus.kayttooikeus-protocol :as kayttooikeus-protocol]
             [hakukohderyhmapalvelu.onr.onr-protocol :as onr-protocol]
             [hakukohderyhmapalvelu.oph-url-properties :as url]
             [hakukohderyhmapalvelu.organisaatio.organisaatio-protocol :as organisaatio-protocol]
@@ -26,7 +25,7 @@
 (def kirjautuminen (audit/->operation "kirjautuminen"))
 
 (defn- merged-session [request response virkailija]
-  (let [organisaatiot (map :organisaatioOid (:organisaatiot virkailija))
+  (let [organisaatiot (:organisaatiot virkailija)
         superuser? (boolean (:superuser virkailija))
         request-session (:session request)
         response-session (:session response)]
@@ -35,13 +34,13 @@
         (assoc-in [:identity :organizations] organisaatiot)
         (assoc :superuser superuser?))))
 
-(defn- login-succeeded [organisaatio-service audit-logger request response virkailija henkilo username ticket]
-  (log/info "user" username "logged in. Superuser?" (:superuser virkailija))
+(defn- login-succeeded [organisaatio-service audit-logger request response virkailija henkilo ticket]
+  (log/info "user" (:username virkailija) "logged in. Superuser?" (:superuser virkailija))
   (let [session (merged-session request response virkailija)
         henkilo-oid (:oidHenkilo henkilo)]
     (s/validate (p/extends-class-pred organisaatio-protocol/OrganisaatioServiceProtocol) organisaatio-service)
     (s/validate (p/extends-class-pred audit/AuditLoggerProtocol) audit-logger)
-    (s/validate kayttooikeus-protocol/Virkailija virkailija)
+    (s/validate cas-ticket-client-protocol/Virkailija virkailija)
     (s/validate s/Str henkilo-oid)
     (s/validate s/Str ticket)
     (s/validate schema/Session session)
@@ -72,7 +71,6 @@
 (defrecord AuthRoutesMaker [config
                             db
                             cas-ticket-validator
-                            kayttooikeus-service
                             person-service
                             organisaatio-service
                             audit-logger]
@@ -81,7 +79,6 @@
     (s/validate (s/pred #(instance? DataSource %)) (:datasource db))
     (s/validate c/HakukohderyhmaConfig config)
     (s/validate (p/extends-class-pred cas-ticket-client-protocol/CasTicketClientProtocol) cas-ticket-validator)
-    (s/validate (p/extends-class-pred kayttooikeus-protocol/KayttooikeusService) kayttooikeus-service)
     (s/validate (p/extends-class-pred onr-protocol/PersonService) person-service)
     (s/validate (p/extends-class-pred organisaatio-protocol/OrganisaatioServiceProtocol) organisaatio-service)
     (s/validate (p/extends-class-pred audit/AuditLoggerProtocol) audit-logger)
@@ -102,18 +99,17 @@
 
   (login [this ticket request]
     (try
-      (if-let [[username _] (cas-ticket-client-protocol/validate-service-ticket cas-ticket-validator ticket)]
+      (if-let [virkailija (cas-ticket-client-protocol/validate-service-ticket cas-ticket-validator ticket)]
         (let [redirect-url (or (get-in request [:session :original-url])
                                (:hakukohderyhmapalvelu-url this))
-              virkailija (kayttooikeus-protocol/virkailija-by-username kayttooikeus-service username)
               henkilo (onr-protocol/get-person person-service (:oidHenkilo virkailija))
               response (crdsa-login/login
-                         {:username             username
+                         {:username             (:username virkailija)
                           :henkilo              henkilo
                           :ticket               ticket
                           :success-redirect-url redirect-url
                           :datasource           (:datasource db)})]
-          (login-succeeded organisaatio-service audit-logger request response virkailija henkilo username ticket))
+          (login-succeeded organisaatio-service audit-logger request response virkailija henkilo ticket))
         (login-failed (:login-failure-url this)))
       (catch Exception e
         (login-failed (:login-failure-url this) e))))

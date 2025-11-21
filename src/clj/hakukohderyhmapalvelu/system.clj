@@ -10,7 +10,6 @@
             [hakukohderyhmapalvelu.db :as db]
             [hakukohderyhmapalvelu.hakukohderyhma.hakukohderyhma-service :as hakukohderyhma-service]
             [hakukohderyhmapalvelu.health-check :as health-check]
-            [hakukohderyhmapalvelu.kayttooikeus.kayttooikeus-service :as kayttooikeus-service]
             [hakukohderyhmapalvelu.migrations :as migrations]
             [hakukohderyhmapalvelu.onr.onr-service :as onr-service]
             [hakukohderyhmapalvelu.organisaatio.organisaatio-service :as organisaatio-service]
@@ -66,7 +65,6 @@
                                                  (auth-routes/map->AuthRoutesMaker {:config config})
                                                  [:db
                                                   :cas-ticket-validator
-                                                  :kayttooikeus-service
                                                   :person-service
                                                   :organisaatio-service
                                                   :audit-logger])
@@ -91,13 +89,6 @@
 
                            :kouta-authenticating-client (authenticating-client/map->CasAuthenticatingClient {:service :kouta-internal
                                                                                                              :config  config})
-
-                           :kayttooikeus-authenticating-client (authenticating-client/map->CasAuthenticatingClient {:service :kayttooikeus
-                                                                                                                    :config  config})
-
-                           :kayttooikeus-service (component/using
-                                                   (kayttooikeus-service/map->HttpKayttooikeusService {:config config})
-                                                   [:kayttooikeus-authenticating-client])
 
                            :onr-authenticating-client (authenticating-client/map->CasAuthenticatingClient {:service :oppijanumerorekisteri
                                                                                                            :config  config})
@@ -124,8 +115,6 @@
                            :kouta-authenticating-client (component/using
                                                           (mock-authenticating-client/map->MockedCasClient {})
                                                           {:request-map :mock-kouta-cas-request-map})
-
-                           :kayttooikeus-service (kayttooikeus-service/->FakeKayttooikeusService)
 
                            :person-service (onr-service/->FakePersonService)
 

@@ -17,8 +17,6 @@
                           :url s/Str
                           :services {:organisaatio-service  {:service-url-property s/Keyword
                                                              :session-cookie-name  s/Str}
-                                     :kayttooikeus          {:service-url-property s/Keyword
-                                                             :session-cookie-name  s/Str}
                                      :oppijanumerorekisteri {:service-url-property s/Keyword
                                                              :session-cookie-name  s/Str}
                                      :kouta-internal        {:service-url-property s/Keyword

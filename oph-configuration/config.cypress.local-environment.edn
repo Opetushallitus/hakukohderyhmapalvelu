@@ -10,8 +10,6 @@
                         :url "https://foo/cas"
                         :services {:organisaatio-service  {:service-url-property :cas.service.organisaatio-service
                                                            :session-cookie-name  "SESSION"}
-                                   :kayttooikeus          {:service-url-property :cas.service.kayttooikeus-service
-                                                           :session-cookie-name  "JSESSIONID"}
                                    :oppijanumerorekisteri {:service-url-property :cas.service.oppijanumerorekisteri
                                                            :session-cookie-name  "JSESSIONID"}
                                    :kouta-internal        {:service-url-property :cas.service.kouta-internal
