@@ -44,6 +44,7 @@
                     :valintaesityksen-hyvaksyminen                               {:fi "Valintaesityksen hyväksyminen"}
                     :koetulosten-tallentaminen                                   {:fi "Koetulosten tallentaminen"}
                     :muutoksia-ei-viela-tallennettu                              {:fi "Muutoksia ei vielä tallennettu"}
+                    :tayta-pakolliset                                            {:fi "Täytä kaikki pakolliset kohdat"}
                     :tallenna                                                    {:fi "TALLENNA"}}
    :hakukohderyhma {:haku                         {:fi "Haku"}
                     :lisarajain-harkinnanvaraiset {:fi "Hakukohteella harkinnanvarainen valinta"}

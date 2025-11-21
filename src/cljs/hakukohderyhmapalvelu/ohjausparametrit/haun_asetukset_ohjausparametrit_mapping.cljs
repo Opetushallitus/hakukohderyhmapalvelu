@@ -86,7 +86,6 @@
 (defn- boolean-value? [haun-asetus-key _]
   (some #{haun-asetus-key}
         #{:haun-asetukset/hakukohteiden-maara-rajoitettu
-          :haun-asetukset/liitteiden-muokkauksen-hakemuskohtainen-takaraja-kaytossa
           :haun-asetukset/jarjestetyt-hakutoiveet
           :haun-asetukset/synteettiset-hakemukset
           :haun-asetukset/useita-hakemuksia
