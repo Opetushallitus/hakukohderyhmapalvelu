@@ -43,6 +43,8 @@
                     :oppilaitosten-virkailijoiden-valintapalvelun-kaytto-estetty {:fi "Oppilaitosten virkailijoiden valintapalvelun käyttö estetty"}
                     :valintaesityksen-hyvaksyminen                               {:fi "Valintaesityksen hyväksyminen"}
                     :koetulosten-tallentaminen                                   {:fi "Koetulosten tallentaminen"}
+                    :suoritusten-vahvistuspaiva                                  {:fi "Suoritusten vahvistuspäivä"}
+                    :valintalaskentapaiva                                        {:fi "Valintalaskentapäivä"}
                     :muutoksia-ei-viela-tallennettu                              {:fi "Muutoksia ei vielä tallennettu"}
                     :tayta-pakolliset                                            {:fi "Täytä kaikki pakolliset kohdat"}
                     :tallenna                                                    {:fi "TALLENNA"}}

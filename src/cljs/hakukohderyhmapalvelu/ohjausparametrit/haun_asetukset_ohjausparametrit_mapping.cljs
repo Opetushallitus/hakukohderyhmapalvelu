@@ -76,7 +76,13 @@
     :PH_VEH
 
     :haun-asetukset/koetulosten-tallentaminen
-    :PH_KTT))
+    :PH_KTT
+
+    :haun-asetukset/suoritusten-vahvistuspaiva
+    :suoritustenVahvistuspaiva
+
+    :haun-asetukset/valintalaskentapaiva
+    :valintalaskentapaiva))
 
 (defn- parse-int [value]
   (let [i (.parseInt js/Number value 10)]
@@ -130,7 +136,9 @@
           :haun-asetukset/automaattinen-hakukelpoisuus-paattyy
           :haun-asetukset/harkinnanvaraisen-valinnan-paatosten-tallennus-paattyy
           :haun-asetukset/valintaesityksen-hyvaksyminen
-          :haun-asetukset/koetulosten-tallentaminen}))
+          :haun-asetukset/koetulosten-tallentaminen
+          :haun-asetukset/suoritusten-vahvistuspaiva
+          :haun-asetukset/valintalaskentapaiva}))
 
 (defn- local->long [date]
   (-> date
