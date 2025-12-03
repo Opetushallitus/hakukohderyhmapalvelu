@@ -90,7 +90,7 @@
           "haunkohdejoukko_12#"))))
 
 (re-frame/reg-sub
-  :haun-asetukset/toinen_aste?
+  :haun-asetukset/toinen_aste_yhteishaku?
   (fn [[_ haku-oid]]
     [(re-frame/subscribe [:haun-asetukset/haku haku-oid])])
   (fn [[haku]]

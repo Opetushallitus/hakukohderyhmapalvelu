@@ -692,7 +692,7 @@
   (let [haku-oid  @(re-frame/subscribe [:haun-asetukset/selected-haku-oid])
         haku      @(re-frame/subscribe [:haun-asetukset/haku haku-oid])
         lang      @(re-frame/subscribe [:lang])
-        toinen-aste? @(re-frame/subscribe [:haun-asetukset/toinen_aste? haku-oid])
+        toinen-aste-yhteishaku? @(re-frame/subscribe [:haun-asetukset/toinen_aste_yhteishaku? haku-oid])
         kk? @(re-frame/subscribe [:haun-asetukset/kk? haku-oid])
         save-status @(re-frame/subscribe [:haun-asetukset/save-status])
         save-errors (take-last 5 (:errors save-status))
@@ -769,28 +769,40 @@
           :haun-asetus-key         :haun-asetukset/automaattinen-hakukelpoisuus-paattyy
           :required?               false
           :bold-left-label-margin? false}])
-      (when toinen-aste?
+      (when toinen-aste-yhteishaku?
         [haun-asetukset-date-time
          {:haku-oid                haku-oid
           :haun-asetus-key         :haun-asetukset/harkinnanvaraisen-valinnan-paatosten-tallennus-paattyy
           :required?               false
           :bold-left-label-margin? false}])
-      (when toinen-aste?
+      (when toinen-aste-yhteishaku?
         [haun-asetus-aikavali-container
          {:haku-oid                haku-oid
           :required?               false
           :haun-asetus-key         :haun-asetukset/oppilaitosten-virkailijoiden-valintapalvelun-kaytto-estetty}])
-      (when toinen-aste?
+      (when toinen-aste-yhteishaku?
         [haun-asetukset-date-time
          {:haku-oid                haku-oid
           :haun-asetus-key         :haun-asetukset/valintaesityksen-hyvaksyminen
           :required?               false
           :bold-left-label-margin? false}])
-      (when toinen-aste?
+      (when toinen-aste-yhteishaku?
         [haun-asetukset-date-time
          {:haku-oid                haku-oid
           :haun-asetus-key         :haun-asetukset/koetulosten-tallentaminen
           :required?               false
+          :bold-left-label-margin? false}])
+      (when toinen-aste-yhteishaku?
+        [haun-asetukset-date-time
+         {:haku-oid                haku-oid
+          :haun-asetus-key         :haun-asetukset/suoritusten-vahvistuspaiva
+          :required?               true
+          :bold-left-label-margin? false}])
+      (when toinen-aste-yhteishaku?
+        [haun-asetukset-date-time
+         {:haku-oid                haku-oid
+          :haun-asetus-key         :haun-asetukset/valintalaskentapaiva
+          :required?               true
           :bold-left-label-margin? false}])
       [tallenna-haun-asetukset-label
        {:id                      "id"
