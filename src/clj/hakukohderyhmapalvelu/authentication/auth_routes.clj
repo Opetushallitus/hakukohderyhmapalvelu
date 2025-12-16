@@ -120,4 +120,4 @@
         (cas-initiated-logout request)))
 
   (logout [_ session]
-    (crdsa-login/logout session (url/resolve-url :cas.logout config))))
+    (crdsa-login/logout (url/resolve-url :cas.logout config))))
