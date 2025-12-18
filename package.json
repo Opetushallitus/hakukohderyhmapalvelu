@@ -8,7 +8,8 @@
     "lint:clj:lint-staged": "clj-kondo --config oph-configuration/clj-kondo.config.edn --lint",
     "lint:js": "eslint --ignore-path \".eslintignore\" --ext .js,.ts \"cypress\"",
     "format:js": "eslint --fix --ignore-path \".eslintignore\" --ext .js,.ts \"cypress\"",
-    "tsc:type-check": "tsc -p cypress/tsconfig.json"
+    "tsc:type-check": "tsc -p cypress/tsconfig.json",
+    "preinstall": "pnpx only-allow@1.2.2 pnpm"
   },
   "engines": {
     "node": ">=14"
@@ -20,10 +21,10 @@
   },
   "lint-staged": {
     "cypress/**/*.{js,ts}": [
-      "npm run lint:js"
+      "pnpm run lint:js"
     ],
     "src/**/*.{clj,cljs,cljc}": [
-      "npm run lint:clj:lint-staged"
+      "pnpm run lint:clj:lint-staged"
     ]
   },
   "lint-prepush": {
@@ -33,10 +34,10 @@
         "./bin/type-check.sh"
       ],
       "cypress/**/*.{js,ts}": [
-        "npm run lint:js"
+        "pnpm run lint:js"
       ],
       "src/**/*.{clj,cljs,cljc}": [
-        "npm run lint:clj:lint-staged"
+        "pnpm run lint:clj:lint-staged"
       ]
     }
   },
@@ -74,12 +75,20 @@
     "react-dom": "^17.0.2",
     "react-select": "^4.3.0"
   },
-  "overrides": {
-    "@babel/traverse@7.15.4": "7.23.2",
-    "loader-utils@1.4.0": "1.4.2",
-    "minimist@1.2.5": "1.2.6",
-    "json5": "2.2.3",
-    "semver@6.3.0": "6.3.1",
-    "semver@7.0.0": "7.5.2"
-  }
+  "pnpm": {
+    "overrides": {
+      "@babel/traverse@7.15.4": "7.23.2",
+      "loader-utils@1.4.0": "1.4.2",
+      "minimist@1.2.5": "1.2.6",
+      "json5": "2.2.3",
+      "semver@6.3.0": "6.3.1",
+      "semver@7.0.0": "7.5.2"
+    },
+    "onlyBuiltDependencies": [
+      "clj-kondo",
+      "cypress",
+      "husky"
+    ]
+  },
+  "packageManager": "pnpm@10.26.1+sha512.664074abc367d2c9324fdc18037097ce0a8f126034160f709928e9e9f95d98714347044e5c3164d65bd5da6c59c6be362b107546292a8eecb7999196e5ce58fa"
 }
