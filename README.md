@@ -1,8 +1,5 @@
 # Hakukohderyhmäpalvelu
 
-[![Build Status](https://travis-ci.org/Opetushallitus/hakukohderyhmapalvelu.svg?branch=master)](https://travis-ci.org/Opetushallitus/hakukohderyhmapalvelu)
-![NPM Dependencies Status](https://david-dm.org/opetushallitus/hakukohderyhmapalvelu.svg)
-
 * [Palvelun ajaminen paikallisesti](#palvelun-ajaminen-paikallisesti)
   * [Vain kerran tehtävät työvaiheet](#vain-kerran-tehtävät-työvaiheet)
   * [Käyttö](#käyttö)
@@ -122,18 +119,18 @@ Swagger JSON löytyy polusta `/hakukohderyhmapalvelu/swagger.json`
 #### Clojure(Script) -tiedostojen lint
 
 ```sh
-npm run lint:clj
+pnpm run lint:clj
 ```
 
 #### JavaScript -tiedostojen lint
 
 ```
-npm run lint:js
+pnpm run lint:js
 ```
 
 #### JavaScript -tiedostojen formatointi
 ```
-npm run format:js
+pnpm run format:js
 ```
 
 ### Integraatiotestit
@@ -172,13 +169,13 @@ make kill-cypress # Sammuttaa ainoastaan Cypress -instanssit palvelusta
 Avaa Cypress-käyttöliittymän josta voi käynnistää testit ja jättää taustalle. Testit ajetaan automaattisesti uudestaan koodimuutosten yhteydessä.
 
 ```sh
-npm run cypress:open
+pnpm run cypress:open
 ```
 
 #### Testien ajaminen headless -moodissa
 
 ```sh
-npm run cypress:run:local-environment
+pnpm run cypress:run:local-environment
 ```
 
 ## REPL-yhteys palvelimeen ja selaimeen

@@ -2,8 +2,8 @@ NODE_MODULES = node_modules
 PM2 = PM2_HOME=.pm2 npx pm2
 DOCKER_COMPOSE=COMPOSE_PARALLEL_LIMIT=8 $(if $(DOCKER_SUDO),sudo )docker-compose
 
-$(NODE_MODULES): package.json package-lock.json
-	npm ci
+$(NODE_MODULES): package.json pnpm-lock.yaml
+	pnpm install
 	touch $(NODE_MODULES)
 
 start-docker:

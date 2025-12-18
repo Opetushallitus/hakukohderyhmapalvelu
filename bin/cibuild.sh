@@ -6,16 +6,16 @@ if [[ "${LEIN}" == "" ]]; then
 fi
 
 tsc() {
-  npm run tsc:type-check
+  pnpm run tsc:type-check
 }
 
 lint() {
-  npm run lint:clj \
-    && npm run lint:js
+  pnpm run lint:clj \
+    && pnpm run lint:js
 }
 
 test-e2e() {
-  npm run cypress:run:travis
+  pnpm run cypress:run:travis
 }
 
 test-lein() {
