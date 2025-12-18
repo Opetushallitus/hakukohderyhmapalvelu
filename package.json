@@ -9,15 +9,11 @@
     "lint:js": "eslint --ignore-path \".eslintignore\" --ext .js,.ts \"cypress\"",
     "format:js": "eslint --fix --ignore-path \".eslintignore\" --ext .js,.ts \"cypress\"",
     "tsc:type-check": "tsc -p cypress/tsconfig.json",
-    "preinstall": "pnpx only-allow@1.2.2 pnpm"
+    "preinstall": "pnpx only-allow@1.2.2 pnpm",
+    "prepare": "husky"
   },
   "engines": {
     "node": ">=14"
-  },
-  "husky": {
-    "hooks": {
-      "pre-push": "lint-prepush"
-    }
   },
   "lint-staged": {
     "cypress/**/*.{js,ts}": [
@@ -57,7 +53,7 @@
     "eslint-plugin-cypress": "^2.11.2",
     "eslint-plugin-import": "^2.22.1",
     "eslint-plugin-prettier": "^3.1.4",
-    "husky": "^4.3.0",
+    "husky": "^9.1.7",
     "lint-prepush": "^2.1.0",
     "lint-staged": "^10.5.0",
     "pg": "^8.6.0",
