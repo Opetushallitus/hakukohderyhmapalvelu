@@ -1,3 +1,3 @@
 #!/usr/bin/env sh
 
-npm run tsc:type-check
+pnpm run tsc:type-check

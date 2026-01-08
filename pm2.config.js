@@ -27,7 +27,7 @@ module.exports = {
       interpreter: '/bin/sh',
       args: ['server:dev'],
       env: {
-        TIMBRE_NS_BLACKLIST: '["clj-timbre-auditlog.audit-log"]',
+        TIMBRE_NS_BLACKLIST: '["hakukohderyhmapalvelu.clj-timbre-audit-log"]',
         CONFIG: config,
       },
       cwd: __dirname,
@@ -48,7 +48,7 @@ module.exports = {
       interpreter: '/bin/sh',
       args: ['server:dev'],
       env: {
-        TIMBRE_NS_BLACKLIST: '["clj-timbre-auditlog.audit-log"]',
+        TIMBRE_NS_BLACKLIST: '["hakukohderyhmapalvelu.clj-timbre-audit-log"]',
         CONFIG: 'oph-configuration/config.cypress.local-environment.edn',
       },
       cwd: __dirname,

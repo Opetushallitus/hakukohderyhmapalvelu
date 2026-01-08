@@ -1,5 +1,5 @@
 (ns hakukohderyhmapalvelu.audit-logger
-  (:require [clj-timbre-auditlog.audit-log :as cta-audit-log]
+  (:require [hakukohderyhmapalvelu.clj-timbre-audit-log :as cta-audit-log]
             [com.stuartsierra.component :as component]
             [hakukohderyhmapalvelu.audit-logger-protocol :as audit-logger-protocol]
             [hakukohderyhmapalvelu.config :as c]
