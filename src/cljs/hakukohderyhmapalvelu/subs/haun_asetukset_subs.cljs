@@ -49,11 +49,19 @@
   :haun-asetukset/haun-asetus
   (fn [[_ haku-oid haun-asetus-key]]
     [(re-frame/subscribe [:state-query
-                          [:ohjausparametrit haku-oid (m/haun-asetus-key->ohjausparametri haun-asetus-key)]])])
-  (fn [[ohjausparametri-value] [_ _ haun-asetus-key]]
-    (m/ohjausparametri-value->haun-asetus-value
-      ohjausparametri-value
-      haun-asetus-key)))
+                          [:ohjausparametrit
+                           haku-oid
+                           (m/haun-asetus-key->ohjausparametri haun-asetus-key)]])
+     (re-frame/subscribe [:state-query [:ohjausparametrit haku-oid]])])
+  (fn [[ohjausparametri-value ohjausparametrit] [_ _ haun-asetus-key]]
+    (let [value (m/ohjausparametri-value->haun-asetus-value
+                  ohjausparametri-value
+                  haun-asetus-key)]
+      (if (and (= haun-asetus-key :haun-asetukset/liitteiden-muokkauksen-hakemuskohtainen-takaraja-kaytossa)
+               (nil? value)
+               (some? (get ohjausparametrit :PH_LMT)))
+        false
+        value))))
 
 (re-frame/reg-sub
   :haun-asetukset/haun-asetukset-disabled?
