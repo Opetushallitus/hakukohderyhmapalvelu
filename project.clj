@@ -5,7 +5,7 @@
                          [org.eclipse.jetty/jetty-server "9.4.57.v20241219"]
                          [org.yaml/snakeyaml "2.0"]
                          [com.google.protobuf/protobuf-java "3.25.5"]
-                         [io.undertow/undertow-core "2.3.20.Final"]]
+                         [io.undertow/undertow-core "2.3.21.Final"]]
   :dependencies [[org.clojure/clojure "1.11.2"]
                  [org.clojure/clojurescript "1.11.132"]
                  [com.google.javascript/closure-compiler-unshaded "v20240317"]
