@@ -8,6 +8,7 @@
             [clojure.java.io :refer [input-stream]]
             [taoensso.timbre :as log])
   (:import (fi.vm.sade.valinta.dokumenttipalvelu SiirtotiedostoPalvelu)
+           (java.time.format DateTimeFormatter)
            (java.util UUID)))
 
 (defn- assoc-if-exists
@@ -23,6 +24,8 @@
   [db start-datetime end-datetime]
   (hakukohderyhma-queries/find-new-or-changed-hakukohderyhma-oids-by-timerange db start-datetime end-datetime))
 
+(def ^:private last-modified-formatter (DateTimeFormatter/ofPattern "yyyy-MM-dd'T'HH:mm:ss.SSSXXX"))
+
 (defn resolve-last-modified
   [raw]
   (let [datetimes-sorted (sort (filter #(not (nil? %)) [(:ryhma-created-at raw)
@@ -30,7 +33,7 @@
                                                         (:setting-updated-at raw)]))
         latest (last datetimes-sorted)]
     (if latest
-      (str latest)
+      (.format last-modified-formatter latest)
       "")))
 
 (defn- list-hakukohteet-and-settings
