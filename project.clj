@@ -46,7 +46,6 @@
                  [thheller/shadow-cljs "2.28.23"]
                  [yogthos/config "1.1.7"]
                  [environ "1.2.0"]
-                 [clj-time "0.15.2"]
                  [buddy/buddy-auth "2.2.0"]
                  [ring "1.9.1"]
                  [fi.vm.sade.dokumenttipalvelu/dokumenttipalvelu "6.15-SNAPSHOT"]
