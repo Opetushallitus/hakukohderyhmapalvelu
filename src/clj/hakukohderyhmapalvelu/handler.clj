@@ -35,10 +35,10 @@
             [schema.core :as s]
             [selmer.parser :as selmer]
             [taoensso.timbre :as log]
-            [muuntaja.core :as m]
-            [clj-time.core :as t]
-            [clj-time.format :as f])
-  (:import [javax.sql DataSource]))
+            [muuntaja.core :as m])
+  (:import [javax.sql DataSource]
+           [java.time Instant LocalDateTime OffsetDateTime ZoneId]
+           [java.time.format DateTimeFormatter DateTimeParseException]))
 
 
 (defn- random-lowercase-string [n]
@@ -92,14 +92,17 @@
    session-client/wrap-session-client-headers
    (session-timeout/create-wrap-absolute-session-timeout config)])
 
-(def datetime-format "yyyy-MM-dd'T'HH:mm:ss")
-(def datetime-parser (f/formatter datetime-format (t/default-time-zone)))
+(def ^:private datetime-format "yyyy-MM-dd'T'HH:mm:ss")
+(def ^:private datetime-formatter (DateTimeFormatter/ofPattern datetime-format))
+(def ^:private system-zone (ZoneId/systemDefault))
 
 (defn- parse-datetime
   [datetime-str field-desc default]
   (if datetime-str
-    (try (f/parse datetime-parser datetime-str)
-         (catch java.lang.IllegalArgumentException _
+    (try (-> (LocalDateTime/parse datetime-str datetime-formatter)
+             (.atZone system-zone)
+             (.toOffsetDateTime))
+         (catch DateTimeParseException _
            (response/bad-request!
              {:msg (str "Illegal " field-desc " '" datetime-str "', allowed format: '" datetime-format "'")})))
     default))
@@ -170,8 +173,12 @@
                :handler    (fn [{session :session {{window-start :start-datetime
                                                     window-end   :end-datetime} :query} :parameters}]
                              (if (:superuser session)
-                               (let [start (parse-datetime window-start "startDatetime" (t/epoch))
-                                     end (parse-datetime window-end "endDatetime" (t/now))]
+                               (let [start (parse-datetime window-start
+                                                           "startDatetime"
+                                                           (OffsetDateTime/ofInstant Instant/EPOCH system-zone))
+                                     end (parse-datetime window-end
+                                                         "endDatetime"
+                                                         (OffsetDateTime/now system-zone))]
                                  (response/ok
                                    (siirtotiedosto/create-siirtotiedostot-by-params
                                      siirtotiedosto-service session {:window-start start

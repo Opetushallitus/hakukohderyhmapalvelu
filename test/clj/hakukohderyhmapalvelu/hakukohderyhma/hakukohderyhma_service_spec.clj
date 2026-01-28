@@ -9,9 +9,9 @@
                                                                            add-row!
                                                                            has-row?]]
             [hakukohderyhmapalvelu.api-schemas :as api-schemas]
-            [clj-time.format :as f]
-            [clj-time.core :as t]
-            [hakukohderyhmapalvelu.ataru.fixtures :as ataru-test-fixtures]))
+            [hakukohderyhmapalvelu.ataru.fixtures :as ataru-test-fixtures])
+  (:import [java.time LocalDateTime ZoneId]
+           [java.time.format DateTimeFormatter]))
 
 
 (use-fixtures :once test-fixtures/with-mock-system)
@@ -248,19 +248,31 @@
           empty?
           (is "Hakukohteita ei pitäisi palautua")))))
   (deftest hakukohderyhma-simple-test
-    (let [datetime-parser (f/formatter "yyyy-MM-dd'T'HH:mm:ss" (t/default-time-zone))
-          latest (f/parse datetime-parser "2024-05-1T16:00:00")
-          second (f/parse datetime-parser "2024-05-1T12:00:00")
-          oldest (f/parse datetime-parser "2024-05-1T11:00:00")
+    (let [datetime-formatter (DateTimeFormatter/ofPattern "yyyy-MM-dd'T'HH:mm:ss")
+          last-modified-formatter (DateTimeFormatter/ofPattern "yyyy-MM-dd'T'HH:mm:ss.SSSXXX")
+          zone-id (ZoneId/systemDefault)
+          latest (-> (LocalDateTime/parse "2024-05-1T16:00:00" datetime-formatter)
+                     (.atZone zone-id)
+                     (.toOffsetDateTime))
+          second (-> (LocalDateTime/parse "2024-05-1T12:00:00" datetime-formatter)
+                     (.atZone zone-id)
+                     (.toOffsetDateTime))
+          oldest (-> (LocalDateTime/parse "2024-05-1T11:00:00" datetime-formatter)
+                     (.atZone zone-id)
+                     (.toOffsetDateTime))
+          expected-latest (.format last-modified-formatter latest)
+          expected-second (.format last-modified-formatter second)
           db-row {:foo "bar"
                   :setting-updated-at second
                   :setting-created-at latest
                   :ryhma-created-at oldest}]
     (testing "viimeisimmän aikaleiman haku"
-      (is (= (str latest) (hakukohderyhmapalvelu.siirtotiedosto.siirtotiedosto-service/resolve-last-modified db-row))))
+      (is (= expected-latest
+             (hakukohderyhmapalvelu.siirtotiedosto.siirtotiedosto-service/resolve-last-modified db-row))))
     (testing "nil-arvoja ei huomioida"
-      (is (= (str second) (hakukohderyhmapalvelu.siirtotiedosto.siirtotiedosto-service/resolve-last-modified
-                      (assoc db-row :setting-created-at nil)))))
+      (is (= expected-second
+             (hakukohderyhmapalvelu.siirtotiedosto.siirtotiedosto-service/resolve-last-modified
+               (assoc db-row :setting-created-at nil)))))
     (testing "palautetaan nil jos rivillä ei yhtään arvoa"
       (is (= "" (hakukohderyhmapalvelu.siirtotiedosto.siirtotiedosto-service/resolve-last-modified
                       (assoc db-row :setting-updated-at nil :setting-created-at nil :ryhma-created-at nil)))))))
