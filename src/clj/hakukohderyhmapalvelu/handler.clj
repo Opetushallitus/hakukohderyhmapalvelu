@@ -95,6 +95,7 @@
 (def ^:private datetime-format "yyyy-MM-dd'T'HH:mm:ss")
 (def ^:private datetime-formatter (DateTimeFormatter/ofPattern datetime-format))
 (def ^:private system-zone (ZoneId/systemDefault))
+(def ^:private epoch-offset-date-time (OffsetDateTime/ofInstant Instant/EPOCH system-zone))
 
 (defn- parse-datetime
   [datetime-str field-desc default]
@@ -175,7 +176,7 @@
                              (if (:superuser session)
                                (let [start (parse-datetime window-start
                                                            "startDatetime"
-                                                           (OffsetDateTime/ofInstant Instant/EPOCH system-zone))
+                                                           epoch-offset-date-time)
                                      end (parse-datetime window-end
                                                          "endDatetime"
                                                          (OffsetDateTime/now system-zone))]
