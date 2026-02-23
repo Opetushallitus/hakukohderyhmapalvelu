@@ -76,7 +76,8 @@
     :rename (dispatch [hakukohderyhma-events/hakukohderyhma-renamed input-value])))
 
 (defn on-delete-button-click [deleted-hakukohderyhma]
-  (dispatch [hakukohderyhma-events/hakukohderyhma-deleted deleted-hakukohderyhma]))
+  (when-let [deleted-oid (:oid deleted-hakukohderyhma)]
+    (dispatch [hakukohderyhma-events/hakukohderyhma-deleted deleted-oid])))
 
 (def trash-can-icon (svg/img-icon "trash-can" {:height "20px"
                                                :width  "16px"

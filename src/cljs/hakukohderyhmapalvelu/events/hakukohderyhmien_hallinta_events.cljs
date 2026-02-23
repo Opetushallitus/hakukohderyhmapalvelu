@@ -169,9 +169,12 @@
 
 (events/reg-event-db-validating
   handle-hakukohderyhma-deletion
-  (fn-traced [db [deleted-oid {:keys [status]}]]
+  (fn-traced [db [deleted-oid body http-status]]
              (let [db-ryhmat (get-in db persisted-hakukohderyhmas)
                    with-deletion (filter #(not= deleted-oid (:oid %)) db-ryhmat)
+                   status (or (:status body)
+                              (when (= http-status 200) api-schemas/StatusDeleted)
+                              (when (= http-status 409) api-schemas/StatusInUse))
                    in-use-message (i18n/get-translation (:lang db) (:translations db) :hakukohderyhma/hakukohderyhma-kaytossa)]
                (condp = status
                  api-schemas/StatusDeleted (-> db
@@ -182,19 +185,23 @@
                                              (assoc-in
                                                alert-events/alert-message-path
                                                in-use-message)
-                                             (assoc-in deletion-confirmation-is-active false))))))
+                                             (assoc-in deletion-confirmation-is-active false))
+                 db))))
 
 (events/reg-event-fx-validating
   hakukohderyhma-deleted
-  (fn-traced [{db :db} [hakukohderyhma]]
-             (let [http-request-id hakukohderyhma-deleted]
+  (fn-traced [{db :db} [hakukohderyhma-or-oid]]
+             (let [deleted-oid (or (:oid hakukohderyhma-or-oid)
+                                   (:value hakukohderyhma-or-oid)
+                                   hakukohderyhma-or-oid)
+                   http-request-id hakukohderyhma-deleted]
                {:db   (update db :requests (fnil conj #{}) http-request-id)
                 :http {:method           :delete
                        :http-request-id  http-request-id
-                       :path             (str "/hakukohderyhmapalvelu/api/hakukohderyhma/" (:oid hakukohderyhma))
+                       :path             (str "/hakukohderyhmapalvelu/api/hakukohderyhma/" deleted-oid)
                        :response-schema  api-schemas/HakukohderyhmaDeleteResponse
-                       :response-handler [handle-hakukohderyhma-deletion (:oid hakukohderyhma)]
-                       :error-handler    [handle-hakukohderyhma-deletion (:oid hakukohderyhma)]}})))
+                       :response-handler [handle-hakukohderyhma-deletion deleted-oid]
+                       :error-handler    [handle-hakukohderyhma-deletion deleted-oid]}})))
 
 (events/reg-event-db-validating
   hakukohderyhma-settings-change-confirmed
