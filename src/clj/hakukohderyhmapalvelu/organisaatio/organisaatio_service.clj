@@ -98,8 +98,11 @@
       (log/info "got response for delete organisaatio: " response)
       ;fixme potentially, for some reason organisaatio-service returns 204 when deleting, used to return 200. Still seems to get deleted. Maybe because of new cas-client?
       ;the organisaatio-service api in question also seems to return 204 when deleting from swagger.
-      (if (or (= 204 status ) (= 200 status))
-        (log/info "Everything seemed to succeed when deleting by oid" oid )
+      ;404 is treated as effectively deleted from our perspective: stale local linkage can still be removed safely.
+      (if (or (= 204 status) (= 200 status) (= 404 status))
+        (if (= 404 status)
+          (log/warn "Organisaatio not found during delete, continuing cleanup for oid" oid)
+          (log/info "Everything seemed to succeed when deleting by oid" oid))
         (let [message (str "Everything most assuredly not okay while deleting organization" oid ". Status " status ", body " body)]
           (log/error message)
           (throw (Exception. message)))))))

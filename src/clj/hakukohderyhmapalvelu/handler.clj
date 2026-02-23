@@ -221,9 +221,16 @@
                                  400 {:body schema/HakukohderyhmaDeleteResponse}}
                     :parameters {:path {:oid s/Str}}
                     :handler    (fn [{session :session {{oid :oid} :path} :parameters}]
-                                  (condp = (hakukohderyhma/delete hakukohderyhma-service session oid)
-                                    schema/StatusDeleted (response/ok {:status schema/StatusDeleted})
-                                    schema/StatusInUse (response/conflict {:status schema/StatusInUse})))}}]
+                                  (try
+                                    (case (hakukohderyhma/delete hakukohderyhma-service session oid)
+                                      schema/StatusDeleted (response/ok {:status schema/StatusDeleted})
+                                      schema/StatusInUse (response/conflict {:status schema/StatusInUse})
+                                      (do
+                                        (log/error "Unexpected delete status for hakukohderyhma oid" oid)
+                                        (response/conflict {:status schema/StatusInUse})))
+                                    (catch Exception e
+                                      (log/error e "Failed to delete hakukohderyhma oid" oid)
+                                      (response/conflict {:status schema/StatusInUse}))))}}]
          ["/hakukohteet"
           {:put {:middleware auth
                  :tags       ["Hakukohderyhmä"]
