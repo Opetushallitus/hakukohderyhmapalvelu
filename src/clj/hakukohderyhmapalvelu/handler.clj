@@ -222,12 +222,13 @@
                     :parameters {:path {:oid s/Str}}
                     :handler    (fn [{session :session {{oid :oid} :path} :parameters}]
                                   (try
-                                    (case (hakukohderyhma/delete hakukohderyhma-service session oid)
-                                      schema/StatusDeleted (response/ok {:status schema/StatusDeleted})
-                                      schema/StatusInUse (response/conflict {:status schema/StatusInUse})
-                                      (do
-                                        (log/error "Unexpected delete status for hakukohderyhma oid" oid)
-                                        (response/conflict {:status schema/StatusInUse})))
+                                    (let [delete-status (hakukohderyhma/delete hakukohderyhma-service session oid)]
+                                      (condp = delete-status
+                                        schema/StatusDeleted (response/ok {:status schema/StatusDeleted})
+                                        schema/StatusInUse (response/conflict {:status schema/StatusInUse})
+                                        (do
+                                          (log/error "Unexpected delete status for hakukohderyhma oid" oid ", status was:" delete-status)
+                                          (response/conflict {:status schema/StatusInUse}))))
                                     (catch Exception e
                                       (log/error e "Failed to delete hakukohderyhma oid" oid)
                                       (response/conflict {:status schema/StatusInUse}))))}}]
