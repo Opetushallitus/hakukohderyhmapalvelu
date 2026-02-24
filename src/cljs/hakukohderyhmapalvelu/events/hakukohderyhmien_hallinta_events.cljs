@@ -167,6 +167,7 @@
   (fn-traced [db [is-visible]]
              (assoc-in db deletion-confirmation-is-active is-visible)))
 
+; hakukohderyhmän poistaminen
 (events/reg-event-db-validating
   handle-hakukohderyhma-deletion
   (fn-traced [db [deleted-oid {:keys [status]}]]
