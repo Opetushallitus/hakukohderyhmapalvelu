@@ -11,7 +11,7 @@
     <url>https://github.com/Opetushallitus/hakukohderyhmapalvelu</url>
     <connection>scm:git:git://github.com/Opetushallitus/hakukohderyhmapalvelu.git</connection>
     <developerConnection>scm:git:ssh://git@github.com/Opetushallitus/hakukohderyhmapalvelu.git</developerConnection>
-    <tag>7262d5940290b94e9932984df99a38cbdc3b1a00</tag>
+    <tag>2eca2829e56dba4277b58b6cc66d2376f5ab0bdd</tag>
   </scm>
   <build>
     <sourceDirectory>src/clj</sourceDirectory>
@@ -133,11 +133,6 @@
         <version>1.6.0</version>
       </dependency>
       <dependency>
-        <groupId>com.amazonaws</groupId>
-        <artifactId>aws-java-sdk-s3</artifactId>
-        <version>1.12.785</version>
-      </dependency>
-      <dependency>
         <groupId>org.eclipse.jetty</groupId>
         <artifactId>jetty-server</artifactId>
         <version>9.4.57.v20241219</version>
@@ -155,7 +150,7 @@
       <dependency>
         <groupId>io.undertow</groupId>
         <artifactId>undertow-core</artifactId>
-        <version>2.3.20.Final</version>
+        <version>2.3.21.Final</version>
       </dependency>
     </dependencies>
   </dependencyManagement>
@@ -380,6 +375,11 @@
       <groupId>fi.vm.sade.dokumenttipalvelu</groupId>
       <artifactId>dokumenttipalvelu</artifactId>
       <version>6.15-SNAPSHOT</version>
+    </dependency>
+    <dependency>
+      <groupId>opiskelijavalinnat-utils</groupId>
+      <artifactId>clj-ring-db-cas-session</artifactId>
+      <version>1.0.0-SNAPSHOT</version>
     </dependency>
     <dependency>
       <groupId>day8.re-frame</groupId>
