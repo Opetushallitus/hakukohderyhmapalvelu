@@ -70,7 +70,7 @@
                     :liitteiden-muokkauksen-takaraja-hakukohtainen               {:fi "Hakukohtainen"
                                                                                   :sv "Ansökningsspecifik"}
                     :liitteiden-muokkauksen-takaraja-hakemuskohtainen            {:fi "Hakemuskohtainen"
-                                                                                  :sv "Ansökningsspecifik"}
+                                                                                  :sv "Sökandespecifik"}
                     :liitteiden-muokkauksen-takaraja-vuorokausina                {:fi "Takaraja vuorokausina ja kellonaika"
                                                                                   :sv "Gräns i dygn och klockslag"}
                     :ilmoittautuminen-paattyy                                    {:fi "Ilmoittautuminen päättyy"
