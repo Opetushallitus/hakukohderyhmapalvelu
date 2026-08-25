@@ -227,11 +227,11 @@
                                                 :on-clear-fn  #(dispatch [hakukohderyhma-events/hakukohderyhma-selected nil])
                                                 :is-disabled  (empty? @hakukohderyhmas)
                                                 :is-loading   @is-loading
-                                                :placeholder  "Hakukohderyhmä"
+                                                :placeholder  @(subscribe [:translation :hakukohderyhma/hakukohderyhma])
                                                 :value        @selected}]]
       :input-id          input-id
       :style-prefix      style-prefix
-      :label             "Hakukohderyhmät"}]))
+      :label             @(subscribe [:translation :hakukohderyhma/hakukohderyhmat])}]))
 
 (def ^:private button-row-style
   {:display "grid"
@@ -289,7 +289,7 @@
 (defn hakukohderyhmien-hallinta-panel []
   [p/panel
    {:cypressid "hakukohderyhmapalvelu-panel"}
-   "Hakukohderyhmien hallinta"
+   @(subscribe [:translation :hakukohderyhma/hakukohderyhmien-hallinta])
    [:div (stylefy/use-style hakukohderyhmapalvelu-grid-styles)
     [haun-tiedot-panel/haku-search]
     [hakukohderyhma-create-and-rename-input]

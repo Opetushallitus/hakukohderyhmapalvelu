@@ -24,7 +24,17 @@
                     :arkistoitu             {:fi "Arkistoitu"
                                              :sv "Arkiverad"}
                     :http-403               {:fi "Ei oikeuksia"
-                                             :sv "Inga rättigheter"}}
+                                             :sv "Inga rättigheter"}
+                    :klo                    {:fi "klo"
+                                             :sv "kl."}
+                    :selain-ei-tue          {:fi "Käytetty selainversio ei tue elementtiä!"
+                                             :sv "Den webbläsarversion som används stöder inte elementet!"}
+                    :ohjausparametrien-haku-epaonnistui
+                                            {:fi "Ohjausparametrien hakeminen epäonnistui haulle"
+                                             :sv "Hämtningen av styrparametrar misslyckades för ansökan"}
+                    :ohjausparametrien-tallennus-epaonnistui
+                                            {:fi "Ohjausparametrien tallentaminen epäonnistui haulle"
+                                             :sv "Sparandet av styrparametrar misslyckades för ansökan"}}
    :haun-asetukset {:valintatulokset-valmiina-viimeistaan                        {:fi "Valintatulokset valmiina viimeistään"
                                                                                   :sv "Antagningsresultaten klara senast"}
                     :useita-hakemuksia                                           {:fi "Vain yksi hakemus -rajoitus"
@@ -144,5 +154,11 @@
                     :jyemp                        {:fi "Jos Ylioppilastutkinto tai kansainvälinen ylioppilastutkinto, ei muiden tutkintojen liitepyyntöjä"
                                                    :sv "Om studentexamen eller internationell motsvarighet, inga bilagekrav för andra examina"}
                     :yo-amm-autom-hakukelpoisuus  {:fi "YO tai Ammatillinen tutkinto antaa automaattisen hakukelpoisuuden"
-                                                   :sv "Studentexamen eller yrkesexamen ger automatisk behörighet"}}
+                                                   :sv "Studentexamen eller yrkesexamen ger automatisk behörighet"}
+                    :hakukohderyhma               {:fi "Hakukohderyhmä"
+                                                   :sv "Ansökningsmålsgrupp"}
+                    :hakukohderyhmat              {:fi "Hakukohderyhmät"
+                                                   :sv "Ansökningsmålsgrupper"}
+                    :hakukohderyhmien-hallinta    {:fi "Hakukohderyhmien hallinta"
+                                                   :sv "Hantering av ansökningsmålsgrupper"}}
    })

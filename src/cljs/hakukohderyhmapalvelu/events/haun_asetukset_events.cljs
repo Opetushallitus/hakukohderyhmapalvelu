@@ -3,25 +3,7 @@
             [hakukohderyhmapalvelu.macros.event-macros :as events]
             [hakukohderyhmapalvelu.urls :as urls]
             [day8.re-frame.tracing :refer-macros [fn-traced]]
-            [hakukohderyhmapalvelu.i18n.utils :as i18n-utils]
-            [clojure.string :as str]))
-
-(events/reg-event-fx-validating
- :haun-asetukset/get-user-rights
- (fn-traced [_ _]
-            (let [url (urls/get-url :kayttooikeus-service.me)]
-              {:http {:http-request-id  :haun-asetukset/get-user-rights
-                      :method           :get
-                      :path             url
-                      :response-handler [:haun-asetukset/handle-get-user-rights]
-                      :body             {}}})))
-
-(events/reg-event-db-validating
- :haun-asetukset/handle-get-user-rights
- (fn-traced [db [response]]
-            (->> (:groups response)
-                 (filter (fn [right] (str/starts-with? right "APP_HAKUKOHDERYHMAPALVELU")))
-                 (assoc db :user-groups))))
+            [hakukohderyhmapalvelu.i18n.utils :as i18n-utils]))
 
 (events/reg-event-fx-validating
   :haun-asetukset/get-forms
@@ -98,36 +80,45 @@
           (assoc :save-status {:changes-saved true
                                 :errors []})))))
 
+(defn- error-detail [db response-code]
+  (cond
+    (= response-code 403) (i18n-utils/get-translation (:lang db) (:translations db) :yleiset/http-403)
+    :else (when response-code (str "http " response-code))))
+
+(defn- error-message [db tx-key haku-oid response-code]
+  (let [detail (error-detail db response-code)]
+    (str (i18n-utils/get-translation (:lang db) (:translations db) tx-key)
+         " " haku-oid
+         (when detail (str " (" detail ")")))))
+
 (events/reg-event-db-validating
   :haun-asetukset/handle-get-ohjausparametrit-error
   (fn-traced [db [haku-oid ohjausparametrit response-code]]
-             (let [error-message (cond
-                                   (= response-code 403) (i18n-utils/get-translation (:lang db) (:translations db) :yleiset/http-403)
-                                   :else (when response-code (str "http " response-code)))]
-               (js/console.log "Virhe haettaessa ohjausparametreja: " + ohjausparametrit)
+             (js/console.log "Virhe haettaessa ohjausparametreja: " + ohjausparametrit)
+             (let [message (error-message db
+                                          :yleiset/ohjausparametrien-haku-epaonnistui
+                                          haku-oid
+                                          response-code)]
                (-> db
                    (assoc-in [:ohjausparametrit haku-oid] {})
                    (update :save-status (fn [status] (-> status
                                                          (assoc :changes-saved true)
-                                                         (update :errors (fn [errors] (conj errors {:message
-                                                                                                    (str "Ohjausparametrien hakeminen haulle " haku-oid " epäonnistui"
-                                                                                                         (when error-message (str "(" error-message ")")))}))))))))))
+                                                         (update :errors conj {:message message}))))))))
 
 (events/reg-event-db-validating
   :haun-asetukset/handle-save-ohjausparametrit-error
   (fn-traced [db [haku-oid body response-code]]
-             (let [error-message (cond
-                                   (= response-code 403) (i18n-utils/get-translation (:lang db) (:translations db) :yleiset/http-403)
-                                   :else (when response-code (str "http " response-code)))]
-               (js/console.log "Virhe tallennettaessa ohjausparametreja: " + body)
+             (js/console.log "Virhe tallennettaessa ohjausparametreja: " + body)
+             (let [message (error-message db
+                                          :yleiset/ohjausparametrien-tallennus-epaonnistui
+                                          haku-oid
+                                          response-code)]
                (-> db
                    (update :ohjausparametrit/save-in-progress
                            (fnil disj #{}) haku-oid)
                    (update :save-status (fn [status] (-> status
                                                          (assoc :changes-saved false)
-                                                         (update :errors (fn [errors] (conj errors {:message
-                                                                                                    (str "Ohjausparametrien tallentaminen haulle " haku-oid " epäonnistui "
-                                                                                                         (when error-message (str "(" error-message ")")))}))))))))))
+                                                         (update :errors conj {:message message}))))))))
 
 (events/reg-event-fx-validating
   :haun-asetukset/set-haun-asetus

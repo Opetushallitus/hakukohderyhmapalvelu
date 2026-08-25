@@ -14,13 +14,20 @@
   (fn-traced [db [locale response]]
              (let [current-translations (:translations db)
                    sync-translation (fn [translations trans-res]
-                                      (let [[namespace-key name-key] (-> trans-res
-                                                                         :key
-                                                                         (str/split #"\."))
+                                      (let [key-parts (-> trans-res
+                                                          :key
+                                                          (str/split #"\."))
+                                            [namespace-key name-key] key-parts
                                             value (:value trans-res)]
-                                        (assoc-in translations
-                                                  (map csk/->kebab-case-keyword [namespace-key name-key locale])
-                                                  value)))
+                                        ;; Lokalisointipalvelussa voi olla avaimia, jotka eivät noudata
+                                        ;; "nimiavaruus.avain"-muotoa. Ne ohitetaan, jotta yksi
+                                        ;; virheellinen avain ei hylkää koko käännöspäivitystä.
+                                        (if (or (not= 2 (count key-parts))
+                                                (not (string? value)))
+                                          translations
+                                          (assoc-in translations
+                                                    (map csk/->kebab-case-keyword [namespace-key name-key locale])
+                                                    value))))
                    synced-translations (reduce
                                          sync-translation
                                          current-translations

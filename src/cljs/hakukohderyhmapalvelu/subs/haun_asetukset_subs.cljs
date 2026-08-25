@@ -14,10 +14,17 @@
   [s]
   (f/parse-local datetime-in-fmt s))
 
-(defn- iso->finnish
-  [s]
-  (let [out-fmt (f/formatter "dd.MM.yyyy 'klo' HH.mm.ss")]
-    (f/unparse-local out-fmt (f/parse-local datetime-in-fmt s))))
+(def ^:private date-out-fmt (f/formatter "dd.MM.yyyy"))
+(def ^:private time-out-fmt (f/formatter "HH.mm.ss"))
+
+(defn- iso->localized
+  "Muotoilee ISO-aikaleiman muotoon 'dd.MM.yyyy <klo> HH.mm.ss', jossa kellonaikaa
+   edeltävä sana tulee käyttäjän asiointikielen mukaisista käännöksistä."
+  [klo s]
+  (let [datetime (f/parse-local datetime-in-fmt s)]
+    (str (f/unparse-local date-out-fmt datetime)
+         " " klo " "
+         (f/unparse-local time-out-fmt datetime))))
 
 (defn- ongoing-period?
   [hakuaika]
@@ -110,12 +117,13 @@
 (re-frame/reg-sub
   :haun-asetukset/hakuajat
   (fn [[_ haku-oid]]
-    [(re-frame/subscribe [:haun-asetukset/haku haku-oid])])
-  (fn [[haku]]
+    [(re-frame/subscribe [:haun-asetukset/haku haku-oid])
+     (re-frame/subscribe [:translation :yleiset/klo])])
+  (fn [[haku klo]]
     (mapv (fn [hakuaika]
-            (merge {:alkaa (iso->finnish (:alkaa hakuaika))}
+            (merge {:alkaa (iso->localized klo (:alkaa hakuaika))}
                    (when (:paattyy hakuaika)
-                     {:paattyy (iso->finnish (:paattyy hakuaika))})))
+                     {:paattyy (iso->localized klo (:paattyy hakuaika))})))
           (:hakuajat haku))))
 
 (re-frame/reg-sub

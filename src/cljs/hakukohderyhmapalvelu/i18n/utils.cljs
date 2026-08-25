@@ -9,10 +9,9 @@
 
 (defn- order-for-lang [lang]
   (case lang
-    :fi fi-order
     :sv sv-order
     :en en-order
-    :default fi-order))
+    fi-order))
 
 (defn get-with-fallback [m lang]
   (->> (order-for-lang lang)
@@ -60,4 +59,4 @@
 (defn get-translation [lang translations tx-key]
   (let [[namespace-key name-key] (->> ((juxt namespace name) tx-key)
                                       (map #(-> % csk/->kebab-case keyword)))]
-    (-> translations namespace-key name-key lang)))
+    (-> translations namespace-key name-key (get-with-fallback lang))))

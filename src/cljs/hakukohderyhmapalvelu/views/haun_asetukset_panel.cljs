@@ -12,6 +12,7 @@
             [hakukohderyhmapalvelu.styles.styles-colors :as colors]
             [hakukohderyhmapalvelu.styles.layout-styles :as layout]
             [hakukohderyhmapalvelu.urls :as urls]
+            [hakukohderyhmapalvelu.i18n.utils :as i18n-utils]
             [clojure.string :as string]
             [reagent.core :as reagent]
             [re-frame.core :as re-frame]
@@ -273,7 +274,7 @@
                                    (reset! local-end-datetime value)))}
                    @local-end-datetime
                    (assoc :value @local-end-datetime))]]]
-        [:div "(placeholder) Käytetty selainversio ei tue elementtiä!"])))
+        [:div @(re-frame/subscribe [:translation :yleiset/selain-ei-tue])])))
 
 (defn- haun-asetukset-date-and-time [{:keys [id-prefix
                                              value]}]
@@ -673,7 +674,7 @@
           [:span
            {:id              form-name-id
             :aria-labelledby form-name-label-id}
-           (get-in form [:name lang])
+           (i18n-utils/get-with-fallback (:name form) lang)
            " "]
           [a/link
            {:href             (urls/get-url :lomake-editori.editor (:key form))
@@ -703,7 +704,7 @@
                                   (not (nil? @(re-frame/subscribe [:haun-asetukset/haun-asetus haku-oid :haun-asetukset/liitteiden-muokkauksen-hakemuskohtainen-takaraja-kaytossa]))))
         id-prefix (str "haun-asetukset-" haku-oid)
         header-id (str id-prefix "-header")
-        haku-name (-> haku :nimi lang)
+        haku-name (i18n-utils/get-with-fallback (:nimi haku) lang)
         yhteishaku? (string/starts-with? (or (:hakutapaKoodiUri haku) "")
                                          "hakutapa_01")]
     [:section
