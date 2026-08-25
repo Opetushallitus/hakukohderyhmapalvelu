@@ -130,6 +130,13 @@ describe('Hakukohderyhmäpalvelu', () => {
       responseAlias: 'hakukohderyhmapalvelu-get-koulutustyypit-response',
     })
 
+    cy.mockBrowserRequest({
+      method: 'GET',
+      path: 'http://localhost/kayttooikeus-service/cas/me',
+      fixturePath: 'kayttooikeus-service/get-me-response.json',
+      responseAlias: 'kayttooikeus-service-get-me-response',
+    })
+
     mockLocalizationRoute('fi')
     mockLocalizationRoute('sv')
     mockLocalizationRoute('en')

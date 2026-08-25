@@ -19,6 +19,14 @@ describe('Haun asetukset', () => {
       .then(() =>
         cy.mockBrowserRequest({
           method: 'GET',
+          path: 'http://localhost/kayttooikeus-service/cas/me',
+          fixturePath: 'kayttooikeus-service/get-me-response.json',
+          responseAlias: 'kayttooikeus-service-get-me-response',
+        }),
+      )
+      .then(() =>
+        cy.mockBrowserRequest({
+          method: 'GET',
           path: `http://localhost/kouta-internal/haku/${hakuOid}`,
           fixturePath: 'kouta-internal/get-haku-response.json',
           responseAlias: 'kouta-internal-get-haku-response',
