@@ -15,7 +15,7 @@ describe('Hakukohderyhmäpalvelu', () => {
   const mockLocalizationRoute = (locale: string) => {
     cy.mockBrowserRequest({
       method: 'GET',
-      path: `http://localhost/lokalisointi/cxf/rest/v1/localisation?category=hakukohderyhmapalvelu&locale=${locale}`,
+      path: `http://localhost/lokalisointi/tolgee/hakukohderyhmapalvelu/${locale}.json`,
       fixturePath: `hakukohderyhmapalvelu/get-translations-${locale}.json`,
       responseAlias: `hakukohderyhmapalvelu-get-${locale}-translations-response`,
     })
@@ -165,7 +165,7 @@ describe('Hakukohderyhmäpalvelu', () => {
         translations => {
           cy.get(hh.haunHakutoimintoTitleSelector).should(
             'have.text',
-            translations[0].value,
+            translations['hakukohderyhma.haku'],
           )
         },
       )

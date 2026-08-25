@@ -44,16 +44,11 @@
    :jos-ylioppilastutkinto-ei-muita-pohjakoulutusliitepyyntoja s/Bool
    :yo-amm-autom-hakukelpoisuus s/Bool})
 
-;; Lokalisointipalvelu palauttaa :id:n ja monet muut kentät null-arvoisina.
-;; Skeema koskee koko vastauslistaa, joten liian tiukka kentän tyyppi hylkäisi
-;; kaikki käännökset yhden kentän takia.
-(s/defschema LocalizationEntity
-  {:id       (s/maybe s/Int)
-   :category s/Str
-   :key      s/Str
-   :locale   (s/enum "fi" "sv" "en")
-   :value    (s/maybe s/Str)
-   s/Any     s/Any})
+;; Lokalisointipalvelun tolgee-rajapinnan vastaus on litteä kartta, jonka avaimet
+;; ovat muodossa "nimiavaruus.avain". Arvo sallitaan nil:nä, jotta yksittäinen
+;; puutteellinen käännös ei hylkää koko vastausta.
+(s/defschema Localizations
+  {s/Keyword (s/maybe s/Str)})
 
 (s/defschema Hakukohderyhma
   (st/merge Organisaatio

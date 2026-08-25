@@ -15,13 +15,9 @@
 (events/reg-event-db-validating
   handle-get-remote-translations
   (fn-traced [db [locale response]]
-             (let [current-translations (:translations db)
-                   sync-translation (fn [translations trans-res]
-                                      (let [key-parts (-> trans-res
-                                                          :key
-                                                          (str/split #"\."))
-                                            [namespace-key name-key] key-parts
-                                            value (:value trans-res)]
+             (let [sync-translation (fn [translations tx-key value]
+                                      (let [key-parts (-> tx-key name (str/split #"\."))
+                                            [namespace-key name-key] key-parts]
                                         ;; Lokalisointipalvelussa voi olla avaimia, jotka eivät noudata
                                         ;; "nimiavaruus.avain"-muotoa. Ne ohitetaan, jotta yksi
                                         ;; virheellinen avain ei hylkää koko käännöspäivitystä.
@@ -30,14 +26,14 @@
                                           (do
                                             (js/console.warn
                                               (str "Ohitettiin lokalisointipalvelun käännös, jota ei voi tulkita: "
-                                                   (pr-str (:key trans-res)) " = " (pr-str value)))
+                                                   (pr-str (name tx-key)) " = " (pr-str value)))
                                             translations)
                                           (assoc-in translations
                                                     (map csk/->kebab-case-keyword [namespace-key name-key locale])
                                                     value))))
-                   synced-translations (reduce
+                   synced-translations (reduce-kv
                                          sync-translation
-                                         current-translations
+                                         (:translations db)
                                          response)]
                (assoc db :translations synced-translations))))
 
@@ -54,13 +50,10 @@
   get-remote-translations
   (fn-traced [_ [locale]]
              (let [request-id (keyword (str get-remote-translations "-" (name locale)))
-                   url (str (urls/get-url :lokalisointi-service.baseurl)
-                            "/lokalisointi/cxf/rest/v1/localisation")]
+                   url (urls/get-url :lokalisointi-service.translations (name locale))]
                {:http {:method           :get
                        :http-request-id  request-id
                        :path             url
-                       :search-params    [[:category "hakukohderyhmapalvelu"]
-                                          [:locale (name locale)]]
-                       :response-schema  [api-schemas/LocalizationEntity]
+                       :response-schema  api-schemas/Localizations
                        :response-handler [handle-get-remote-translations locale]
                        :error-handler    [handle-get-remote-translations-error locale]}})))
