@@ -17,10 +17,10 @@ jobs:
     steps:
       - uses: actions/checkout@v4
 
-      - name: Set up JDK 11
+      - name: Set up JDK 21
         uses: actions/setup-java@v4
         with:
-          java-version: '11'
+          java-version: '21'
           distribution: 'corretto'
 
       - uses: pnpm/action-setup@v4
@@ -33,7 +33,7 @@ jobs:
       - name: Install clojure tools
         uses: DeLaGuardo/setup-clojure@12.5
         with:
-          lein: 2.9.3
+          lein: 2.11.2
 
       - uses: szenius/set-timezone@v1.2
         with:
@@ -83,7 +83,7 @@ jobs:
     uses: Opetushallitus/.github/.github/workflows/push-scan-java-ecr.yml@main
     with:
       application: hakukohderyhmapalvelu
-      base-image: baseimage-fatjar-openjdk11:master
+      base-image: baseimage-fatjar-openjdk21:master
       configfolder: oph-configuration
       jarfile: hakukohderyhmapalvelu
     secrets:
@@ -94,7 +94,7 @@ jobs:
     uses: Opetushallitus/.github/.github/workflows/push-scan-java-ecr.yml@main
     with:
       application: ovara-hakukohderyhmapalvelu
-      base-image: baseimage-fatjar-openjdk11:master
+      base-image: baseimage-fatjar-openjdk21:master
       configfolder: ovara-oph-configuration
       jarfile: ovara-hakukohderyhmapalvelu
     secrets:

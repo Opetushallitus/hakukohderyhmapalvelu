@@ -7,12 +7,20 @@
             [hakukohderyhmapalvelu.schemas.class-pred :as p]
             [ring.adapter.jetty :as jetty]
             [schema.core :as s])
-  (:import org.eclipse.jetty.server.handler.ErrorHandler))
+  (:import [org.eclipse.jetty.ee9.nested ContextHandler ErrorHandler]))
 
+;; ring 1.15 ajaa Jetty 12:n ee9-yhteensopivuuskerroksella. ee9.nested.ErrorHandler
+;; säilyttää handleErrorPage-metodin (poistettu Jetty 12:n core-ErrorHandlerista).
 (defonce jetty-error-handler
-  (proxy [ErrorHandler] []
-    (handleErrorPage [_ writer _ _]
-      (.write writer "Internal server error\n"))))
+  (doto (proxy [ErrorHandler] []
+          (handleErrorPage [_ writer _ _]
+            (.write writer "Internal server error\n")))
+    (.setShowStacks false)))
+
+(defn- attach-error-handler! [^org.eclipse.jetty.server.Server server]
+  ;; ee9-kontekstia ei saa suoraan configuratorin Server-oliosta -> haetaan beaneista
+  (doseq [ctx (.getContainedBeans server ContextHandler)]
+    (.setErrorHandler ^ContextHandler ctx jetty-error-handler)))
 
 (defrecord HttpServer [config
                        db
@@ -39,8 +47,7 @@
                                             (assoc :mock-dispatcher mock-dispatcher)))
                                   {:port         port
                                    :join?        false
-                                   :configurator (fn [server]
-                                                   (.setErrorHandler server jetty-error-handler))})]
+                                   :configurator attach-error-handler!})]
       (assoc this :server server)))
 
   (stop [this]
