@@ -6,11 +6,13 @@
             [hakukohderyhmapalvelu.health-check :as health]
             [hakukohderyhmapalvelu.schemas.class-pred :as p]
             [ring.adapter.jetty :as jetty]
-            [schema.core :as s])
+            [schema.core :as s]
+            [taoensso.timbre :as log])
   (:import [org.eclipse.jetty.ee9.nested ContextHandler ErrorHandler]))
 
 ;; ring 1.15 ajaa Jetty 12:n ee9-yhteensopivuuskerroksella. ee9.nested.ErrorHandler
-;; säilyttää handleErrorPage-metodin (poistettu Jetty 12:n core-ErrorHandlerista).
+;; säilyttää handleErrorPage-metodin (poistettu Jetty 12:n core-ErrorHandlerista);
+;; sitä kautta sovellus-500:t vastaavat pelkän "Internal server error" -tekstin.
 (defonce jetty-error-handler
   (doto (proxy [ErrorHandler] []
           (handleErrorPage [_ writer _ _]
@@ -18,9 +20,16 @@
     (.setShowStacks false)))
 
 (defn- attach-error-handler! [^org.eclipse.jetty.server.Server server]
-  ;; ee9-kontekstia ei saa suoraan configuratorin Server-oliosta -> haetaan beaneista
-  (doseq [ctx (.getContainedBeans server ContextHandler)]
-    (.setErrorHandler ^ContextHandler ctx jetty-error-handler)))
+  ;; sovellus-500:t: ee9-kontekstin ErrorHandler (ei saatavilla suoraan configuratorin
+  ;; Server-oliosta -> haetaan beaneista)
+  (let [contexts (.getContainedBeans server ContextHandler)]
+    (when (empty? contexts)
+      (log/error "Jetty ee9 ContextHandleria ei löytynyt - virhesivut voivat vuotaa stacktracen"))
+    (doseq [ctx contexts]
+      (.setErrorHandler ^ContextHandler ctx jetty-error-handler)))
+  ;; connection-level-virheet (bad message 400/431/505) eivät kulje ee9-kontekstin kautta
+  ;; -> asetetaan myös ytimen ErrorHandler, ettei Jetty-versio vuoda virhesivun footeriin
+  (.setErrorHandler server (org.eclipse.jetty.server.handler.ErrorHandler.)))
 
 (defrecord HttpServer [config
                        db
@@ -45,9 +54,10 @@
                                              :auth-routes-source     auth-routes-source}
                                             (some? mock-dispatcher)
                                             (assoc :mock-dispatcher mock-dispatcher)))
-                                  {:port         port
-                                   :join?        false
-                                   :configurator attach-error-handler!})]
+                                  {:port                 port
+                                   :join?                false
+                                   :send-server-version? false
+                                   :configurator         attach-error-handler!})]
       (assoc this :server server)))
 
   (stop [this]
