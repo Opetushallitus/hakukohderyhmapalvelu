@@ -9,17 +9,30 @@
 
 (defproject hakukohderyhmapalvelu "0.1.0-SNAPSHOT"
   :managed-dependencies [[org.apache.commons/commons-compress "1.21"]
-                         [commons-io "2.14.0"]
-                         [commons-fileupload "1.6.0"]
+                         ;; ring-core 1.15.5 vaatii commons-io 2.21.0; aiempi 2.14.0 rikkoi multipartin
+                         ;; (IllegalAccessError AbstractStreamBuilder.getBufferSize). 2.21.0 sisältää CVE-2024-47554-korjauksen.
+                         [commons-io "2.21.0"]
                          [org.yaml/snakeyaml "2.0"]
                          [com.google.protobuf/protobuf-java "3.25.5"]
                          ;; Tietoturvapäivitykset 2026-09
                          [io.undertow/undertow-core "2.3.25.Final"]
                          [com.fasterxml.jackson.core/jackson-annotations "2.21"]
+                         ;; jackson-core/databind pinnataan 2.21.6:een alempana -> pidä cheshiren (cbor/smile)
+                         ;; ja jsonistan (jsr310) moduulit samassa versiossa, Jackson ei tue sekoitettuja minoreita
+                         [com.fasterxml.jackson.dataformat/jackson-dataformat-cbor ~jackson-version]
+                         [com.fasterxml.jackson.dataformat/jackson-dataformat-smile ~jackson-version]
+                         [com.fasterxml.jackson.datatype/jackson-datatype-jsr310 ~jackson-version]
+                         ;; buddy-auth/-sign -> buddy-core 1.12 pudottaa haavoittuvan *-jdk15on 1.62 -ketjun;
+                         ;; bc-jdk18on pakotetaan 1.85:een (buddy-core pinnaa 1.78.1)
+                         [buddy/buddy-core "1.12.0-430"]
+                         [org.bouncycastle/bcprov-jdk18on ~bouncycastle-version]
+                         [org.bouncycastle/bcpkix-jdk18on ~bouncycastle-version]
+                         [org.bouncycastle/bcutil-jdk18on ~bouncycastle-version]
                          ;; auditlogger -> json-patch tuo 3.11 (CVE-2025-48924)
                          [org.apache.commons/commons-lang3 "3.20.0"]
-                         ;; ring-core -> commons-fileupload2-core 2.0.0-M1 (CVE-2025-48976)
-                         [org.apache.commons/commons-fileupload2-core "2.0.0-M4"]
+                         ;; ring-core 1.15.5 vaatii commons-fileupload2-core 2.0.0-M5 (aiempi M4 rikkoi multipartin:
+                         ;; "No matching method setMaxFileSize"). M5 sisältää CVE-2025-48976-korjauksen kuten M4.
+                         [org.apache.commons/commons-fileupload2-core "2.0.0-M5"]
                          ;; pidä ring-core yhdessä versiossa ring 1.15.5:n kanssa
                          [ring/ring-core "1.15.5"]
                          ;; netty: java-cas 2.3.0 -> AHC 3.0.12 vaatii 4.2.x -> pakota koko perhe (~netty-version)
@@ -107,11 +120,8 @@
                  [environ "1.2.0"]
                  ;; 2.2.0 -> buddy-core 1.6.0 -> bouncycastle *-jdk15on 1.62 (CRITICAL, ei korjausta).
                  ;; 3.0.323 on sama versio jonka clj-ring-db-cas-session muutenkin haluaa.
+                 ;; buddy-core + bc-jdk18on -pinnit :managed-dependencies:ssä (transitiivisia buddy-auth/-sign:n kautta).
                  [buddy/buddy-auth "3.0.323"]
-                 [buddy/buddy-core "1.12.0-430"]
-                 [org.bouncycastle/bcprov-jdk18on ~bouncycastle-version]
-                 [org.bouncycastle/bcpkix-jdk18on ~bouncycastle-version]
-                 [org.bouncycastle/bcutil-jdk18on ~bouncycastle-version]
                  [ring "1.15.5"]
                  [fi.vm.sade.dokumenttipalvelu/dokumenttipalvelu "6.15-SNAPSHOT"]
                  [opiskelijavalinnat-utils/clj-ring-db-cas-session "1.0.0-SNAPSHOT"]
