@@ -11,7 +11,7 @@
     <url>https://github.com/Opetushallitus/hakukohderyhmapalvelu</url>
     <connection>scm:git:git://github.com/Opetushallitus/hakukohderyhmapalvelu.git</connection>
     <developerConnection>scm:git:ssh://git@github.com/Opetushallitus/hakukohderyhmapalvelu.git</developerConnection>
-    <tag>fbab7efe0eaf1933abd942d3a66bc6c30ed2ba01</tag>
+    <tag>dea87056a9635d70218b8958c84e92c0d43c5bbf</tag>
   </scm>
   <build>
     <sourceDirectory>src/clj</sourceDirectory>
@@ -489,7 +489,7 @@
     <dependency>
       <groupId>yesql</groupId>
       <artifactId>yesql</artifactId>
-      <version>0.5.3</version>
+      <version>0.5.4</version>
     </dependency>
     <dependency>
       <groupId>re-frame</groupId>

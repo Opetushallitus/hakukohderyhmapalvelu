@@ -99,7 +99,8 @@
                  [org.clojure/core.match "1.0.0"]
                  [org.postgresql/postgresql "42.7.12"]
                  [com.layerware/hugsql "0.5.1"]
-                 [yesql "0.5.3"]
+                 ;; 0.5.4: clj-ring-db-cas-session tuo tämän, ei pidetä 0.5.3:ssa
+                 [yesql "0.5.4"]
                  [re-frame "1.4.3"]
                  [reagent "1.3.0"]
                  [reagent-utils "0.3.8"]
