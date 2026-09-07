@@ -27,7 +27,7 @@
            :id      (s/maybe s/Int)}})
 
 (s/defschema Lang
-  {:lang (s/enum :fi)})
+  {:lang (s/enum :fi :sv :en)})
 
 (s/defschema LocalizedString
   {(s/optional-key :fi) s/Str
@@ -37,10 +37,10 @@
 (s/defschema Translation
   {s/Keyword LocalizedString})
 
+;; Lokalisointipalvelu voi palauttaa avaimia myös muista nimiavaruuksista kuin
+;; paikallisissa käännöksissä olevista, joten nimiavaruuksia ei rajata.
 (s/defschema Translations
-  {:translations {:yleiset Translation
-                  :haun-asetukset Translation
-                  :hakukohderyhma Translation}})
+  {:translations {s/Keyword Translation}})
 
 (s/defschema Hakukohde
   (st/merge

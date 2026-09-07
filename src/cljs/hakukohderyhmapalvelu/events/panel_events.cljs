@@ -8,7 +8,6 @@
 (defn- make-haun-asetukset-dispatches [{:keys [query]}]
   (let [haku-oid (:haku-oid query)]
     [[:haun-asetukset/get-forms]
-     [:haun-asetukset/get-user-rights]
      [:haun-asetukset/get-haku haku-oid]
      [:haun-asetukset/get-ohjausparametrit haku-oid]]))
 
@@ -16,8 +15,10 @@
   [[haku-events/get-haut]
    [haku-events/get-koulutustyypit]])
 
-(def ^:private translation-dispatches
-  [[transl-events/get-remote-translations :fi]
+;; Molemmat paneelit tarvitsevat käyttäjän asiointikielen ja käännökset.
+(def ^:private common-dispatches
+  [[:core/get-user-info]
+   [transl-events/get-remote-translations :fi]
    [transl-events/get-remote-translations :sv]
    [transl-events/get-remote-translations :en]])
 
@@ -25,10 +26,10 @@
   (when-let [make-fn (case panel
                        :panel/haun-asetukset make-haun-asetukset-dispatches
                        :panel/hakukohderyhmien-hallinta make-hakukohderyhmien-hallinta-dispatches
-                       :default nil)]
+                       nil)]
     (concat
       (make-fn parameters)
-      translation-dispatches)))
+      common-dispatches)))
 
 (events/reg-event-fx-validating
   :panel/set-active-panel

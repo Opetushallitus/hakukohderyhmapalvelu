@@ -18,7 +18,7 @@
                  [timbre-ns-pattern-level "0.1.2"]
                  [com.stuartsierra/component "1.0.0"]
                  [org.flywaydb/flyway-core "7.0.2"]
-                 [fi.vm.sade/auditlogger "9.0.0-SNAPSHOT"]
+                 [fi.vm.sade/auditlogger "9.2.7-SNAPSHOT"]
                  [opiskelijavalinnat-utils/java-cas "2.0.0-SNAPSHOT"]
                  [fi.vm.sade.java-utils/java-properties "0.1.0-SNAPSHOT"]
                  [hikari-cp "2.13.0"]
@@ -111,13 +111,6 @@
            :env            {:config "src/clj/hakukohderyhmapalvelu/config.edn"}}
    }
 
-  :repositories [["releases" {:url           "https://artifactory.opintopolku.fi/artifactory/oph-sade-release-local"
-                              :sign-releases false
-                              :snapshots     false}]
-                 ["snapshots" {:url      "https://artifactory.opintopolku.fi/artifactory/oph-sade-snapshot-local"
-                               :releases {:update :never}}]
-                 ["ext-snapshots" {:url      "https://artifactory.opintopolku.fi/artifactory/ext-snapshot-local"
-                                   :releases {:update :never}}]
-                 ["github" {:url "https://maven.pkg.github.com/Opetushallitus/packages"
+  :repositories [["github" {:url "https://maven.pkg.github.com/Opetushallitus/packages"
                             :username "private-token"
                             :password :env/GITHUB_TOKEN}]])

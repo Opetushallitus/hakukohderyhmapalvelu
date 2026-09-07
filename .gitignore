@@ -24,3 +24,4 @@
 /projectFilesBackup/
 .lsp/
 .clj-kondo/
+.claude/

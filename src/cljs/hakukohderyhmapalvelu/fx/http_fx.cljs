@@ -36,6 +36,12 @@
 (defn- error-status? [status]
   (<= 400 status 599))
 
+(defn- network-error-response [url e]
+  (js/console.error "HTTP-pyyntö osoitteeseen" url "epäonnistui:" e)
+  {:status         0
+   :redirected?    false
+   :network-error? true})
+
 (defn- fetch [{:keys [url
                       method
                       redirect?
@@ -56,26 +62,32 @@
                     "follow"
                     "error")]
     (go
-      (let [response        (<p! (js/fetch
-                                   url'
-                                   (clj->js (cond-> {:method   method'
-                                                     :headers  headers
-                                                     :redirect redirect}
-                                                    (seq body)
-                                                    (assoc
-                                                      :body
-                                                      (->> body clj->js (.stringify js/JSON)))))))
-            status          (.-status response)
-            redirected?     (.-redirected response)
-            response-common {:status      status
-                             :redirected? redirected?}]
-        (try
-          (let [body (<p! (.json response))]
-            (assoc response-common
-                   :body
-                   (js->clj body :keywordize-keys true)))
-          (catch js/Error _
-            response-common))))))
+      ;; js/fetch hylkää promisen verkkovirheessä (esim. palvelu ei vastaa). Ilman
+      ;; tätä käsittelyä hylkäys päätyy käsittelemättömäksi promise-virheeksi eikä
+      ;; pyynnön virhekäsittelijää tai :requests-siivousta koskaan kutsuta.
+      (try
+        (let [response        (<p! (js/fetch
+                                     url'
+                                     (clj->js (cond-> {:method   method'
+                                                       :headers  headers
+                                                       :redirect redirect}
+                                                      (seq body)
+                                                      (assoc
+                                                        :body
+                                                        (->> body clj->js (.stringify js/JSON)))))))
+              status          (.-status response)
+              redirected?     (.-redirected response)
+              response-common {:status      status
+                               :redirected? redirected?}]
+          (try
+            (let [body (<p! (.json response))]
+              (assoc response-common
+                     :body
+                     (js->clj body :keywordize-keys true)))
+            (catch js/Error _
+              response-common)))
+        (catch js/Error e
+          (network-error-response url' e))))))
 
 
 
@@ -119,23 +131,26 @@
                                               :method        :get
                                               :redirect?     true
                                               :search-params search-params})))
-            {body :body status :status} (let [response' (async/<! (do-request))]
-                           (cond (and (:redirected? response')
-                                      (not= method :get))
-                                 (async/<! (do-request))
+            {body :body status :status network-error? :network-error?}
+            (let [response' (async/<! (do-request))]
+              (cond (and (:redirected? response')
+                         (not= method :get))
+                    (async/<! (do-request))
 
-                                 (and cas
-                                      (= (:status response') 401))
-                                 (do
-                                   (async/<! (do-cas-authentication))
-                                   (async/<! (do-request)))
-                                 (and (nil? cas)
-                                      (= (:status response') 401)
-                                      (string? (get-in response' [:body :redirect])))
-                                 (redirect-to-login response')
-                                 :else
-                                 response'))]
+                    (and cas
+                         (= (:status response') 401))
+                    (do
+                      (async/<! (do-cas-authentication))
+                      (async/<! (do-request)))
+                    (and (nil? cas)
+                         (= (:status response') 401)
+                         (string? (get-in response' [:body :redirect])))
+                    (redirect-to-login response')
+                    :else
+                    response'))]
         (try
+          (when network-error?
+            (throw (js/Error. (str "HTTP-request to " path " failed with a network error"))))
           (when (error-status? status)
             (throw (js/Error. (str "HTTP-request failed with status " status))))
           (when response-schema

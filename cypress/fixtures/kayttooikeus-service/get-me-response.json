@@ -1,0 +1,14 @@
+{
+  "oid": "1.2.246.562.24.00000000001",
+  "uid": "cypress_user",
+  "firstName": "Cypress",
+  "lastName": "Testaaja",
+  "lang": "fi",
+  "groups": [
+    "APP_HAKUKOHDERYHMAPALVELU",
+    "APP_HAKUKOHDERYHMAPALVELU_CRUD",
+    "FACTOR_CAS",
+    "LANG_fi",
+    "VIRKAILIJA"
+  ]
+}
