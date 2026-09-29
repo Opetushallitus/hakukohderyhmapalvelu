@@ -705,6 +705,8 @@
         id-prefix (str "haun-asetukset-" haku-oid)
         header-id (str id-prefix "-header")
         haku-name (i18n-utils/get-with-fallback (:nimi haku) lang)
+        jatkuva-haku? (string/starts-with? (or (:hakutapaKoodiUri haku) "") 
+                                           "hakutapa_03")
         yhteishaku? (string/starts-with? (or (:hakutapaKoodiUri haku) "")
                                          "hakutapa_01")]
     [:section
@@ -781,7 +783,7 @@
          {:haku-oid                haku-oid
           :required?               false
           :haun-asetus-key         :haun-asetukset/oppilaitosten-virkailijoiden-valintapalvelun-kaytto-estetty}])
-      (when toinen-aste-yhteishaku?
+      (when (or toinen-aste-yhteishaku? jatkuva-haku?)
         [haun-asetukset-date-time
          {:haku-oid                haku-oid
           :haun-asetus-key         :haun-asetukset/valintaesityksen-hyvaksyminen
