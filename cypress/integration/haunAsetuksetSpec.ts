@@ -3,7 +3,7 @@ import * as checkbox from '../checkbox'
 import * as input from '../input'
 
 describe('Haun asetukset', () => {
-  const hakuOid = '1.2.246.562.29.00000000000000000084'
+  const hakuOid = '1.2.246.562.29.00000000000000000084' // Jatkuva haku
 
   before(() => {
     cy.resetMocks()
@@ -72,5 +72,9 @@ describe('Haun asetukset', () => {
       .getInput('haun-asetukset-hakijakohtainen-paikan-vastaanottoaika-input')
       .should('exist')
       .should('have.value', '5')
+    cy.contains('label', 'Valintaesityksen hyväksyminen')
+      .should('exist')
+      .invoke('attr', 'for')
+      .then(inputId => cy.get(`input#${inputId}`).should('exist'))
   })
 })
