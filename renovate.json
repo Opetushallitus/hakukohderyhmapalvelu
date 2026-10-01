@@ -15,6 +15,11 @@
       "matchManagers": ["github-actions"],
       "matchUpdateTypes": ["major", "minor", "patch"],
       "minimumReleaseAge": "7 days"
+    },
+    {
+      "matchManagers": ["github-actions"],
+      "matchDepTypes": ["!action", "!workflow"],
+      "enabled": false
     }
   ]
 }
