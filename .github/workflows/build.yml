@@ -26,7 +26,7 @@ jobs:
       - uses: pnpm/action-setup@0977fd99725f1db4007ccb2928dbb4e90d06cc86 # v6
         name: Install pnpm
 
-      - uses: actions/setup-node@820762786026740c76f36085b0efc47a31fe5020 # v7
+      - uses: actions/setup-node@949feb2413d6458794dcd2491c4babbbce0c15c1 # v7
         with:
           node-version: latest
 
@@ -81,7 +81,7 @@ jobs:
 
   deploy-container:
     needs: [build]
-    uses: Opetushallitus/.github/.github/workflows/push-scan-java-ecr.yml@50e414f11f3bfc93eae9dcde8e21d9df1096afa5 # main
+    uses: Opetushallitus/.github/.github/workflows/push-scan-java-ecr.yml@5b292079aefb2b8baea7d3d8744e969bf18498e7 # main
     with:
       application: hakukohderyhmapalvelu
       base-image: baseimage-fatjar-openjdk21:master
@@ -92,7 +92,7 @@ jobs:
 
   deploy-ovara-container:
     needs: [ build ]
-    uses: Opetushallitus/.github/.github/workflows/push-scan-java-ecr.yml@50e414f11f3bfc93eae9dcde8e21d9df1096afa5 # main
+    uses: Opetushallitus/.github/.github/workflows/push-scan-java-ecr.yml@5b292079aefb2b8baea7d3d8744e969bf18498e7 # main
     with:
       application: ovara-hakukohderyhmapalvelu
       base-image: baseimage-fatjar-openjdk21:master
