@@ -416,7 +416,11 @@
                           :label-id  label-id
                           :value parsed-orig-value}]}]]))
 
-(defn- liitteiden-muokkauksen-takaraja [{:keys [haku-oid]} yhteishaku?]
+(defn- liitteiden-takarajattomuus-sallittu? [haku]
+  (contains? #{"hakutapa_03" "hakutapa_04"}
+             (first (string/split (or (:hakutapaKoodiUri haku) "") #"#"))))
+
+(defn- liitteiden-muokkauksen-takaraja [{:keys [haku-oid takarajaton-sallittu?]} yhteishaku?]
   (let [id-prefix              (get-id-prefix :haun-asetukset/liitteiden-muokkauksen-takaraja)
         group-id               (str id-prefix "-group")
         label-id               (str id-prefix "-label")
@@ -443,9 +447,21 @@
        :justify-content         "start"}]
      [:div
       (stylefy/use-style {:margin-bottom "16px"}
-      {:role            "radiogroup"
-       :id              group-id
-       :aria-labelledby label-id})
+                         {:role            "radiogroup"
+                          :id              group-id
+                          :aria-labelledby label-id})
+      (when takarajaton-sallittu?
+        [haun-asetukset-input
+         {:input-component
+          [r/radio-with-label
+          {:id          (str id-prefix "-radio-ei-takarajaa")
+           :name        (str :haun-asetukset/liitteiden-muokkauksen-hakemuskohtainen-takaraja-kaytossa)
+           :value       "ei-takarajaa"
+           :checked?    (nil? hakemuskohtainen-raja-kaytossa?)
+           :disabled?   disabled?
+           :label       @(re-frame/subscribe [:translation :haun-asetukset/liitteiden-muokkauksen-takaraja-ei-kaytossa])
+           :on-change   #(re-frame/dispatch [:haun-asetukset/poista-liitteiden-muokkauksen-takaraja haku-oid])
+           :cypressid   (str id-prefix "-radio-ei-takarajaa")}]}])
       [haun-asetukset-radio-button
        {:haku-oid        haku-oid
         :label-key       :haun-asetukset/liitteiden-muokkauksen-takaraja-hakukohtainen
@@ -692,6 +708,7 @@
 (defn- haun-asetukset []
   (let [haku-oid  @(re-frame/subscribe [:haun-asetukset/selected-haku-oid])
         haku      @(re-frame/subscribe [:haun-asetukset/haku haku-oid])
+        takaraja-sallittu? (liitteiden-takarajattomuus-sallittu? haku)
         lang      @(re-frame/subscribe [:lang])
         toinen-aste-yhteishaku? @(re-frame/subscribe [:haun-asetukset/toinen_aste_yhteishaku? haku-oid])
         kk? @(re-frame/subscribe [:haun-asetukset/kk? haku-oid])
@@ -701,7 +718,8 @@
         all-required-filled? (and (or (not @(re-frame/subscribe [:haun-asetukset/haun-asetus haku-oid :haun-asetukset/hakukohteiden-maara-rajoitettu]))
                                       (not (nil? @(re-frame/subscribe [:haun-asetukset/haun-asetus haku-oid :haun-asetukset/hakukohteiden-maara-rajoitus]))))
                                   (not (nil? @(re-frame/subscribe [:haun-asetukset/haun-asetus haku-oid :haun-asetukset/hakukierros-paattyy])))
-                                  (not (nil? @(re-frame/subscribe [:haun-asetukset/haun-asetus haku-oid :haun-asetukset/liitteiden-muokkauksen-hakemuskohtainen-takaraja-kaytossa]))))
+                                  (or takaraja-sallittu?
+                                      (some? @(re-frame/subscribe [:haun-asetukset/haun-asetus haku-oid :haun-asetukset/liitteiden-muokkauksen-hakemuskohtainen-takaraja-kaytossa]))))
         id-prefix (str "haun-asetukset-" haku-oid)
         header-id (str id-prefix "-header")
         haku-name (i18n-utils/get-with-fallback (:nimi haku) lang)
@@ -755,7 +773,8 @@
       [haun-asetukset-sijoittelu
        {:haku-oid haku-oid}]
       [liitteiden-muokkauksen-takaraja
-       {:haku-oid haku-oid} yhteishaku?]
+       {:haku-oid haku-oid
+        :takarajaton-sallittu? takaraja-sallittu?} yhteishaku?]
       [haun-asetus-aikavali-container
        {:haku-oid         haku-oid
         :required?        false

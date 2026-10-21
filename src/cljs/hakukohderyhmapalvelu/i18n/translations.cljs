@@ -81,6 +81,8 @@
                                                                                   :sv "Ansökningsspecifik"}
                     :liitteiden-muokkauksen-takaraja-hakemuskohtainen            {:fi "Hakemuskohtainen"
                                                                                   :sv "Sökandespecifik"}
+                    :liitteiden-muokkauksen-takaraja-ei-kaytossa                 {:fi "Ei käytössä takarajaa"
+                                                                                  :sv "Ingen tidsgräns"}
                     :liitteiden-muokkauksen-takaraja-vuorokausina                {:fi "Takaraja vuorokausina ja kellonaika"
                                                                                   :sv "Gräns i dygn och klockslag"}
                     :ilmoittautuminen-paattyy                                    {:fi "Ilmoittautuminen päättyy"
