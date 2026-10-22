@@ -155,7 +155,7 @@
       {:input-component [checkbox-fn
                          {:id              checkbox-id
                           :checked?        checked?
-                          :disabled?       (or disabled? additional-disabled?)
+                          :disabled?       (boolean (or disabled? additional-disabled?))
                           :on-change       (fn []
                                              (re-frame/dispatch [:haun-asetukset/set-haun-asetus
                                                                  haku-oid
@@ -182,7 +182,7 @@
                           :name            (str haun-asetus-key)
                           :value           value
                           :checked?        (= value (str selected-value))
-                          :disabled?       (or @(re-frame/subscribe [:haun-asetukset/haun-asetukset-disabled? haku-oid]) disabled?)
+                          :disabled?       (boolean (or @(re-frame/subscribe [:haun-asetukset/haun-asetukset-disabled? haku-oid]) disabled?))
                           :label           (or label "<no translation>")
                           :on-change       (fn []
                                              (re-frame/dispatch [:haun-asetukset/set-haun-asetus
