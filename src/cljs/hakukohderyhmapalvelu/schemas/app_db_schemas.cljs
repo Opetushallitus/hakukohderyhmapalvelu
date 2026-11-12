@@ -153,6 +153,7 @@
    (s/optional-key :sijoittelu)                   s/Bool
    (s/optional-key :synteettisetHakemukset)       s/Bool
    (s/optional-key :synteettisetLomakeavain)      s/Str
+   (s/optional-key :liitteidenMuokkausIlmanTakarajaa) s/Bool
    (s/optional-key :liitteidenMuokkauksenHakemuskohtainenTakarajaKaytossa) s/Bool
    (s/optional-key :liitteidenMuokkauksenHakemuskohtainenTakarajaPaivaa) s/Int
    (s/optional-key :liitteidenMuokkauksenHakemuskohtainenTakarajaKellonaika) s/Str

@@ -11,6 +11,7 @@ describe('Liitteiden muokkauksen takaraja (OY-5822)', () => {
   const asetuksetUrl = `/hakukohderyhmapalvelu/haun-asetukset?hakuOid=${hakuOid}`
   const eiTakarajaa =
     '[cypressid="haun-asetukset-liitteiden-muokkauksen-takaraja-radio-ei-takarajaa-input"]'
+  const ilmanTakarajaa = { liitteidenMuokkausIlmanTakarajaa: true }
   const save = '[cypressid="save-ohjausparametrit"]'
   const priorisointi =
     '[cypressid="haun-asetukset-jarjestetyt-hakutoiveet-checkbox"][role="checkbox"]'
@@ -50,6 +51,7 @@ describe('Liitteiden muokkauksen takaraja (OY-5822)', () => {
   const avaaAsetukset = (
     hakutapa: string,
     takaraja: Record<string, unknown> = {},
+    parametritPuuttuvat = false,
   ) => {
     cy.mockBrowserRequest({
       method: 'GET',
@@ -82,7 +84,11 @@ describe('Liitteiden muokkauksen takaraja (OY-5822)', () => {
           ...takaraja,
         }
         cy.route2('GET', parametriUrl, request => {
-          request.reply({ body: parametrit })
+          request.reply(
+            parametritPuuttuvat
+              ? { statusCode: 404, body: '' }
+              : { body: parametrit },
+          )
         }).as('getParametrit')
         cy.route2('POST', parametriUrl, request => {
           parametrit = parseBody(request.body)
@@ -103,17 +109,39 @@ describe('Liitteiden muokkauksen takaraja (OY-5822)', () => {
       avaaAsetukset(koodi)
       cy.get(eiTakarajaa).should(sallittu ? 'exist' : 'not.exist')
       if (sallittu) {
-        cy.get(eiTakarajaa).should('have.attr', 'aria-checked', 'true')
-      } else {
-        cy.get(priorisointi).click()
-        cy.get(save).should('be.disabled')
+        cy.get(eiTakarajaa).should('have.attr', 'aria-checked', 'false')
       }
+      cy.get(priorisointi).click()
+      cy.get(save).should('be.disabled')
     })
 
     if (sallittu) {
+      it(`Ei valitse takarajattomuutta, kun ohjausparametrit puuttuvat: ${nimi}`, () => {
+        avaaAsetukset(koodi, {}, true)
+        cy.get(eiTakarajaa).should('have.attr', 'aria-checked', 'false')
+        cy.get(save).should('be.disabled')
+      })
+
+      it(`Tunnistaa vanhan PH_LMT-dokumentin hakukohtaiseksi: ${nimi}`, () => {
+        avaaAsetukset(koodi, { PH_LMT: { value: 9 } })
+        cy.get(eiTakarajaa).should('have.attr', 'aria-checked', 'false')
+        input.getInput(takarajaInput).should('have.value', '9')
+      })
+
+      it(`Edellyttää valintaa myös takarajattomuuslipun ollessa false: ${nimi}`, () => {
+        avaaAsetukset(koodi, { liitteidenMuokkausIlmanTakarajaa: false })
+        cy.get(eiTakarajaa).should('have.attr', 'aria-checked', 'false')
+        cy.get(priorisointi).click()
+        cy.get(save).should('be.disabled')
+      })
+
       it(`Tallentaa muut asetukset ilman liitteiden takarajaa: ${nimi}`, () => {
-        avaaAsetukset(koodi).then(muutParametrit => {
-          const expected = { ...muutParametrit, jarjestetytHakutoiveet: true }
+        avaaAsetukset(koodi, ilmanTakarajaa).then(muutParametrit => {
+          const expected = {
+            ...muutParametrit,
+            ...ilmanTakarajaa,
+            jarjestetytHakutoiveet: true,
+          }
           cy.get(priorisointi).click()
           cy.get(save).should('not.be.disabled').click()
           cy.wait('@saveParametrit')
@@ -131,7 +159,61 @@ describe('Liitteiden muokkauksen takaraja (OY-5822)', () => {
         })
       })
 
+      it(`Tallentaa nimenomaisen takarajattomuusvalinnan tyhjään takaraja-asetukseen: ${nimi}`, () => {
+        avaaAsetukset(koodi).then(muutParametrit => {
+          const expected = { ...muutParametrit, ...ilmanTakarajaa }
+          cy.get(eiTakarajaa).click()
+          cy.get(save).should('not.be.disabled').click()
+          cy.wait('@saveParametrit')
+            .its('request.body')
+            .then(parseBody)
+            .should('deep.equal', expected)
+          cy.wait('@getParametrit')
+          cy.reload()
+          cy.wait('@getParametrit')
+          cy.get(eiTakarajaa).should('have.attr', 'aria-checked', 'true')
+        })
+      })
+
       takarajat.forEach(({ nimi: takarajaNimi, parametrit }) => {
+        it(`Poistaa takarajattomuuslipun takarajaa valittaessa: ${nimi}, ${takarajaNimi}`, () => {
+          avaaAsetukset(koodi, ilmanTakarajaa).then(muutParametrit => {
+            const hakemuskohtainen = takarajaNimi === 'hakemuskohtainen'
+            const expected = {
+              ...muutParametrit,
+              liitteidenMuokkauksenHakemuskohtainenTakarajaKaytossa: hakemuskohtainen,
+              ...(hakemuskohtainen
+                ? {
+                    liitteidenMuokkauksenHakemuskohtainenTakarajaPaivaa: 7,
+                    liitteidenMuokkauksenHakemuskohtainenTakarajaKellonaika:
+                      '15:00',
+                  }
+                : {
+                    PH_LMT: { value: 7 },
+                    liitteidenMuokkauksenHakukohtainenTakarajaKellonaika:
+                      '15:00',
+                  }),
+            }
+            cy.get(
+              `[cypressid="haun-asetukset-liitteiden-muokkauksen-hakemuskohtainen-takaraja-kaytossa-radio-${hakemuskohtainen}-input"]`,
+            ).click()
+            cy.get(eiTakarajaa).should('have.attr', 'aria-checked', 'false')
+            cy.get(save).should('not.be.disabled').click()
+            cy.wait('@saveParametrit')
+              .its('request.body')
+              .then(parseBody)
+              .should('deep.equal', expected)
+            cy.wait('@getParametrit')
+              .its('response.body')
+              .then(parseBody)
+              .should('deep.equal', expected)
+            cy.reload()
+            cy.wait('@getParametrit')
+            cy.get(eiTakarajaa).should('have.attr', 'aria-checked', 'false')
+            input.getInput(takarajaInput).should('have.value', '7')
+          })
+        })
+
         it(`Poistaa tallennetun takarajan ja säilyttää muut asetukset: ${nimi}, ${takarajaNimi}`, () => {
           avaaAsetukset(koodi, parametrit).then(muutParametrit => {
             cy.get(eiTakarajaa).should('have.attr', 'aria-checked', 'false')
@@ -143,11 +225,11 @@ describe('Liitteiden muokkauksen takaraja (OY-5822)', () => {
             cy.wait('@saveParametrit')
               .its('request.body')
               .then(parseBody)
-              .should('deep.equal', muutParametrit)
+              .should('deep.equal', { ...muutParametrit, ...ilmanTakarajaa })
             cy.wait('@getParametrit')
               .its('response.body')
               .then(parseBody)
-              .should('deep.equal', muutParametrit)
+              .should('deep.equal', { ...muutParametrit, ...ilmanTakarajaa })
             cy.reload()
             cy.wait('@getParametrit')
               .its('response.body')

@@ -3,6 +3,9 @@
 
 (defn haun-asetus-key->ohjausparametri [haun-asetus-key]
   (case haun-asetus-key
+    :haun-asetukset/liitteiden-muokkaus-ilman-takarajaa
+    :liitteidenMuokkausIlmanTakarajaa
+
     :haun-asetukset/liitteiden-muokkauksen-hakemuskohtainen-takaraja-kaytossa
     :liitteidenMuokkauksenHakemuskohtainenTakarajaKaytossa
 
@@ -91,7 +94,8 @@
 
 (defn- boolean-value? [haun-asetus-key _]
   (some #{haun-asetus-key}
-        #{:haun-asetukset/hakukohteiden-maara-rajoitettu
+        #{:haun-asetukset/liitteiden-muokkaus-ilman-takarajaa
+          :haun-asetukset/hakukohteiden-maara-rajoitettu
           :haun-asetukset/jarjestetyt-hakutoiveet
           :haun-asetukset/synteettiset-hakemukset
           :haun-asetukset/useita-hakemuksia
@@ -225,8 +229,16 @@
 
 (defn clear-keys-on-some-value [haun-asetus-key]
   (case haun-asetus-key
-    :haun-asetukset/liitteiden-muokkauksen-hakemuskohtainen-takaraja-kaytossa
+    :haun-asetukset/liitteiden-muokkaus-ilman-takarajaa
     [:haun-asetukset/liitteiden-muokkauksen-takaraja
+     :haun-asetukset/liitteiden-muokkauksen-hakukohtainen-takaraja-kellonaika
+     :haun-asetukset/liitteiden-muokkauksen-hakemuskohtainen-takaraja-kaytossa
+     :haun-asetukset/liitteiden-muokkauksen-hakemuskohtainen-takaraja-paivaa
+     :haun-asetukset/liitteiden-muokkauksen-hakemuskohtainen-takaraja-kellonaika]
+
+    :haun-asetukset/liitteiden-muokkauksen-hakemuskohtainen-takaraja-kaytossa
+    [:haun-asetukset/liitteiden-muokkaus-ilman-takarajaa
+     :haun-asetukset/liitteiden-muokkauksen-takaraja
      :haun-asetukset/liitteiden-muokkauksen-hakukohtainen-takaraja-kellonaika]
 
     []))

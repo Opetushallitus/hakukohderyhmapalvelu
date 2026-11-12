@@ -430,6 +430,8 @@
         disabled?              @(re-frame/subscribe [:haun-asetukset/haun-asetukset-disabled? haku-oid])
         default-kellonaika     "15:00"
         default-paivaa         7
+        ilman-takarajaa?
+        @(re-frame/subscribe [:haun-asetukset/haun-asetus haku-oid :haun-asetukset/liitteiden-muokkaus-ilman-takarajaa])
         hakemuskohtainen-raja-kaytossa?
         @(re-frame/subscribe [:haun-asetukset/haun-asetus haku-oid :haun-asetukset/liitteiden-muokkauksen-hakemuskohtainen-takaraja-kaytossa])
         hakukohtainen-value    @(re-frame/subscribe [:haun-asetukset/haun-asetus haku-oid :haun-asetukset/liitteiden-muokkauksen-takaraja])
@@ -457,10 +459,11 @@
           {:id          (str id-prefix "-radio-ei-takarajaa")
            :name        (str :haun-asetukset/liitteiden-muokkauksen-hakemuskohtainen-takaraja-kaytossa)
            :value       "ei-takarajaa"
-           :checked?    (nil? hakemuskohtainen-raja-kaytossa?)
-           :disabled?   disabled?
+           :checked?    (true? ilman-takarajaa?)
+           :disabled?   (boolean disabled?)
            :label       @(re-frame/subscribe [:translation :haun-asetukset/liitteiden-muokkauksen-takaraja-ei-kaytossa])
-           :on-change   #(re-frame/dispatch [:haun-asetukset/poista-liitteiden-muokkauksen-takaraja haku-oid])
+           :on-change   #(re-frame/dispatch [:haun-asetukset/set-haun-asetus
+                                             haku-oid :haun-asetukset/liitteiden-muokkaus-ilman-takarajaa true])
            :cypressid   (str id-prefix "-radio-ei-takarajaa")}]}])
       [haun-asetukset-radio-button
        {:haku-oid        haku-oid
@@ -718,8 +721,9 @@
         all-required-filled? (and (or (not @(re-frame/subscribe [:haun-asetukset/haun-asetus haku-oid :haun-asetukset/hakukohteiden-maara-rajoitettu]))
                                       (not (nil? @(re-frame/subscribe [:haun-asetukset/haun-asetus haku-oid :haun-asetukset/hakukohteiden-maara-rajoitus]))))
                                   (not (nil? @(re-frame/subscribe [:haun-asetukset/haun-asetus haku-oid :haun-asetukset/hakukierros-paattyy])))
-                                  (or takaraja-sallittu?
-                                      (some? @(re-frame/subscribe [:haun-asetukset/haun-asetus haku-oid :haun-asetukset/liitteiden-muokkauksen-hakemuskohtainen-takaraja-kaytossa]))))
+                                  (or (some? @(re-frame/subscribe [:haun-asetukset/haun-asetus haku-oid :haun-asetukset/liitteiden-muokkauksen-hakemuskohtainen-takaraja-kaytossa]))
+                                       (and takaraja-sallittu?
+                                            (true? @(re-frame/subscribe [:haun-asetukset/haun-asetus haku-oid :haun-asetukset/liitteiden-muokkaus-ilman-takarajaa])))))
         id-prefix (str "haun-asetukset-" haku-oid)
         header-id (str id-prefix "-header")
         haku-name (i18n-utils/get-with-fallback (:nimi haku) lang)

@@ -152,21 +152,7 @@
                                              (apply (partial dissoc ohjausparametrit)
                                                     (->> haun-asetus-key
                                                          m/clear-keys-on-some-value
-                                                         (map m/haun-asetus-key->ohjausparametri)))))))
-       })))
-
-(events/reg-event-db-validating
-  :haun-asetukset/poista-liitteiden-muokkauksen-takaraja
-  (fn-traced [db [haku-oid]]
-    (-> db
-        (assoc-in [:save-status :changes-saved] false)
-        (update-in [:ohjausparametrit haku-oid]
-                   dissoc
-                   :PH_LMT
-                   :liitteidenMuokkauksenHakukohtainenTakarajaKellonaika
-                   :liitteidenMuokkauksenHakemuskohtainenTakarajaKaytossa
-                   :liitteidenMuokkauksenHakemuskohtainenTakarajaPaivaa
-                   :liitteidenMuokkauksenHakemuskohtainenTakarajaKellonaika))))
+                                                         (map m/haun-asetus-key->ohjausparametri)))))))})))
 
 (events/reg-event-fx-validating
   :haun-asetukset/save-ohjausparametrit
