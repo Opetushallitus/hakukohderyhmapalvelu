@@ -152,8 +152,7 @@
                                              (apply (partial dissoc ohjausparametrit)
                                                     (->> haun-asetus-key
                                                          m/clear-keys-on-some-value
-                                                         (map m/haun-asetus-key->ohjausparametri)))))))
-       })))
+                                                         (map m/haun-asetus-key->ohjausparametri)))))))})))
 
 (events/reg-event-fx-validating
   :haun-asetukset/save-ohjausparametrit
